@@ -1,0 +1,8 @@
+syntax = "proto3";
+package model;
+option go_package = "github.com/simimpact/srsim/pkg/model";
+
+message SimulatorSettings {
+    int32 av_limit = 1 [json_name="av_limit"];
+    bool ttk_mode = 2 [json_name="ttk_mode"];
+}

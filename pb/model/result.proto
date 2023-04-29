@@ -1,0 +1,13 @@
+syntax = "proto3";
+package model;
+option go_package = "github.com/simimpact/srsim/pkg/model";
+
+message Version {
+  string major = 1 [ json_name = "major" ];
+  string minor = 2 [ json_name = "minor" ];
+}
+
+message SimulationResult {
+  Version schema_version = 1 [ json_name = "schema_version" ];
+  optional string sim_version = 2 [ json_name = "sim_version" ];
+}
