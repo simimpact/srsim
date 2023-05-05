@@ -27,3 +27,14 @@ A certain gacha game simulator
 
 `internal/enemy`:
 - enemy implementation
+
+
+## Dev environment requirements:
+
+You will need to have the following installed:
+- go
+- node
+- yarn
+- protoc (Currently on: https://github.com/protocolbuffers/protobuf/releases/tag/v21.12)
+- protoc-gen-go (Currently on v 1.30.0: `go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.30.0`)
+- protoc-gen-go-grpc (Currently on v1.3.0 `go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.3`)

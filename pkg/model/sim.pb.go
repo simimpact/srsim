@@ -20,19 +20,66 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type SimConfig struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Settings *SimulatorSettings `protobuf:"bytes,1,opt,name=settings,proto3" json:"settings,omitempty"`
+}
+
+func (x *SimConfig) Reset() {
+	*x = SimConfig{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_pb_model_sim_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SimConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SimConfig) ProtoMessage() {}
+
+func (x *SimConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_pb_model_sim_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SimConfig.ProtoReflect.Descriptor instead.
+func (*SimConfig) Descriptor() ([]byte, []int) {
+	return file_pb_model_sim_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *SimConfig) GetSettings() *SimulatorSettings {
+	if x != nil {
+		return x.Settings
+	}
+	return nil
+}
+
 type SimulatorSettings struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	AvLimit int32 `protobuf:"varint,1,opt,name=av_limit,proto3" json:"av_limit,omitempty"`
-	TtkMode bool  `protobuf:"varint,2,opt,name=ttk_mode,proto3" json:"ttk_mode,omitempty"`
+	CycleLimit int32 `protobuf:"varint,1,opt,name=cycle_limit,proto3" json:"cycle_limit,omitempty"`
+	TtkMode    bool  `protobuf:"varint,2,opt,name=ttk_mode,proto3" json:"ttk_mode,omitempty"`
 }
 
 func (x *SimulatorSettings) Reset() {
 	*x = SimulatorSettings{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pb_model_sim_proto_msgTypes[0]
+		mi := &file_pb_model_sim_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -45,7 +92,7 @@ func (x *SimulatorSettings) String() string {
 func (*SimulatorSettings) ProtoMessage() {}
 
 func (x *SimulatorSettings) ProtoReflect() protoreflect.Message {
-	mi := &file_pb_model_sim_proto_msgTypes[0]
+	mi := &file_pb_model_sim_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -58,12 +105,12 @@ func (x *SimulatorSettings) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SimulatorSettings.ProtoReflect.Descriptor instead.
 func (*SimulatorSettings) Descriptor() ([]byte, []int) {
-	return file_pb_model_sim_proto_rawDescGZIP(), []int{0}
+	return file_pb_model_sim_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *SimulatorSettings) GetAvLimit() int32 {
+func (x *SimulatorSettings) GetCycleLimit() int32 {
 	if x != nil {
-		return x.AvLimit
+		return x.CycleLimit
 	}
 	return 0
 }
@@ -79,15 +126,20 @@ var File_pb_model_sim_proto protoreflect.FileDescriptor
 
 var file_pb_model_sim_proto_rawDesc = []byte{
 	0x0a, 0x12, 0x70, 0x62, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x2f, 0x73, 0x69, 0x6d, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x05, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x22, 0x4b, 0x0a, 0x11, 0x53,
-	0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x6f, 0x72, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73,
-	0x12, 0x1a, 0x0a, 0x08, 0x61, 0x76, 0x5f, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x05, 0x52, 0x08, 0x61, 0x76, 0x5f, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x12, 0x1a, 0x0a, 0x08,
-	0x74, 0x74, 0x6b, 0x5f, 0x6d, 0x6f, 0x64, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08,
-	0x74, 0x74, 0x6b, 0x5f, 0x6d, 0x6f, 0x64, 0x65, 0x42, 0x26, 0x5a, 0x24, 0x67, 0x69, 0x74, 0x68,
-	0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x73, 0x69, 0x6d, 0x69, 0x6d, 0x70, 0x61, 0x63, 0x74,
-	0x2f, 0x73, 0x72, 0x73, 0x69, 0x6d, 0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x05, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x22, 0x41, 0x0a, 0x09, 0x53,
+	0x69, 0x6d, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x12, 0x34, 0x0a, 0x08, 0x73, 0x65, 0x74, 0x74,
+	0x69, 0x6e, 0x67, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x6d, 0x6f, 0x64,
+	0x65, 0x6c, 0x2e, 0x53, 0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x6f, 0x72, 0x53, 0x65, 0x74, 0x74,
+	0x69, 0x6e, 0x67, 0x73, 0x52, 0x08, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x22, 0x51,
+	0x0a, 0x11, 0x53, 0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x6f, 0x72, 0x53, 0x65, 0x74, 0x74, 0x69,
+	0x6e, 0x67, 0x73, 0x12, 0x20, 0x0a, 0x0b, 0x63, 0x79, 0x63, 0x6c, 0x65, 0x5f, 0x6c, 0x69, 0x6d,
+	0x69, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x0b, 0x63, 0x79, 0x63, 0x6c, 0x65, 0x5f,
+	0x6c, 0x69, 0x6d, 0x69, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x74, 0x74, 0x6b, 0x5f, 0x6d, 0x6f, 0x64,
+	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x74, 0x74, 0x6b, 0x5f, 0x6d, 0x6f, 0x64,
+	0x65, 0x42, 0x26, 0x5a, 0x24, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
+	0x73, 0x69, 0x6d, 0x69, 0x6d, 0x70, 0x61, 0x63, 0x74, 0x2f, 0x73, 0x72, 0x73, 0x69, 0x6d, 0x2f,
+	0x70, 0x6b, 0x67, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x33,
 }
 
 var (
@@ -102,16 +154,18 @@ func file_pb_model_sim_proto_rawDescGZIP() []byte {
 	return file_pb_model_sim_proto_rawDescData
 }
 
-var file_pb_model_sim_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_pb_model_sim_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_pb_model_sim_proto_goTypes = []interface{}{
-	(*SimulatorSettings)(nil), // 0: model.SimulatorSettings
+	(*SimConfig)(nil),         // 0: model.SimConfig
+	(*SimulatorSettings)(nil), // 1: model.SimulatorSettings
 }
 var file_pb_model_sim_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	1, // 0: model.SimConfig.settings:type_name -> model.SimulatorSettings
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_pb_model_sim_proto_init() }
@@ -121,6 +175,18 @@ func file_pb_model_sim_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_pb_model_sim_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SimConfig); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_pb_model_sim_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*SimulatorSettings); i {
 			case 0:
 				return &v.state
@@ -139,7 +205,7 @@ func file_pb_model_sim_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_pb_model_sim_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -4,20 +4,7 @@ import (
 	"bytes"
 	"reflect"
 	"testing"
-
-	"github.com/simimpact/srsim/pkg/core"
-	"github.com/simimpact/srsim/pkg/model"
 )
-
-func TestSimShouldStopAtTurnLimit(t *testing.T) {
-	c := &core.Core{
-		CurrentAV: 10,
-	}
-	s := &model.SimulatorSettings{
-		AvLimit: 10,
-	}
-	assert(t, simShouldStop(c, s), true, "stop should be true when turn deadline reached")
-}
 
 func assert[K any](t *testing.T, expect, got K, msg string) {
 	if !checkEqual(expect, got) {

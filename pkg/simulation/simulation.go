@@ -1,45 +1,30 @@
 package simulation
 
 import (
-	"github.com/simimpact/srsim/pkg/core"
+	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 type Simulation struct {
-	c *core.Core
+	SimulationConfig
+	//some states and stuff
+	//key services
+	turnManager TurnManager
 }
 
-type Config struct {
+type SimulationConfig struct {
+	cfg *model.SimConfig
 }
 
-func New() (*Simulation, error) {
-	return nil, nil
+type TurnManager interface {
+	AdvanceTurn() key.TargetID //advance to next turn and update AV accordingly
+	CurrentCycle() int         //current cycle count
 }
 
-func (s *Simulation) createCore() error {
-	var err error
-	s.c, err = core.New()
-	if err != nil {
-		return err
+func New(cfg SimulationConfig) (*Simulation, error) {
+	s := &Simulation{
+		SimulationConfig: cfg,
 	}
-	return nil
-}
 
-// addTarget adds a new target to the simulation
-func (s *Simulation) addTarget(t core.Target) error {
-	return nil
-}
-
-func (s *Simulation) Run() (*model.SimulationResult, error) {
-
-	return nil, nil
-}
-
-func simShouldStop(c *core.Core, s *model.SimulatorSettings) bool {
-	if s.TtkMode {
-		//TODO: check if all enemies dead
-		return true
-	}
-	//otherwise end if
-	return c.CurrentAV >= int(s.AvLimit)
+	return s, nil
 }
