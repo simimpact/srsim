@@ -1,11 +1,7 @@
-import { Route, Routes } from "react-router-dom";
+import { RouteObject } from "react-router-dom";
 
-export const ViewerRoutes = () => {
-  return (
-    <Routes>
-      <Route path="web" element={<></>} />
-      <Route path="local" element={<></>} />
-      <Route path="sh/:id" element={<></>} />
-    </Routes>
-  );
-};
+export const ViewerRoutes: RouteObject[] = [
+  { path: "web", element: <></> },
+  { path: "local", element: <></> },
+  { path: "sh/:id", element: <></> },
+];

@@ -1,9 +1,3 @@
-import { Route, Routes } from "react-router-dom";
+import { RouteObject } from "react-router-dom";
 
-export const EditorRoutes = () => {
-  return (
-    <Routes>
-      <Route path="editor" element={<></>} />
-    </Routes>
-  );
-};
+export const EditorRoutes: RouteObject[] = [{ path: "editor", element: <></> }];
