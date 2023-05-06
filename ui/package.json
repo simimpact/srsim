@@ -8,6 +8,7 @@
   "scripts": {
     "clean": "yarn cache clean && rimraf node_modules",
     "lint": "eslint --fix",
+    "lint-ci": "eslint .",
     "circular": "yarn madge --circular --extensions ts ./",
     "orphans": "yarn madge --orphans --extensions ts ./",
     "format": "prettier --write .",

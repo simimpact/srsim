@@ -1,0 +1,24 @@
+name: "Setup Yarn and Run Validation and Tests"
+description: "runs yarn setup and any desired yarn lint and test commands (no build)"
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v3
+      with:
+        node-version: latest
+    - name: Install
+      working-directory: ./ui
+      shell: bash
+      run: yarn install
+    - name: Lint
+      working-directory: ./ui
+      shell: bash
+      run: yarn lint-ci
+    - name: Detect Dependency Version Mismatches
+      working-directory: ./ui
+      shell: bash
+      run: yarn list-mismatches
+    - name: Detect Circular Dependencies
+      working-directory: ./ui
+      shell: bash
+      run: yarn circular
