@@ -1,0 +1,61 @@
+{
+  "name": "srsim",
+  "packageManager": "yarn@3.5.0",
+  "private": true,
+  "workspaces": [
+    "packages/**"
+  ],
+  "scripts": {
+    "clean": "yarn cache clean && rimraf node_modules",
+    "lint": "eslint --fix",
+    "circular": "yarn madge --circular --extensions ts ./",
+    "orphans": "yarn madge --orphans --extensions ts ./",
+    "format": "prettier --write .",
+    "check-format": "prettier --check .",
+    "list-deps": "syncpack list",
+    "list-mismatches": "syncpack list-mismatches",
+    "fix-mismatches": "syncpack fix-mismatches",
+    "postinstall": "cd .. && husky install ui/.husky",
+    "validate": "yarn run lint-staged",
+    "start": "yarn run start:web",
+    "start:web": "yarn workspace @srsim/web dev",
+    "preview": "yarn run preview:web",
+    "preview:web": "yarn workspace @srsim/web preview",
+    "build": "yarn run build:web",
+    "build:web": "yarn workspace @srsim/web build"
+  },
+  "devDependencies": {
+    "@types/eslint": "^8",
+    "@types/prettier": "^2",
+    "@types/watch": "^1",
+    "@typescript-eslint/eslint-plugin": "^5.59.1",
+    "@typescript-eslint/parser": "^5.59.1",
+    "autoprefixer": "^10.4.14",
+    "concurrently": "^8.0.1",
+    "eslint": "^8.39.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-import-resolver-typescript": "^3.5.5",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-workspaces": "^0.8.0",
+    "husky": "^8.0.0",
+    "lerna": "^6.6.1",
+    "lint-staged": "^13.2.2",
+    "madge": "^6.0.0",
+    "npm-run-all": "^4.1.5",
+    "postcss": "^8.4.23",
+    "prettier": "^2.8.8",
+    "rimraf": "^3",
+    "syncpack": "^9.8.6",
+    "tailwindcss": "^3.3.2",
+    "typescript": "^5.0.4",
+    "watch": "^1.0.2"
+  },
+  "lint-staged": {
+    "*.+(ts|tsx)": [
+      "yarn lint"
+    ]
+  }
+}
