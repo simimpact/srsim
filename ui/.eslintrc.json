@@ -30,8 +30,16 @@
   ],
   "settings": {
     "react": { "version": "detect" },
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
     "import/resolver": {
-      "typescript": true
+      "typescript": {
+        "project": ["tsconfig.json", "packages/*/tsconfig.json"]
+      },
+      "node": {
+        "project": ["tsconfig.json", "packages/*/tsconfig.json"]
+      }
     }
   },
 

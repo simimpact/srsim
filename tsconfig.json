@@ -1,5 +1,15 @@
 {
   "compilerOptions": {
-    "strict": true
+    "allowJs": false,
+    "skipLibCheck": false,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "useDefineForClassFields": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "strict": true,
+    "noEmit": true
   }
 }

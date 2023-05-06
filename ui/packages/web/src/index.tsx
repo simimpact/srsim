@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { AppProvider } from "./providers/app";
 import "./index.css";
+import "./locales/i18n";
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
 ReactDOM.createRoot(document.getElementById("root")!).render(
