@@ -17,6 +17,7 @@
     "fix-mismatches": "syncpack fix-mismatches",
     "postinstall": "cd .. && husky install ui/.husky",
     "validate": "yarn run lint-staged",
+    "storybook": "yarn workspace @srsim/web storybook",
     "start": "yarn run start:web",
     "start:web": "yarn workspace @srsim/web dev",
     "preview": "yarn run preview:web",
