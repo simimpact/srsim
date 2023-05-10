@@ -3,8 +3,9 @@ package model;
 option go_package = "github.com/simimpact/srsim/pkg/model";
 
 message SimConfig {
-
-    SimulatorSettings settings = 1 [json_name="settings"];
+    int32 iterations = 1 [json_name="iterations"];
+    int32 worker_count = 2 [json_name="worker_count"];
+    SimulatorSettings settings = 3 [json_name="settings"];
 }
 
 message SimulatorSettings {

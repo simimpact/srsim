@@ -9,7 +9,7 @@ import (
 
 type stateFn func(*Simulation) (stateFn, error)
 
-func (s *Simulation) Run() (*model.SimulationResult, error) {
+func (s *Simulation) run() (*model.IterationResult, error) {
 	var err error
 	//TODO: per Kyle this is totally unnecessary; for that reason alone this will stay
 	//because what's better than another future Kyle problem?

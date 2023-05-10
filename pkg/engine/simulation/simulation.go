@@ -1,19 +1,17 @@
 package simulation
 
 import (
+	"context"
+
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 type Simulation struct {
-	SimulationConfig
+	cfg *model.SimConfig
 	//some states and stuff
 	//key services
 	turnManager TurnManager
-}
-
-type SimulationConfig struct {
-	cfg *model.SimConfig
 }
 
 type TurnManager interface {
@@ -21,10 +19,11 @@ type TurnManager interface {
 	CurrentCycle() int         //current cycle count
 }
 
-func New(cfg SimulationConfig) (*Simulation, error) {
+func Run(ctx context.Context, cfg *model.SimConfig) (*model.IterationResult, error) {
 	s := &Simulation{
-		SimulationConfig: cfg,
+		cfg: cfg,
 	}
 
-	return s, nil
+
+	return s.run()
 }

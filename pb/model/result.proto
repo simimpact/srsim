@@ -10,6 +10,12 @@ message Version {
 message SimulationResult {
   Version schema_version = 1 [ json_name = "schema_version" ];
   optional string sim_version = 2 [ json_name = "sim_version" ];
+  optional bool modified = 3 [json_name="modified"];
+  string build_date = 4 [json_name="build_date"];
+}
+
+message IterationResult {
+
 }
 
 message SimulationStatistics {
