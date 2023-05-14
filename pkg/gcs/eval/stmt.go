@@ -64,7 +64,7 @@ func (e *Eval) evalLet(l *ast.LetStmt, env *Env) (Obj, error) {
 	}
 	//res should be a number
 	// v, ok := res.(*number)
-	e.Log.Printf("let expr: %v, type: %T\n", res, res)
+	// e.Log.Printf("let expr: %v, type: %T\n", res, res)
 	// if !ok {
 	// 	return nil, fmt.Errorf("let expression for %v does evaluate to a number, got %v", l.Ident, res.Inspect())
 	// }
@@ -232,7 +232,7 @@ func (e *Eval) evalSwitchStmt(swt *ast.SwitchStmt, env *Env) (Obj, error) {
 			if err != nil {
 				return nil, err
 			}
-			e.Log.Printf("res from case block: %v typ %T\n", res, res)
+			// e.Log.Printf("res from case block: %v typ %T\n", res, res)
 			switch t := res.(type) {
 			case *ctrl:
 				switch t.typ {

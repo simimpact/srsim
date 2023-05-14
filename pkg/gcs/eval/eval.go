@@ -1,20 +1,29 @@
 package eval
 
 import (
+	"context"
 	"errors"
 	"fmt"
-	"io/ioutil"
-	"log"
 	"strconv"
 
 	"github.com/simimpact/srsim/pkg/gcs/ast"
+	"github.com/simimpact/srsim/pkg/key"
 )
 
+type TargetNode struct {
+	target key.TargetID
+	env *Env
+	node ast.Node
+}
+
 type Eval struct {
-	AST  ast.Node
-	Next chan bool
-	Log  *log.Logger
-	Err  chan error
+	AST ast.Node
+	global *Env
+	ctx context.Context
+	Err chan error
+	
+	targetNode map[key.TargetID]TargetNode
+	burstNodes []TargetNode
 }
 
 type Env struct {
@@ -40,31 +49,20 @@ func (e *Env) v(s string) (*Obj, error) {
 	return nil, fmt.Errorf("variable %v does not exist", s)
 }
 
-// Run will execute the provided AST. Any genshin specific actions will be passed
-// back to the
-func (e *Eval) Run() Obj {
-	if e.Log == nil {
-		e.Log = log.New(ioutil.Discard, "", log.LstdFlags)
-	}
-	//this should run until it hits an Action
-	//it will then pass the action on a resp channel
-	//it will then wait for Next before running again
-	global := NewEnv(nil)
-	e.initSysFuncs(global)
+// Run will execute the provided AST.
+func (e *Eval) Init(ctx context.Context) bool {
+	e.ctx = ctx
+	e.global = NewEnv(nil)
+	e.targetNode = make(map[key.TargetID]TargetNode)
+	e.burstNodes = make([]TargetNode, 0)
+	e.initSysFuncs(e.global)
 
-	//start running once we get signal to go
-	<-e.Next
-	Obj, err := e.evalNode(e.AST, global)
-	switch err {
-	case nil:
-		return Obj
-	case ErrTerminated:
-		//do nothing here really since we're just out of work per main thread
-		return &null{}
-	default:
+	_, err := e.evalNode(e.AST, e.global)
+	if err != nil {
 		e.Err <- err
-		return &null{}
+		return false
 	}
+	return true
 }
 
 var ErrTerminated = errors.New("eval terminated")
