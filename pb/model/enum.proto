@@ -1,0 +1,9 @@
+syntax = "proto3";
+package model;
+option go_package = "github.com/simimpact/srsim/pkg/model";
+
+enum AttributeType {
+    INVALID_ATTRIBUTE_TYPE  = 0;
+    FakeAttributeA = 1;
+    FakeAttributeB = 2;
+}
