@@ -8,6 +8,11 @@ const (
 
 type CharacterKey string
 
+const (
+	DummyCharacter CharacterKey = "dummy_character"
+	DummyEnemy EnemyKey = "dummy_enemy"
+)
+
 type LightConeKey string
 
 type RelicKey string

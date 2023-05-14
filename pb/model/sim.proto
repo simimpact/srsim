@@ -6,9 +6,21 @@ message SimConfig {
     int32 iterations = 1 [json_name="iterations"];
     int32 worker_count = 2 [json_name="worker_count"];
     SimulatorSettings settings = 3 [json_name="settings"];
+
+    repeated Character characters = 4 [json_name="characters"];
+    repeated Enemy enemies = 5 [json_name="enemies"];
 }
 
 message SimulatorSettings {
     int32 cycle_limit = 1 [json_name="cycle_limit"];
     bool ttk_mode = 2 [json_name="ttk_mode"];
+}
+
+message Character {
+    string key = 1 [json_name="key"];
+
+}
+
+message Enemy {
+    string key = 1 [json_name="key"];
 }

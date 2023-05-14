@@ -24,7 +24,7 @@ func (s *Simulation) run() (*model.IterationResult, error) {
 }
 
 func initState(s *Simulation) (stateFn, error) {
-	//TODO: ??
+	s.setupServices()
 	return startBattle, nil
 }
 

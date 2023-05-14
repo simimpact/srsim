@@ -22,6 +22,17 @@ type TurnCtrl struct {
 	stats   statService
 }
 
+func New(ids []key.TargetID) *TurnCtrl {
+	t := &TurnCtrl{}
+	for _, v := range ids {
+		t.targets = append(t.targets, &target{
+			id: v,
+		})
+	}
+
+	return t
+}
+
 func (c *TurnCtrl) findTargetPos(id key.TargetID) int {
 	for i, v := range c.targets {
 		if v.id == id {
@@ -82,4 +93,9 @@ func (c *TurnCtrl) AdvanceTurn() key.TargetID {
 	c.reduceGaugeWithAV(t.gauge / c.stats.Speed(t.id))
 	c.resetGauge(idx)
 	return t.id
+}
+
+func (c *TurnCtrl) CurrentCycle() int {
+	//TODO: ????
+	return 0
 }

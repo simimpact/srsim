@@ -15,7 +15,7 @@ message SimulationResult {
 }
 
 message IterationResult {
-
+  map<int32, string> target_id_mapping = 1 [json_name="target_id_mapping"];
 }
 
 message SimulationStatistics {
