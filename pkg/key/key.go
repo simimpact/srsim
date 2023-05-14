@@ -13,3 +13,13 @@ type LightConeKey string
 type RelicKey string
 
 type EnemyKey string
+
+type ActionType int
+
+const (
+	InvalidAction ActionType = iota
+	ActionAttack
+	ActionSkill
+	ActionBurst
+	EndActionType
+)
