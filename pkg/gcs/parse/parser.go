@@ -38,7 +38,6 @@ func New(input string) *Parser {
 	}
 	//expr functions
 	p.prefixParseFns[ast.ItemIdentifier] = p.parseIdent
-	p.prefixParseFns[ast.ItemField] = p.parseField
 	p.prefixParseFns[ast.ItemNumber] = p.parseNumber
 	p.prefixParseFns[ast.ItemBool] = p.parseBool
 	p.prefixParseFns[ast.ItemString] = p.parseString

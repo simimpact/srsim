@@ -65,7 +65,6 @@ const (
 	ItemDot              // the cursor, spelled '.'
 	// item types
 	ItemTypes
-	ItemField      // alphanumeric identifier starting with '.'
 	ItemIdentifier // alphanumeric identifier not starting with '.'
 	ItemNumber     // simple number
 	ItemBool       // boolean

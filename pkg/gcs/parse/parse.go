@@ -3,7 +3,6 @@ package parse
 import (
 	"fmt"
 	"strconv"
-	"strings"
 
 	"github.com/simimpact/srsim/pkg/gcs"
 	"github.com/simimpact/srsim/pkg/gcs/ast"
@@ -582,7 +581,7 @@ func (p *Parser) parseCallArgs() ([]ast.Expr, error) {
 
 	if n := p.next(); n.Typ != ast.ItemRightParen {
 		p.backup()
-		return nil, fmt.Errorf("ln%v: expecting ) at end of function call, got: %v", n.Line, n.Pos)
+		return nil, fmt.Errorf("ln%v: expecting ) at end of function call, got: %v", n.Line, n.Val)
 	}
 
 	return args, nil
@@ -647,19 +646,6 @@ func (p *Parser) parseExpr(pre precedence) (ast.Expr, error) {
 func (p *Parser) parseIdent() (ast.Expr, error) {
 	n := p.next()
 	return &ast.Ident{Pos: n.Pos, Value: n.Val}, nil
-}
-
-func (p *Parser) parseField() (ast.Expr, error) {
-	//next is field, keep parsing as long as it is still fields
-	//then concat them all together
-	n := p.next()
-	fields := make([]string, 0, 5)
-	for ; n.Typ == ast.ItemField; n = p.next() {
-		fields = append(fields, strings.Trim(n.Val, "."))
-	}
-	//we would have consumed one too many here
-	p.backup()
-	return &ast.Field{Pos: n.Pos, Value: fields}, nil
 }
 
 func (p *Parser) parseString() (ast.Expr, error) {

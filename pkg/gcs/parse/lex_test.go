@@ -1,28 +1,17 @@
 package parse
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/simimpact/srsim/pkg/gcs/ast"
 )
 
-func TestFields(t *testing.T) {
-	input := `if .status.field > 0 { print("hi") };`
-
-	l := lex(input)
-	for n := l.nextItem(); n.Typ != ast.ItemEOF; n = l.nextItem() {
-		fmt.Println(n)
-	}
-
-}
 func TestBasicToken(t *testing.T) {
 	input := `
 	let y = fn(x) {
 		return x + 1;
 	}
 	let x = 5;
-	label A:
 	while {
 		#comment
 		x = y(x);
@@ -48,6 +37,7 @@ func TestBasicToken(t *testing.T) {
 	1
 	-
 	-a
+	.123
 	`
 
 	expected := []ast.Token{
@@ -161,6 +151,7 @@ func TestBasicToken(t *testing.T) {
 		{Typ: ast.ItemMinus, Val: "-"},
 		{Typ: ast.ItemMinus, Val: "-"},
 		{Typ: ast.ItemIdentifier, Val: "a"},
+		{Typ: ast.ItemNumber, Val: ".123"},
 	}
 
 	l := lex(input)

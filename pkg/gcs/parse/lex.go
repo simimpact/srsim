@@ -194,14 +194,15 @@ func lexText(l *lexer) stateFn {
 			l.emit(ast.ItemForwardSlash)
 		}
 	case r == '.':
-		// special look-ahead for ".field" so we don't break l.backup().
-		if l.pos < ast.Pos(len(l.input)) {
-			r := l.input[l.pos]
-			if r < '0' || '9' < r {
-				return lexField
-			}
+		n := l.next()
+		if isNumeric(n) {
+			//backup twice
+			l.backup()
+			l.backup()
+			return lexNumber
 		}
-		fallthrough // '.' can start a number.
+		l.backup()
+		return l.errorf("unrecognized character in action: %#U", r)
 	case ('0' <= r && r <= '9'):
 		l.backup()
 		return lexNumber
@@ -306,28 +307,6 @@ Loop:
 	return lexText
 }
 
-// lexField scans a field: .Alphanumeric.
-// The . has been scanned.
-func lexField(l *lexer) stateFn {
-	if l.atTerminator() { // Nothing interesting follows -> "." or "$".
-		l.emit(ast.ItemDot)
-		return lexText
-	}
-	var r rune
-	for {
-		r = l.next()
-		if !isAlphaNumeric(r) {
-			l.backup()
-			break
-		}
-	}
-	if !l.atTerminator() {
-		return l.errorf("bad character %#U", r)
-	}
-	l.emit(ast.ItemField)
-	return lexText
-}
-
 func lexQuote(l *lexer) stateFn {
 Loop:
 	for {
@@ -363,8 +342,6 @@ Loop:
 			switch {
 			case ast.Keys[word] > ast.ItemKeyword:
 				l.emit(ast.Keys[word])
-			case word[0] == '.':
-				l.emit(ast.ItemField)
 			case word == "true", word == "false":
 				l.emit(ast.ItemBool)
 			default:
