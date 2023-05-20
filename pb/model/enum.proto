@@ -2,8 +2,105 @@ syntax = "proto3";
 package model;
 option go_package = "github.com/simimpact/srsim/pkg/model";
 
-enum AttributeType {
-    INVALID_ATTRIBUTE_TYPE  = 0;
-    FakeAttributeA = 1;
-    FakeAttributeB = 2;
+// All possible stats that can be modified for a given target
+enum StatProperty {
+  INVALID = 0;
+  // HP = HP_BASE * (1 + HP_PERCENT) + HP_FLAT + HP_CONVERT
+  HP_BASE = 1;
+  HP_PERCENT = 2;
+  HP_FLAT = 3;
+  HP_CONVERT = 4;
+  // ATK = ATK_BASE * (1 + ATK_PERCENT) + ATK_FLAT + ATK_CONVERT
+  ATK_BASE = 5;
+  ATK_PERCENT = 6;
+  ATK_FLAT = 7;
+  ATK_CONVERT = 8;
+  // DEF = DEF_BASE * (1 + DEF_PERCENT) + DEF_FLAT + DEF_CONVERT
+  DEF_BASE = 9;
+  DEF_PERCENT = 10;
+  DEF_FLAT = 11;
+  DEF_CONVERT = 12;
+  // SPD = SPD_BASE * (1 + SPD_PERCENT) + SPD_FLAT + SPD_CONVERT
+  SPD_BASE = 13;
+  SPD_PERCENT = 14;
+  SPD_FLAT = 15;
+  SPD_CONVERT = 16;
+  // Crit
+  CRIT_CHANCE = 17;
+  CRIT_DMG = 18;
+  // Energy Regen
+  ENERGY_REGEN = 19;
+  ENERGY_REGEN_CONVERT = 20;
+  // Effect Hit Rate
+  EFFECT_HIT_RATE = 21;
+  EFFECT_HIT_RATE_CONVERT = 22;
+  // Effect RES
+  EFFECT_RES = 23;
+  EFFECT_RES_CONVERT = 24;
+  // Increases heal strength that are created by target
+  HEAL_BOOST = 25;
+  HEAL_BOOST_CONVERT = 26;
+  // Increases heal strength that are applied to target
+  HEAL_TAKEN = 27;
+  // Increases shield strength that are created by target
+  SHIELD_BOOST = 28;
+  // Increases shield strength that are applied to target
+  SHIELD_TAKEN = 29;
+  // AGGRO = AGGRO_BASE * (1 + AGGRO_PERCENT) + AGGRO_FLAT
+  AGGRO_BASE = 30;
+  AGGRO_PERCENT = 31;
+  AGGRO_FLAT = 32;
+  // Break Effect
+  BREAK_EFFECT = 33;
+  // Damage Resistances (RES = ALL_DMG_RES + ELEMENT_DMG_RES)
+  ALL_DMG_RES = 34;
+  PHYSICAL_DMG_RES = 35;
+  FIRE_DMG_RES = 36;
+  ICE_DMG_RES = 37;
+  THUNDER_DMG_RES = 38;
+  QUANTUM_DMG_RES = 39;
+  IMAGINARY_DMG_RES = 40;
+  WIND_DMG_RES = 41;
+  // Elemental Penetrates
+  PHYSICAL_PEN = 42;
+  FIRE_PEN = 43;
+  ICE_PEN = 44;
+  THUNDER_PEN = 45;
+  QUANTUM_PEN = 46;
+  IMAGINARY_PEN = 47;
+  WIND_PEN = 48;
+  // Damage Taken Boost (TAKEN = ALL_DMG_TAKEN + ELEMENT_DMG_TAKEN)
+  ALL_DMG_TAKEN = 49;
+  FIRE_DMG_TAKEN = 50;
+  ICE_DMG_TAKEN = 51;
+  THUNDER_DMG_TAKEN = 52;
+  QUANTUM_DMG_TAKEN = 53;
+  IMAGINARY_DMG_TAKEN = 54;
+  WIND_DMG_TAKEN = 55;
+  // DMG% increases (DMG% = ALL_DMG% + ELEMENT_DMG% + DOT_DMG%)
+  ALL_DMG_PERCENT = 56;
+  DOT_DMG_PERCENT = 57;
+  FIRE_DMG_PERCENT = 58;
+  ICE_DMG_PERCENT = 59;
+  THUNDER_DMG_PERCENT = 60;
+  QUANTUM_DMG_PERCENT = 61;
+  IMAGINARY_DMG_PERCENT = 62;
+  WIND_DMG_PERCENT = 63;
+  PHYSICAL_DMG_PERCENT = 64;
+  // Stance DMG% increase (damage to toughness bar, not break effect)
+  ALL_STANCE_DMG_PERCENT = 65;
+  // Multiplicative DMG reduction CURRENT_DMG_REDUCE *= (1 - ADDED_DMG_REDUCE)
+  // DMG_REDUCE from target attacked, FATIGUE from attacker
+  ALL_DMG_REDUCE = 90;
+  FATIGUE = 91;
+  MIN_FATIGUE = 92; // TODO: unnecessary?
+
+  // OMITTED (Stance Break = reducing toughness bar. Break Damage = Break Effect):
+  // - CRIT_RES
+  // - CRIT_CHANCE_CONVERT
+  // - CRIT_DMG_CONVERT
+  // - STANCE_BREAK_RES
+  // - STANCE_BREAK_TAKEN
+  // - ELEMENT_ABSORB
+  // - BREAK_EFFECT_CONVERT
 }
