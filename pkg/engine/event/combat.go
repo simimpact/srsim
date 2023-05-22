@@ -1,11 +1,13 @@
 package event
 
-type AttackEventHandler = EventHandler[AttackEvent]
+import "github.com/simimpact/srsim/pkg/engine/event/handler"
+
+type AttackEventHandler = handler.EventHandler[AttackEvent]
 type AttackEvent struct {
 	// TODO
 }
 
-type DamageEventHandler = EventHandler[DamageEvent]
+type DamageEventHandler = handler.EventHandler[DamageEvent]
 type DamageEvent struct {
 	// TODO
 }
