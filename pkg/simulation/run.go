@@ -3,7 +3,6 @@ package simulation
 import (
 	"errors"
 
-	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
@@ -35,7 +34,7 @@ func startBattle(s *Simulation) (stateFn, error) {
 func beginTurn(s *Simulation) (stateFn, error) {
 	//AVUpdate
 	next := s.turnManager.AdvanceTurn()
-	if next == key.TargetInvalid {
+	if !s.IsValid(next) {
 		return nil, errors.New("unexpected: turn manager returned an invalid target for next turn")
 	}
 

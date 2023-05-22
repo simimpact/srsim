@@ -2,20 +2,18 @@
 package dummy
 
 import (
-	"github.com/simimpact/srsim/pkg/engine/simulation"
-	"github.com/simimpact/srsim/pkg/engine/system"
+	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/key"
 )
 
 func init() {
-	simulation.RegisterCharFunc(key.DummyCharacter, New)
+	// .RegisterCharFunc(key.DummyCharacter, New)
 }
 
 type char struct {
-
 }
 
-func New(sys *system.CharacterServices, id key.TargetID) (simulation.Target, error) {
+func New(engine *engine.Engine, id key.TargetID) (interface{}, error) {
 	c := &char{}
 
 	return c, nil
