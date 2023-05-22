@@ -3,8 +3,8 @@ package model;
 option go_package = "github.com/simimpact/srsim/pkg/model";
 
 // All possible stats that can be modified for a given target
-enum StatProperty {
-  INVALID = 0;
+enum Property {
+  INVALID_PROP = 0;
   // HP = HP_BASE * (1 + HP_PERCENT) + HP_FLAT + HP_CONVERT
   HP_BASE = 1;
   HP_PERCENT = 2;
@@ -103,4 +103,11 @@ enum StatProperty {
   // - STANCE_BREAK_TAKEN
   // - ELEMENT_ABSORB
   // - BREAK_EFFECT_CONVERT
+}
+
+enum BehaviorFlag {
+  INVALID_FLAG = 0;
+  reserved 1 to 79;
+
+  STAT_CTRL = 80;
 }
