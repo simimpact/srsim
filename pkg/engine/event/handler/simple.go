@@ -1,4 +1,4 @@
-package event
+package handler
 
 type Listener[E event] func(event E)
 

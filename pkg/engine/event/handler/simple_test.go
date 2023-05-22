@@ -1,9 +1,9 @@
-package event_test
+package handler_test
 
 import (
 	"testing"
 
-	. "github.com/simimpact/srsim/pkg/engine/event"
+	. "github.com/simimpact/srsim/pkg/engine/event/handler"
 )
 
 func TestEmitNoSubscription(t *testing.T) {
@@ -42,4 +42,3 @@ func TestMultipleListeners(t *testing.T) {
 		t.Errorf("Value %d does not equal expected -10", value)
 	}
 }
-
