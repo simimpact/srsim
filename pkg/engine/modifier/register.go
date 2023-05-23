@@ -3,6 +3,7 @@ package modifier
 import (
 	"sync"
 
+	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -19,18 +20,6 @@ func Register(key key.Modifier, modifier Config) {
 	if _, dup := modifierCatalog[key]; dup {
 		panic("duplicate registration attempt: " + key)
 	}
-
-	// configure the default values
-	if modifier.Duration <= 0 {
-		modifier.Duration = -1
-	}
-	if modifier.Count <= 0 {
-		modifier.Count = 1
-	}
-	if modifier.MaxCount <= 0 {
-		modifier.MaxCount = 1
-	}
-
 	modifierCatalog[key] = modifier
 }
 
@@ -44,18 +33,35 @@ type Config struct {
 	TickMoment        BattlePhase
 	BehaviorFlags     []model.BehaviorFlag
 	StatusType        model.StatusType
-	// TODO: WorkingTurn
+	// TODO: WorkingTurn?
 }
 
+// Determines how duplicate modifiers will "stack" when added. Note: not all stacking behaviors can
+// stack modifiers.
 type StackingBehavior int
 
-// TODO: right default?
 const (
-	ReplaceBySource StackingBehavior = iota
+	// In the event of duplicates (checked by modifier name), will keep the current instance on
+	// the target unmodified. Can never stack modifiers with this behavior.
+	Unique StackingBehavior = iota
+	// Compares modifiers by name and source (can have multiple instances of same mod). In the
+	// event of an existing modifier from same source, will replace that instance with the incoming
+	// instance. Can stack (count increases by CountAddWhenStack).
+	ReplaceBySource
+	// Compares modifiers by name. In the event of an existing modifier, will replace that instance
+	// with the new instance. Can stack (count increases by CountAddWhenStack).
 	Replace
+	// Does no modifier comparisons/duplicate checks. Calling AddModifier will always add a new
+	// modifier instance to the target.
 	Multiple
+	// In the event of duplicates (by name), will reset the Duration of the existing instance, but
+	// not replace. This will not invoke OnAdd and instead will be OnDurationExtended
 	Refresh
+	// In the event of duplicates (by name), will add the incoming duration to the existing instance.
+	// The original instance will be kept and OnDurationExtended will be called instead of OnAdd.
 	Prolong
+	// In the event of duplicates (by name), will keep the original instance and instead add the count
+	// and duration. Will reset the current instance's stats and call OnAdd.
 	Merge
 )
 
@@ -73,4 +79,37 @@ func (c Config) HasFlag(flag model.BehaviorFlag) bool {
 		}
 	}
 	return false
+}
+
+func setDefaults(instance *info.ModifierInstance) {
+	config := modifierCatalog[instance.Name]
+
+	if instance.Params == nil {
+		instance.Params = make(map[string]float64)
+	}
+
+	// Apply defaults from config as fallback
+	if instance.CountAddWhenStack == 0 {
+		instance.CountAddWhenStack = config.CountAddWhenStack
+	}
+	if instance.MaxCount == 0 {
+		instance.MaxCount = config.MaxCount
+	}
+	if instance.Count == 0 {
+		instance.Count = config.Count
+	}
+	if instance.Duration == 0 {
+		instance.Duration = config.Duration
+	}
+
+	// default "infinite" cases
+	if instance.Duration <= 0 {
+		instance.Duration = -1
+	}
+	if instance.Count <= 0 {
+		instance.Count = -1
+	}
+	if instance.MaxCount <= 0 {
+		instance.MaxCount = -1
+	}
 }

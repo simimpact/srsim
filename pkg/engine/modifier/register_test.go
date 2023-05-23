@@ -7,37 +7,13 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
+	"github.com/stretchr/testify/assert"
 )
 
-func TestRegisterDefaults(t *testing.T) {
-	key := key.Modifier("TestModifierDefaults")
-	Register(key, Config{})
-
-	actual := modifierCatalog[key]
-
-	if actual.Duration != -1 {
-		t.Errorf("modifier Duration %v does not match expected -1", actual.Duration)
-	}
-
-	if actual.Count != 1 {
-		t.Errorf("modifier Count %v does not match expected 1", actual.Count)
-	}
-
-	if actual.MaxCount != 1 {
-		t.Errorf("modifier Count %v does not match expected 1", actual.MaxCount)
-	}
-}
-
 func TestDuplicateRegistration(t *testing.T) {
-	defer func() {
-		if r := recover(); r == nil {
-			t.Errorf("registration did not panic")
-		}
-	}()
-
 	key := key.Modifier("TestModifierDuplicate")
 	Register(key, Config{})
-	Register(key, Config{})
+	assert.Panics(t, func() { Register(key, Config{}) })
 }
 
 func TestRegisterWithListeners(t *testing.T) {
@@ -54,10 +30,7 @@ func TestRegisterWithListeners(t *testing.T) {
 		Params: make(map[string]float64),
 	}
 	modifierCatalog[key].Listeners.OnAdd(nil, mod)
-
-	if mod.Params["Called"] != 1 {
-		t.Errorf("OnAdd registered logic was never called")
-	}
+	assert.Equal(t, 1.0, mod.Params["Called"])
 }
 
 func TestConfigHasFlag(t *testing.T) {
@@ -67,11 +40,6 @@ func TestConfigHasFlag(t *testing.T) {
 	})
 
 	config := modifierCatalog[key]
-	if !config.HasFlag(model.BehaviorFlag_STAT_CTRL) {
-		t.Errorf("config missing flag %v", model.BehaviorFlag_STAT_CTRL)
-	}
-
-	if config.HasFlag(model.BehaviorFlag_INVALID_FLAG) {
-		t.Errorf("config has flag %v", model.BehaviorFlag_INVALID_FLAG)
-	}
+	assert.True(t, config.HasFlag(model.BehaviorFlag_STAT_CTRL), "config missing STAT_CTRL flag")
+	assert.False(t, config.HasFlag(model.BehaviorFlag_INVALID_FLAG), "config has INVALID_FLAG")
 }

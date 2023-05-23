@@ -6,8 +6,6 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-// TODO: move to info?
-
 // Evaluate all the modifiers for a given target and return their current modifier state:
 //   - sum of all applied properties/stats
 //   - current Debuff RES

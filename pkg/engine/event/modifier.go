@@ -34,7 +34,7 @@ type ModifierRemovedEvent struct {
 type ModifierExtendedEventHandler = handler.EventHandler[ModifierExtendedEvent]
 type ModifierExtendedEvent struct {
 	Target    key.TargetID
-	Modifier  key.Modifier
+	Modifier  *info.ModifierInstance
 	Operation string
 	OldValue  int
 	NewValue  int

@@ -67,7 +67,7 @@ func (mgr *Manager) Tick(target key.TargetID, time BattlePhase) {
 			continue
 		}
 
-		mgr.remove(target, mod)
+		mgr.emitRemove(target, mod)
 	}
 	mgr.targets[target] = mgr.targets[target][:i]
 }
