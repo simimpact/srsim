@@ -29,6 +29,7 @@ func (mgr *Manager) StartTurn() {
 // Decrease duration of modifiers and remove any modifiers that have expired (0 count or duration)
 func (mgr *Manager) Tick(target key.TargetID, time BattlePhase) {
 	i := 0
+	var removedMods []*ModifierInstance
 	for _, mod := range mgr.targets[target] {
 		// only update modifier if its tick moment is for this given BattlePhase
 		if modifierCatalog[mod.name].TickMoment != time {
@@ -66,7 +67,8 @@ func (mgr *Manager) Tick(target key.TargetID, time BattlePhase) {
 			continue
 		}
 
-		mgr.emitRemove(target, mod)
+		removedMods = append(removedMods, mod)
 	}
 	mgr.targets[target] = mgr.targets[target][:i]
+	mgr.emitRemove(target, removedMods)
 }

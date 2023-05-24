@@ -22,6 +22,12 @@ func (m PropMap) Modify(prop model.Property, amt float64) {
 	}
 }
 
+// resets the given property to the given value (will overwrite the existing value)
+func (m PropMap) Set(prop model.Property, amt float64) {
+	m[prop] = 0
+	m.Modify(prop, amt)
+}
+
 // Adds a debuff res to the DebuffRESMap for the given behavior flag
 // TODO: unknown if this stacks additively or multiplicatively or only takes max
 func (m DebuffRESMap) Modify(flag model.BehaviorFlag, amt float64) {
@@ -43,13 +49,17 @@ func (m DebuffRESMap) GetDebuffRES(flags ...model.BehaviorFlag) float64 {
 // Add all properties from other PropMap to this PropMap
 func (m PropMap) AddAll(other PropMap) {
 	for k, v := range other {
-		m.Modify(k, v)
+		if v != 0 {
+			m.Modify(k, v)
+		}
 	}
 }
 
 // Add all debuff res values from the other DebuffRESMap to this DebuffRESMap
 func (m DebuffRESMap) AddAll(other DebuffRESMap) {
 	for k, v := range other {
-		m.Modify(k, v)
+		if v != 0 {
+			m.Modify(k, v)
+		}
 	}
 }

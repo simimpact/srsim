@@ -3,7 +3,6 @@ package modifier
 import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/key"
-	"github.com/simimpact/srsim/pkg/model"
 )
 
 type Listeners struct {
@@ -11,18 +10,18 @@ type Listeners struct {
 	OnRemove         func(mod *ModifierInstance)
 	OnExtendDuration func(mod *ModifierInstance)
 	OnExtendCount    func(mod *ModifierInstance)
-	OnPropertyChange func(mod *ModifierInstance, prop model.Property)
+	OnPropertyChange func(mod *ModifierInstance)
 }
 
 func (mgr *Manager) subscribe() {
 
 }
 
-func (mgr *Manager) emitPropertyChange(target key.TargetID, prop model.Property) {
+func (mgr *Manager) emitPropertyChange(target key.TargetID) {
 	for _, mod := range mgr.targets[target] {
 		f := mod.listeners.OnPropertyChange
 		if f != nil {
-			f(mod, prop)
+			f(mod)
 		}
 	}
 }
@@ -39,15 +38,21 @@ func (mgr *Manager) emitAdd(target key.TargetID, mod *ModifierInstance, chance f
 	})
 }
 
-func (mgr *Manager) emitRemove(target key.TargetID, mod *ModifierInstance) {
-	f := mod.listeners.OnRemove
-	if f != nil {
-		f(mod)
+func (mgr *Manager) emitRemove(target key.TargetID, mods []*ModifierInstance) {
+	for _, mod := range mods {
+		if len(mod.stats) > 0 {
+			mgr.emitPropertyChange(target)
+		}
+
+		f := mod.listeners.OnRemove
+		if f != nil {
+			f(mod)
+		}
+		mgr.engine.Events().ModifierRemoved.Emit(event.ModifierRemovedEvent{
+			Target:   target,
+			Modifier: mod.ToModel(),
+		})
 	}
-	mgr.engine.Events().ModifierRemoved.Emit(event.ModifierRemovedEvent{
-		Target:   target,
-		Modifier: mod.ToModel(),
-	})
 }
 
 func (mgr *Manager) emitExtendDuration(target key.TargetID, mod *ModifierInstance, old int) {

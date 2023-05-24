@@ -29,8 +29,8 @@ type ModifierInstance struct {
 func (mgr *Manager) newInstance(owner key.TargetID, mod info.Modifier) *ModifierInstance {
 	config := modifierCatalog[mod.Name]
 	mi := &ModifierInstance{
-		name:              mod.Name,
 		owner:             owner,
+		name:              mod.Name,
 		source:            mod.Source,
 		params:            mod.Params,
 		tickImmediately:   mod.TickImmediately,
@@ -38,6 +38,8 @@ func (mgr *Manager) newInstance(owner key.TargetID, mod info.Modifier) *Modifier
 		count:             mod.Count,
 		maxCount:          mod.MaxCount,
 		countAddWhenStack: mod.CountAddWhenStack,
+		stats:             mod.Stats,
+		debuffRES:         mod.DebuffRES,
 		manager:           mgr,
 		listeners:         config.Listeners,
 		statusType:        config.StatusType,
@@ -46,6 +48,12 @@ func (mgr *Manager) newInstance(owner key.TargetID, mod info.Modifier) *Modifier
 
 	if mi.params == nil {
 		mi.params = make(map[string]float64)
+	}
+	if mi.stats == nil {
+		mi.stats = info.NewPropMap()
+	}
+	if mi.debuffRES == nil {
+		mi.debuffRES = info.NewDebuffRESMap()
 	}
 
 	// Apply defaults from config as fallback
@@ -83,17 +91,19 @@ func (mgr *Manager) newInstance(owner key.TargetID, mod info.Modifier) *Modifier
 	return mi
 }
 
-func (mi *ModifierInstance) reset(turnCount int) {
-	mi.stats = info.NewPropMap()
-	mi.debuffRES = info.NewDebuffRESMap()
-	mi.renewTurn = turnCount
-}
-
 // Add a property to this modifier instance. Will cause all modifiers attached to the owner of this
 // modifier to execute OnPropertyChange listener
 func (mi *ModifierInstance) AddProperty(prop model.Property, amt float64) {
 	mi.stats.Modify(prop, amt)
-	mi.manager.emitPropertyChange(mi.owner, prop)
+	mi.manager.emitPropertyChange(mi.owner)
+}
+
+func (mi *ModifierInstance) SetProperty(prop model.Property, amt float64) {
+	old := mi.stats[prop]
+	mi.stats.Set(prop, amt)
+	if old != mi.stats[prop] {
+		mi.manager.emitPropertyChange(mi.owner)
+	}
 }
 
 // Add a new debuffRES for the given behavior flag

@@ -54,7 +54,11 @@ func (mgr *Manager) AddModifier(target key.TargetID, modifier info.Modifier) err
 	//	- Multiple
 	//	- Merge (special case, keeps old but triggers reset + add as if new)
 	if newInstance {
-		result.reset(mgr.turnCount)
+		result.renewTurn = mgr.turnCount
+		if len(result.stats) > 0 {
+			// special case if new instance and Stats were predefined
+			mgr.emitPropertyChange(target)
+		}
 		mgr.emitAdd(target, result, chance)
 	}
 	return nil
