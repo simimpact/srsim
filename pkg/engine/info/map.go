@@ -47,19 +47,9 @@ func (m PropMap) AddAll(other PropMap) {
 	}
 }
 
-// Add all properties from the given ModifierInstance to this PropMap
-func (m PropMap) AddAllFromInstance(i *ModifierInstance) {
-	m.AddAll(i.stats)
-}
-
 // Add all debuff res values from the other DebuffRESMap to this DebuffRESMap
 func (m DebuffRESMap) AddAll(other DebuffRESMap) {
 	for k, v := range other {
 		m.Modify(k, v)
 	}
-}
-
-// Add all debuff res values from the given ModifierInstance to this DebuffRESMap
-func (m DebuffRESMap) AddAllFromInstance(i *ModifierInstance) {
-	m.AddAll(i.debuffRES)
 }

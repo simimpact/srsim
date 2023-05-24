@@ -51,7 +51,7 @@ func (mr *MockEngineMockRecorder) AddEnergy(arg0, arg1, arg2 interface{}) *gomoc
 }
 
 // AddModifier mocks base method.
-func (m *MockEngine) AddModifier(arg0 key.TargetID, arg1 info.ModifierInstance) error {
+func (m *MockEngine) AddModifier(arg0 key.TargetID, arg1 info.Modifier) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddModifier", arg0, arg1)
 	ret0, _ := ret[0].(error)
@@ -65,7 +65,7 @@ func (mr *MockEngineMockRecorder) AddModifier(arg0, arg1 interface{}) *gomock.Ca
 }
 
 // AddModifierSelf mocks base method.
-func (m *MockEngine) AddModifierSelf(arg0 key.TargetID, arg1 info.ModifierInstance) error {
+func (m *MockEngine) AddModifierSelf(arg0 key.TargetID, arg1 info.Modifier) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddModifierSelf", arg0, arg1)
 	ret0, _ := ret[0].(error)

@@ -3,7 +3,6 @@ package modifier
 import (
 	"sync"
 
-	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -79,37 +78,4 @@ func (c Config) HasFlag(flag model.BehaviorFlag) bool {
 		}
 	}
 	return false
-}
-
-func setDefaults(instance *info.ModifierInstance) {
-	config := modifierCatalog[instance.Name]
-
-	if instance.Params == nil {
-		instance.Params = make(map[string]float64)
-	}
-
-	// Apply defaults from config as fallback
-	if instance.CountAddWhenStack == 0 {
-		instance.CountAddWhenStack = config.CountAddWhenStack
-	}
-	if instance.MaxCount == 0 {
-		instance.MaxCount = config.MaxCount
-	}
-	if instance.Count == 0 {
-		instance.Count = config.Count
-	}
-	if instance.Duration == 0 {
-		instance.Duration = config.Duration
-	}
-
-	// default "infinite" cases
-	if instance.Duration <= 0 {
-		instance.Duration = -1
-	}
-	if instance.Count <= 0 {
-		instance.Count = -1
-	}
-	if instance.MaxCount <= 0 {
-		instance.MaxCount = -1
-	}
 }

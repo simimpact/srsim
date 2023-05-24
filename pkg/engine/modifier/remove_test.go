@@ -3,10 +3,9 @@ package modifier
 import (
 	"testing"
 
-	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/event"
-	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestRemoveModifierUnknownTarget(t *testing.T) {
@@ -27,16 +26,13 @@ func TestRemoveModifierNoOp(t *testing.T) {
 	target := key.TargetID(1)
 	mod := key.Modifier("Test")
 
-	other := &info.ModifierInstance{
-		Name: key.Modifier("Other"),
+	other := &ModifierInstance{
+		name: key.Modifier("Other"),
 	}
+
 	manager.targets[target] = append(manager.targets[target], other)
-
 	manager.RemoveModifier(target, mod)
-
-	if manager.targets[target][0] != other {
-		t.Errorf("RemoveModifier removed the incorrect modifier (was expecting no removal)")
-	}
+	assert.Equal(t, other, manager.targets[target][0])
 }
 
 func TestRemoveModifierFromSourceNoOp(t *testing.T) {
@@ -46,16 +42,14 @@ func TestRemoveModifierFromSourceNoOp(t *testing.T) {
 	target := key.TargetID(1)
 	mod := key.Modifier("Test")
 
-	other := &info.ModifierInstance{
-		Name:   key.Modifier("Test"),
-		Source: key.TargetID(2),
+	other := &ModifierInstance{
+		name:   key.Modifier("Test"),
+		source: key.TargetID(2),
 	}
+
 	manager.targets[target] = append(manager.targets[target], other)
 	manager.RemoveModifierFromSource(target, target, mod)
-
-	if manager.targets[target][0] != other {
-		t.Errorf("RemoveModifier removed the incorrect modifier (was expecting no removal)")
-	}
+	assert.Equal(t, other, manager.targets[target][0])
 }
 
 func TestRemoveModifier(t *testing.T) {
@@ -65,32 +59,29 @@ func TestRemoveModifier(t *testing.T) {
 	target := key.TargetID(1)
 	modsToRemove := key.Modifier("ToRemove")
 
-	mod1 := &info.ModifierInstance{
-		Name: key.Modifier("Other"),
+	mod1 := &ModifierInstance{
+		name: key.Modifier("Other"),
 	}
-	mod2 := &info.ModifierInstance{
-		Name:   modsToRemove,
-		Source: target,
+	mod2 := &ModifierInstance{
+		name:   modsToRemove,
+		source: target,
 	}
-	mod3 := &info.ModifierInstance{
-		Name:   modsToRemove,
-		Source: key.TargetID(3),
+	mod3 := &ModifierInstance{
+		name:   modsToRemove,
+		source: key.TargetID(3),
 	}
 	manager.targets[target] = append(manager.targets[target], mod3, mod1, mod2)
+
+	called := 0
 	manager.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemovedEvent) {
-		if event.Modifier != mod2 && event.Modifier != mod3 {
-			t.Errorf("RemoveModifier removed an unexpected modifier: %v", event.Modifier)
-		}
+		assert.Equal(t, modsToRemove, event.Modifier.Name)
+		called += 1
 	})
 
 	manager.RemoveModifier(target, modsToRemove)
-
-	if len(manager.targets[target]) != 1 {
-		t.Errorf("RemoveModifier did not remove all modifier instances: %v", manager.targets[target])
-	}
-	if manager.targets[target][0] != mod1 {
-		t.Errorf("RemoveModifier removed the incorrect modifier (was expecting no removal)")
-	}
+	assert.Len(t, manager.targets[target], 1)
+	assert.Equal(t, mod1, manager.targets[target][0])
+	assert.Equal(t, 2, called)
 }
 
 func TestRemoveModifierFromSource(t *testing.T) {
@@ -100,36 +91,31 @@ func TestRemoveModifierFromSource(t *testing.T) {
 	target := key.TargetID(1)
 	modsToRemove := key.Modifier("ToRemove")
 
-	mod1 := &info.ModifierInstance{
-		Name:   modsToRemove,
-		Source: key.TargetID(2),
+	mod1 := &ModifierInstance{
+		name:   modsToRemove,
+		source: key.TargetID(2),
 	}
-	mod2 := &info.ModifierInstance{
-		Name:   modsToRemove,
-		Source: target,
+	mod2 := &ModifierInstance{
+		name:   modsToRemove,
+		source: target,
 	}
-	mod3 := &info.ModifierInstance{
-		Name:   modsToRemove,
-		Source: key.TargetID(3),
+	mod3 := &ModifierInstance{
+		name:   modsToRemove,
+		source: key.TargetID(3),
 	}
 	manager.targets[target] = append(manager.targets[target], mod3, mod2, mod1)
+
+	called := 0
 	manager.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemovedEvent) {
-		if event.Modifier != mod2 {
-			t.Errorf("RemoveModifier removed an unexpected modifier: %v", event.Modifier)
-		}
+		assert.Equal(t, modsToRemove, event.Modifier.Name)
+		called += 1
 	})
 
 	manager.RemoveModifierFromSource(target, target, modsToRemove)
-
-	if len(manager.targets[target]) != 2 {
-		t.Errorf("did not remove the correct modifier instances: %v", manager.targets[target])
-	}
-	if manager.targets[target][0] != mod3 {
-		t.Errorf("unknown mod at index 0: expected %v, actual %v", mod3, manager.targets[target][0])
-	}
-	if manager.targets[target][1] != mod1 {
-		t.Errorf("unknown mod at index 1: expected %v, actual %v", mod1, manager.targets[target][1])
-	}
+	assert.Len(t, manager.targets[target], 2)
+	assert.Equal(t, mod3, manager.targets[target][0])
+	assert.Equal(t, mod1, manager.targets[target][1])
+	assert.Equal(t, 1, called)
 }
 
 func TestRemoveModifierWithOnRemoveListener(t *testing.T) {
@@ -139,34 +125,26 @@ func TestRemoveModifierWithOnRemoveListener(t *testing.T) {
 	target := key.TargetID(1)
 	name := key.Modifier("TestRemoveModifierWithListener")
 
-	Register(name, Config{
-		Listeners: Listeners{
-			OnRemove: func(engine engine.Engine, modifier *info.ModifierInstance) {
-				modifier.Params["OnRemoveCalled"] = 1.0
+	mod := &ModifierInstance{
+		name:   name,
+		params: make(map[string]float64),
+		listeners: Listeners{
+			OnRemove: func(modifier *ModifierInstance) {
+				modifier.Params()["OnRemoveCalled"] = 1.0
 			},
 		},
-	})
-
-	// Note: params map is assumed to be made by the Add call
-	mod := &info.ModifierInstance{
-		Name:   name,
-		Params: make(map[string]float64),
 	}
 
 	manager.targets[target] = append(manager.targets[target], mod)
-	manager.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemovedEvent) {
-		if event.Modifier != mod {
-			t.Errorf("RemoveModifier removed an unexpected modifier: %v", event.Modifier)
-		}
 
-		if event.Modifier.Params["OnRemoveCalled"] != 1.0 {
-			t.Errorf("OnRemove was not called")
-		}
+	called := 0
+	manager.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemovedEvent) {
+		assert.Equal(t, name, event.Modifier.Name)
+		assert.Contains(t, event.Modifier.Params, "OnRemoveCalled")
+		called += 1
 	})
 
 	manager.RemoveModifier(target, name)
-
-	if len(manager.targets[target]) != 0 {
-		t.Errorf("RemoveModifier did not remove all modifier instances: %v", manager.targets[target])
-	}
+	assert.Empty(t, manager.targets[target])
+	assert.Equal(t, 1, called)
 }

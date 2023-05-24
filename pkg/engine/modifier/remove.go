@@ -7,7 +7,7 @@ import (
 func (mgr *Manager) RemoveModifier(target key.TargetID, modifier key.Modifier) {
 	i := 0
 	for _, mod := range mgr.targets[target] {
-		if mod.Name == modifier {
+		if mod.name == modifier {
 			mgr.emitRemove(target, mod)
 		} else {
 			mgr.targets[target][i] = mod
@@ -20,7 +20,7 @@ func (mgr *Manager) RemoveModifier(target key.TargetID, modifier key.Modifier) {
 func (mgr *Manager) RemoveModifierFromSource(target, source key.TargetID, modifier key.Modifier) {
 	i := 0
 	for _, mod := range mgr.targets[target] {
-		if mod.Name == modifier && mod.Source == source {
+		if mod.name == modifier && mod.source == source {
 			mgr.emitRemove(target, mod)
 		} else {
 			mgr.targets[target][i] = mod

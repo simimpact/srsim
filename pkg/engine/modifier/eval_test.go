@@ -30,17 +30,13 @@ func TestEvalWithMod(t *testing.T) {
 
 	target := key.TargetID(1)
 	name := key.Modifier("TestEvalWithMod")
-	mod := &info.ModifierInstance{
-		Name: name,
+	mod := &ModifierInstance{
+		name:       name,
+		statusType: model.StatusType_STATUS_BUFF,
+		flags:      []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL},
+		stats:      info.PropMap{model.Property_ATK_FLAT: 0.1},
+		debuffRES:  info.DebuffRESMap{model.BehaviorFlag_STAT_CTRL: 0.35},
 	}
-	mod.Reset(1)
-	mod.AddProperty(model.Property_ATK_FLAT, 0.1)
-	mod.AddDebuffRES(model.BehaviorFlag_STAT_CTRL, 0.35)
-
-	Register(name, Config{
-		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL},
-		StatusType:    model.StatusType_STATUS_BUFF,
-	})
 
 	manager.targets[target] = append(manager.targets[target], mod)
 
@@ -70,39 +66,29 @@ func TestEvalWithMultipleMods(t *testing.T) {
 	target := key.TargetID(1)
 
 	mod1Name := key.Modifier("TestEvalWithMultipleMods1")
-	mod1 := &info.ModifierInstance{
-		Name: mod1Name,
+	mod1 := &ModifierInstance{
+		name:       mod1Name,
+		statusType: model.StatusType_STATUS_BUFF,
+		stats:      info.PropMap{model.Property_FIRE_DMG_RES: 0.45},
+		debuffRES:  info.DebuffRESMap{model.BehaviorFlag_STAT_DOT_BURN: 1.0},
 	}
-	mod1.Reset(1)
-	mod1.AddProperty(model.Property_FIRE_DMG_RES, 0.45)
-	mod1.AddDebuffRES(model.BehaviorFlag_STAT_DOT_BURN, 1.0)
-
-	Register(mod1Name, Config{
-		StatusType: model.StatusType_STATUS_BUFF,
-	})
 
 	mod2Name := key.Modifier("TestEvalWithMultipleMods2")
-	mod2 := &info.ModifierInstance{
-		Name: mod2Name,
+	mod2 := &ModifierInstance{
+		name:       mod2Name,
+		statusType: model.StatusType_STATUS_DEBUFF,
+		flags:      []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL, model.BehaviorFlag_STAT_CTRL_STUN},
+		stats:      info.PropMap{model.Property_ALL_DMG_TAKEN: 0.1},
+		debuffRES:  info.DebuffRESMap{model.BehaviorFlag_STAT_CTRL: -0.05},
 	}
-	mod2.Reset(1)
-	mod2.AddProperty(model.Property_ALL_DMG_TAKEN, 0.1)
-	mod2.AddDebuffRES(model.BehaviorFlag_STAT_CTRL, -0.05)
-
-	Register(mod2Name, Config{
-		StatusType:    model.StatusType_STATUS_DEBUFF,
-		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL, model.BehaviorFlag_STAT_CTRL_STUN},
-	})
 
 	mod3Name := key.Modifier("TestEvalWithMultipleMods3")
-	mod3 := &info.ModifierInstance{
-		Name: mod3Name,
+	mod3 := &ModifierInstance{
+		name:      mod3Name,
+		flags:     []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL, model.BehaviorFlag_STAT_ATTACH_WEAKNESS},
+		stats:     info.PropMap{},
+		debuffRES: info.DebuffRESMap{},
 	}
-	mod3.Reset(1)
-
-	Register(mod3Name, Config{
-		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL, model.BehaviorFlag_STAT_ATTACH_WEAKNESS},
-	})
 
 	manager.targets[target] = append(manager.targets[target], mod1, mod2, mod3, mod3)
 

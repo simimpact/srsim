@@ -6,9 +6,9 @@ import (
 
 func (mgr *Manager) ExtendDuration(target key.TargetID, modifier key.Modifier, amt int) {
 	for _, mod := range mgr.targets[target] {
-		if mod.Name == modifier {
-			old := mod.Duration
-			mod.Duration += amt
+		if mod.name == modifier {
+			old := mod.duration
+			mod.duration += amt
 			mgr.emitExtendDuration(target, mod, old)
 		}
 	}
@@ -16,11 +16,11 @@ func (mgr *Manager) ExtendDuration(target key.TargetID, modifier key.Modifier, a
 
 func (mgr *Manager) ExtendCount(target key.TargetID, modifier key.Modifier, amt int) {
 	for _, mod := range mgr.targets[target] {
-		if mod.Name == modifier {
-			old := mod.Count
-			mod.Count += amt
-			if mod.MaxCount > 0 && mod.Count > mod.MaxCount {
-				mod.Count = mod.MaxCount
+		if mod.name == modifier {
+			old := mod.count
+			mod.count += amt
+			if mod.maxCount > 0 && mod.count > mod.maxCount {
+				mod.count = mod.maxCount
 			}
 			mgr.emitExtendCount(target, mod, old)
 		}

@@ -3,10 +3,9 @@ package modifier
 import (
 	"testing"
 
-	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/event"
-	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestExtendDuration(t *testing.T) {
@@ -16,56 +15,50 @@ func TestExtendDuration(t *testing.T) {
 	target := key.TargetID(1)
 	name := key.Modifier("TestExtendDuration")
 
-	mod1 := &info.ModifierInstance{
-		Name: name,
+	callCount := 0
+	listeners := Listeners{
+		OnExtendDuration: func(modifier *ModifierInstance) {
+			callCount += 1
+		},
 	}
-	mod2 := &info.ModifierInstance{
-		Name:     key.Modifier("Other"),
-		Duration: 2,
+
+	mod1 := &ModifierInstance{
+		name:      name,
+		listeners: listeners,
 	}
-	mod3 := &info.ModifierInstance{
-		Name:     name,
-		Source:   key.TargetID(2),
-		Duration: 1,
+	mod2 := &ModifierInstance{
+		name:      key.Modifier("Other"),
+		duration:  2,
+		listeners: listeners,
+	}
+	mod3 := &ModifierInstance{
+		name:      name,
+		source:    key.TargetID(2),
+		duration:  1,
+		listeners: listeners,
 	}
 	manager.targets[target] = append(manager.targets[target], mod1, mod2, mod3)
 
-	callCount := 0
-	Register(name, Config{
-		Listeners: Listeners{
-			OnExtendDuration: func(engine engine.Engine, modifier *info.ModifierInstance) {
-				callCount += 1
-			},
-		},
-	})
-
+	called := 0
 	manager.engine.Events().ModifierExtended.Subscribe(func(event event.ModifierExtendedEvent) {
-		if event.Modifier != mod1 && event.Modifier != mod3 {
-			t.Errorf("unknown modifier was extended: %v", event.Modifier)
-		}
+		assert.Equal(t, "ExtendDuration", event.Operation)
 
-		if event.Operation != "ExtendDuration" {
-			t.Errorf("unknown operation: %v", event)
+		switch called {
+		case 0:
+			assert.Equal(t, 0, event.OldValue)
+			assert.Equal(t, 5, event.NewValue)
+		case 1:
+			assert.Equal(t, 1, event.OldValue)
+			assert.Equal(t, 6, event.NewValue)
+		default:
+			assert.Fail(t, "unexpected extension call")
 		}
-
-		if event.Modifier == mod1 {
-			if event.OldValue != 0 || event.NewValue != 5 {
-				t.Errorf("event old and new values do not match the expected 0 and 5: %v", event)
-			}
-		}
-
-		if event.Modifier == mod3 {
-			if event.OldValue != 1 || event.NewValue != 6 {
-				t.Errorf("event old and new values do not match the expected 1 and 6: %v", event)
-			}
-		}
+		called += 1
 	})
 
 	manager.ExtendDuration(target, name, 5)
-
-	if callCount != 2 {
-		t.Errorf("OnExtendedDuration listener was not called twice: %v", callCount)
-	}
+	assert.Equal(t, 2, called)
+	assert.Equal(t, 2, callCount)
 }
 
 func TestExtendCount(t *testing.T) {
@@ -75,55 +68,48 @@ func TestExtendCount(t *testing.T) {
 	target := key.TargetID(1)
 	name := key.Modifier("TestExtendCount")
 
-	mod1 := &info.ModifierInstance{
-		Name:     name,
-		MaxCount: 3,
+	callCount := 0
+	listeners := Listeners{
+		OnExtendCount: func(modifier *ModifierInstance) {
+			callCount += 1
+		},
 	}
-	mod2 := &info.ModifierInstance{
-		Name:  key.Modifier("Other"),
-		Count: 2,
+
+	mod1 := &ModifierInstance{
+		name:      name,
+		maxCount:  3,
+		listeners: listeners,
 	}
-	mod3 := &info.ModifierInstance{
-		Name:   name,
-		Source: key.TargetID(2),
-		Count:  1,
+	mod2 := &ModifierInstance{
+		name:      key.Modifier("Other"),
+		count:     2,
+		listeners: listeners,
+	}
+	mod3 := &ModifierInstance{
+		name:      name,
+		source:    key.TargetID(2),
+		count:     1,
+		listeners: listeners,
 	}
 	manager.targets[target] = append(manager.targets[target], mod1, mod2, mod3)
 
-	callCount := 0
-	Register(name, Config{
-		Listeners: Listeners{
-			OnExtendCount: func(engine engine.Engine, modifier *info.ModifierInstance) {
-				callCount += 1
-			},
-		},
-	})
-
+	called := 0
 	manager.engine.Events().ModifierExtended.Subscribe(func(event event.ModifierExtendedEvent) {
-		if event.Modifier != mod1 && event.Modifier != mod3 {
-			t.Errorf("unknown modifier was extended: %v", event.Modifier)
-		}
+		assert.Equal(t, "ExtendCount", event.Operation)
 
-		if event.Operation != "ExtendCount" {
-			t.Errorf("unknown operation: %v", event)
+		switch called {
+		case 0:
+			assert.Equal(t, 0, event.OldValue)
+			assert.Equal(t, 3, event.NewValue)
+		case 1:
+			assert.Equal(t, 1, event.OldValue)
+			assert.Equal(t, 6, event.NewValue)
+		default:
+			assert.Fail(t, "unexpected extension call")
 		}
-
-		if event.Modifier == mod1 {
-			if event.OldValue != 0 || event.NewValue != 3 {
-				t.Errorf("event old and new values do not match the expected 0 and 3: %v", event)
-			}
-		}
-
-		if event.Modifier == mod3 {
-			if event.OldValue != 1 || event.NewValue != 6 {
-				t.Errorf("event old and new values do not match the expected 1 and 6: %v", event)
-			}
-		}
+		called += 1
 	})
 
 	manager.ExtendCount(target, name, 5)
-
-	if callCount != 2 {
-		t.Errorf("OnExtendedDuration listener was not called twice: %v", callCount)
-	}
+	assert.Equal(t, 2, called)
 }

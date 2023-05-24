@@ -17,11 +17,11 @@ func (sim *Simulation) Rand() *rand.Rand {
 	return sim.rand
 }
 
-func (sim *Simulation) AddModifier(target key.TargetID, instance info.ModifierInstance) error {
+func (sim *Simulation) AddModifier(target key.TargetID, instance info.Modifier) error {
 	return sim.modManager.AddModifier(target, instance)
 }
 
-func (sim *Simulation) AddModifierSelf(target key.TargetID, instance info.ModifierInstance) error {
+func (sim *Simulation) AddModifierSelf(target key.TargetID, instance info.Modifier) error {
 	instance.Source = target
 	return sim.modManager.AddModifier(target, instance)
 }

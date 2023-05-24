@@ -5,9 +5,9 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-// An instance of a modifier. Is used to specify and additional stats or behavior associated with
+// Definition of a modifier. Is used to specify and additional stats or behavior associated with
 // the target it is attached to (managed by the modifier package)
-type ModifierInstance struct {
+type Modifier struct {
 	// What modifier this instance is (used to get metadata + listeners for the modifier)
 	Name key.Modifier
 	// TargetID for who created this modifier instance
@@ -44,10 +44,8 @@ type ModifierInstance struct {
 	// ModifierConfig (which defaults to 0 if undefined)
 	CountAddWhenStack int
 
-	// internal fields
-	stats     PropMap
-	debuffRES DebuffRESMap
-	renewTurn int
+	Stats     PropMap
+	DebuffRES DebuffRESMap
 }
 
 type ModifierState struct {
@@ -56,38 +54,6 @@ type ModifierState struct {
 	Flags     []model.BehaviorFlag
 	Counts    map[model.StatusType]int
 	Modifiers []key.Modifier
-}
-
-// Resets the modifier instance (will remove any stats, debuffRES, and set a new renew turn)
-func (mi *ModifierInstance) Reset(turnCount int) {
-	mi.stats = NewPropMap()
-	mi.debuffRES = make(map[model.BehaviorFlag]float64)
-	mi.renewTurn = turnCount
-}
-
-// Returns the renew turn for this modifier instance
-func (mi *ModifierInstance) RenewTurn() int {
-	return mi.renewTurn
-}
-
-// Get the current value of a property set by this modifier instance
-func (mi *ModifierInstance) GetProperty(prop model.Property) float64 {
-	return mi.stats[prop]
-}
-
-// Get the current value of a debuff res set by this modifier instance
-func (mi *ModifierInstance) GetDebuffRES(flags ...model.BehaviorFlag) float64 {
-	return mi.debuffRES.GetDebuffRES(flags...)
-}
-
-// Add a property to this modifier instance
-func (mi *ModifierInstance) AddProperty(prop model.Property, amt float64) {
-	mi.stats.Modify(prop, amt)
-}
-
-// Add a new debuffRES for the given behavior flag
-func (mi *ModifierInstance) AddDebuffRES(flag model.BehaviorFlag, amt float64) {
-	mi.debuffRES.Modify(flag, amt)
 }
 
 // TODO: ToProto for logging

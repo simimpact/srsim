@@ -26,11 +26,11 @@ type Engine interface {
 
 	// Adds a new modifier to the given target. At minimum, instance must specify the name of the
 	// modifier and the source.
-	AddModifier(target key.TargetID, instance info.ModifierInstance) error
+	AddModifier(target key.TargetID, instance info.Modifier) error
 
 	// Adds a new modifier to the given target where the source is also the target. This is a
 	// convinence method over AddModifier to simplify usage
-	AddModifierSelf(target key.TargetID, instance info.ModifierInstance) error
+	AddModifierSelf(target key.TargetID, instance info.Modifier) error
 
 	// Removes all instances of a modifier from the target
 	RemoveModifier(target key.TargetID, modifier key.Modifier)

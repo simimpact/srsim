@@ -20,12 +20,12 @@ func (mgr *Manager) EvalModifiers(target key.TargetID) info.ModifierState {
 	modSet := make(map[key.Modifier]struct{})
 
 	for _, mod := range mgr.targets[target] {
-		props.AddAllFromInstance(mod)
-		debuffRES.AddAllFromInstance(mod)
-		counts[modifierCatalog[mod.Name].StatusType] += 1
-		modSet[mod.Name] = struct{}{}
+		props.AddAll(mod.stats)
+		debuffRES.AddAll(mod.debuffRES)
+		counts[mod.statusType] += 1
+		modSet[mod.name] = struct{}{}
 
-		for _, flag := range modifierCatalog[mod.Name].BehaviorFlags {
+		for _, flag := range mod.flags {
 			flagSet[flag] = struct{}{}
 		}
 	}

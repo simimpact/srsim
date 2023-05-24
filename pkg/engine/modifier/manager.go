@@ -2,11 +2,10 @@ package modifier
 
 import (
 	"github.com/simimpact/srsim/pkg/engine"
-	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-type activeModifiers []*info.ModifierInstance
+type activeModifiers []*ModifierInstance
 
 type Manager struct {
 	engine    engine.Engine
@@ -32,14 +31,14 @@ func (mgr *Manager) Tick(target key.TargetID, time BattlePhase) {
 	i := 0
 	for _, mod := range mgr.targets[target] {
 		// only update modifier if its tick moment is for this given BattlePhase
-		if modifierCatalog[mod.Name].TickMoment != time {
+		if modifierCatalog[mod.name].TickMoment != time {
 			mgr.targets[target][i] = mod
 			i++
 			continue
 		}
 
 		// if on application turn and TickImmediately is false, can skip this check
-		if mgr.turnCount == mod.RenewTurn() && !mod.TickImmediately {
+		if mgr.turnCount == mod.renewTurn && !mod.tickImmediately {
 			mgr.targets[target][i] = mod
 			i++
 			continue
@@ -48,15 +47,15 @@ func (mgr *Manager) Tick(target key.TargetID, time BattlePhase) {
 		remove := false
 
 		// only remove mods based on count if their count is 0
-		if mod.Count == 0 {
+		if mod.count == 0 {
 			remove = true
 		}
 
 		// only decrease and remove duration of mods that have non-negative durations
-		if mod.Duration >= 0 {
-			mod.Duration -= 1
-			if mod.Duration <= 0 {
-				mod.Duration = 0
+		if mod.duration >= 0 {
+			mod.duration -= 1
+			if mod.duration <= 0 {
+				mod.duration = 0
 				remove = true
 			}
 		}

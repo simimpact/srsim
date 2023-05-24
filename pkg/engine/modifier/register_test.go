@@ -3,8 +3,6 @@ package modifier
 import (
 	"testing"
 
-	"github.com/simimpact/srsim/pkg/engine"
-	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 	"github.com/stretchr/testify/assert"
@@ -20,17 +18,17 @@ func TestRegisterWithListeners(t *testing.T) {
 	key := key.Modifier("TestModifierListeners")
 	Register(key, Config{
 		Listeners: Listeners{
-			OnAdd: func(engine engine.Engine, modifier *info.ModifierInstance) {
-				modifier.Params["Called"] = 1
+			OnAdd: func(modifier *ModifierInstance) {
+				modifier.Params()["Called"] = 1
 			},
 		},
 	})
 
-	mod := &info.ModifierInstance{
-		Params: make(map[string]float64),
+	mod := &ModifierInstance{
+		params: make(map[string]float64),
 	}
-	modifierCatalog[key].Listeners.OnAdd(nil, mod)
-	assert.Equal(t, 1.0, mod.Params["Called"])
+	modifierCatalog[key].Listeners.OnAdd(mod)
+	assert.Equal(t, 1.0, mod.params["Called"])
 }
 
 func TestConfigHasFlag(t *testing.T) {

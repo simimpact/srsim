@@ -9,7 +9,7 @@ import (
 type ModifierAddedEventHandler = handler.EventHandler[ModifierAddedEvent]
 type ModifierAddedEvent struct {
 	Target   key.TargetID
-	Modifier *info.ModifierInstance
+	Modifier info.Modifier
 	Chance   float64
 }
 
@@ -28,13 +28,13 @@ type ModifierResistedEvent struct {
 type ModifierRemovedEventHandler = handler.EventHandler[ModifierRemovedEvent]
 type ModifierRemovedEvent struct {
 	Target   key.TargetID
-	Modifier *info.ModifierInstance
+	Modifier info.Modifier
 }
 
 type ModifierExtendedEventHandler = handler.EventHandler[ModifierExtendedEvent]
 type ModifierExtendedEvent struct {
 	Target    key.TargetID
-	Modifier  *info.ModifierInstance
+	Modifier  info.Modifier
 	Operation string
 	OldValue  int
 	NewValue  int

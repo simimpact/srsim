@@ -31,7 +31,7 @@ func TestIgnoreResist(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	target := key.TargetID(1)
-	mod := info.ModifierInstance{
+	mod := info.Modifier{
 		Name: key.Modifier("Test"),
 	}
 
@@ -67,7 +67,7 @@ func TestResistModifier(t *testing.T) {
 	engine.EXPECT().Stats(gomock.Eq(source)).Return(sourceStats).Times(1)
 
 	name := key.Modifier("TestResistModifier")
-	mod := info.ModifierInstance{
+	mod := info.Modifier{
 		Name:   name,
 		Source: source,
 		Chance: BChance,
@@ -118,7 +118,7 @@ func TestFailedResist(t *testing.T) {
 	engine.EXPECT().Stats(gomock.Eq(source)).Return(sourceStats).Times(1)
 
 	name := key.Modifier("TestResistModifier")
-	mod := info.ModifierInstance{
+	mod := info.Modifier{
 		Name:   name,
 		Source: source,
 		Chance: BChance,
@@ -145,7 +145,7 @@ func TestAddInvalidTarget(t *testing.T) {
 	target := key.TargetID(1)
 	engine.EXPECT().IsValid(target).Return(false).AnyTimes()
 
-	mod := info.ModifierInstance{
+	mod := info.Modifier{
 		Name: key.Modifier("TestAddInvalidTarget"),
 	}
 
@@ -163,7 +163,7 @@ func TestAddInvalidSource(t *testing.T) {
 	firstCheck := engine.EXPECT().IsValid(target).Return(true)
 	engine.EXPECT().IsValid(key.TargetID(0)).Return(false).After(firstCheck)
 
-	mod := info.ModifierInstance{
+	mod := info.Modifier{
 		Name: key.Modifier("TestAddInvalidSource"),
 	}
 
@@ -178,12 +178,12 @@ func TestAddUnregistered(t *testing.T) {
 
 	target := key.TargetID(1)
 	name := key.Modifier("TestAddUnregistered")
-	mod1 := info.ModifierInstance{
+	mod1 := info.Modifier{
 		Name:   name,
 		Source: target,
 		Params: map[string]float64{"Mod1": 5.0},
 	}
-	mod2 := info.ModifierInstance{
+	mod2 := info.Modifier{
 		Name:   name,
 		Source: target,
 		Params: map[string]float64{"Mod2": 1.0},
@@ -214,12 +214,12 @@ func TestAddMultiple(t *testing.T) {
 
 	target := key.TargetID(1)
 	name := key.Modifier("TestAddMultiple")
-	mod1 := info.ModifierInstance{
+	mod1 := info.Modifier{
 		Name:   name,
 		Source: target,
 		Params: map[string]float64{"Mod1": 5.0},
 	}
-	mod2 := info.ModifierInstance{
+	mod2 := info.Modifier{
 		Name:   name,
 		Source: target,
 		Params: map[string]float64{"Mod2": 1.0},
@@ -254,11 +254,11 @@ func TestAddRefresh(t *testing.T) {
 
 	target := key.TargetID(1)
 	name := key.Modifier("TestAddRefresh")
-	mod1 := info.ModifierInstance{
+	mod1 := info.Modifier{
 		Name:     name,
 		Duration: 3,
 	}
-	mod2 := info.ModifierInstance{
+	mod2 := info.Modifier{
 		Name:     name,
 		Duration: 5,
 	}
@@ -291,7 +291,7 @@ func TestAddRefresh(t *testing.T) {
 	assert.Len(t, manager.targets[target], 1)
 	assert.Equal(t, 1, addedCalls)
 	assert.Equal(t, 1, extendedCalls)
-	assert.Equal(t, 5, manager.targets[target][0].Duration)
+	assert.Equal(t, 5, manager.targets[target][0].duration)
 }
 
 func TestAddProlong(t *testing.T) {
@@ -301,11 +301,11 @@ func TestAddProlong(t *testing.T) {
 
 	target := key.TargetID(1)
 	name := key.Modifier("TestAddProlong")
-	mod1 := info.ModifierInstance{
+	mod1 := info.Modifier{
 		Name:     name,
 		Duration: 3,
 	}
-	mod2 := info.ModifierInstance{
+	mod2 := info.Modifier{
 		Name:     name,
 		Duration: 5,
 	}
@@ -338,5 +338,5 @@ func TestAddProlong(t *testing.T) {
 	assert.Len(t, manager.targets[target], 1)
 	assert.Equal(t, 1, addedCalls)
 	assert.Equal(t, 1, extendedCalls)
-	assert.Equal(t, 8, manager.targets[target][0].Duration)
+	assert.Equal(t, 8, manager.targets[target][0].duration)
 }
