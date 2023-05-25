@@ -82,3 +82,120 @@ func TestOnPropertyChangeBuff(t *testing.T) {
 	mods = manager.EvalModifiers(target)
 	assert.Empty(t, mods.Props, "all modifiers were not removed")
 }
+
+func TestReplaceStacking(t *testing.T) {
+	// 1. Register modifier w/ max stacks of 5
+	// 2. Add 1 stack
+	// 3. tick forward time
+	// 4. add 2 independent stacks (check that duration resets)
+	// 5. tick forward time
+	// 6. add +3 stacks
+	manager, mockCtrl := NewTestManager(t)
+	defer mockCtrl.Finish()
+
+	mod := key.Modifier("TestReplaceStacking")
+	target := key.TargetID(1)
+	var mods info.ModifierState
+	var expectedProps info.PropMap
+
+	modifier.Register(mod, modifier.Config{
+		MaxCount:          5,
+		CountAddWhenStack: 1,
+		TickMoment:        modifier.ModifierPhase1End,
+		Stacking:          modifier.Replace,
+		Listeners: modifier.Listeners{
+			OnAdd: func(mod *modifier.ModifierInstance) {
+				mod.AddProperty(model.Property_CRIT_CHANCE, 0.05*mod.Count())
+			},
+		},
+	})
+
+	manager.AddModifier(target, info.Modifier{
+		Name:     mod,
+		Source:   target,
+		Duration: 2,
+	})
+
+	mods = manager.EvalModifiers(target)
+	expectedProps = info.PropMap{model.Property_CRIT_CHANCE: 0.05}
+	assert.Equal(t, expectedProps, mods.Props)
+
+	manager.StartTurn()
+	manager.Tick(target, modifier.ModifierPhase1End)
+
+	manager.AddModifier(target, info.Modifier{
+		Name:     mod,
+		Source:   target,
+		Duration: 2,
+	})
+	manager.AddModifier(target, info.Modifier{
+		Name:     mod,
+		Duration: 2,
+	})
+
+	mods = manager.EvalModifiers(target)
+	expectedProps = info.PropMap{model.Property_CRIT_CHANCE: 0.05 * float64(int(3))}
+	assert.Equal(t, expectedProps, mods.Props)
+
+	manager.Tick(target, modifier.ModifierPhase1End)
+	manager.StartTurn()
+
+	manager.AddModifier(target, info.Modifier{
+		Name:     mod,
+		Source:   target,
+		Duration: 2,
+		Count:    3,
+	})
+
+	mods = manager.EvalModifiers(target)
+	expectedProps = info.PropMap{model.Property_CRIT_CHANCE: 0.05 * float64(int(5))}
+	assert.Equal(t, expectedProps, mods.Props)
+
+	manager.Tick(target, modifier.ModifierPhase1End)
+	manager.StartTurn()
+	manager.Tick(target, modifier.ModifierPhase1End)
+	manager.StartTurn()
+	manager.Tick(target, modifier.ModifierPhase1End)
+
+	mods = manager.EvalModifiers(target)
+	assert.Empty(t, mods.Props)
+	assert.Empty(t, mods.Modifiers)
+}
+
+func TestReplaceStackingBySource(t *testing.T) {
+	// 1. add mod from source A
+	// 2. add mod from source B
+	// 3. verify that you have 2 instances of mod
+	manager, mockCtrl := NewTestManager(t)
+	defer mockCtrl.Finish()
+
+	mod := key.Modifier("TestReplaceStackingBySource")
+	srcA := key.TargetID(1)
+	srcB := key.TargetID(2)
+	target := key.TargetID(3)
+
+	modifier.Register(mod, modifier.Config{
+		Stacking: modifier.ReplaceBySource,
+		Listeners: modifier.Listeners{
+			OnAdd: func(mod *modifier.ModifierInstance) {
+				mod.AddProperty(model.Property_QUANTUM_PEN, 0.1)
+			},
+		},
+	})
+
+	manager.AddModifier(target, info.Modifier{
+		Name:     mod,
+		Source:   srcA,
+		Duration: 2,
+	})
+
+	manager.AddModifier(target, info.Modifier{
+		Name:     mod,
+		Source:   srcB,
+		Duration: 2,
+	})
+
+	mods := manager.EvalModifiers(target)
+	expectedProps := info.PropMap{model.Property_QUANTUM_PEN: 0.2}
+	assert.Equal(t, expectedProps, mods.Props)
+}
