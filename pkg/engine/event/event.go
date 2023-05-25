@@ -8,10 +8,11 @@ type System struct {
 	AttackEvent AttackEventHandler
 	DamageEvent DamageEventHandler
 
-	ModifierAdded    ModifierAddedEventHandler
-	ModifierResisted ModifierResistedEventHandler
-	ModifierRemoved  ModifierRemovedEventHandler
-	ModifierExtended ModifierExtendedEventHandler
+	ModifierAdded            ModifierAddedEventHandler
+	ModifierResisted         ModifierResistedEventHandler
+	ModifierRemoved          ModifierRemovedEventHandler
+	ModifierExtendedDuration ModifierExtendedDurationEventHandler
+	ModifierExtendedCount    ModifierExtendedCountEventHandler
 
 	// test placeholder until we get actual events defined
 	Ping handler.EventHandler[int]

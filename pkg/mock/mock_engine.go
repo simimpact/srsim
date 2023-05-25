@@ -203,7 +203,7 @@ func (mr *MockEngineMockRecorder) Events() *gomock.Call {
 }
 
 // ExtendModifierCount mocks base method.
-func (m *MockEngine) ExtendModifierCount(arg0 key.TargetID, arg1 key.Modifier, arg2 int) {
+func (m *MockEngine) ExtendModifierCount(arg0 key.TargetID, arg1 key.Modifier, arg2 float64) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "ExtendModifierCount", arg0, arg1, arg2)
 }

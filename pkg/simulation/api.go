@@ -38,7 +38,7 @@ func (sim *Simulation) ExtendModifierDuration(target key.TargetID, modifier key.
 	sim.modManager.ExtendDuration(target, modifier, amt)
 }
 
-func (sim *Simulation) ExtendModifierCount(target key.TargetID, modifier key.Modifier, amt int) {
+func (sim *Simulation) ExtendModifierCount(target key.TargetID, modifier key.Modifier, amt float64) {
 	sim.modManager.ExtendCount(target, modifier, amt)
 }
 

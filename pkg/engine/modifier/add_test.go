@@ -276,7 +276,7 @@ func TestAddRefresh(t *testing.T) {
 	})
 
 	extendedCalls := 0
-	manager.engine.Events().ModifierExtended.Subscribe(func(event event.ModifierExtendedEvent) {
+	manager.engine.Events().ModifierExtendedDuration.Subscribe(func(event event.ModifierExtendedDurationEvent) {
 		if extendedCalls == 0 {
 			assert.Equal(t, 3, event.OldValue)
 			assert.Equal(t, 5, event.NewValue)
@@ -323,7 +323,7 @@ func TestAddProlong(t *testing.T) {
 	})
 
 	extendedCalls := 0
-	manager.engine.Events().ModifierExtended.Subscribe(func(event event.ModifierExtendedEvent) {
+	manager.engine.Events().ModifierExtendedDuration.Subscribe(func(event event.ModifierExtendedDurationEvent) {
 		if extendedCalls == 0 {
 			assert.Equal(t, 3, event.OldValue)
 			assert.Equal(t, 8, event.NewValue)

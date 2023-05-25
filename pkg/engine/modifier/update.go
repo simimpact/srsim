@@ -14,7 +14,7 @@ func (mgr *Manager) ExtendDuration(target key.TargetID, modifier key.Modifier, a
 	}
 }
 
-func (mgr *Manager) ExtendCount(target key.TargetID, modifier key.Modifier, amt int) {
+func (mgr *Manager) ExtendCount(target key.TargetID, modifier key.Modifier, amt float64) {
 	for _, mod := range mgr.targets[target] {
 		if mod.name == modifier {
 			old := mod.count

@@ -34,15 +34,15 @@ type Modifier struct {
 	// If unspecified, will default to the Count in ModifierConfig (which will be 1 if not defined)
 	//
 	// When count reaches 0, the modifier will be removed from the target.
-	Count int
+	Count float64
 	// If specified, will set the max count allowed on this modifier in the event that it gets
 	// reapplied/stacks and this instance is used.
 	// If unspecified, will default to the MaxCount in ModifierConfig (which will be 1 if not defined)
-	MaxCount int
+	MaxCount float64
 	// When Count is unspecified, CountAddWhenStack determines how much to add to count when a new
 	// stack is added. Specifying this field will overrride the default value for this defined in the
 	// ModifierConfig (which defaults to 0 if undefined)
-	CountAddWhenStack int
+	CountAddWhenStack float64
 
 	Stats     PropMap
 	DebuffRES DebuffRESMap

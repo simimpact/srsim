@@ -31,11 +31,18 @@ type ModifierRemovedEvent struct {
 	Modifier info.Modifier
 }
 
-type ModifierExtendedEventHandler = handler.EventHandler[ModifierExtendedEvent]
-type ModifierExtendedEvent struct {
-	Target    key.TargetID
-	Modifier  info.Modifier
-	Operation string
-	OldValue  int
-	NewValue  int
+type ModifierExtendedDurationEventHandler = handler.EventHandler[ModifierExtendedDurationEvent]
+type ModifierExtendedDurationEvent struct {
+	Target   key.TargetID
+	Modifier info.Modifier
+	OldValue int
+	NewValue int
+}
+
+type ModifierExtendedCountEventHandler = handler.EventHandler[ModifierExtendedCountEvent]
+type ModifierExtendedCountEvent struct {
+	Target   key.TargetID
+	Modifier info.Modifier
+	OldValue float64
+	NewValue float64
 }

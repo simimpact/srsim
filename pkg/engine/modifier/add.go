@@ -187,7 +187,7 @@ func (mgr *Manager) merge(target key.TargetID, instance *ModifierInstance) (*Mod
 	return instance, true
 }
 
-func stackCount(mod *ModifierInstance, prevCount int) int {
+func stackCount(mod *ModifierInstance, prevCount float64) float64 {
 	if prevCount < 0 || mod.count < 0 {
 		return mod.count
 	}

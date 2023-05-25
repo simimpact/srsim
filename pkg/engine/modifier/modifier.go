@@ -14,9 +14,9 @@ type ModifierInstance struct {
 	params            map[string]float64
 	tickImmediately   bool
 	duration          int
-	count             int
-	maxCount          int
-	countAddWhenStack int
+	count             float64
+	maxCount          float64
+	countAddWhenStack float64
 	stats             info.PropMap
 	debuffRES         info.DebuffRESMap
 	renewTurn         int
@@ -150,7 +150,7 @@ func (mi *ModifierInstance) Duration() int {
 // How many stacks are associated with this modifier instance. If count reaches 0, the modifier
 // will be removed from the target. A count of -1 means that a count was never specified and/or
 // a StackingBehavior that does not support stacking was used.
-func (mi *ModifierInstance) Count() int {
+func (mi *ModifierInstance) Count() float64 {
 	return mi.count
 }
 

@@ -60,25 +60,23 @@ func (mgr *Manager) emitExtendDuration(target key.TargetID, mod *ModifierInstanc
 	if f != nil {
 		f(mod)
 	}
-	mgr.engine.Events().ModifierExtended.Emit(event.ModifierExtendedEvent{
-		Target:    target,
-		Modifier:  mod.ToModel(),
-		Operation: "ExtendDuration",
-		OldValue:  old,
-		NewValue:  mod.duration,
+	mgr.engine.Events().ModifierExtendedDuration.Emit(event.ModifierExtendedDurationEvent{
+		Target:   target,
+		Modifier: mod.ToModel(),
+		OldValue: old,
+		NewValue: mod.duration,
 	})
 }
 
-func (mgr *Manager) emitExtendCount(target key.TargetID, mod *ModifierInstance, old int) {
+func (mgr *Manager) emitExtendCount(target key.TargetID, mod *ModifierInstance, old float64) {
 	f := mod.listeners.OnExtendCount
 	if f != nil {
 		f(mod)
 	}
-	mgr.engine.Events().ModifierExtended.Emit(event.ModifierExtendedEvent{
-		Target:    target,
-		Modifier:  mod.ToModel(),
-		Operation: "ExtendCount",
-		OldValue:  old,
-		NewValue:  mod.count,
+	mgr.engine.Events().ModifierExtendedCount.Emit(event.ModifierExtendedCountEvent{
+		Target:   target,
+		Modifier: mod.ToModel(),
+		OldValue: old,
+		NewValue: mod.count,
 	})
 }

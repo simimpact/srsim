@@ -43,7 +43,7 @@ type Engine interface {
 
 	// Extends the count of all instances of the given modifier by the amount. Will not extend past
 	// the modifiers MaxCount
-	ExtendModifierCount(target key.TargetID, modifier key.Modifier, amt int)
+	ExtendModifierCount(target key.TargetID, modifier key.Modifier, amt float64)
 
 	// Returns true if the target has at least one instance of the modifier
 	HasModifier(target key.TargetID, modifier key.Modifier) bool

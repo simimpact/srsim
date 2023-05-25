@@ -40,9 +40,7 @@ func TestExtendDuration(t *testing.T) {
 	manager.targets[target] = append(manager.targets[target], mod1, mod2, mod3)
 
 	called := 0
-	manager.engine.Events().ModifierExtended.Subscribe(func(event event.ModifierExtendedEvent) {
-		assert.Equal(t, "ExtendDuration", event.Operation)
-
+	manager.engine.Events().ModifierExtendedDuration.Subscribe(func(event event.ModifierExtendedDurationEvent) {
 		switch called {
 		case 0:
 			assert.Equal(t, 0, event.OldValue)
@@ -94,16 +92,14 @@ func TestExtendCount(t *testing.T) {
 	manager.targets[target] = append(manager.targets[target], mod1, mod2, mod3)
 
 	called := 0
-	manager.engine.Events().ModifierExtended.Subscribe(func(event event.ModifierExtendedEvent) {
-		assert.Equal(t, "ExtendCount", event.Operation)
-
+	manager.engine.Events().ModifierExtendedCount.Subscribe(func(event event.ModifierExtendedCountEvent) {
 		switch called {
 		case 0:
-			assert.Equal(t, 0, event.OldValue)
-			assert.Equal(t, 3, event.NewValue)
+			assert.Equal(t, 0.0, event.OldValue)
+			assert.Equal(t, 3.0, event.NewValue)
 		case 1:
-			assert.Equal(t, 1, event.OldValue)
-			assert.Equal(t, 6, event.NewValue)
+			assert.Equal(t, 1.0, event.OldValue)
+			assert.Equal(t, 6.0, event.NewValue)
 		default:
 			assert.Fail(t, "unexpected extension call")
 		}

@@ -26,9 +26,9 @@ type Config struct {
 	Stacking          StackingBehavior
 	Listeners         Listeners
 	Duration          int
-	Count             int
-	MaxCount          int
-	CountAddWhenStack int
+	Count             float64
+	MaxCount          float64
+	CountAddWhenStack float64
 	TickMoment        BattlePhase
 	BehaviorFlags     []model.BehaviorFlag
 	StatusType        model.StatusType
