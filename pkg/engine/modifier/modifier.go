@@ -121,6 +121,11 @@ func (mi *ModifierInstance) GetDebuffRES(flags ...model.BehaviorFlag) float64 {
 	return mi.debuffRES.GetDebuffRES(flags...)
 }
 
+// Remove this modifier instance
+func (mi *ModifierInstance) RemoveSelf() {
+	mi.manager.RemoveSelf(mi.owner, mi)
+}
+
 // Name of the modifier this instance represents (what modifier config it is associated with)
 func (mi *ModifierInstance) Name() key.Modifier {
 	return mi.name

@@ -148,3 +148,36 @@ func TestRemoveModifierWithOnRemoveListener(t *testing.T) {
 	assert.Empty(t, manager.targets[target])
 	assert.Equal(t, 1, called)
 }
+
+func TestRemoveModifierSelf(t *testing.T) {
+	manager, mockCtrl := NewTestManagerWithEvents(t)
+	defer mockCtrl.Finish()
+
+	target := key.TargetID(1)
+	name := key.Modifier("TestRemoveModifierSelf")
+
+	mod := &ModifierInstance{
+		name:   name,
+		owner:  target,
+		params: make(map[string]float64),
+		listeners: Listeners{
+			OnRemove: func(modifier *ModifierInstance) {
+				modifier.Params()["OnRemoveCalled"] = 1.0
+			},
+		},
+		manager: manager,
+	}
+
+	manager.targets[target] = append(manager.targets[target], mod)
+
+	called := 0
+	manager.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemovedEvent) {
+		assert.Equal(t, name, event.Modifier.Name)
+		assert.Contains(t, event.Modifier.Params, "OnRemoveCalled")
+		called += 1
+	})
+
+	mod.RemoveSelf()
+	assert.Empty(t, manager.targets[target])
+	assert.Equal(t, 1, called)
+}
