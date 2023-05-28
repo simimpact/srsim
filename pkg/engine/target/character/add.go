@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/simimpact/srsim/pkg/engine/attribute"
+	"github.com/simimpact/srsim/pkg/engine/equip/lightcone"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
@@ -17,11 +18,24 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 
 	lvl := int(char.Level)
 	asc := config.ascension(int(char.MaxLevel))
+
+	// add char base stats from curve + traces
+	baseDebuffRES := info.NewDebuffRESMap()
 	baseStats := newBaseStats(config.Promotions[asc], lvl)
 	traces := processTraces(config.Traces, baseStats, char.Traces, asc, lvl)
-	baseDebuffRES := info.NewDebuffRESMap()
 
-	err := mgr.attr.AddTarget(id, attribute.BaseStats{
+	// add lightcone base stats
+	lcLvl := int(char.Cone.Level)
+	lcConfig, err := lightcone.Get(key.LightCone(char.Cone.Key))
+	if err != nil {
+		return err
+	}
+	lcAsc := lcConfig.Ascension(int(char.Cone.MaxLevel))
+	lightcone.AddBaseStats(baseStats, lcConfig.Promotions[lcAsc], lcLvl)
+
+	// TODO: relic base stats
+
+	err = mgr.attr.AddTarget(id, attribute.BaseStats{
 		Stats:     baseStats,
 		DebuffRES: baseDebuffRES,
 		MaxEnergy: config.MaxEnergy,
@@ -30,7 +44,7 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 		return err
 	}
 
-	// TODO: lightcone + relic initialization (before or after character init?)
+	// TODO: relic initialization
 
 	info := info.Character{
 		Key:       key.Character(char.Key),
@@ -41,10 +55,24 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 		Element:   config.Element,
 		BaseStats: baseStats,
 		Traces:    traces,
+		LightCone: info.LightCone{
+			Key:       key.LightCone(char.Cone.Key),
+			Level:     lcLvl,
+			Ascension: lcAsc,
+			Rank:      int(char.Cone.Imposition),
+			Path:      lcConfig.Path,
+		},
 	}
 
 	mgr.info[id] = info
 	mgr.instances[id] = config.Create(mgr.engine, id, info)
+
+	// only create lightcone passive iff paths match
+	if config.Path == lcConfig.Path {
+		lcConfig.CreatePassive(mgr.engine, id, info.LightCone)
+	}
+
+	// TODO: relic create call
 
 	// TODO: emit CharacterAddedEvent
 	return nil

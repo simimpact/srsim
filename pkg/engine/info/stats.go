@@ -24,6 +24,7 @@ type Stats struct {
 
 func NewStats(target key.TargetID, attributes Attributes, mods ModifierState) *Stats {
 	mods.Props.AddAll(attributes.BaseStats)
+	mods.DebuffRES.AddAll(attributes.BaseDebuffRES)
 	return &Stats{
 		target:       target,
 		currentHP:    attributes.CurrentHP,

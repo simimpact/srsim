@@ -41,6 +41,7 @@ func (mgr *Manager) RemoveSelf(target key.TargetID, instance *ModifierInstance) 
 			mgr.targets[target][i] = mgr.targets[target][last]
 			mgr.targets[target] = mgr.targets[target][:last]
 			mgr.emitRemove(target, []*ModifierInstance{instance})
+			return
 		}
 	}
 }

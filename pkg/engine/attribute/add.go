@@ -7,7 +7,6 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-// TODO: should have AddCharacter & AddEnemy w/ specific proto defs as input?
 // TODO: starting energy
 type BaseStats struct {
 	Stats     info.PropMap
@@ -28,11 +27,12 @@ func (s *Service) AddTarget(target key.TargetID, base BaseStats) error {
 	}
 
 	s.targets[target] = &info.Attributes{
-		BaseStats: base.Stats,
-		MaxStance: base.MaxStance,
-		Stance:    base.MaxStance,
-		MaxEnergy: base.MaxEnergy,
-		Energy:    base.MaxEnergy,
+		BaseStats:     base.Stats,
+		BaseDebuffRES: base.DebuffRES,
+		MaxStance:     base.MaxStance,
+		Stance:        base.MaxStance,
+		MaxEnergy:     base.MaxEnergy,
+		Energy:        base.MaxEnergy,
 	}
 	return nil
 }

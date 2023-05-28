@@ -13,7 +13,8 @@ type Character struct {
 	Traces        map[string]bool
 	Path          model.Path
 	Element       model.DamageType
-	BaseStats     PropMap // TODO: Remove
+	BaseStats     PropMap
 	BaseDebuffRES DebuffRESMap
+	LightCone     LightCone
 	// TODO: lighcone + relics?
 }

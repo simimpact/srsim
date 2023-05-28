@@ -27,11 +27,11 @@ type char struct {
 	info   info.Character
 }
 
-func NewInstance(engine engine.Engine, id key.TargetID, info info.Character) character.CharInstance {
+func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character) character.CharInstance {
 	c := &char{
 		engine: engine,
 		id:     id,
-		info:   info,
+		info:   charInfo,
 	}
 
 	c.a2()

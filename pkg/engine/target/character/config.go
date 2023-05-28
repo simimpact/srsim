@@ -43,9 +43,9 @@ type PromotionData struct {
 	Aggro      float64
 }
 
-func (c Config) ascension(level int) int {
+func (c Config) ascension(maxLvl int) int {
 	for i, promo := range c.Promotions {
-		if promo.MaxLevel >= level {
+		if promo.MaxLevel >= maxLvl {
 			return i
 		}
 	}
