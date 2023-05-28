@@ -7,6 +7,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/target/character"
 	"github.com/simimpact/srsim/pkg/engine/turn"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
@@ -26,9 +27,10 @@ type Simulation struct {
 	idGen            *key.TargetIDGenerator
 	rand             *rand.Rand
 	event            *event.System
-	turnManager      *turn.TurnCtrl
 	modManager       *modifier.Manager
 	attributeService *attribute.Service
+	charManager      *character.Manager
+	turnManager      *turn.TurnCtrl
 
 	//??
 	res *model.IterationResult
@@ -51,6 +53,7 @@ func Run(ctx context.Context, cfg *model.SimConfig) (*model.IterationResult, err
 	// init services
 	s.modManager = modifier.NewManager(s)
 	s.attributeService = attribute.New(s, s.modManager)
+	s.charManager = character.New(s, s.attributeService)
 	// turnManager: turn.New(),
 
 	return s.run()

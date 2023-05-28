@@ -64,20 +64,6 @@ func (mr *MockEngineMockRecorder) AddModifier(arg0, arg1 interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddModifier", reflect.TypeOf((*MockEngine)(nil).AddModifier), arg0, arg1)
 }
 
-// AddModifierSelf mocks base method.
-func (m *MockEngine) AddModifierSelf(arg0 key.TargetID, arg1 info.Modifier) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddModifierSelf", arg0, arg1)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// AddModifierSelf indicates an expected call of AddModifierSelf.
-func (mr *MockEngineMockRecorder) AddModifierSelf(arg0, arg1 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddModifierSelf", reflect.TypeOf((*MockEngine)(nil).AddModifierSelf), arg0, arg1)
-}
-
 // AddShield mocks base method.
 func (m *MockEngine) AddShield() {
 	m.ctrl.T.Helper()
@@ -131,10 +117,10 @@ func (mr *MockEngineMockRecorder) Attack() *gomock.Call {
 }
 
 // CharacterInfo mocks base method.
-func (m *MockEngine) CharacterInfo(arg0 key.TargetID) (model.Character, error) {
+func (m *MockEngine) CharacterInfo(arg0 key.TargetID) (info.Character, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CharacterInfo", arg0)
-	ret0, _ := ret[0].(model.Character)
+	ret0, _ := ret[0].(info.Character)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
