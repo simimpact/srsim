@@ -17,51 +17,38 @@ func init() {
 		Path:       model.Path_ERUDITION,
 		MaxEnergy:  120,
 		Promotions: promotions,
+		Traces:     traces,
 	})
 }
 
 type char struct {
+	engine engine.Engine
+	id     key.TargetID
+	info   info.Character
 }
 
 func NewInstance(engine engine.Engine, id key.TargetID, info info.Character) character.CharInstance {
-	c := &char{}
-
-	for _, id := range info.Traces {
-		switch {
-		case id == "1201201" && info.Level >= 1:
-			info.BaseStats.Modify(model.Property_ATK_PERCENT, 0.04)
-		case id == "1201202" && info.Ascension >= 2:
-			info.BaseStats.Modify(model.Property_QUANTUM_DMG_PERCENT, 0.032)
-		case id == "1201203" && info.Ascension >= 3:
-			info.BaseStats.Modify(model.Property_ATK_PERCENT, 0.0400)
-		case id == "1201204" && info.Ascension >= 3:
-			info.BaseStats.Modify(model.Property_DEF_PERCENT, 0.0500)
-		case id == "1201205" && info.Ascension >= 4:
-			info.BaseStats.Modify(model.Property_ATK_PERCENT, 0.0600)
-		case id == "1201206" && info.Ascension >= 5:
-			info.BaseStats.Modify(model.Property_QUANTUM_DMG_PERCENT, 0.0480)
-		case id == "1201207" && info.Ascension >= 5:
-			info.BaseStats.Modify(model.Property_ATK_PERCENT, 0.0600)
-		case id == "1201208" && info.Ascension >= 6:
-			info.BaseStats.Modify(model.Property_DEF_PERCENT, 0.0750)
-		case id == "1201209" && info.Level >= 75:
-			info.BaseStats.Modify(model.Property_QUANTUM_DMG_PERCENT, 0.0640)
-		case id == "1201210" && info.Level >= 80:
-			info.BaseStats.Modify(model.Property_ATK_PERCENT, 0.0800)
-		}
+	c := &char{
+		engine: engine,
+		id:     id,
+		info:   info,
 	}
+
+	c.a2()
+	c.a4()
+	c.a6()
 
 	return c
 }
 
-func (c *char) Attack(engine engine.Engine, target key.TargetID) {
+func (c *char) Attack(target key.TargetID) {
 
 }
 
-func (c *char) Skill(engine engine.Engine, target key.TargetID) {
+func (c *char) Skill(target key.TargetID) {
 
 }
 
-func (c *char) Burst(engine engine.Engine, target key.TargetID) {
+func (c *char) Burst(target key.TargetID) {
 
 }

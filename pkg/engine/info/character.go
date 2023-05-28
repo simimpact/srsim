@@ -6,14 +6,14 @@ import (
 )
 
 type Character struct {
-	Key       key.Character
-	Level     int
-	MaxLevel  int
-	Ascension int
-	Eidolon   int
-	Traces    []string
-	Path      model.Path
-	Element   model.DamageType
-	BaseStats PropMap
+	Key           key.Character
+	Level         int
+	Ascension     int
+	Eidolon       int
+	Traces        map[string]bool
+	Path          model.Path
+	Element       model.DamageType
+	BaseStats     PropMap // TODO: Remove
+	BaseDebuffRES DebuffRESMap
 	// TODO: lighcone + relics?
 }

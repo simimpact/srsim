@@ -11,6 +11,7 @@ import (
 // TODO: starting energy
 type BaseStats struct {
 	Stats     info.PropMap
+	DebuffRES info.DebuffRESMap
 	MaxEnergy float64
 	MaxStance float64
 }
@@ -21,6 +22,9 @@ func (s *Service) AddTarget(target key.TargetID, base BaseStats) error {
 	}
 	if base.Stats == nil {
 		base.Stats = info.NewPropMap()
+	}
+	if base.DebuffRES == nil {
+		base.DebuffRES = info.NewDebuffRESMap()
 	}
 
 	s.targets[target] = &info.Attributes{
