@@ -21,16 +21,12 @@ type Engine interface {
 	// Accessor to all event handlers for event subscription and emission
 	Events() *event.System
 
-	// Random number generator (TODO: wrap with interface for mocking?)
+	// Random number generator
 	Rand() *rand.Rand
 
 	// Adds a new modifier to the given target. At minimum, instance must specify the name of the
 	// modifier and the source.
 	AddModifier(target key.TargetID, instance info.Modifier) error
-
-	// Adds a new modifier to the given target where the source is also the target. This is a
-	// convinence method over AddModifier to simplify usage
-	AddModifierSelf(target key.TargetID, instance info.Modifier) error
 
 	// Removes all instances of a modifier from the target
 	RemoveModifier(target key.TargetID, modifier key.Modifier)
@@ -59,7 +55,7 @@ type Engine interface {
 	Stats(target key.TargetID) *info.Stats
 
 	// Metadata for the given character, such as their current level, ascension, traces, etc.
-	CharacterInfo(target key.TargetID) (model.Character, error)
+	CharacterInfo(target key.TargetID) (info.Character, error)
 
 	// Metadata for the given enemy, such as their current level and weaknesses.
 	EnemyInfo(target key.TargetID) (model.Enemy, error)

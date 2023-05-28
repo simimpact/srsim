@@ -3,10 +3,6 @@ package model;
 option go_package = "github.com/simimpact/srsim/pkg/model";
 
 
-message RemoveModifierSettings {
-  bool OnlyRemoveSourceAdded = 1;
-}
-
 // Logic for how energy gets added to a target
 enum EnergyAdd {
   INVALID = 0;

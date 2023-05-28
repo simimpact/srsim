@@ -34,9 +34,9 @@ message Character {
     uint32 max_level = 3 [ json_name = "max_level" ];
     uint32 eidols = 4 [ json_name = "eidols" ];
     repeated uint32 talents = 5 [ json_name = "talents" ]; // [attack, skill, ultimate, talent]
-    // TODO: asc??
     LightCone cone = 6 [ json_name = "cone" ];
     repeated RelicSet relics = 7 [ json_name = "relics" ];
+    repeated string traces = 8 [json_name = "traces" ];
 }
 
 message Enemy {

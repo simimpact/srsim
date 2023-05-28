@@ -173,63 +173,11 @@ func (StatusType) EnumDescriptor() ([]byte, []int) {
 	return file_pb_model_engine_proto_rawDescGZIP(), []int{2}
 }
 
-type RemoveModifierSettings struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	OnlyRemoveSourceAdded bool `protobuf:"varint,1,opt,name=OnlyRemoveSourceAdded,proto3" json:"OnlyRemoveSourceAdded,omitempty"`
-}
-
-func (x *RemoveModifierSettings) Reset() {
-	*x = RemoveModifierSettings{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_pb_model_engine_proto_msgTypes[0]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *RemoveModifierSettings) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*RemoveModifierSettings) ProtoMessage() {}
-
-func (x *RemoveModifierSettings) ProtoReflect() protoreflect.Message {
-	mi := &file_pb_model_engine_proto_msgTypes[0]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use RemoveModifierSettings.ProtoReflect.Descriptor instead.
-func (*RemoveModifierSettings) Descriptor() ([]byte, []int) {
-	return file_pb_model_engine_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *RemoveModifierSettings) GetOnlyRemoveSourceAdded() bool {
-	if x != nil {
-		return x.OnlyRemoveSourceAdded
-	}
-	return false
-}
-
 var File_pb_model_engine_proto protoreflect.FileDescriptor
 
 var file_pb_model_engine_proto_rawDesc = []byte{
 	0x0a, 0x15, 0x70, 0x62, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x2f, 0x65, 0x6e, 0x67, 0x69, 0x6e,
-	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x05, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x22, 0x4e,
-	0x0a, 0x16, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x4d, 0x6f, 0x64, 0x69, 0x66, 0x69, 0x65, 0x72,
-	0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x12, 0x34, 0x0a, 0x15, 0x4f, 0x6e, 0x6c, 0x79,
-	0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x53, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x41, 0x64, 0x64, 0x65,
-	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x15, 0x4f, 0x6e, 0x6c, 0x79, 0x52, 0x65, 0x6d,
-	0x6f, 0x76, 0x65, 0x53, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x41, 0x64, 0x64, 0x65, 0x64, 0x2a, 0x4c,
+	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x05, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x2a, 0x4c,
 	0x0a, 0x09, 0x45, 0x6e, 0x65, 0x72, 0x67, 0x79, 0x41, 0x64, 0x64, 0x12, 0x0b, 0x0a, 0x07, 0x49,
 	0x4e, 0x56, 0x41, 0x4c, 0x49, 0x44, 0x10, 0x00, 0x12, 0x15, 0x0a, 0x11, 0x45, 0x4e, 0x45, 0x52,
 	0x47, 0x59, 0x5f, 0x41, 0x44, 0x44, 0x5f, 0x41, 0x4d, 0x4f, 0x55, 0x4e, 0x54, 0x10, 0x01, 0x12,
@@ -263,12 +211,10 @@ func file_pb_model_engine_proto_rawDescGZIP() []byte {
 }
 
 var file_pb_model_engine_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
-var file_pb_model_engine_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_pb_model_engine_proto_goTypes = []interface{}{
-	(EnergyAdd)(0),                 // 0: model.EnergyAdd
-	(ModifyGauge)(0),               // 1: model.ModifyGauge
-	(StatusType)(0),                // 2: model.StatusType
-	(*RemoveModifierSettings)(nil), // 3: model.RemoveModifierSettings
+	(EnergyAdd)(0),   // 0: model.EnergyAdd
+	(ModifyGauge)(0), // 1: model.ModifyGauge
+	(StatusType)(0),  // 2: model.StatusType
 }
 var file_pb_model_engine_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -283,34 +229,19 @@ func file_pb_model_engine_proto_init() {
 	if File_pb_model_engine_proto != nil {
 		return
 	}
-	if !protoimpl.UnsafeEnabled {
-		file_pb_model_engine_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RemoveModifierSettings); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_pb_model_engine_proto_rawDesc,
 			NumEnums:      3,
-			NumMessages:   1,
+			NumMessages:   0,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_pb_model_engine_proto_goTypes,
 		DependencyIndexes: file_pb_model_engine_proto_depIdxs,
 		EnumInfos:         file_pb_model_engine_proto_enumTypes,
-		MessageInfos:      file_pb_model_engine_proto_msgTypes,
 	}.Build()
 	File_pb_model_engine_proto = out.File
 	file_pb_model_engine_proto_rawDesc = nil

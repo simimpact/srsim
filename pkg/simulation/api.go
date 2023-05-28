@@ -21,11 +21,6 @@ func (sim *Simulation) AddModifier(target key.TargetID, instance info.Modifier) 
 	return sim.modManager.AddModifier(target, instance)
 }
 
-func (sim *Simulation) AddModifierSelf(target key.TargetID, instance info.Modifier) error {
-	instance.Source = target
-	return sim.modManager.AddModifier(target, instance)
-}
-
 func (sim *Simulation) RemoveModifier(target key.TargetID, modifier key.Modifier) {
 	sim.modManager.RemoveModifier(target, modifier)
 }
@@ -71,8 +66,8 @@ func (sim *Simulation) Stats(target key.TargetID) *info.Stats {
 	return sim.attributeService.Stats(target)
 }
 
-func (sim *Simulation) CharacterInfo(target key.TargetID) (model.Character, error) {
-	panic("not implemented") // TODO: Implement
+func (sim *Simulation) CharacterInfo(target key.TargetID) (info.Character, error) {
+	return sim.charManager.Info(target)
 }
 
 func (sim *Simulation) EnemyInfo(target key.TargetID) (model.Enemy, error) {
