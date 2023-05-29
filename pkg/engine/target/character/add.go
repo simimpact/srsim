@@ -6,6 +6,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/equip/lightcone"
 	"github.com/simimpact/srsim/pkg/engine/equip/relic"
+	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
@@ -104,7 +105,10 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 		f(mgr.engine, id)
 	}
 
-	// TODO: emit CharacterAddedEvent
+	mgr.engine.Events().CharacterAdded.Emit(event.CharacterAddedEvent{
+		Id:   id,
+		Info: info,
+	})
 	return nil
 }
 

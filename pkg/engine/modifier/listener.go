@@ -2,6 +2,7 @@ package modifier
 
 import (
 	"github.com/simimpact/srsim/pkg/engine/event"
+	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 )
 
@@ -27,11 +28,16 @@ type Listeners struct {
 	// Called at the end of the turn
 	OnPhase2 func(mod *ModifierInstance)
 
-	//
+	// character events
+
+	// Called when a new character is added to the simulation (done as part of sim setup)
+	OnCharacterAdded func(mod *ModifierInstance, char info.Character)
 }
 
 func (mgr *Manager) subscribe() {
+	events := mgr.engine.Events()
 
+	events.CharacterAdded.Subscribe(mgr.characterAdded)
 }
 
 func (mgr *Manager) emitPropertyChange(target key.TargetID) {
@@ -96,4 +102,13 @@ func (mgr *Manager) emitExtendCount(target key.TargetID, mod *ModifierInstance, 
 		OldValue: old,
 		NewValue: mod.count,
 	})
+}
+
+func (mgr *Manager) characterAdded(evt event.CharacterAddedEvent) {
+	for _, mod := range mgr.targets[evt.Id] {
+		f := mod.listeners.OnCharacterAdded
+		if f != nil {
+			f(mod, evt.Info)
+		}
+	}
 }

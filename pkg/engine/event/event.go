@@ -8,6 +8,8 @@ type System struct {
 	AttackEvent AttackEventHandler
 	DamageEvent DamageEventHandler
 
+	CharacterAdded CharacterAddedEventHandler
+
 	ModifierAdded            ModifierAddedEventHandler
 	ModifierResisted         ModifierResistedEventHandler
 	ModifierRemoved          ModifierRemovedEventHandler
