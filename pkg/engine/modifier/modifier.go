@@ -136,6 +136,11 @@ func (mi *ModifierInstance) Source() key.TargetID {
 	return mi.source
 }
 
+// Return the current stats of the target this modifier is attached to
+func (mi *ModifierInstance) OwnerStats() *info.Stats {
+	return mi.Engine().Stats(mi.owner)
+}
+
 // TargetID for who this modifier is currently attached to
 func (mi *ModifierInstance) Owner() key.TargetID {
 	return mi.owner
