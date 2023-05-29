@@ -194,3 +194,6 @@ dist
 
 # and uncomment the following lines
 # .pnp.*
+
+# results of scripts
+scripts/*/result

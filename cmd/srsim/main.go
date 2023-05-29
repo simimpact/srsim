@@ -30,7 +30,7 @@ func main() {
 	var opt opts
 	var version bool
 	flag.BoolVar(&version, "version", false, "check gcsim version (git hash)")
-	flag.StringVar(&opt.config, "c", "config.txt", "which config to use (yaml format)")
+	flag.StringVar(&opt.config, "c", "config.txt", "which config to use (json format)")
 	flag.StringVar(&opt.script, "s", "script.txt", "which script to use")
 
 	flag.Parse()
@@ -71,8 +71,8 @@ func readConfig(path string) (*model.SimConfig, error) {
 	res := &model.SimConfig{}
 	err = json.Unmarshal(src, &res)
 	if err != nil {
-        return nil, err
-    }
+		return nil, err
+	}
 
 	return res, nil
 }
