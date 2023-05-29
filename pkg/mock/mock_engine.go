@@ -213,17 +213,22 @@ func (mr *MockEngineMockRecorder) ExtendModifierDuration(arg0, arg1, arg2 interf
 }
 
 // HasBehaviorFlag mocks base method.
-func (m *MockEngine) HasBehaviorFlag(arg0 key.TargetID, arg1 model.BehaviorFlag) bool {
+func (m *MockEngine) HasBehaviorFlag(arg0 key.TargetID, arg1 ...model.BehaviorFlag) bool {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "HasBehaviorFlag", arg0, arg1)
+	varargs := []interface{}{arg0}
+	for _, a := range arg1 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "HasBehaviorFlag", varargs...)
 	ret0, _ := ret[0].(bool)
 	return ret0
 }
 
 // HasBehaviorFlag indicates an expected call of HasBehaviorFlag.
-func (mr *MockEngineMockRecorder) HasBehaviorFlag(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockEngineMockRecorder) HasBehaviorFlag(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HasBehaviorFlag", reflect.TypeOf((*MockEngine)(nil).HasBehaviorFlag), arg0, arg1)
+	varargs := append([]interface{}{arg0}, arg1...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HasBehaviorFlag", reflect.TypeOf((*MockEngine)(nil).HasBehaviorFlag), varargs...)
 }
 
 // HasModifier mocks base method.

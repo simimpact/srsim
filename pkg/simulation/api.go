@@ -38,13 +38,7 @@ func (sim *Simulation) ExtendModifierCount(target key.TargetID, modifier key.Mod
 }
 
 func (sim *Simulation) HasModifier(target key.TargetID, modifier key.Modifier) bool {
-	state := sim.modManager.EvalModifiers(target)
-	for _, mod := range state.Modifiers {
-		if mod == modifier {
-			return true
-		}
-	}
-	return false
+	return sim.modManager.HasModifier(target, modifier)
 }
 
 func (sim *Simulation) ModifierCount(target key.TargetID, statusType model.StatusType) int {
@@ -52,14 +46,8 @@ func (sim *Simulation) ModifierCount(target key.TargetID, statusType model.Statu
 	return state.Counts[statusType]
 }
 
-func (sim *Simulation) HasBehaviorFlag(target key.TargetID, flag model.BehaviorFlag) bool {
-	state := sim.modManager.EvalModifiers(target)
-	for _, f := range state.Flags {
-		if f == flag {
-			return true
-		}
-	}
-	return false
+func (sim *Simulation) HasBehaviorFlag(target key.TargetID, flags ...model.BehaviorFlag) bool {
+	return sim.modManager.HasFlag(target, flags...)
 }
 
 func (sim *Simulation) Stats(target key.TargetID) *info.Stats {

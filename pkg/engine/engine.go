@@ -47,8 +47,9 @@ type Engine interface {
 	// Returns the total count of modifiers that are of the given StatusType (Buff or Debuff)
 	ModifierCount(target key.TargetID, statusType model.StatusType) int
 
-	// Returns true if the target has the given behavior flag from an attached modifier
-	HasBehaviorFlag(target key.TargetID, flag model.BehaviorFlag) bool
+	// Returns true if the target has the given behavior flag from an attached modifier. If multiple
+	// flags are passed, will return true if at least one is attached
+	HasBehaviorFlag(target key.TargetID, flags ...model.BehaviorFlag) bool
 
 	// Gets a snapshot of the current target's stats. Any modifications to these stats will
 	// only be applied to the snapshot.
