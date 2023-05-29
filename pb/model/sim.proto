@@ -1,6 +1,7 @@
 syntax = "proto3";
 package model;
 option go_package = "github.com/simimpact/srsim/pkg/model";
+import "pb/model/enum.proto";
 
 message SimConfig {
     int32 iterations = 1 [json_name="iterations"];
@@ -16,9 +17,15 @@ message SimulatorSettings {
     bool ttk_mode = 2 [json_name="ttk_mode"];
 }
 
-message RelicSet {
+message Relic {
     string key = 1 [ json_name = "key" ];
-    uint32 count = 2 [ json_name = "count" ];
+    RelicStat main_stat = 2 [json_name = "sub_stats" ];
+    repeated RelicStat sub_stats = 3 [ json_name = "sub_stats"];
+}
+
+message RelicStat {
+    Property stat = 1 [ json_name = "stat" ];
+    double amount = 2 [ json_name = "amount" ];
 }
 
 message LightCone {
@@ -33,10 +40,11 @@ message Character {
     uint32 level = 2 [ json_name = "level" ];
     uint32 max_level = 3 [ json_name = "max_level" ];
     uint32 eidols = 4 [ json_name = "eidols" ];
-    repeated uint32 talents = 5 [ json_name = "talents" ]; // [attack, skill, ultimate, talent]
-    LightCone cone = 6 [ json_name = "cone" ];
-    repeated RelicSet relics = 7 [ json_name = "relics" ];
-    repeated string traces = 8 [json_name = "traces" ];
+    repeated string traces = 5 [json_name = "traces" ];
+    repeated uint32 talents = 6 [ json_name = "talents" ]; // [attack, skill, ultimate, talent]
+    LightCone cone = 7 [ json_name = "cone" ];
+    repeated Relic relics = 8 [ json_name = "relics" ];
+    double start_energy = 9 [ json_name = "start_energy" ]; 
 }
 
 message Enemy {

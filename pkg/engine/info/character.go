@@ -11,10 +11,18 @@ type Character struct {
 	Ascension     int
 	Eidolon       int
 	Traces        map[string]bool
+	AbilityLevels AbilityLevels
 	Path          model.Path
 	Element       model.DamageType
+	LightCone     LightCone
+	Relics        map[key.Relic]int
 	BaseStats     PropMap
 	BaseDebuffRES DebuffRESMap
-	LightCone     LightCone
-	// TODO: lighcone + relics?
+}
+
+type AbilityLevels struct {
+	Attack int
+	Skill  int
+	Ult    int
+	Talent int
 }

@@ -5,6 +5,7 @@ import (
 
 	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/equip/lightcone"
+	"github.com/simimpact/srsim/pkg/engine/equip/relic"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
@@ -33,28 +34,36 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 	lcAsc := lcConfig.Ascension(int(char.Cone.MaxLevel))
 	lightcone.AddBaseStats(baseStats, lcConfig.Promotions[lcAsc], lcLvl)
 
-	// TODO: relic base stats
+	// add relic stats
+	relics := make(map[key.Relic]int)
+	for _, relic := range char.Relics {
+		relics[key.Relic(relic.Key)] += 1
+		baseStats.Modify(relic.MainStat.Stat, relic.MainStat.Amount)
+		for _, sub := range relic.SubStats {
+			baseStats.Modify(sub.Stat, sub.Amount)
+		}
+	}
 
 	err = mgr.attr.AddTarget(id, attribute.BaseStats{
-		Stats:     baseStats,
-		DebuffRES: baseDebuffRES,
-		MaxEnergy: config.MaxEnergy,
+		Stats:       baseStats,
+		DebuffRES:   baseDebuffRES,
+		MaxEnergy:   config.MaxEnergy,
+		StartEnergy: char.StartEnergy,
 	})
 	if err != nil {
 		return err
 	}
 
-	// TODO: relic initialization
-
 	info := info.Character{
-		Key:       key.Character(char.Key),
-		Level:     lvl,
-		Ascension: asc,
-		Eidolon:   int(char.Eidols),
-		Path:      config.Path,
-		Element:   config.Element,
-		BaseStats: baseStats,
-		Traces:    traces,
+		Key:           key.Character(char.Key),
+		Level:         lvl,
+		Ascension:     asc,
+		Eidolon:       int(char.Eidols),
+		Path:          config.Path,
+		Element:       config.Element,
+		BaseStats:     baseStats,
+		Traces:        traces,
+		AbilityLevels: abilityLevels(char.Talents),
 		LightCone: info.LightCone{
 			Key:       key.LightCone(char.Cone.Key),
 			Level:     lcLvl,
@@ -62,6 +71,7 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 			Rank:      int(char.Cone.Imposition),
 			Path:      lcConfig.Path,
 		},
+		Relics: relics,
 	}
 
 	mgr.info[id] = info
@@ -72,7 +82,14 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 		lcConfig.CreatePassive(mgr.engine, id, info.LightCone)
 	}
 
-	// TODO: relic create call
+	// Call CreateSet once for each relic set on this character
+	for r, count := range relics {
+		config, err := relic.Get(r)
+		if err != nil {
+			return err
+		}
+		config.CreateSet(mgr.engine, id, count)
+	}
 
 	// TODO: emit CharacterAddedEvent
 	return nil
@@ -113,4 +130,28 @@ func processTraces(traces TraceMap, stats info.PropMap, wanted []string, asc int
 		}
 	}
 	return active
+}
+
+func abilityLevels(levels []uint32) info.AbilityLevels {
+	out := info.AbilityLevels{
+		Attack: 1,
+		Skill:  1,
+		Ult:    1,
+		Talent: 1,
+	}
+
+	for i, level := range levels {
+		switch i {
+		case 0:
+			out.Attack = int(level)
+		case 1:
+			out.Skill = int(level)
+		case 2:
+			out.Ult = int(level)
+		case 3:
+			out.Talent = int(level)
+		}
+	}
+
+	return out
 }

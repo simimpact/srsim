@@ -7,12 +7,12 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-// TODO: starting energy
 type BaseStats struct {
-	Stats     info.PropMap
-	DebuffRES info.DebuffRESMap
-	MaxEnergy float64
-	MaxStance float64
+	Stats       info.PropMap
+	DebuffRES   info.DebuffRESMap
+	StartEnergy float64
+	MaxEnergy   float64
+	MaxStance   float64
 }
 
 func (s *Service) AddTarget(target key.TargetID, base BaseStats) error {
@@ -32,7 +32,7 @@ func (s *Service) AddTarget(target key.TargetID, base BaseStats) error {
 		MaxStance:     base.MaxStance,
 		Stance:        base.MaxStance,
 		MaxEnergy:     base.MaxEnergy,
-		Energy:        base.MaxEnergy,
+		Energy:        base.StartEnergy,
 	}
 	return nil
 }
