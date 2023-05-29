@@ -21,6 +21,17 @@ func Register(key key.LightCone, lightCone Config) {
 	if _, dup := lightConeCatalog[key]; dup {
 		panic("duplicate registration attempt: " + key)
 	}
+
+	if lightCone.CreatePassive == nil {
+		panic("LightCone CreatePassive must be defined: " + key)
+	}
+	if len(lightCone.Promotions) == 0 {
+		panic("LightCone promotions must be defined: " + key)
+	}
+	if lightCone.Path == model.Path_INVALID_PATH {
+		panic("LightCone path must be defined: " + key)
+	}
+
 	lightConeCatalog[key] = lightCone
 }
 
