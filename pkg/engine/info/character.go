@@ -6,21 +6,19 @@ import (
 )
 
 type Character struct {
-	Key           key.Character
-	Level         int
-	Ascension     int
-	Eidolon       int
-	Traces        map[string]bool
-	AbilityLevels AbilityLevels
-	Path          model.Path
-	Element       model.DamageType
-	LightCone     LightCone
-	Relics        map[key.Relic]int
-	BaseStats     PropMap
-	BaseDebuffRES DebuffRESMap
+	Key          key.Character
+	Level        int
+	Ascension    int
+	Eidolon      int
+	Traces       map[string]bool
+	AbilityLevel AbilityLevel
+	Path         model.Path
+	Element      model.DamageType
+	LightCone    LightCone
+	Relics       map[key.Relic]int
 }
 
-type AbilityLevels struct {
+type AbilityLevel struct {
 	Attack int
 	Skill  int
 	Ult    int

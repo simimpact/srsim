@@ -21,7 +21,6 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 	asc := config.ascension(int(char.MaxLevel))
 
 	// add char base stats from curve + traces
-	baseDebuffRES := info.NewDebuffRESMap()
 	baseStats := newBaseStats(config.Promotions[asc], lvl)
 	traces := processTraces(config.Traces, baseStats, char.Traces, asc, lvl)
 
@@ -66,7 +65,6 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 	// Give the base stats to the attribute manager so Stats calls can work as expected
 	err = mgr.attr.AddTarget(id, attribute.BaseStats{
 		Stats:       baseStats,
-		DebuffRES:   baseDebuffRES,
 		MaxEnergy:   config.MaxEnergy,
 		StartEnergy: char.StartEnergy,
 	})
@@ -75,15 +73,14 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 	}
 
 	info := info.Character{
-		Key:           key.Character(char.Key),
-		Level:         lvl,
-		Ascension:     asc,
-		Eidolon:       int(char.Eidols),
-		Path:          config.Path,
-		Element:       config.Element,
-		BaseStats:     baseStats,
-		Traces:        traces,
-		AbilityLevels: abilityLevels(char.Talents),
+		Key:          key.Character(char.Key),
+		Level:        lvl,
+		Ascension:    asc,
+		Eidolon:      int(char.Eidols),
+		Path:         config.Path,
+		Element:      config.Element,
+		Traces:       traces,
+		AbilityLevel: abilityLevels(char.Talents),
 		LightCone: info.LightCone{
 			Key:       key.LightCone(char.Cone.Key),
 			Level:     lcLvl,
@@ -148,8 +145,8 @@ func processTraces(traces TraceMap, stats info.PropMap, wanted []string, asc int
 	return active
 }
 
-func abilityLevels(levels []uint32) info.AbilityLevels {
-	out := info.AbilityLevels{
+func abilityLevels(levels []uint32) info.AbilityLevel {
+	out := info.AbilityLevel{
 		Attack: 1,
 		Skill:  1,
 		Ult:    1,
