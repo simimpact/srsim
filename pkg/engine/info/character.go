@@ -24,3 +24,11 @@ type AbilityLevel struct {
 	Ult    int
 	Talent int
 }
+
+type LightCone struct {
+	Key       key.LightCone
+	Level     int
+	Ascension int
+	Rank      int
+	Path      model.Path
+}
