@@ -34,16 +34,36 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 	lcAsc := lcConfig.Ascension(int(char.Cone.MaxLevel))
 	lightcone.AddBaseStats(baseStats, lcConfig.Promotions[lcAsc], lcLvl)
 
-	// add relic stats
+	// add relic stats from sim config
 	relics := make(map[key.Relic]int)
-	for _, relic := range char.Relics {
-		relics[key.Relic(relic.Key)] += 1
-		baseStats.Modify(relic.MainStat.Stat, relic.MainStat.Amount)
-		for _, sub := range relic.SubStats {
+	for _, r := range char.Relics {
+		relics[key.Relic(r.Key)] += 1
+		baseStats.Modify(r.MainStat.Stat, r.MainStat.Amount)
+		for _, sub := range r.SubStats {
 			baseStats.Modify(sub.Stat, sub.Amount)
 		}
 	}
 
+	// add relic stats from relic config + get list of callbacks to call later
+	var relicCBs []relic.CreateEffectFunc
+	for r, count := range relics {
+		config, err := relic.Get(r)
+		if err != nil {
+			return err
+		}
+
+		for _, effect := range config.Effects {
+			if count < effect.MinCount {
+				continue
+			}
+			baseStats.AddAll(effect.Stats)
+			if effect.CreateEffect != nil {
+				relicCBs = append(relicCBs, effect.CreateEffect)
+			}
+		}
+	}
+
+	// Give the base stats to the attribute manager so Stats calls can work as expected
 	err = mgr.attr.AddTarget(id, attribute.BaseStats{
 		Stats:       baseStats,
 		DebuffRES:   baseDebuffRES,
@@ -82,13 +102,9 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 		lcConfig.CreatePassive(mgr.engine, id, info.LightCone)
 	}
 
-	// Call CreateSet once for each relic set on this character
-	for r, count := range relics {
-		config, err := relic.Get(r)
-		if err != nil {
-			return err
-		}
-		config.CreateSet(mgr.engine, id, count)
+	// Call each relic CB
+	for _, f := range relicCBs {
+		f(mgr.engine, id)
 	}
 
 	// TODO: emit CharacterAddedEvent

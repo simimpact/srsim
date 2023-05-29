@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/simimpact/srsim/pkg/engine"
+	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 )
 
@@ -19,12 +20,15 @@ func Register(key key.Relic, relic Config) {
 	if _, dup := relicCatalog[key]; dup {
 		panic("duplicate registration attempt: " + key)
 	}
-	relicCatalog[key] = relic
-}
 
-type Config struct {
-	CreateSet func(engine engine.Engine, owner key.TargetID, count int)
-	// TODO: RelicType? (planar vs cavern)
+	// Ensure Stats is never nil
+	for i := 0; i < len(relic.Effects); i++ {
+		if relic.Effects[i].Stats == nil {
+			relic.Effects[i].Stats = info.NewPropMap()
+		}
+	}
+
+	relicCatalog[key] = relic
 }
 
 func Get(key key.Relic) (Config, error) {
@@ -32,4 +36,17 @@ func Get(key key.Relic) (Config, error) {
 		return config, nil
 	}
 	return Config{}, fmt.Errorf("invalid relic: %v", key)
+}
+
+type Config struct {
+	Effects []SetEffect
+	// TODO: RelicType? (planar vs cavern)
+}
+
+type CreateEffectFunc func(engine engine.Engine, owner key.TargetID)
+
+type SetEffect struct {
+	MinCount     int
+	Stats        info.PropMap
+	CreateEffect CreateEffectFunc
 }
