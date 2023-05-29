@@ -29,7 +29,7 @@ type Config struct {
 	Count             float64
 	MaxCount          float64
 	CountAddWhenStack float64
-	TickMoment        BattlePhase
+	TickMoment        TickMoment
 	BehaviorFlags     []model.BehaviorFlag
 	StatusType        model.StatusType
 	// TODO: WorkingTurn?
@@ -64,10 +64,10 @@ const (
 	Merge
 )
 
-type BattlePhase int
+type TickMoment int
 
 const (
-	ModifierPhase2End BattlePhase = iota
+	ModifierPhase2End TickMoment = iota
 	ModifierPhase1End
 )
 

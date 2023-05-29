@@ -78,7 +78,8 @@ func TestOnPropertyChangeBuff(t *testing.T) {
 	}
 	assert.Equal(t, expectedProps, mods.Props)
 
-	manager.Tick(target, modifier.ModifierPhase2End)
+	manager.Tick(target, info.ActionEnd)
+	manager.Tick(target, info.ModifierPhase2)
 	mods = manager.EvalModifiers(target)
 	assert.Empty(t, mods.Props, "all modifiers were not removed")
 }
@@ -120,8 +121,8 @@ func TestReplaceStacking(t *testing.T) {
 	expectedProps = info.PropMap{model.Property_CRIT_CHANCE: 0.05}
 	assert.Equal(t, expectedProps, mods.Props)
 
-	manager.StartTurn()
-	manager.Tick(target, modifier.ModifierPhase1End)
+	manager.Tick(target, info.TurnStart)
+	manager.Tick(target, info.ModifierPhase1)
 
 	manager.AddModifier(target, info.Modifier{
 		Name:     mod,
@@ -137,8 +138,8 @@ func TestReplaceStacking(t *testing.T) {
 	expectedProps = info.PropMap{model.Property_CRIT_CHANCE: 0.05 * float64(int(3))}
 	assert.Equal(t, expectedProps, mods.Props)
 
-	manager.Tick(target, modifier.ModifierPhase1End)
-	manager.StartTurn()
+	manager.Tick(target, info.ModifierPhase1)
+	manager.Tick(target, info.TurnStart)
 
 	manager.AddModifier(target, info.Modifier{
 		Name:     mod,
@@ -151,11 +152,11 @@ func TestReplaceStacking(t *testing.T) {
 	expectedProps = info.PropMap{model.Property_CRIT_CHANCE: 0.05 * float64(int(5))}
 	assert.Equal(t, expectedProps, mods.Props)
 
-	manager.Tick(target, modifier.ModifierPhase1End)
-	manager.StartTurn()
-	manager.Tick(target, modifier.ModifierPhase1End)
-	manager.StartTurn()
-	manager.Tick(target, modifier.ModifierPhase1End)
+	manager.Tick(target, info.ModifierPhase1)
+	manager.Tick(target, info.TurnStart)
+	manager.Tick(target, info.ModifierPhase1)
+	manager.Tick(target, info.TurnStart)
+	manager.Tick(target, info.ModifierPhase1)
 
 	mods = manager.EvalModifiers(target)
 	assert.Empty(t, mods.Props)

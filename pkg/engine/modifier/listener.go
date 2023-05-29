@@ -6,11 +6,28 @@ import (
 )
 
 type Listeners struct {
-	OnAdd            func(mod *ModifierInstance)
-	OnRemove         func(mod *ModifierInstance)
+	// listeners for modifier processes
+
+	// Called when a new modifier instance is added. Note: if using Replace or ReplaceBySource,
+	// this will always be a fresh instance when stacking. If using Merge, OnAdd will be called
+	// on the old instance.
+	OnAdd func(mod *ModifierInstance)
+	// Called when a modifier instance is removed, either forceably or due to the instance expiring.
+	OnRemove func(mod *ModifierInstance)
+	// Called when the duration for all modifiers instances of this shape are extended.
 	OnExtendDuration func(mod *ModifierInstance)
-	OnExtendCount    func(mod *ModifierInstance)
+	// Called when the count/stacks for all modifier instances of this shape are extended.
+	// Will not be called if OnAdd is called (doesnt call on standard stacking behavior)
+	OnExtendCount func(mod *ModifierInstance)
+	// Called when any stat changes on the target this modifier is attached to. Will be called if
+	// you modify properties within this call, so take care not to create a recursive loop.
 	OnPropertyChange func(mod *ModifierInstance)
+	// Called at the start of the turn, before the action takes place (used by DoTs).
+	OnPhase1 func(mod *ModifierInstance)
+	// Called at the end of the turn
+	OnPhase2 func(mod *ModifierInstance)
+
+	//
 }
 
 func (mgr *Manager) subscribe() {

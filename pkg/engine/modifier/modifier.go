@@ -8,22 +8,23 @@ import (
 )
 
 type ModifierInstance struct {
-	name              key.Modifier
-	owner             key.TargetID
-	source            key.TargetID
-	params            map[string]float64
-	tickImmediately   bool
-	duration          int
-	count             float64
-	maxCount          float64
-	countAddWhenStack float64
-	stats             info.PropMap
-	debuffRES         info.DebuffRESMap
-	renewTurn         int
-	manager           *Manager
-	listeners         Listeners
-	statusType        model.StatusType
-	flags             []model.BehaviorFlag
+	name                     key.Modifier
+	owner                    key.TargetID
+	source                   key.TargetID
+	params                   map[string]float64
+	tickImmediately          bool
+	canTickImmediatelyPhase2 bool
+	duration                 int
+	count                    float64
+	maxCount                 float64
+	countAddWhenStack        float64
+	stats                    info.PropMap
+	debuffRES                info.DebuffRESMap
+	renewTurn                int
+	manager                  *Manager
+	listeners                Listeners
+	statusType               model.StatusType
+	flags                    []model.BehaviorFlag
 }
 
 func (mgr *Manager) newInstance(owner key.TargetID, mod info.Modifier) *ModifierInstance {
