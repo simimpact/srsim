@@ -40,22 +40,27 @@ func main() {
 		return
 	}
 
-	avatars, err := OpenAvatarInfo(dmPath)
+	var avatars map[string]AvatarInfo
+	var skills map[string]SkillTreeConfig
+	var promotions map[string]PromotionConfig
+	var textMap map[string]string
+
+	err := OpenConfig(&avatars, dmPath, "ExcelOutput", "AvatarConfig.json")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	skills, err := OpenSkillConfig(dmPath)
+	err = OpenConfig(&skills, dmPath, "ExcelOutput", "AvatarSkillTreeConfig.json")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	promotions, err := OpenPromotionConfig(dmPath)
+	err = OpenConfig(&promotions, dmPath, "ExcelOutput", "AvatarPromotionConfig.json")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	textMap, err := OpenTextMapEN(dmPath)
+	err = OpenConfig(&textMap, dmPath, "TextMap", "TextMapEN.json")
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -78,88 +83,24 @@ func main() {
 	}
 }
 
-func OpenAvatarInfo(path string) (map[string]AvatarInfo, error) {
-	jsonFile := filepath.Join(path, "ExcelOutput", "AvatarConfig.json")
+func OpenConfig(result interface{}, path ...string) error {
+	jsonFile := filepath.Join(path...)
 	file, err := os.Open(jsonFile)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer file.Close()
 
 	data, err := ioutil.ReadAll(file)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	var info map[string]AvatarInfo
-	err = json.Unmarshal(data, &info)
+	err = json.Unmarshal(data, &result)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return info, nil
-}
-
-func OpenSkillConfig(path string) (map[string]SkillTreeConfig, error) {
-	jsonFile := filepath.Join(path, "ExcelOutput", "AvatarSkillTreeConfig.json")
-	file, err := os.Open(jsonFile)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	data, err := ioutil.ReadAll(file)
-	if err != nil {
-		return nil, err
-	}
-
-	var info map[string]SkillTreeConfig
-	err = json.Unmarshal(data, &info)
-	if err != nil {
-		return nil, err
-	}
-	return info, nil
-}
-
-func OpenPromotionConfig(path string) (map[string]PromotionConfig, error) {
-	jsonFile := filepath.Join(path, "ExcelOutput", "AvatarPromotionConfig.json")
-	file, err := os.Open(jsonFile)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	data, err := ioutil.ReadAll(file)
-	if err != nil {
-		return nil, err
-	}
-
-	var info map[string]PromotionConfig
-	err = json.Unmarshal(data, &info)
-	if err != nil {
-		return nil, err
-	}
-	return info, nil
-}
-
-func OpenTextMapEN(path string) (map[string]string, error) {
-	jsonFile := filepath.Join(path, "TextMap", "TextMapEN.json")
-	file, err := os.Open(jsonFile)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	data, err := ioutil.ReadAll(file)
-	if err != nil {
-		return nil, err
-	}
-
-	var info map[string]string
-	err = json.Unmarshal(data, &info)
-	if err != nil {
-		return nil, err
-	}
-	return info, nil
+	return nil
 }
 
 func FindCharSkills(skills map[string]SkillTreeConfig, id int) []SkillTreeConfig {
@@ -185,8 +126,8 @@ func ProcessCharacter(name string, avatar AvatarInfo, skills []SkillTreeConfig, 
 	data.Path = avatar.GetPath()
 	data.MaxEnergy = int(avatar.SPNeed.Value)
 
-	data.PromotionData = make([]character.PromotionData, 7)
-	for i := 0; i <= 7; i++ {
+	data.PromotionData = make([]character.PromotionData, len(promotions))
+	for i := 0; i < len(promotions); i++ {
 		val, ok := promotions[strconv.Itoa(i)]
 		if !ok {
 			break
