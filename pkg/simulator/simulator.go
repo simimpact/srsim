@@ -5,6 +5,7 @@ import (
 	"runtime/debug"
 	"strconv"
 
+	"github.com/simimpact/srsim/pkg/gcs"
 	"github.com/simimpact/srsim/pkg/model"
 	"github.com/simimpact/srsim/pkg/simulator/workerpool"
 	"github.com/simimpact/srsim/pkg/statistics/agg"
@@ -33,13 +34,11 @@ func init() {
 	}
 }
 
-
 func Version() string {
 	return sha1ver
 }
 
-
-func Run(ctx context.Context, cfg *model.SimConfig) (*model.SimulationResult, error) {
+func Run(ctx context.Context, list *gcs.ActionList, cfg *model.SimConfig) (*model.SimulationResult, error) {
 
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -62,10 +61,11 @@ func Run(ctx context.Context, cfg *model.SimConfig) (*model.SimulationResult, er
 		errChan,
 	)
 
-	go func ()  {
+	go func() {
 		for i := 0; i < int(cfg.Iterations); i++ {
 			j := proto.Clone(cfg).(*model.SimConfig)
 			err := pool.QueueJob(workerpool.Job{
+				Script: list,
 				Config: j,
 			})
 			if err != nil {
@@ -80,7 +80,7 @@ func Run(ctx context.Context, cfg *model.SimConfig) (*model.SimulationResult, er
 		select {
 		case <-ctx.Done():
 			return nil, ctx.Err()
-		case err := <- errChan:
+		case err := <-errChan:
 			return nil, err
 		case result := <-resp:
 			for _, a := range aggregators {
@@ -89,15 +89,12 @@ func Run(ctx context.Context, cfg *model.SimConfig) (*model.SimulationResult, er
 		}
 	}
 
-
 	//stats aggregation should happen here and make us a result?
 	result := &model.SimulationResult{
 		SimVersion: &sha1ver,
-		Modified: &modified,
-		BuildDate: buildTime,
+		Modified:   &modified,
+		BuildDate:  buildTime,
 	}
-	
 
-	
 	return result, nil
 }

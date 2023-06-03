@@ -26,7 +26,8 @@ func (e *Eval) NextAction(target key.TargetID) action.Action {
 	return action.Action{Target: target, Type: actionType}
 }
 
-func (e *Eval) BurstCheck() (action.Action, bool) {
+func (e *Eval) BurstCheck() []action.Action {
+	result := make([]action.Action, 0)
 	for _, t := range e.burstNodes {
 		useBurst, err := e.evalTargetNode(t)
 		if err != nil {
@@ -34,10 +35,13 @@ func (e *Eval) BurstCheck() (action.Action, bool) {
 			break
 		}
 		if useBurst {
-			return action.Action{Target: t.target, Type: key.ActionBurst}, true
+			result = append(result, action.Action{
+				Target: t.target,
+				Type:   key.ActionBurst,
+			})
 		}
 	}
-	return action.Action{}, false
+	return result
 }
 
 func (e *Eval) evalTargetNode(t TargetNode) (bool, error) {

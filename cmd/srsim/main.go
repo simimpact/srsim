@@ -10,6 +10,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/simimpact/srsim/pkg/gcs/parse"
 	"github.com/simimpact/srsim/pkg/model"
 	"github.com/simimpact/srsim/pkg/simulator"
 )
@@ -50,20 +51,32 @@ func main() {
 		return
 	}
 
-	config, err := readConfig(opt.config)
+	config, err := ReadConfig(opt.config)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	_, err = simulator.Run(context.Background(), config)
+	script, err := ioutil.ReadFile(opt.script)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	p := parse.New(string(script))
+	list, err := p.Parse()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	_, err = simulator.Run(context.Background(), list, config)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 }
 
-func readConfig(path string) (*model.SimConfig, error) {
+func ReadConfig(path string) (*model.SimConfig, error) {
 	src, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err
