@@ -12,7 +12,11 @@ type Manager struct {
 	attr  attribute.AttributeModifier
 	// TODO: ShieldAbsorbDamage(target, amt) float64
 
-	isInAttack   bool
+	isInAttack bool
+	attackInfo attackInfo
+}
+
+type attackInfo struct {
 	attacker     key.TargetID
 	targets      []key.TargetID
 	attackType   model.AttackType
@@ -22,8 +26,7 @@ type Manager struct {
 
 func New(event *event.System, attr attribute.AttributeModifier) *Manager {
 	return &Manager{
-		event:   event,
-		attr:    attr,
-		targets: make([]key.TargetID, 5),
+		event: event,
+		attr:  attr,
 	}
 }

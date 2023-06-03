@@ -10,6 +10,8 @@ type System struct {
 	BeforeHit    BeforeHitEventHandler
 	DamageResult DamageResultEventHandler
 	AfterHit     AfterHitEventHandler
+	BeforeHeal   BeforeHealEventHandler
+	AfterHeal    AfterHealEventHandler
 
 	CharacterAdded CharacterAddedEventHandler
 

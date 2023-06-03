@@ -6,6 +6,7 @@ import (
 )
 
 type DamageMap map[model.DamageFormula]float64
+type HealMap map[model.HealFormula]float64
 
 type Attack struct {
 	// List of targets to perform this attack against (will perform 1 hit per target)
@@ -46,7 +47,11 @@ type Attack struct {
 }
 
 type Hit struct {
+	// The stats of the attacker of this hit. These stats are a snapshot of the target's state and
+	// can be modified
 	Attacker *Stats
+	// The stats of the defender of this hit. These stats are a snapshot of the target's state and
+	// can be modified
 	Defender *Stats
 	// The type of attack (IE: dot, ult, insert, etc)
 	AttackType model.AttackType
@@ -81,4 +86,16 @@ type Hit struct {
 	AsPureDamage bool
 	// An additional flat damage amount that can be added to the base damage
 	DamageValue float64
+}
+
+type Heal struct {
+	// The targets that the healer is healing
+	Targets []key.TargetID
+	// The healer that is performing the heal
+	Source key.TargetID
+	// Map of HealFormula -> Heal Percentage. This is for calculating the "Base Heal" amount of the
+	// heal. IE: info.HealMap{model.BY_HEALER_MAX_HP: 0.5} = 50% of source target's MaxHP.
+	BaseHeal HealMap
+	// Additional flat healing that can be added to the base heal amount.
+	HealValue float64
 }

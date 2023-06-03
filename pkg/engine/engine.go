@@ -83,7 +83,7 @@ type Combat interface {
 	// Performs the given attack where Source is the attacker and Targets are all targets that
 	// are being hit
 	Attack(atk info.Attack)
-	Heal()
+	Heal(heal info.Heal)
 }
 
 type Shield interface {

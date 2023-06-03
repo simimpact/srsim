@@ -108,8 +108,8 @@ func (sim *Simulation) Attack(atk info.Attack) {
 	sim.combatManager.Attack(atk, model.AttackEffect_INVALID_ATTACK_EFFECT)
 }
 
-func (sim *Simulation) Heal() {
-	panic("not implemented") // TODO: Implement
+func (sim *Simulation) Heal(heal info.Heal) {
+	sim.combatManager.Heal(heal)
 }
 
 func (sim *Simulation) AddShield() {

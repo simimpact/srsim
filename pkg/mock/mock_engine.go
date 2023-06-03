@@ -246,15 +246,15 @@ func (mr *MockEngineMockRecorder) HasModifier(arg0, arg1 interface{}) *gomock.Ca
 }
 
 // Heal mocks base method.
-func (m *MockEngine) Heal() {
+func (m *MockEngine) Heal(arg0 info.Heal) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Heal")
+	m.ctrl.Call(m, "Heal", arg0)
 }
 
 // Heal indicates an expected call of Heal.
-func (mr *MockEngineMockRecorder) Heal() *gomock.Call {
+func (mr *MockEngineMockRecorder) Heal(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Heal", reflect.TypeOf((*MockEngine)(nil).Heal))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Heal", reflect.TypeOf((*MockEngine)(nil).Heal), arg0)
 }
 
 // IsCharacter mocks base method.

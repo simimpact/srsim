@@ -57,3 +57,18 @@ type AfterHitEvent struct {
 	AttackEffect model.AttackEffect
 	IsCrit       bool
 }
+
+type BeforeHealEventHandler = handler.MutableEventHandler[BeforeHealEvent]
+type BeforeHealEvent struct {
+	Target    *info.Stats
+	Healer    *info.Stats
+	BaseHeal  info.HealMap
+	HealValue float64
+}
+
+type AfterHealEventHandler = handler.EventHandler[AfterHealEvent]
+type AfterHealEvent struct {
+	Target     key.TargetID
+	Healer     key.TargetID
+	HealAmount float64
+}

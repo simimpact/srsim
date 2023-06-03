@@ -47,6 +47,14 @@ type Listeners struct {
 	OnAfterHit func(mod *ModifierInstance, e event.AfterHitEvent)
 	// Called after a hit occurs and the attached target is the defender.
 	OnAfterBeingHit func(mod *ModifierInstance, e event.AfterHitEvent)
+	// Called before performing a heal and the attached target is the healer. Heal data is mutable.
+	OnBeforeDealHeal func(mod *ModifierInstance, e *event.BeforeHealEvent)
+	// Called before performing a heal and the attached target is the receiver. Heal data is mutable.
+	OnBeforeBeingHeal func(mod *ModifierInstance, e *event.BeforeHealEvent)
+	// Called after a heal is performed and the attached target is the healer.
+	OnAfterDealHeal func(mod *ModifierInstance, e event.AfterHealEvent)
+	// Called after a heal is performed and the attached target is the receiver
+	OnAfterBeingHeal func(mod *ModifierInstance, e event.AfterHealEvent)
 }
 
 func (mgr *Manager) subscribe() {
@@ -57,6 +65,8 @@ func (mgr *Manager) subscribe() {
 	events.AttackEnd.Subscribe(mgr.attackEnd)
 	events.BeforeHit.Subscribe(mgr.beforeHit)
 	events.AfterHit.Subscribe(mgr.afterHit)
+	events.BeforeHeal.Subscribe(mgr.beforeHeal, 100)
+	events.AfterHeal.Subscribe(mgr.afterHeal)
 }
 
 func (mgr *Manager) emitPropertyChange(target key.TargetID) {
@@ -181,6 +191,36 @@ func (mgr *Manager) afterHit(e event.AfterHitEvent) {
 	}
 	for _, mod := range mgr.targets[e.Defender] {
 		f := mod.listeners.OnAfterBeingHit
+		if f != nil {
+			f(mod, e)
+		}
+	}
+}
+
+func (mgr *Manager) beforeHeal(e *event.BeforeHealEvent) {
+	for _, mod := range mgr.targets[e.Healer.ID()] {
+		f := mod.listeners.OnBeforeDealHeal
+		if f != nil {
+			f(mod, e)
+		}
+	}
+	for _, mod := range mgr.targets[e.Target.ID()] {
+		f := mod.listeners.OnBeforeBeingHeal
+		if f != nil {
+			f(mod, e)
+		}
+	}
+}
+
+func (mgr *Manager) afterHeal(e event.AfterHealEvent) {
+	for _, mod := range mgr.targets[e.Healer] {
+		f := mod.listeners.OnAfterDealHeal
+		if f != nil {
+			f(mod, e)
+		}
+	}
+	for _, mod := range mgr.targets[e.Target] {
+		f := mod.listeners.OnAfterBeingHeal
 		if f != nil {
 			f(mod, e)
 		}

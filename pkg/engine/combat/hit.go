@@ -24,7 +24,7 @@ func (mgr *Manager) newHit(target key.TargetID, atk info.Attack) *info.Hit {
 		Defender:     mgr.attr.Stats(target),
 		AttackType:   atk.AttackType,
 		DamageType:   atk.DamageType,
-		AttackEffect: mgr.attackEffect,
+		AttackEffect: mgr.attackInfo.attackEffect,
 		BaseDamage:   baseDamage,
 		EnergyGain:   atk.EnergyGain,
 		StanceDamage: atk.StanceDamage,

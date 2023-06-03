@@ -191,3 +191,12 @@ enum DamageFormula {
   BY_MAX_HP = 3;
   BY_BREAK_DAMAGE = 4;
 }
+
+enum HealFormula {
+  INVALID_HEAL_FORMULA = 0;
+  BY_HEALER_ATK = 1;
+  BY_HEALER_DEF = 2;
+  BY_HEALER_MAX_HP = 3;
+  BY_TARGET_MAX_HP = 4;
+  BY_TARGET_LOST_HP = 5;
+}
