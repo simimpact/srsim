@@ -3,6 +3,7 @@ package musketeer
 import (
 	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/equip/relic"
+	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/key"
@@ -13,6 +14,8 @@ const (
 	mod = key.Modifier("musketeer-of-wild-wheat")
 )
 
+// 2pc: ATK increases by 12%.
+// 4pc: The wearer's SPD increases by 6% and Basic ATK DMG increases by 10%.
 func init() {
 	relic.Register(key.MusketeerOfWildWheat, relic.Config{
 		Effects: []relic.SetEffect{
@@ -35,7 +38,11 @@ func init() {
 
 	modifier.Register(mod, modifier.Config{
 		Listeners: modifier.Listeners{
-			// TODO: implement OnBeforeHit hook
+			OnBeforeHit: func(mod *modifier.ModifierInstance, e event.BeforeHitEvent) {
+				if e.Hit.AttackType == model.AttackType_NORMAL {
+					e.Hit.Attacker.AddProperty(model.Property_ALL_DMG_PERCENT, 0.1)
+				}
+			},
 		},
 	})
 }

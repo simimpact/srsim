@@ -189,4 +189,5 @@ enum DamageFormula {
   BY_ATK = 1;
   BY_DEF = 2;
   BY_MAX_HP = 3;
+  BY_BREAK_DAMAGE = 4;
 }

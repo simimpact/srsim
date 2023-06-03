@@ -17,7 +17,7 @@ type Attributes struct {
 
 // A snapshot of a targets stats at a point in time
 type Stats struct {
-	target       key.TargetID
+	id           key.TargetID
 	currentHP    float64
 	energy       float64
 	maxEnergy    float64
@@ -32,11 +32,11 @@ type Stats struct {
 
 // TODO: ToProto method for logging
 
-func NewStats(target key.TargetID, attributes Attributes, mods ModifierState) *Stats {
+func NewStats(id key.TargetID, attributes Attributes, mods ModifierState) *Stats {
 	mods.Props.AddAll(attributes.BaseStats)
 	mods.DebuffRES.AddAll(attributes.BaseDebuffRES)
 	return &Stats{
-		target:       target,
+		id:           id,
 		currentHP:    attributes.CurrentHP,
 		energy:       attributes.Energy,
 		maxEnergy:    attributes.MaxEnergy,
@@ -48,6 +48,11 @@ func NewStats(target key.TargetID, attributes Attributes, mods ModifierState) *S
 		statusCounts: mods.Counts,
 		modifiers:    mods.Modifiers,
 	}
+}
+
+// The targetID for who these stats are for
+func (stats *Stats) ID() key.TargetID {
+	return stats.id
 }
 
 // Adds a property to this Stats snapshot

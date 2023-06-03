@@ -5,8 +5,11 @@ package event
 import "github.com/simimpact/srsim/pkg/engine/event/handler"
 
 type System struct {
-	AttackEvent AttackEventHandler
-	DamageEvent DamageEventHandler
+	AttackStart  AttackStartEventHandler
+	AttackEnd    AttackEndEventHandler
+	BeforeHit    BeforeHitEventHandler
+	DamageResult DamageResultEventHandler
+	AfterHit     AfterHitEventHandler
 
 	CharacterAdded CharacterAddedEventHandler
 

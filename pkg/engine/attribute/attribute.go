@@ -9,7 +9,15 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-// TODO: there should be an explicit base stats structure?
+type AttributeGetter interface {
+	Stats(target key.TargetID) *info.Stats
+}
+
+type AttributeModifier interface {
+	AttributeGetter
+	// TODO: ModifyHP, ModifyStance, ModifyEnergy
+}
+
 type Service struct {
 	engine          engine.Engine
 	modifierManager *modifier.Manager
@@ -32,6 +40,14 @@ func (s *Service) Stats(target key.TargetID) *info.Stats {
 	}
 	return info.NewStats(target, *attr, mods)
 }
+
+// TODO:
+// 	- AddTarget specific functions
+//	- BaseStats struct
+
+// Metadata to have for stats (easy access):
+//	- level
+//	- weaknesses
 
 // TODO: ChangeHP, return new HP (emit HPChangeEvent)
 // TODO: ChangeStance, return new Stance (emit StanceChangeEvent)

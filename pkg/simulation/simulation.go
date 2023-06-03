@@ -5,6 +5,7 @@ import (
 	"math/rand"
 
 	"github.com/simimpact/srsim/pkg/engine/attribute"
+	"github.com/simimpact/srsim/pkg/engine/combat"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/target/character"
@@ -31,6 +32,7 @@ type Simulation struct {
 	attributeService *attribute.Service
 	charManager      *character.Manager
 	turnManager      *turn.TurnCtrl
+	combatManager    *combat.Manager
 
 	//??
 	res *model.IterationResult
@@ -54,6 +56,7 @@ func Run(ctx context.Context, cfg *model.SimConfig) (*model.IterationResult, err
 	s.modManager = modifier.NewManager(s)
 	s.attributeService = attribute.New(s, s.modManager)
 	s.charManager = character.New(s, s.attributeService)
+	s.combatManager = combat.New(s.event, s.attributeService)
 	// turnManager: turn.New(),
 
 	return s.run()

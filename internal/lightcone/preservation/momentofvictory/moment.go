@@ -3,6 +3,7 @@ package momentofvictory
 import (
 	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/equip/lightcone"
+	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/key"
@@ -25,8 +26,9 @@ func init() {
 	modifier.Register(mod, modifier.Config{
 		Stacking: modifier.ReplaceBySource,
 		Listeners: modifier.Listeners{
-			OnAdd: onAdd,
-			// TODO: add OnPhase2 & OnAfterBeingAttacked listeners once implemented
+			OnAdd:                onAdd,
+			OnPhase2:             onPhase2,
+			OnAfterBeingAttacked: onAfterBeingAttacked,
 		},
 	})
 }
@@ -51,6 +53,6 @@ func onPhase2(mod *modifier.ModifierInstance) {
 	mod.SetProperty(model.Property_DEF_PERCENT, mod.Params()[amt])
 }
 
-func onAfterBeingAttacked(mod *modifier.ModifierInstance) {
+func onAfterBeingAttacked(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
 	mod.SetProperty(model.Property_DEF_PERCENT, 2.0*mod.Params()[amt])
 }

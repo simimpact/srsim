@@ -13,12 +13,14 @@ const (
 	mod = key.Modifier("space-sealing-station")
 )
 
+// 2pc:
+// Increases the wearer's ATK by 12%. When the wearer's SPD reaches 120 or higher,
+// the wearer's ATK increases by an extra 12%.
 func init() {
 	relic.Register(key.SpaceSealingStation, relic.Config{
 		Effects: []relic.SetEffect{
 			{
 				MinCount: 2,
-				Stats:    info.PropMap{model.Property_ATK_PERCENT: 0.12},
 				CreateEffect: func(engine engine.Engine, owner key.TargetID) {
 					engine.AddModifier(owner, info.Modifier{
 						Name:   mod,
@@ -29,23 +31,28 @@ func init() {
 		},
 	})
 
-	// add +0.12 ATK% if SPD >= 120
 	modifier.Register(mod, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
-				stats := mod.OwnerStats()
-				if stats.SPD() >= 120 {
-					mod.SetProperty(model.Property_ATK_PERCENT, 0.12)
-				}
-			},
-			OnPropertyChange: func(mod *modifier.ModifierInstance) {
-				stats := mod.OwnerStats()
-				if stats.SPD() >= 120 {
-					mod.SetProperty(model.Property_ATK_PERCENT, 0.12)
-				} else {
-					mod.SetProperty(model.Property_ATK_PERCENT, 0.0)
-				}
-			},
+			OnAdd:            onAdd,
+			OnPropertyChange: onPropChange,
 		},
 	})
+}
+
+func onAdd(mod *modifier.ModifierInstance) {
+	stats := mod.OwnerStats()
+	if stats.SPD() >= 120 {
+		mod.SetProperty(model.Property_ATK_PERCENT, 0.24)
+	} else {
+		mod.SetProperty(model.Property_ATK_PERCENT, 0.12)
+	}
+}
+
+func onPropChange(mod *modifier.ModifierInstance) {
+	stats := mod.OwnerStats()
+	if stats.SPD() >= 120 {
+		mod.SetProperty(model.Property_ATK_PERCENT, 0.24)
+	} else {
+		mod.SetProperty(model.Property_ATK_PERCENT, 0.12)
+	}
 }

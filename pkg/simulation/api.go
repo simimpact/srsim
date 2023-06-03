@@ -103,8 +103,9 @@ func (sim *Simulation) AddEnergy(target key.TargetID, addType model.EnergyAdd, a
 	panic("not implemented") // TODO: Implement
 }
 
-func (sim *Simulation) Attack() {
-	panic("not implemented") // TODO: Implement
+func (sim *Simulation) Attack(atk info.Attack) {
+	// TODO:
+	sim.combatManager.Attack(atk, model.AttackEffect_INVALID_ATTACK_EFFECT)
 }
 
 func (sim *Simulation) Heal() {

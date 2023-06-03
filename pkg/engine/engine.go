@@ -24,6 +24,22 @@ type Engine interface {
 	// Random number generator
 	Rand() *rand.Rand
 
+	Modifier
+	Attribute
+	Combat
+	Shield
+	Turn
+	Validator
+	Info
+	Target
+
+	// TODO: Execute Queue
+	//	For callback + skill methods, need an "AttackState" passed in which allows you to do operations
+	//	such as decide when `AttackEnd` happens (if left uncalled, will happen after all logic executes)
+	// TODO: Skill Point (Boost Point). Other sim metadata calls?
+}
+
+type Modifier interface {
 	// Adds a new modifier to the given target. At minimum, instance must specify the name of the
 	// modifier and the source.
 	AddModifier(target key.TargetID, instance info.Modifier) error
@@ -50,17 +66,51 @@ type Engine interface {
 	// Returns true if the target has the given behavior flag from an attached modifier. If multiple
 	// flags are passed, will return true if at least one is attached
 	HasBehaviorFlag(target key.TargetID, flags ...model.BehaviorFlag) bool
+}
 
+type Attribute interface {
 	// Gets a snapshot of the current target's stats. Any modifications to these stats will
 	// only be applied to the snapshot.
 	Stats(target key.TargetID) *info.Stats
 
+	// TODO: Energy, HP, Stance
+
+	// Adds energy to the given target using the specified EnergyAdd logic
+	AddEnergy(target key.TargetID, addType model.EnergyAdd, amt float64)
+}
+
+type Combat interface {
+	// Performs the given attack where Source is the attacker and Targets are all targets that
+	// are being hit
+	Attack(atk info.Attack)
+	Heal()
+}
+
+type Shield interface {
+	AddShield()
+	RemoveShield()
+}
+
+type Turn interface {
+	ModifyGauge(target key.TargetID, modifyType model.ModifyGauge, amt float64)
+	SetGauge(target key.TargetID, amt float64)
+	// TODO: need ModifyCurrentSkillDelayCost? (in dm used to modify gauge for next turn, during current turn)
+}
+
+type Validator interface {
+	// Check if the given TargetID is valid
+	IsValid(target key.TargetID) bool
+}
+
+type Info interface {
 	// Metadata for the given character, such as their current level, ascension, traces, etc.
 	CharacterInfo(target key.TargetID) (info.Character, error)
 
 	// Metadata for the given enemy, such as their current level and weaknesses.
 	EnemyInfo(target key.TargetID) (model.Enemy, error)
+}
 
+type Target interface {
 	// returns true if the given TargetID is for a character
 	IsCharacter(target key.TargetID) bool
 
@@ -78,31 +128,6 @@ type Engine interface {
 
 	// returns a list of all neutral target ids (these are special cases, such as the Lightning-Lord)
 	Neutrals() []key.TargetID
-
-	// Check if the given TargetID is valid
-	IsValid(target key.TargetID) bool
-
-	ModifyGauge(target key.TargetID, modifyType model.ModifyGauge, amt float64)
-
-	SetGauge(target key.TargetID, amt float64)
-
-	// TODO: need ModifyCurrentSkillDelayCost? (in dm used to modify gauge for next turn, during current turn)
-
-	// Adds energy to the given target using the specified EnergyAdd logic
-	AddEnergy(target key.TargetID, addType model.EnergyAdd, amt float64)
-
-	// NOTE: Limbo state lasts the entire turn. If at 0 HP by end of turn, die
-
-	Attack()
-	Heal()
-	AddShield()
-	RemoveShield()
-
-	// Execute Queue (Enqueue, InsertAction?)
-	//	For callback + skill methods, need an "AttackState" passed in which allows you to do operations
-	//	such as decide when `AttackEnd` happens (if left uncalled, will happen after all logic executes)
-
-	// TODO: Skill Point (Boost Point)
 
 	// TODO: target type, (Light, Dark, Neutral)
 	AddTarget() key.TargetID

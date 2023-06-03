@@ -105,15 +105,15 @@ func (mr *MockEngineMockRecorder) AdjacentTo(arg0 interface{}) *gomock.Call {
 }
 
 // Attack mocks base method.
-func (m *MockEngine) Attack() {
+func (m *MockEngine) Attack(arg0 info.Attack) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Attack")
+	m.ctrl.Call(m, "Attack", arg0)
 }
 
 // Attack indicates an expected call of Attack.
-func (mr *MockEngineMockRecorder) Attack() *gomock.Call {
+func (mr *MockEngineMockRecorder) Attack(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Attack", reflect.TypeOf((*MockEngine)(nil).Attack))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Attack", reflect.TypeOf((*MockEngine)(nil).Attack), arg0)
 }
 
 // CharacterInfo mocks base method.

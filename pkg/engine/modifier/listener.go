@@ -2,12 +2,11 @@ package modifier
 
 import (
 	"github.com/simimpact/srsim/pkg/engine/event"
-	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 )
 
 type Listeners struct {
-	// listeners for modifier processes
+	// ------------ listeners for modifier processes
 
 	// Called when a new modifier instance is added. Note: if using Replace or ReplaceBySource,
 	// this will always be a fresh instance when stacking. If using Merge, OnAdd will be called
@@ -28,16 +27,36 @@ type Listeners struct {
 	// Called at the end of the turn
 	OnPhase2 func(mod *ModifierInstance)
 
-	// character events
+	// ------------ combat events
 
-	// Called when a new character is added to the simulation (done as part of sim setup)
-	OnCharacterAdded func(mod *ModifierInstance, char info.Character)
+	// Called when an attack starts and the attached target is the attacker.
+	OnBeforeAttack func(mod *ModifierInstance, e event.AttackStartEvent)
+	// Called when an attack starts and the attached target is one of the targets being attacked.
+	OnBeforeBeingAttacked func(mod *ModifierInstance, e event.AttackStartEvent)
+	// Called after an attack finishes (after all hits) and the attached target is the attacker
+	OnAfterAttack func(mod *ModifierInstance, e event.AttackEndEvent)
+	// Called after an attack finishes (after all hits) and the attached target was hit by the attack.
+	OnAfterBeingAttacked func(mod *ModifierInstance, e event.AttackEndEvent)
+	// Called before a hit occurs and the attached target is the attacker. Hit data is mutable
+	// to allow modifiers to modify any stats prior to the damage calculation.
+	OnBeforeHit func(mod *ModifierInstance, e event.BeforeHitEvent)
+	// Called before a hit occurs and the attached target is the defender. Hit data is mutable
+	// to allow modifiers to modify any stats prior to the damage calculation.
+	OnBeforeBeingHit func(mod *ModifierInstance, e event.BeforeHitEvent)
+	// Called after a hit occurs and the attached target is the attacker.
+	OnAfterHit func(mod *ModifierInstance, e event.AfterHitEvent)
+	// Called after a hit occurs and the attached target is the defender.
+	OnAfterBeingHit func(mod *ModifierInstance, e event.AfterHitEvent)
 }
 
 func (mgr *Manager) subscribe() {
 	events := mgr.engine.Events()
 
-	events.CharacterAdded.Subscribe(mgr.characterAdded)
+	// combat events
+	events.AttackStart.Subscribe(mgr.attackStart)
+	events.AttackEnd.Subscribe(mgr.attackEnd)
+	events.BeforeHit.Subscribe(mgr.beforeHit)
+	events.AfterHit.Subscribe(mgr.afterHit)
 }
 
 func (mgr *Manager) emitPropertyChange(target key.TargetID) {
@@ -104,11 +123,66 @@ func (mgr *Manager) emitExtendCount(target key.TargetID, mod *ModifierInstance, 
 	})
 }
 
-func (mgr *Manager) characterAdded(evt event.CharacterAddedEvent) {
-	for _, mod := range mgr.targets[evt.Id] {
-		f := mod.listeners.OnCharacterAdded
+func (mgr *Manager) attackStart(e event.AttackStartEvent) {
+	for _, mod := range mgr.targets[e.Attacker] {
+		f := mod.listeners.OnBeforeAttack
 		if f != nil {
-			f(mod, evt.Info)
+			f(mod, e)
+		}
+	}
+	for _, target := range e.Targets {
+		for _, mod := range mgr.targets[target] {
+			f := mod.listeners.OnBeforeBeingAttacked
+			if f != nil {
+				f(mod, e)
+			}
+		}
+	}
+}
+
+func (mgr *Manager) attackEnd(e event.AttackEndEvent) {
+	for _, mod := range mgr.targets[e.Attacker] {
+		f := mod.listeners.OnAfterAttack
+		if f != nil {
+			f(mod, e)
+		}
+	}
+	for _, target := range e.Targets {
+		for _, mod := range mgr.targets[target] {
+			f := mod.listeners.OnAfterBeingAttacked
+			if f != nil {
+				f(mod, e)
+			}
+		}
+	}
+}
+
+func (mgr *Manager) beforeHit(e event.BeforeHitEvent) {
+	for _, mod := range mgr.targets[e.Attacker] {
+		f := mod.listeners.OnBeforeHit
+		if f != nil {
+			f(mod, e)
+		}
+	}
+	for _, mod := range mgr.targets[e.Defender] {
+		f := mod.listeners.OnBeforeBeingHit
+		if f != nil {
+			f(mod, e)
+		}
+	}
+}
+
+func (mgr *Manager) afterHit(e event.AfterHitEvent) {
+	for _, mod := range mgr.targets[e.Attacker] {
+		f := mod.listeners.OnAfterHit
+		if f != nil {
+			f(mod, e)
+		}
+	}
+	for _, mod := range mgr.targets[e.Defender] {
+		f := mod.listeners.OnAfterBeingHit
+		if f != nil {
+			f(mod, e)
 		}
 	}
 }
