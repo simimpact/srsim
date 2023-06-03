@@ -6,7 +6,7 @@ import (
 )
 
 type Listeners struct {
-	// ------------ listeners for modifier processes
+	// ------------ listeners for modifier internal processes
 
 	// Called when a new modifier instance is added. Note: if using Replace or ReplaceBySource,
 	// this will always be a fresh instance when stacking. If using Merge, OnAdd will be called
@@ -26,6 +26,17 @@ type Listeners struct {
 	OnPhase1 func(mod *ModifierInstance)
 	// Called at the end of the turn
 	OnPhase2 func(mod *ModifierInstance)
+
+	// ------------ attribute events
+
+	// Called when the current HP of the attached target changes
+	OnHPChange func(mod *ModifierInstance, e event.HPChangeEvent)
+	// Called when attached target's current HP = 0. If returns true, will cancel the event and
+	// prevent the TargetDeathEvent from occuring. Used by revives.
+	OnLimboWaitHeal func(mod *ModifierInstance) bool
+	// Called when the attached target kills another target. The given target ID is the target that
+	// has been killed.
+	OnTriggerDeath func(mod *ModifierInstance, target key.TargetID)
 
 	// ------------ combat events
 
@@ -59,6 +70,11 @@ type Listeners struct {
 
 func (mgr *Manager) subscribe() {
 	events := mgr.engine.Events()
+
+	// attribute events
+	events.HPChange.Subscribe(mgr.hpChange)
+	events.LimboWaitHeal.Subscribe(mgr.limboWaitHeal, 100)
+	events.TargetDeath.Subscribe(mgr.targetDeath)
 
 	// combat events
 	events.AttackStart.Subscribe(mgr.attackStart)
@@ -223,6 +239,37 @@ func (mgr *Manager) afterHeal(e event.AfterHealEvent) {
 		f := mod.listeners.OnAfterBeingHeal
 		if f != nil {
 			f(mod, e)
+		}
+	}
+}
+
+func (mgr *Manager) hpChange(e event.HPChangeEvent) {
+	for _, mod := range mgr.targets[e.Target] {
+		f := mod.listeners.OnHPChange
+		if f != nil {
+			f(mod, e)
+		}
+	}
+}
+
+func (mgr *Manager) limboWaitHeal(e event.LimboWaitHealEvent) bool {
+	for _, mod := range mgr.targets[e.Target] {
+		f := mod.listeners.OnLimboWaitHeal
+		if f != nil {
+			result := f(mod)
+			if result {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func (mgr *Manager) targetDeath(e event.TargetDeathEvent) {
+	for _, mod := range mgr.targets[e.Killer] {
+		f := mod.listeners.OnTriggerDeath
+		if f != nil {
+			f(mod, e.Target)
 		}
 	}
 }

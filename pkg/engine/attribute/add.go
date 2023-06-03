@@ -25,6 +25,9 @@ func (s *Service) AddTarget(target key.TargetID, base BaseStats) error {
 	if base.DebuffRES == nil {
 		base.DebuffRES = info.NewDebuffRESMap()
 	}
+	if base.StartEnergy > base.MaxEnergy {
+		base.StartEnergy = base.MaxEnergy
+	}
 
 	s.targets[target] = &info.Attributes{
 		BaseStats:     base.Stats,
@@ -33,6 +36,7 @@ func (s *Service) AddTarget(target key.TargetID, base BaseStats) error {
 		Stance:        base.MaxStance,
 		MaxEnergy:     base.MaxEnergy,
 		Energy:        base.StartEnergy,
+		HPRatio:       1.0,
 	}
 	return nil
 }

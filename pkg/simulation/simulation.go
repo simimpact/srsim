@@ -54,7 +54,7 @@ func Run(ctx context.Context, cfg *model.SimConfig) (*model.IterationResult, err
 
 	// init services
 	s.modManager = modifier.NewManager(s)
-	s.attributeService = attribute.New(s, s.modManager)
+	s.attributeService = attribute.New(s.event, s.modManager)
 	s.charManager = character.New(s, s.attributeService)
 	s.combatManager = combat.New(s.event, s.attributeService)
 	// turnManager: turn.New(),

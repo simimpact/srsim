@@ -15,7 +15,7 @@ func NewMockEngineWithEvents(ctrl *gomock.Controller) *MockEngine {
 }
 
 func NewEmptyStats(target key.TargetID) *info.Stats {
-	attr := info.Attributes{}
+	attr := &info.Attributes{}
 	mods := info.ModifierState{
 		Props:     info.NewPropMap(),
 		DebuffRES: info.NewDebuffRESMap(),

@@ -2,11 +2,16 @@ package modifier
 
 import (
 	"github.com/simimpact/srsim/pkg/engine"
+	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 type activeModifiers []*ModifierInstance
+
+type ModifierEval interface {
+	EvalModifiers(target key.TargetID) info.ModifierState
+}
 
 type Manager struct {
 	engine    engine.Engine
@@ -17,7 +22,7 @@ type Manager struct {
 func NewManager(engine engine.Engine) *Manager {
 	mgr := &Manager{
 		engine:  engine,
-		targets: make(map[key.TargetID]activeModifiers),
+		targets: make(map[key.TargetID]activeModifiers, 10),
 	}
 	mgr.subscribe()
 	return mgr

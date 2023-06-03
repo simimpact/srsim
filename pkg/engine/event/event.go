@@ -21,6 +21,10 @@ type System struct {
 	ModifierExtendedDuration ModifierExtendedDurationEventHandler
 	ModifierExtendedCount    ModifierExtendedCountEventHandler
 
+	HPChange      HPChangeEventHandler
+	LimboWaitHeal LimboWaitHealEventHandler
+	TargetDeath   TargetDeathEventHandler
+
 	// test placeholder until we get actual events defined
 	Ping handler.EventHandler[int]
 }

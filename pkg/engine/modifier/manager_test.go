@@ -20,7 +20,7 @@ func NewTestManager(t *testing.T) (*modifier.Manager, *gomock.Controller) {
 	engine.EXPECT().
 		Stats(gomock.Any()).
 		DoAndReturn(func(target key.TargetID) *info.Stats {
-			attr := info.Attributes{}
+			attr := &info.Attributes{}
 			mods := manager.EvalModifiers(target)
 			return info.NewStats(target, attr, mods)
 		}).

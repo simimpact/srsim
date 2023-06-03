@@ -8,11 +8,21 @@ import (
 type Attributes struct {
 	BaseStats     PropMap
 	BaseDebuffRES DebuffRESMap
-	CurrentHP     float64
+	HPRatio       float64
 	Energy        float64
 	MaxEnergy     float64
 	Stance        float64
 	MaxStance     float64
+}
+
+type ModifyHPByRatio struct {
+	// The amount of HP ratio to modify the HP by (negative will remove HP)
+	Ratio float64
+	// What ratio type should be used (should Ratio be based on MaxHP or CurrentHP)
+	RatioType model.ModifyHPRatioType
+	// The floor for how low HP can go with this modification. IE: Floor = 1 will prevent the HP
+	// from reaching 0 in this modification (can reduce up to 1 HP)
+	Floor float64
 }
 
 // A snapshot of a targets stats at a point in time
@@ -32,12 +42,12 @@ type Stats struct {
 
 // TODO: ToProto method for logging
 
-func NewStats(id key.TargetID, attributes Attributes, mods ModifierState) *Stats {
+func NewStats(id key.TargetID, attributes *Attributes, mods ModifierState) *Stats {
 	mods.Props.AddAll(attributes.BaseStats)
 	mods.DebuffRES.AddAll(attributes.BaseDebuffRES)
 	return &Stats{
 		id:           id,
-		currentHP:    attributes.CurrentHP,
+		currentHP:    attributes.HPRatio,
 		energy:       attributes.Energy,
 		maxEnergy:    attributes.MaxEnergy,
 		stance:       attributes.Stance,
@@ -98,8 +108,13 @@ func (stats *Stats) Modifiers() []key.Modifier {
 }
 
 func (stats *Stats) CurrentHP() float64 {
+	return stats.currentHP * stats.MaxHP()
+}
+
+func (stats *Stats) CurrentHPRatio() float64 {
 	return stats.currentHP
 }
+
 func (stats *Stats) Stance() float64 {
 	return stats.stance
 }
@@ -122,6 +137,12 @@ func (stats *Stats) MaxHP() float64 {
 		stats.props[model.Property_HP_BASE],
 		stats.props[model.Property_HP_PERCENT],
 		stats.props[model.Property_HP_FLAT]+stats.props[model.Property_HP_CONVERT])
+}
+
+// HP = HP_BASE * (1 + HP_PERCENT) + HP_FLAT + HP_CONVERT
+// alias for MaxHP()
+func (stats *Stats) HP() float64 {
+	return stats.MaxHP()
 }
 
 // ATK = ATK_BASE * (1 + ATK_PERCENT) + ATK_FLAT + ATK_CONVERT

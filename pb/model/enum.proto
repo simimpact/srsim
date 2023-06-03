@@ -200,3 +200,9 @@ enum HealFormula {
   BY_TARGET_MAX_HP = 4;
   BY_TARGET_LOST_HP = 5;
 }
+
+enum ModifyHPRatioType {
+  INVALID_RATIO_TYPE = 0;
+  MAX_HP = 1;
+  CURRENT_HP = 2;
+}
