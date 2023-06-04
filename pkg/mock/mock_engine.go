@@ -39,11 +39,12 @@ func (m *MockEngine) EXPECT() *MockEngineMockRecorder {
 }
 
 // AddModifier mocks base method.
-func (m *MockEngine) AddModifier(arg0 key.TargetID, arg1 info.Modifier) error {
+func (m *MockEngine) AddModifier(arg0 key.TargetID, arg1 info.Modifier) (bool, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddModifier", arg0, arg1)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // AddModifier indicates an expected call of AddModifier.

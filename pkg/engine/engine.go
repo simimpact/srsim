@@ -42,7 +42,10 @@ type Engine interface {
 type Modifier interface {
 	// Adds a new modifier to the given target. At minimum, instance must specify the name of the
 	// modifier and the source.
-	AddModifier(target key.TargetID, instance info.Modifier) error
+	//
+	// Returns true if the modifier was successfully added, otherwise false. Will always return
+	// false if error is non-nil
+	AddModifier(target key.TargetID, instance info.Modifier) (bool, error)
 
 	// Removes all instances of a modifier from the target
 	RemoveModifier(target key.TargetID, modifier key.Modifier)

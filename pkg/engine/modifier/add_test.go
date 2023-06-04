@@ -150,8 +150,9 @@ func TestAddInvalidTarget(t *testing.T) {
 		Name: key.Modifier("TestAddInvalidTarget"),
 	}
 
-	err := manager.AddModifier(target, mod)
+	added, err := manager.AddModifier(target, mod)
 	assert.ErrorContains(t, err, "invalid target")
+	assert.False(t, added)
 }
 
 func TestAddInvalidSource(t *testing.T) {
@@ -168,8 +169,9 @@ func TestAddInvalidSource(t *testing.T) {
 		Name: key.Modifier("TestAddInvalidSource"),
 	}
 
-	err := manager.AddModifier(target, mod)
+	added, err := manager.AddModifier(target, mod)
 	assert.ErrorContains(t, err, "invalid source")
+	assert.False(t, added)
 }
 
 func TestAddUnregistered(t *testing.T) {
@@ -206,10 +208,12 @@ func TestAddUnregistered(t *testing.T) {
 		called += 1
 	})
 
-	err := manager.AddModifier(target, mod1)
+	added, err := manager.AddModifier(target, mod1)
 	assert.NoError(t, err)
-	err = manager.AddModifier(target, mod2)
+	assert.True(t, added)
+	added, err = manager.AddModifier(target, mod2)
 	assert.NoError(t, err)
+	assert.True(t, added)
 	assert.Len(t, manager.targets[target], 1)
 	assert.Equal(t, 1, called)
 }
@@ -252,10 +256,12 @@ func TestAddMultiple(t *testing.T) {
 		called += 1
 	})
 
-	err := manager.AddModifier(target, mod1)
+	added, err := manager.AddModifier(target, mod1)
 	assert.NoError(t, err)
-	err = manager.AddModifier(target, mod2)
+	assert.True(t, added)
+	added, err = manager.AddModifier(target, mod2)
 	assert.NoError(t, err)
+	assert.True(t, added)
 	assert.Len(t, manager.targets[target], 2)
 	assert.Equal(t, 2, called)
 }
@@ -297,10 +303,12 @@ func TestAddRefresh(t *testing.T) {
 		extendedCalls += 1
 	})
 
-	err := manager.AddModifier(target, mod1)
+	added, err := manager.AddModifier(target, mod1)
 	assert.NoError(t, err)
-	err = manager.AddModifier(target, mod2)
+	assert.True(t, added)
+	added, err = manager.AddModifier(target, mod2)
 	assert.NoError(t, err)
+	assert.True(t, added)
 	assert.Len(t, manager.targets[target], 1)
 	assert.Equal(t, 1, addedCalls)
 	assert.Equal(t, 1, extendedCalls)
@@ -344,10 +352,12 @@ func TestAddProlong(t *testing.T) {
 		extendedCalls += 1
 	})
 
-	err := manager.AddModifier(target, mod1)
+	added, err := manager.AddModifier(target, mod1)
 	assert.NoError(t, err)
-	err = manager.AddModifier(target, mod2)
+	assert.True(t, added)
+	added, err = manager.AddModifier(target, mod2)
 	assert.NoError(t, err)
+	assert.True(t, added)
 	assert.Len(t, manager.targets[target], 1)
 	assert.Equal(t, 1, addedCalls)
 	assert.Equal(t, 1, extendedCalls)

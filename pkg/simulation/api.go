@@ -17,7 +17,7 @@ func (sim *Simulation) Rand() *rand.Rand {
 	return sim.rand
 }
 
-func (sim *Simulation) AddModifier(target key.TargetID, instance info.Modifier) error {
+func (sim *Simulation) AddModifier(target key.TargetID, instance info.Modifier) (bool, error) {
 	return sim.modManager.AddModifier(target, instance)
 }
 

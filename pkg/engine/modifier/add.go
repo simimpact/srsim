@@ -9,19 +9,19 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-func (mgr *Manager) AddModifier(target key.TargetID, modifier info.Modifier) error {
+func (mgr *Manager) AddModifier(target key.TargetID, modifier info.Modifier) (bool, error) {
 	config := modifierCatalog[modifier.Name]
 
 	if !mgr.engine.IsValid(target) {
-		return fmt.Errorf("invalid target id: %v", target)
+		return false, fmt.Errorf("invalid target id: %v", target)
 	}
 	if !mgr.engine.IsValid(modifier.Source) {
-		return fmt.Errorf("invalid source id: %v", modifier.Source)
+		return false, fmt.Errorf("invalid source id: %v", modifier.Source)
 	}
 
 	chance, resisted, err := mgr.attemptResist(target, modifier, config.BehaviorFlags)
 	if err != nil || resisted {
-		return err
+		return false, err
 	}
 
 	// prepare the instance to be added to the target
@@ -45,7 +45,7 @@ func (mgr *Manager) AddModifier(target key.TargetID, modifier info.Modifier) err
 	case Merge:
 		result, newInstance = mgr.merge(target, instance)
 	default:
-		return fmt.Errorf("unsupported stacking method: %v", config.Stacking)
+		return false, fmt.Errorf("unsupported stacking method: %v", config.Stacking)
 	}
 
 	// When a matching instance exists, only the following will create a new instance:
@@ -61,7 +61,7 @@ func (mgr *Manager) AddModifier(target key.TargetID, modifier info.Modifier) err
 		}
 		mgr.emitAdd(target, result, chance)
 	}
-	return nil
+	return true, nil
 }
 
 // returns the 1) chance to apply, 2) true if resisted, 3) error
