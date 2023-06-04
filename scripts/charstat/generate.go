@@ -5,7 +5,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -91,7 +91,7 @@ func OpenConfig(result interface{}, path ...string) error {
 	}
 	defer file.Close()
 
-	data, err := ioutil.ReadAll(file)
+	data, err := io.ReadAll(file)
 	if err != nil {
 		return err
 	}
@@ -244,8 +244,8 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 var tmplData = `package {{.KeyLower}}
 
 import (
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/engine/target/character"
-	"github.com/simimpact/srsim/pkg/model"
 )
 
 var promotions = []character.PromotionData{
@@ -270,7 +270,7 @@ var traces = character.TraceMap{
 	{{- range $key, $value := .Traces}}
 	"{{$key}}": {
 		{{- if $value.Stat }}
-		Stat: model.Property_{{$value.Stat}},
+		Stat: prop.{{$value.Stat}},
 		{{- end}}
 		{{- if $value.Amount }}
 		Amount: {{$value.Amount}},

@@ -1,6 +1,9 @@
 package main
 
-import "github.com/simimpact/srsim/pkg/model"
+import (
+	"github.com/simimpact/srsim/pkg/engine/prop"
+	"github.com/simimpact/srsim/pkg/model"
+)
 
 type SkillConfigType int
 
@@ -100,31 +103,10 @@ func (a AvatarInfo) GetPath() model.Path {
 	return model.Path_INVALID_PATH
 }
 
-var statAdd = map[string]model.Property{
-	"HPAddedRatio":          model.Property_HP_PERCENT,
-	"AttackAddedRatio":      model.Property_ATK_PERCENT,
-	"DefenceAddedRatio":     model.Property_DEF_PERCENT,
-	"BaseSpeed":             model.Property_SPD_BASE,
-	"CriticalDamageBase":    model.Property_CRIT_DMG,
-	"CriticalChanceBase":    model.Property_CRIT_CHANCE,
-	"SPRatioBase":           model.Property_ENERGY_REGEN,
-	"StatusResistanceBase":  model.Property_EFFECT_HIT_RATE,
-	"StatusProbabilityBase": model.Property_EFFECT_RES,
-	"HealRatioBase":         model.Property_HEAL_BOOST,
-	"HealTakenRatio":        model.Property_HEAL_TAKEN,
-	"FireAddedRatio":        model.Property_FIRE_DMG_PERCENT,
-	"IceAddedRatio":         model.Property_ICE_DMG_PERCENT,
-	"ThunderAddedRatio":     model.Property_THUNDER_DMG_PERCENT,
-	"QuantumAddedRatio":     model.Property_QUANTUM_DMG_PERCENT,
-	"ImaginaryAddedRatio":   model.Property_IMAGINARY_DMG_PERCENT,
-	"WindAddedRatio":        model.Property_WIND_DMG_PERCENT,
-	"PhysicalAddedRatio":    model.Property_PHYSICAL_DMG_PERCENT,
-}
-
-func (s StatusAdd) GetType() model.Property {
-	m, ok := statAdd[s.PropertyType]
+func (s StatusAdd) GetType() prop.Property {
+	m, ok := prop.GameToProp[s.PropertyType]
 	if ok {
 		return m
 	}
-	return model.Property_INVALID_PROP
+	return prop.Invalid
 }
