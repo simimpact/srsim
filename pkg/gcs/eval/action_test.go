@@ -44,7 +44,7 @@ func TestCharAdd(t *testing.T) {
 	ctx := context.Background()
 	ok := eval.Init(ctx)
 	if !ok {
-		err := <- eval.Err
+		err := <-eval.Err
 		panic(err)
 	}
 
@@ -53,7 +53,7 @@ func TestCharAdd(t *testing.T) {
 	spew.Config.Dump(eval.NextAction(0))
 	spew.Config.Dump(eval.NextAction(1))
 	spew.Config.Dump(eval.NextAction(1))
-	
+
 	// burst
 	fmt.Println("burst")
 	spew.Config.Dump(eval.BurstCheck())

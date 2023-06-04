@@ -9,6 +9,8 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/target/character"
 	"github.com/simimpact/srsim/pkg/engine/turn"
+	"github.com/simimpact/srsim/pkg/gcs"
+	"github.com/simimpact/srsim/pkg/gcs/eval"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -31,12 +33,13 @@ type Simulation struct {
 	attributeService *attribute.Service
 	charManager      *character.Manager
 	turnManager      *turn.TurnCtrl
+	eval             *eval.Eval
 
 	//??
 	res *model.IterationResult
 }
 
-func Run(ctx context.Context, cfg *model.SimConfig) (*model.IterationResult, error) {
+func Run(ctx context.Context, list *gcs.ActionList, cfg *model.SimConfig) (*model.IterationResult, error) {
 	s := &Simulation{
 		cfg:       cfg,
 		actioners: make(map[key.TargetID]Target),
@@ -55,6 +58,7 @@ func Run(ctx context.Context, cfg *model.SimConfig) (*model.IterationResult, err
 	s.attributeService = attribute.New(s, s.modManager)
 	s.charManager = character.New(s, s.attributeService)
 	// turnManager: turn.New(),
+	s.eval = eval.New(list.Program, ctx)
 
 	return s.run()
 }

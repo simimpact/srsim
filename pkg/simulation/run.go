@@ -2,6 +2,7 @@ package simulation
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -28,6 +29,8 @@ func initState(s *Simulation) (stateFn, error) {
 }
 
 func startBattle(s *Simulation) (stateFn, error) {
+	burstCheck(s)
+	executeQueue(s)
 	return beginTurn, nil
 }
 
@@ -40,14 +43,20 @@ func beginTurn(s *Simulation) (stateFn, error) {
 
 	//DetermineTurn
 
+	burstCheck(s)
+	executeQueue(s)
+
 	return action, nil
 }
 
 func action(s *Simulation) (stateFn, error) {
+	// TODO: FindAction (NextAction?) / ExecuteAction
+	burstCheck(s)
 	return endTurn, nil
 }
 
 func endTurn(s *Simulation) (stateFn, error) {
+	executeQueue(s)
 	return exitCheck, nil
 }
 
@@ -60,4 +69,22 @@ func exitCheck(s *Simulation) (stateFn, error) {
 		return nil, nil
 	}
 	return beginTurn, nil
+}
+
+func burstCheck(s *Simulation) bool {
+	bursts := s.eval.BurstCheck()
+	for _, value := range bursts {
+		fmt.Printf("burst: target (%v) type (%v)\n", value.Target, value.Type)
+		// TODO: execute the burst?
+	}
+	return len(bursts) > 0
+}
+
+func executeQueue(s *Simulation) {
+	for {
+		// TODO: ExecuteAction
+		if !burstCheck(s) { // nothing to execute
+			break
+		}
+	}
 }

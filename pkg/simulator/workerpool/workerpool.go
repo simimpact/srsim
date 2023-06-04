@@ -3,6 +3,7 @@ package workerpool
 import (
 	"context"
 
+	"github.com/simimpact/srsim/pkg/gcs"
 	"github.com/simimpact/srsim/pkg/model"
 	"github.com/simimpact/srsim/pkg/simulation"
 )
@@ -15,6 +16,7 @@ type Pool struct {
 }
 
 type Job struct {
+	Script *gcs.ActionList
 	Config *model.SimConfig
 }
 
@@ -51,7 +53,7 @@ func (p *Pool) worker() {
 		case <-p.ctx.Done():
 			return
 		case job := <-p.workChan:
-			res, err := simulation.Run(p.ctx, job.Config)
+			res, err := simulation.Run(p.ctx, job.Script, job.Config)
 			if err != nil {
 				p.errChan <- err
 				return

@@ -12,16 +12,16 @@ import (
 
 type TargetNode struct {
 	target key.TargetID
-	env *Env
-	node ast.Node
+	env    *Env
+	node   ast.Node
 }
 
 type Eval struct {
-	AST ast.Node
+	AST    ast.Node
 	global *Env
-	ctx context.Context
-	Err chan error
-	
+	ctx    context.Context
+	Err    chan error
+
 	targetNode map[key.TargetID]TargetNode
 	burstNodes []TargetNode
 }
@@ -47,6 +47,12 @@ func (e *Env) v(s string) (*Obj, error) {
 		return e.parent.v(s)
 	}
 	return nil, fmt.Errorf("variable %v does not exist", s)
+}
+
+func New(ast *ast.BlockStmt, ctx context.Context) *Eval {
+	e := &Eval{AST: ast}
+	e.Init(ctx)
+	return e
 }
 
 // Run will execute the provided AST.

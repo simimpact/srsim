@@ -17,6 +17,8 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addSysFunc("type", e.typeval, env)
 	e.addSysFunc("register_skill_cb", e.registerSkillCB, env)
 	e.addSysFunc("register_burst_cb", e.registerBurstCB, env)
+
+	// char should be key.TargetID (e.g. dummy_character = 0)
 }
 
 func (e *Eval) addSysFunc(name string, f func(c *ast.CallExpr, env *Env) (Obj, error), env *Env) {
@@ -112,8 +114,8 @@ func (e *Eval) registerSkillCB(c *ast.CallExpr, env *Env) (Obj, error) {
 
 	node := TargetNode{
 		target: key.TargetID(target),
-		env: NewEnv(env),
-		node: fn.Body,
+		env:    NewEnv(env),
+		node:   fn.Body,
 	}
 	for i, v := range fn.Args {
 		param, err := e.evalExpr(c.Args[i], env)
@@ -154,8 +156,8 @@ func (e *Eval) registerBurstCB(c *ast.CallExpr, env *Env) (Obj, error) {
 
 	node := TargetNode{
 		target: key.TargetID(target),
-		env: NewEnv(env),
-		node: fn.Body,
+		env:    NewEnv(env),
+		node:   fn.Body,
 	}
 	for i, v := range fn.Args {
 		param, err := e.evalExpr(c.Args[i], env)
