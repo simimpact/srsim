@@ -4,6 +4,7 @@ import "github.com/simimpact/srsim/pkg/model"
 
 type PropMap map[model.Property]float64
 type DebuffRESMap map[model.BehaviorFlag]float64
+type WeaknessMap map[model.DamageType]bool
 
 func NewPropMap() PropMap {
 	return make(map[model.Property]float64)
@@ -11,6 +12,10 @@ func NewPropMap() PropMap {
 
 func NewDebuffRESMap() DebuffRESMap {
 	return make(map[model.BehaviorFlag]float64)
+}
+
+func NewWeaknessMap() WeaknessMap {
+	return make(map[model.DamageType]bool)
 }
 
 // adds a property to the PropMap using the correct equation (additive, multiplicative, or special)

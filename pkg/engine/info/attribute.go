@@ -6,8 +6,10 @@ import (
 )
 
 type Attributes struct {
+	Level         int
 	BaseStats     PropMap
 	BaseDebuffRES DebuffRESMap
+	Weaknesses    WeaknessMap
 	HPRatio       float64
 	Energy        float64
 	MaxEnergy     float64
@@ -28,6 +30,7 @@ type ModifyHPByRatio struct {
 // A snapshot of a targets stats at a point in time
 type Stats struct {
 	id           key.TargetID
+	level        int
 	currentHP    float64
 	energy       float64
 	maxEnergy    float64
@@ -35,6 +38,7 @@ type Stats struct {
 	maxStance    float64
 	props        PropMap
 	debuffRES    DebuffRESMap
+	weaknesses   WeaknessMap
 	flags        []model.BehaviorFlag
 	statusCounts map[model.StatusType]int
 	modifiers    []key.Modifier
@@ -45,13 +49,16 @@ type Stats struct {
 func NewStats(id key.TargetID, attributes *Attributes, mods ModifierState) *Stats {
 	mods.Props.AddAll(attributes.BaseStats)
 	mods.DebuffRES.AddAll(attributes.BaseDebuffRES)
+	// TODO: merge weaknesses between attributes + mods for cases of weakness app like Silver Wolf
 	return &Stats{
 		id:           id,
+		level:        attributes.Level,
 		currentHP:    attributes.HPRatio,
 		energy:       attributes.Energy,
 		maxEnergy:    attributes.MaxEnergy,
 		stance:       attributes.Stance,
 		maxStance:    attributes.MaxStance,
+		weaknesses:   attributes.Weaknesses,
 		props:        mods.Props,
 		debuffRES:    mods.DebuffRES,
 		flags:        mods.Flags,
@@ -107,26 +114,42 @@ func (stats *Stats) Modifiers() []key.Modifier {
 	return stats.modifiers
 }
 
+// Returns true if this target is weak to the given damage type
+func (stats *Stats) IsWeakTo(t model.DamageType) bool {
+	return stats.weaknesses[t]
+}
+
+// The current level of the target.
+func (stats *Stats) Level() int {
+	return stats.level
+}
+
+// The current HP amount of the target (HPRatio * MaxHP)
 func (stats *Stats) CurrentHP() float64 {
 	return stats.currentHP * stats.MaxHP()
 }
 
+// The current HPRatio (value between 0 and 1).
 func (stats *Stats) CurrentHPRatio() float64 {
 	return stats.currentHP
 }
 
+// The current Stance/Toughness amount of the target
 func (stats *Stats) Stance() float64 {
 	return stats.stance
 }
 
+// The max Stance/Toughness amount of the target
 func (stats *Stats) MaxStance() float64 {
 	return stats.maxStance
 }
 
+// The current energy amount of the target
 func (stats *Stats) Energy() float64 {
 	return stats.energy
 }
 
+// The max energy amount of the target
 func (stats *Stats) MaxEnergy() float64 {
 	return stats.maxEnergy
 }

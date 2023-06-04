@@ -65,6 +65,7 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 
 	// Give the base stats to the attribute manager so Stats calls can work as expected
 	err = mgr.attr.AddTarget(id, attribute.BaseStats{
+		Level:       lvl,
 		Stats:       baseStats,
 		MaxEnergy:   config.MaxEnergy,
 		StartEnergy: char.StartEnergy,

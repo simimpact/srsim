@@ -5,11 +5,14 @@ import (
 
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/model"
 )
 
 type BaseStats struct {
+	Level       int
 	Stats       info.PropMap
 	DebuffRES   info.DebuffRESMap
+	Weaknesses  []model.DamageType
 	StartEnergy float64
 	MaxEnergy   float64
 	MaxStance   float64
@@ -29,9 +32,16 @@ func (s *Service) AddTarget(target key.TargetID, base BaseStats) error {
 		base.StartEnergy = base.MaxEnergy
 	}
 
+	wMap := info.NewWeaknessMap()
+	for _, w := range base.Weaknesses {
+		wMap[w] = true
+	}
+
 	s.targets[target] = &info.Attributes{
+		Level:         base.Level,
 		BaseStats:     base.Stats,
 		BaseDebuffRES: base.DebuffRES,
+		Weaknesses:    wMap,
 		MaxStance:     base.MaxStance,
 		Stance:        base.MaxStance,
 		MaxEnergy:     base.MaxEnergy,
