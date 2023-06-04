@@ -23,9 +23,10 @@ type AttributeModifier interface {
 
 	SetEnergy(target key.TargetID, amt float64) error
 	ModifyEnergy(target key.TargetID, amt float64) error
+	ModifyEnergyFixed(target key.TargetID, amt float64) error
 
-	SetStance(target key.TargetID, amt float64) error
-	ModifyStance(target key.TargetID, amt float64) error
+	SetStance(target, source key.TargetID, amt float64) error
+	ModifyStance(target, source key.TargetID, amt float64) error
 }
 
 type Service struct {
@@ -58,7 +59,3 @@ func (s *Service) Stats(target key.TargetID) *info.Stats {
 // Metadata to have for stats (easy access):
 //	- level
 //	- weaknesses
-
-// TODO: ChangeHP, return new HP (emit HPChangeEvent)
-// TODO: ChangeStance, return new Stance (emit StanceChangeEvent)
-// TODO: ChangeEnergy, return new Energy (emit EnergyChangeEvent)

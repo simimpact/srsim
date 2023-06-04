@@ -38,18 +38,6 @@ func (m *MockEngine) EXPECT() *MockEngineMockRecorder {
 	return m.recorder
 }
 
-// AddEnergy mocks base method.
-func (m *MockEngine) AddEnergy(arg0 key.TargetID, arg1 model.EnergyAdd, arg2 float64) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "AddEnergy", arg0, arg1, arg2)
-}
-
-// AddEnergy indicates an expected call of AddEnergy.
-func (mr *MockEngineMockRecorder) AddEnergy(arg0, arg1, arg2 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddEnergy", reflect.TypeOf((*MockEngine)(nil).AddEnergy), arg0, arg1, arg2)
-}
-
 // AddModifier mocks base method.
 func (m *MockEngine) AddModifier(arg0 key.TargetID, arg1 info.Modifier) error {
 	m.ctrl.T.Helper()
@@ -313,6 +301,34 @@ func (mr *MockEngineMockRecorder) ModifierCount(arg0, arg1 interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifierCount", reflect.TypeOf((*MockEngine)(nil).ModifierCount), arg0, arg1)
 }
 
+// ModifyEnergy mocks base method.
+func (m *MockEngine) ModifyEnergy(arg0 key.TargetID, arg1 float64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ModifyEnergy", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ModifyEnergy indicates an expected call of ModifyEnergy.
+func (mr *MockEngineMockRecorder) ModifyEnergy(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyEnergy", reflect.TypeOf((*MockEngine)(nil).ModifyEnergy), arg0, arg1)
+}
+
+// ModifyEnergyFixed mocks base method.
+func (m *MockEngine) ModifyEnergyFixed(arg0 key.TargetID, arg1 float64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ModifyEnergyFixed", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ModifyEnergyFixed indicates an expected call of ModifyEnergyFixed.
+func (mr *MockEngineMockRecorder) ModifyEnergyFixed(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyEnergyFixed", reflect.TypeOf((*MockEngine)(nil).ModifyEnergyFixed), arg0, arg1)
+}
+
 // ModifyGauge mocks base method.
 func (m *MockEngine) ModifyGauge(arg0 key.TargetID, arg1 model.ModifyGauge, arg2 float64) {
 	m.ctrl.T.Helper()
@@ -323,6 +339,48 @@ func (m *MockEngine) ModifyGauge(arg0 key.TargetID, arg1 model.ModifyGauge, arg2
 func (mr *MockEngineMockRecorder) ModifyGauge(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyGauge", reflect.TypeOf((*MockEngine)(nil).ModifyGauge), arg0, arg1, arg2)
+}
+
+// ModifyHPByAmount mocks base method.
+func (m *MockEngine) ModifyHPByAmount(arg0, arg1 key.TargetID, arg2 float64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ModifyHPByAmount", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ModifyHPByAmount indicates an expected call of ModifyHPByAmount.
+func (mr *MockEngineMockRecorder) ModifyHPByAmount(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyHPByAmount", reflect.TypeOf((*MockEngine)(nil).ModifyHPByAmount), arg0, arg1, arg2)
+}
+
+// ModifyHPByRatio mocks base method.
+func (m *MockEngine) ModifyHPByRatio(arg0, arg1 key.TargetID, arg2 info.ModifyHPByRatio) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ModifyHPByRatio", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ModifyHPByRatio indicates an expected call of ModifyHPByRatio.
+func (mr *MockEngineMockRecorder) ModifyHPByRatio(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyHPByRatio", reflect.TypeOf((*MockEngine)(nil).ModifyHPByRatio), arg0, arg1, arg2)
+}
+
+// ModifyStance mocks base method.
+func (m *MockEngine) ModifyStance(arg0, arg1 key.TargetID, arg2 float64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ModifyStance", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ModifyStance indicates an expected call of ModifyStance.
+func (mr *MockEngineMockRecorder) ModifyStance(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyStance", reflect.TypeOf((*MockEngine)(nil).ModifyStance), arg0, arg1, arg2)
 }
 
 // Neutrals mocks base method.
@@ -399,6 +457,20 @@ func (m *MockEngine) SetGauge(arg0 key.TargetID, arg1 float64) {
 func (mr *MockEngineMockRecorder) SetGauge(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetGauge", reflect.TypeOf((*MockEngine)(nil).SetGauge), arg0, arg1)
+}
+
+// SetHP mocks base method.
+func (m *MockEngine) SetHP(arg0, arg1 key.TargetID, arg2 float64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetHP", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetHP indicates an expected call of SetHP.
+func (mr *MockEngineMockRecorder) SetHP(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetHP", reflect.TypeOf((*MockEngine)(nil).SetHP), arg0, arg1, arg2)
 }
 
 // Stats mocks base method.

@@ -99,10 +99,6 @@ func (sim *Simulation) SetGauge(target key.TargetID, amt float64) {
 	panic("not implemented") // TODO: Implement
 }
 
-func (sim *Simulation) AddEnergy(target key.TargetID, addType model.EnergyAdd, amt float64) {
-	panic("not implemented") // TODO: Implement
-}
-
 func (sim *Simulation) Attack(atk info.Attack) {
 	// TODO:
 	sim.combatManager.Attack(atk, model.AttackEffect_INVALID_ATTACK_EFFECT)
@@ -122,4 +118,28 @@ func (sim *Simulation) RemoveShield() {
 
 func (sim *Simulation) AddTarget() key.TargetID {
 	panic("not implemented") // TODO: Implement
+}
+
+func (sim *Simulation) SetHP(target key.TargetID, source key.TargetID, amt float64) error {
+	return sim.attributeService.SetHP(target, source, amt)
+}
+
+func (sim *Simulation) ModifyHPByRatio(target key.TargetID, source key.TargetID, data info.ModifyHPByRatio) error {
+	return sim.attributeService.ModifyHPByRatio(target, source, data)
+}
+
+func (sim *Simulation) ModifyHPByAmount(target key.TargetID, source key.TargetID, amt float64) error {
+	return sim.attributeService.ModifyHPByAmount(target, source, amt)
+}
+
+func (sim *Simulation) ModifyStance(target key.TargetID, source key.TargetID, amt float64) error {
+	return sim.attributeService.ModifyStance(target, source, amt)
+}
+
+func (sim *Simulation) ModifyEnergy(target key.TargetID, amt float64) error {
+	return sim.attributeService.ModifyEnergy(target, amt)
+}
+
+func (sim *Simulation) ModifyEnergyFixed(target key.TargetID, amt float64) error {
+	return sim.attributeService.ModifyEnergyFixed(target, amt)
 }

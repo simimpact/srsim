@@ -80,18 +80,65 @@ func (s *Service) ModifyHPByRatio(target, source key.TargetID, data info.ModifyH
 	return s.emitHPChangeEvents(target, source, oldRatio, attr.HPRatio, stats.MaxHP())
 }
 
-func (s *Service) SetStance(target key.TargetID, amt float64) error {
-	return nil
+func (s *Service) SetStance(target, source key.TargetID, amt float64) error {
+	attr, ok := s.targets[target]
+	if !ok {
+		return fmt.Errorf("unknown target: %v", target)
+	}
+
+	prev := attr.Stance
+	attr.Stance = amt
+	if attr.Stance > attr.MaxStance {
+		attr.Stance = attr.MaxStance
+	} else if attr.Stance < 0 {
+		attr.Stance = 0
+	}
+
+	return s.emitStanceChange(target, source, prev, attr.Stance)
 }
 
-func (s *Service) ModifyStance(target key.TargetID, amt float64) error {
-	return nil
+func (s *Service) ModifyStance(target, source key.TargetID, amt float64) error {
+	attr, ok := s.targets[target]
+	if !ok {
+		return fmt.Errorf("unknown target: %v", target)
+	}
+
+	stats := s.Stats(target)
+	new := attr.Stance + amt*(1+stats.GetProperty(model.Property_ALL_STANCE_DMG_PERCENT))
+	return s.SetStance(target, source, new)
 }
 
 func (s *Service) SetEnergy(target key.TargetID, amt float64) error {
-	return nil
+	attr, ok := s.targets[target]
+	if !ok {
+		return fmt.Errorf("unknown target: %v", target)
+	}
+
+	prev := attr.Energy
+	attr.Energy = amt
+	if attr.Energy > attr.MaxEnergy {
+		attr.Energy = attr.MaxEnergy
+	} else if attr.Energy < 0 {
+		attr.Energy = 0
+	}
+
+	return s.emitEnergyChange(target, prev, attr.Energy)
 }
 
 func (s *Service) ModifyEnergy(target key.TargetID, amt float64) error {
-	return nil
+	attr, ok := s.targets[target]
+	if !ok {
+		return fmt.Errorf("unknown target: %v", target)
+	}
+
+	stats := s.Stats(target)
+	return s.SetEnergy(target, attr.Energy+amt*(1+stats.EnergyRegen()))
+}
+
+func (s *Service) ModifyEnergyFixed(target key.TargetID, amt float64) error {
+	attr, ok := s.targets[target]
+	if !ok {
+		return fmt.Errorf("unknown target: %v", target)
+	}
+	return s.SetEnergy(target, attr.Energy+amt)
 }

@@ -73,20 +73,45 @@ type Attribute interface {
 	// only be applied to the snapshot.
 	Stats(target key.TargetID) *info.Stats
 
-	// TODO: Energy, HP, Stance
+	// Sets the target HP to the given amount. Source target is used for tracking who owns this HP
+	// modification in the event that the modification kills the target.
+	SetHP(target, source key.TargetID, amt float64) error
 
-	// Adds energy to the given target using the specified EnergyAdd logic
-	AddEnergy(target key.TargetID, addType model.EnergyAdd, amt float64)
+	// Modifies the target HP by the given ratio (% of health). The ratio data can include a floor value to
+	// ensure that the target HP does not go below the given threshold. Source target is used for
+	// tracking who owns this HP modification in the event that the modification kills the target.
+	ModifyHPByRatio(target, source key.TargetID, data info.ModifyHPByRatio) error
+
+	// Modifies the target HP by the given flat amount. Source target is used for tracking who owns
+	// this HP modification in the event that the modification kills the target.
+	ModifyHPByAmount(target, source key.TargetID, amt float64) error
+
+	// Modifies the target stance by the given flat amount. Source target is used for tracking who
+	// owns this stance modification in the event that the stance reaches 0 and a break is triggered.
+	// This stance modification will also scale with the source's ALL_STANCE_DMG_PERCENT.
+	ModifyStance(target, source key.TargetID, amt float64) error
+
+	// Modifies the target energy by the given flat amount. Energy amount added will be multiplied
+	// by the target's current Energy Regeneration amount.
+	ModifyEnergy(target key.TargetID, amt float64) error
+
+	// Modifies the target energy by the given flat amount. This amount is fixed and will not be
+	// increased by the target's Energy Regeneration.
+	ModifyEnergyFixed(target key.TargetID, amt float64) error
 }
 
 type Combat interface {
 	// Performs the given attack where Source is the attacker and Targets are all targets that
 	// are being hit
 	Attack(atk info.Attack)
+
+	// Performs the given heal where Source is the healer and Targets are all targets that are
+	// being healed
 	Heal(heal info.Heal)
 }
 
 type Shield interface {
+	// TODO:
 	AddShield()
 	RemoveShield()
 }

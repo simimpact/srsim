@@ -21,9 +21,13 @@ type System struct {
 	ModifierExtendedDuration ModifierExtendedDurationEventHandler
 	ModifierExtendedCount    ModifierExtendedCountEventHandler
 
-	HPChange      HPChangeEventHandler
-	LimboWaitHeal LimboWaitHealEventHandler
-	TargetDeath   TargetDeathEventHandler
+	HPChange       HPChangeEventHandler
+	LimboWaitHeal  LimboWaitHealEventHandler
+	TargetDeath    TargetDeathEventHandler
+	EnergyChange   EnergyChangeEventHandler
+	StanceChange   StanceChangeEventHandler
+	StanceBreak    StanceBreakEventHandler
+	StanceBreakEnd StanceBreakEndEventHandler
 
 	// test placeholder until we get actual events defined
 	Ping handler.EventHandler[int]

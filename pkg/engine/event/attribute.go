@@ -27,4 +27,25 @@ type TargetDeathEvent struct {
 
 type EnergyChangeEventHandler = handler.EventHandler[EnergyChangeEvent]
 type EnergyChangeEvent struct {
+	Target    key.TargetID
+	OldEnergy float64
+	NewEnergy float64
+}
+
+type StanceChangeEventHandler = handler.EventHandler[StanceChangeEvent]
+type StanceChangeEvent struct {
+	Target    key.TargetID
+	OldStance float64
+	NewStance float64
+}
+
+type StanceBreakEventHandler = handler.EventHandler[StanceBreakEvent]
+type StanceBreakEvent struct {
+	Target key.TargetID
+	Source key.TargetID
+}
+
+type StanceBreakEndEventHandler = handler.EventHandler[StanceBreakEndEvent]
+type StanceBreakEndEvent struct {
+	Target key.TargetID
 }

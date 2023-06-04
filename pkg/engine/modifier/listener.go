@@ -12,18 +12,24 @@ type Listeners struct {
 	// this will always be a fresh instance when stacking. If using Merge, OnAdd will be called
 	// on the old instance.
 	OnAdd func(mod *ModifierInstance)
+
 	// Called when a modifier instance is removed, either forceably or due to the instance expiring.
 	OnRemove func(mod *ModifierInstance)
+
 	// Called when the duration for all modifiers instances of this shape are extended.
 	OnExtendDuration func(mod *ModifierInstance)
+
 	// Called when the count/stacks for all modifier instances of this shape are extended.
 	// Will not be called if OnAdd is called (doesnt call on standard stacking behavior)
 	OnExtendCount func(mod *ModifierInstance)
+
 	// Called when any stat changes on the target this modifier is attached to. Will be called if
 	// you modify properties within this call, so take care not to create a recursive loop.
 	OnPropertyChange func(mod *ModifierInstance)
+
 	// Called at the start of the turn, before the action takes place (used by DoTs).
 	OnPhase1 func(mod *ModifierInstance)
+
 	// Called at the end of the turn
 	OnPhase2 func(mod *ModifierInstance)
 
@@ -31,39 +37,67 @@ type Listeners struct {
 
 	// Called when the current HP of the attached target changes
 	OnHPChange func(mod *ModifierInstance, e event.HPChangeEvent)
+
 	// Called when attached target's current HP = 0. If returns true, will cancel the event and
 	// prevent the TargetDeathEvent from occuring. Used by revives.
 	OnLimboWaitHeal func(mod *ModifierInstance) bool
+
 	// Called when the attached target kills another target. The given target ID is the target that
 	// has been killed.
 	OnTriggerDeath func(mod *ModifierInstance, target key.TargetID)
+
+	// Called whe nthe attached start
+	OnEnergyChange func(mod *ModifierInstance, e event.EnergyChangeEvent)
+
+	// Called when the attached target stance changes
+	OnStanceChange func(mod *ModifierInstance, e event.StanceChangeEvent)
+
+	// Called when the attached target causes another target to go into a break state (0 stance).
+	OnTriggerBreak func(mod *ModifierInstance, target key.TargetID)
+
+	// Called when the attached target goes into a break state (stance reached 0).
+	OnBeingBreak func(mod *ModifierInstance)
+
+	// Called when the attached target break status ends (stance resets to max).
+	OnEndBreak func(mod *ModifierInstance)
 
 	// ------------ combat events
 
 	// Called when an attack starts and the attached target is the attacker.
 	OnBeforeAttack func(mod *ModifierInstance, e event.AttackStartEvent)
+
 	// Called when an attack starts and the attached target is one of the targets being attacked.
 	OnBeforeBeingAttacked func(mod *ModifierInstance, e event.AttackStartEvent)
+
 	// Called after an attack finishes (after all hits) and the attached target is the attacker
 	OnAfterAttack func(mod *ModifierInstance, e event.AttackEndEvent)
+
 	// Called after an attack finishes (after all hits) and the attached target was hit by the attack.
 	OnAfterBeingAttacked func(mod *ModifierInstance, e event.AttackEndEvent)
+
 	// Called before a hit occurs and the attached target is the attacker. Hit data is mutable
 	// to allow modifiers to modify any stats prior to the damage calculation.
 	OnBeforeHit func(mod *ModifierInstance, e event.BeforeHitEvent)
+
 	// Called before a hit occurs and the attached target is the defender. Hit data is mutable
 	// to allow modifiers to modify any stats prior to the damage calculation.
 	OnBeforeBeingHit func(mod *ModifierInstance, e event.BeforeHitEvent)
+
 	// Called after a hit occurs and the attached target is the attacker.
 	OnAfterHit func(mod *ModifierInstance, e event.AfterHitEvent)
+
 	// Called after a hit occurs and the attached target is the defender.
 	OnAfterBeingHit func(mod *ModifierInstance, e event.AfterHitEvent)
+
 	// Called before performing a heal and the attached target is the healer. Heal data is mutable.
 	OnBeforeDealHeal func(mod *ModifierInstance, e *event.BeforeHealEvent)
+
 	// Called before performing a heal and the attached target is the receiver. Heal data is mutable.
 	OnBeforeBeingHeal func(mod *ModifierInstance, e *event.BeforeHealEvent)
+
 	// Called after a heal is performed and the attached target is the healer.
 	OnAfterDealHeal func(mod *ModifierInstance, e event.AfterHealEvent)
+
 	// Called after a heal is performed and the attached target is the receiver
 	OnAfterBeingHeal func(mod *ModifierInstance, e event.AfterHealEvent)
 }
@@ -75,6 +109,10 @@ func (mgr *Manager) subscribe() {
 	events.HPChange.Subscribe(mgr.hpChange)
 	events.LimboWaitHeal.Subscribe(mgr.limboWaitHeal, 100)
 	events.TargetDeath.Subscribe(mgr.targetDeath)
+	events.EnergyChange.Subscribe(mgr.energyChange)
+	events.StanceChange.Subscribe(mgr.stanceChange)
+	events.StanceBreak.Subscribe(mgr.stanceBreak)
+	events.StanceBreakEnd.Subscribe(mgr.stanceBreakEnd)
 
 	// combat events
 	events.AttackStart.Subscribe(mgr.attackStart)
@@ -270,6 +308,48 @@ func (mgr *Manager) targetDeath(e event.TargetDeathEvent) {
 		f := mod.listeners.OnTriggerDeath
 		if f != nil {
 			f(mod, e.Target)
+		}
+	}
+}
+
+func (mgr *Manager) energyChange(e event.EnergyChangeEvent) {
+	for _, mod := range mgr.targets[e.Target] {
+		f := mod.listeners.OnEnergyChange
+		if f != nil {
+			f(mod, e)
+		}
+	}
+}
+
+func (mgr *Manager) stanceChange(e event.StanceChangeEvent) {
+	for _, mod := range mgr.targets[e.Target] {
+		f := mod.listeners.OnStanceChange
+		if f != nil {
+			f(mod, e)
+		}
+	}
+}
+
+func (mgr *Manager) stanceBreak(e event.StanceBreakEvent) {
+	for _, mod := range mgr.targets[e.Source] {
+		f := mod.listeners.OnTriggerBreak
+		if f != nil {
+			f(mod, e.Target)
+		}
+	}
+	for _, mod := range mgr.targets[e.Target] {
+		f := mod.listeners.OnBeingBreak
+		if f != nil {
+			f(mod)
+		}
+	}
+}
+
+func (mgr *Manager) stanceBreakEnd(e event.StanceBreakEndEvent) {
+	for _, mod := range mgr.targets[e.Target] {
+		f := mod.listeners.OnEndBreak
+		if f != nil {
+			f(mod)
 		}
 	}
 }
