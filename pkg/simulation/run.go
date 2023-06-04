@@ -1,7 +1,6 @@
 package simulation
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/simimpact/srsim/pkg/model"
@@ -36,9 +35,10 @@ func startBattle(s *Simulation) (stateFn, error) {
 
 func beginTurn(s *Simulation) (stateFn, error) {
 	//AVUpdate
-	next := s.turnManager.AdvanceTurn()
-	if !s.IsValid(next) {
-		return nil, errors.New("unexpected: turn manager returned an invalid target for next turn")
+	next, err := s.turnManager.StartTurn()
+	if !s.IsValid(next) || err != nil {
+		return nil, fmt.Errorf(
+			"unexpected: turn manager returned an invalid target for next turn %w", err)
 	}
 
 	//DetermineTurn
@@ -65,7 +65,7 @@ func exitCheck(s *Simulation) (stateFn, error) {
 	if s.cfg.Settings.TtkMode {
 		return nil, nil
 	}
-	if s.turnManager.CurrentCycle() >= int(s.cfg.Settings.CycleLimit) {
+	if int(s.turnManager.TotalAV()/100) >= int(s.cfg.Settings.CycleLimit) {
 		return nil, nil
 	}
 	return beginTurn, nil

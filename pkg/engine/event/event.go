@@ -29,6 +29,12 @@ type System struct {
 	StanceBreak    StanceBreakEventHandler
 	StanceBreakEnd StanceBreakEndEventHandler
 
+	TurnTargetsAdded       TurnTargetsAddedEventHandler
+	TurnStart              TurnStartEventHandler
+	TurnReset              TurnResetEventHandler
+	GaugeChange            GaugeChangeEventHandler
+	CurrentGaugeCostChange CurrentGaugeCostChangeEventHandler
+
 	// test placeholder until we get actual events defined
 	Ping handler.EventHandler[int]
 }

@@ -33,7 +33,7 @@ type Simulation struct {
 	modManager       *modifier.Manager
 	attributeService *attribute.Service
 	charManager      *character.Manager
-	turnManager      *turn.TurnCtrl
+	turnManager      *turn.Manager
 	combatManager    *combat.Manager
 	eval             *eval.Eval
 
@@ -60,7 +60,7 @@ func Run(ctx context.Context, list *gcs.ActionList, cfg *model.SimConfig) (*mode
 	s.attributeService = attribute.New(s.event, s.modManager)
 	s.charManager = character.New(s, s.attributeService)
 	s.combatManager = combat.New(s.event, s.attributeService)
-	// turnManager: turn.New(),
+	s.turnManager = turn.New(s.event, s.attributeService)
 	s.eval = eval.New(list.Program, ctx)
 
 	return s.run()

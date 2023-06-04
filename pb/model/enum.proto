@@ -129,6 +129,12 @@ enum BehaviorFlag {
   STAT_ENTANGLE = 115;
 }
 
+enum StatusType {
+  UNKNOWN_STATUS = 0;
+  STATUS_BUFF = 1;
+  STATUS_DEBUFF = 2;
+}
+
 enum Path {
   INVALID_PATH = 0;
   PRESERVATION = 1;

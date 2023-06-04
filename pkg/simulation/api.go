@@ -91,12 +91,24 @@ func (sim *Simulation) IsValid(target key.TargetID) bool {
 	return target != 0
 }
 
-func (sim *Simulation) ModifyGauge(target key.TargetID, modifyType model.ModifyGauge, amt float64) {
-	panic("not implemented") // TODO: Implement
+func (sim *Simulation) SetGauge(target key.TargetID, amt float64) error {
+	return sim.turnManager.SetGauge(target, amt)
 }
 
-func (sim *Simulation) SetGauge(target key.TargetID, amt float64) {
-	panic("not implemented") // TODO: Implement
+func (sim *Simulation) ModifyGaugeNormalized(target key.TargetID, amt float64) error {
+	return sim.turnManager.ModifyGaugeNormalized(target, amt)
+}
+
+func (sim *Simulation) ModifyGaugeAV(target key.TargetID, amt float64) error {
+	return sim.turnManager.ModifyGaugeAV(target, amt)
+}
+
+func (sim *Simulation) SetCurrentGaugeCost(amt float64) {
+	sim.turnManager.SetCurrentGaugeCost(amt)
+}
+
+func (sim *Simulation) ModifyCurrentGaugeCost(amt float64) {
+	sim.turnManager.ModifyCurrentGaugeCost(amt)
 }
 
 func (sim *Simulation) Attack(atk info.Attack) {
