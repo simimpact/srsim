@@ -7,6 +7,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/mock"
 	"github.com/simimpact/srsim/pkg/model"
@@ -58,12 +59,12 @@ func TestResistModifier(t *testing.T) {
 	target := key.TargetID(1)
 	targetStats := mock.NewEmptyStats(target)
 	engine.EXPECT().Stats(gomock.Eq(target)).Return(targetStats).Times(1)
-	targetStats.AddProperty(model.Property_EFFECT_RES, ERES)
+	targetStats.AddProperty(prop.EffectRES, ERES)
 	targetStats.AddDebuffRES(model.BehaviorFlag_STAT_CTRL, DRES)
 
 	source := key.TargetID(2)
 	sourceStats := mock.NewEmptyStats(source)
-	sourceStats.AddProperty(model.Property_EFFECT_HIT_RATE, EHR)
+	sourceStats.AddProperty(prop.EffectHitRate, EHR)
 	engine.EXPECT().Stats(gomock.Eq(source)).Return(sourceStats).Times(1)
 
 	name := key.Modifier("TestResistModifier")
@@ -109,12 +110,12 @@ func TestFailedResist(t *testing.T) {
 	target := key.TargetID(1)
 	targetStats := mock.NewEmptyStats(target)
 	engine.EXPECT().Stats(gomock.Eq(target)).Return(targetStats).Times(1)
-	targetStats.AddProperty(model.Property_EFFECT_RES, ERES)
+	targetStats.AddProperty(prop.EffectRES, ERES)
 	targetStats.AddDebuffRES(model.BehaviorFlag_STAT_CTRL, DRES)
 
 	source := key.TargetID(2)
 	sourceStats := mock.NewEmptyStats(source)
-	sourceStats.AddProperty(model.Property_EFFECT_HIT_RATE, EHR)
+	sourceStats.AddProperty(prop.EffectHitRate, EHR)
 	engine.EXPECT().Stats(gomock.Eq(source)).Return(sourceStats).Times(1)
 
 	name := key.Modifier("TestResistModifier")

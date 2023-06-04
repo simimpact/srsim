@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 	"github.com/stretchr/testify/assert"
@@ -34,7 +35,7 @@ func TestEvalWithMod(t *testing.T) {
 		name:       name,
 		statusType: model.StatusType_STATUS_BUFF,
 		flags:      []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL},
-		stats:      info.PropMap{model.Property_ATK_FLAT: 0.1},
+		stats:      info.PropMap{prop.ATKFlat: 0.1},
 		debuffRES:  info.DebuffRESMap{model.BehaviorFlag_STAT_CTRL: 0.35},
 	}
 
@@ -43,7 +44,7 @@ func TestEvalWithMod(t *testing.T) {
 	result := manager.EvalModifiers(target)
 
 	expectedProps := info.NewPropMap()
-	expectedProps.Modify(model.Property_ATK_FLAT, 0.1)
+	expectedProps.Modify(prop.ATKFlat, 0.1)
 
 	expectedDebuff := info.NewDebuffRESMap()
 	expectedDebuff.Modify(model.BehaviorFlag_STAT_CTRL, 0.35)
@@ -69,7 +70,7 @@ func TestEvalWithMultipleMods(t *testing.T) {
 	mod1 := &ModifierInstance{
 		name:       mod1Name,
 		statusType: model.StatusType_STATUS_BUFF,
-		stats:      info.PropMap{model.Property_FIRE_DMG_RES: 0.45},
+		stats:      info.PropMap{prop.FireDamageRES: 0.45},
 		debuffRES:  info.DebuffRESMap{model.BehaviorFlag_STAT_DOT_BURN: 1.0},
 	}
 
@@ -78,7 +79,7 @@ func TestEvalWithMultipleMods(t *testing.T) {
 		name:       mod2Name,
 		statusType: model.StatusType_STATUS_DEBUFF,
 		flags:      []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL, model.BehaviorFlag_STAT_CTRL_STUN},
-		stats:      info.PropMap{model.Property_ALL_DMG_TAKEN: 0.1},
+		stats:      info.PropMap{prop.AllDamageTaken: 0.1},
 		debuffRES:  info.DebuffRESMap{model.BehaviorFlag_STAT_CTRL: -0.05},
 	}
 
@@ -95,8 +96,8 @@ func TestEvalWithMultipleMods(t *testing.T) {
 	result := manager.EvalModifiers(target)
 
 	expectedProps := info.NewPropMap()
-	expectedProps.Modify(model.Property_FIRE_DMG_RES, 0.45)
-	expectedProps.Modify(model.Property_ALL_DMG_TAKEN, 0.1)
+	expectedProps.Modify(prop.FireDamageRES, 0.45)
+	expectedProps.Modify(prop.AllDamageTaken, 0.1)
 
 	expectedDebuff := info.NewDebuffRESMap()
 	expectedDebuff.Modify(model.BehaviorFlag_STAT_CTRL, -0.05)

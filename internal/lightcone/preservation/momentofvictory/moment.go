@@ -6,6 +6,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -44,15 +45,15 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 func onAdd(mod *modifier.ModifierInstance) {
-	mod.AddProperty(model.Property_AGGRO_PERCENT, 2.0)
-	mod.AddProperty(model.Property_DEF_PERCENT, mod.Params()[amt])
-	mod.AddProperty(model.Property_EFFECT_HIT_RATE, mod.Params()[amt])
+	mod.AddProperty(prop.AggroPercent, 2.0)
+	mod.AddProperty(prop.DEFPercent, mod.Params()[amt])
+	mod.AddProperty(prop.EffectHitRate, mod.Params()[amt])
 }
 
 func onPhase2(mod *modifier.ModifierInstance) {
-	mod.SetProperty(model.Property_DEF_PERCENT, mod.Params()[amt])
+	mod.SetProperty(prop.DEFPercent, mod.Params()[amt])
 }
 
 func onAfterBeingAttacked(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
-	mod.SetProperty(model.Property_DEF_PERCENT, 2.0*mod.Params()[amt])
+	mod.SetProperty(prop.DEFPercent, 2.0*mod.Params()[amt])
 }

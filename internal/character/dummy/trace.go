@@ -1,8 +1,8 @@
 package dummy
 
 import (
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/engine/target/character"
-	"github.com/simimpact/srsim/pkg/model"
 )
 
 var traces = character.TraceMap{
@@ -16,52 +16,52 @@ var traces = character.TraceMap{
 		Ascension: 6,
 	},
 	"1201201": {
-		Stat:   model.Property_ATK_PERCENT,
+		Stat:   prop.ATKPercent,
 		Amount: 0.04,
 		Level:  1,
 	},
 	"1201202": {
-		Stat:      model.Property_QUANTUM_DMG_PERCENT,
+		Stat:      prop.QuantumDamagePercent,
 		Amount:    0.032,
 		Ascension: 2,
 	},
 	"1201203": {
-		Stat:      model.Property_ATK_PERCENT,
+		Stat:      prop.ATKPercent,
 		Amount:    0.0400,
 		Ascension: 3,
 	},
 	"1201204": {
-		Stat:      model.Property_DEF_PERCENT,
+		Stat:      prop.DEFPercent,
 		Amount:    0.0500,
 		Ascension: 3,
 	},
 	"1201205": {
-		Stat:      model.Property_ATK_PERCENT,
+		Stat:      prop.ATKPercent,
 		Amount:    0.0600,
 		Ascension: 5,
 	},
 	"1201206": {
-		Stat:      model.Property_QUANTUM_DMG_PERCENT,
+		Stat:      prop.QuantumDamagePercent,
 		Amount:    0.0480,
 		Ascension: 5,
 	},
 	"1201207": {
-		Stat:      model.Property_ATK_PERCENT,
+		Stat:      prop.ATKPercent,
 		Amount:    0.0600,
 		Ascension: 5,
 	},
 	"1201208": {
-		Stat:      model.Property_DEF_PERCENT,
+		Stat:      prop.DEFPercent,
 		Amount:    0.0750,
 		Ascension: 6,
 	},
 	"1201209": {
-		Stat:   model.Property_QUANTUM_DMG_PERCENT,
+		Stat:   prop.QuantumDamagePercent,
 		Amount: 0.0640,
 		Level:  75,
 	},
 	"1201210": {
-		Stat:   model.Property_ATK_PERCENT,
+		Stat:   prop.ATKPercent,
 		Amount: 0.0800,
 		Level:  80,
 	},

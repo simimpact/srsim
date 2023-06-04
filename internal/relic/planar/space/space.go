@@ -5,8 +5,8 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/equip/relic"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
-	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
@@ -42,17 +42,17 @@ func init() {
 func onAdd(mod *modifier.ModifierInstance) {
 	stats := mod.OwnerStats()
 	if stats.SPD() >= 120 {
-		mod.SetProperty(model.Property_ATK_PERCENT, 0.24)
+		mod.SetProperty(prop.ATKPercent, 0.24)
 	} else {
-		mod.SetProperty(model.Property_ATK_PERCENT, 0.12)
+		mod.SetProperty(prop.ATKPercent, 0.12)
 	}
 }
 
 func onPropChange(mod *modifier.ModifierInstance) {
 	stats := mod.OwnerStats()
 	if stats.SPD() >= 120 {
-		mod.SetProperty(model.Property_ATK_PERCENT, 0.24)
+		mod.SetProperty(prop.ATKPercent, 0.24)
 	} else {
-		mod.SetProperty(model.Property_ATK_PERCENT, 0.12)
+		mod.SetProperty(prop.ATKPercent, 0.12)
 	}
 }

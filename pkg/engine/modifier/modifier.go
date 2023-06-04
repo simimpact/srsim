@@ -3,6 +3,7 @@ package modifier
 import (
 	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -94,12 +95,12 @@ func (mgr *Manager) newInstance(owner key.TargetID, mod info.Modifier) *Modifier
 
 // Add a property to this modifier instance. Will cause all modifiers attached to the owner of this
 // modifier to execute OnPropertyChange listener
-func (mi *ModifierInstance) AddProperty(prop model.Property, amt float64) {
+func (mi *ModifierInstance) AddProperty(prop prop.Property, amt float64) {
 	mi.stats.Modify(prop, amt)
 	mi.manager.emitPropertyChange(mi.owner)
 }
 
-func (mi *ModifierInstance) SetProperty(prop model.Property, amt float64) {
+func (mi *ModifierInstance) SetProperty(prop prop.Property, amt float64) {
 	old := mi.stats[prop]
 	mi.stats.Set(prop, amt)
 	if old != mi.stats[prop] {
@@ -113,7 +114,7 @@ func (mi *ModifierInstance) AddDebuffRES(flag model.BehaviorFlag, amt float64) {
 }
 
 // Get the current value of a property set by this modifier instance
-func (mi *ModifierInstance) GetProperty(prop model.Property) float64 {
+func (mi *ModifierInstance) GetProperty(prop prop.Property) float64 {
 	return mi.stats[prop]
 }
 

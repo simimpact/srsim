@@ -1,6 +1,7 @@
 package info
 
 import (
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -73,8 +74,8 @@ func (stats *Stats) ID() key.TargetID {
 }
 
 // Adds a property to this Stats snapshot
-func (stats *Stats) AddProperty(prop model.Property, amt float64) {
-	stats.props.Modify(prop, amt)
+func (stats *Stats) AddProperty(p prop.Property, amt float64) {
+	stats.props.Modify(p, amt)
 }
 
 // Adds a debuff RES to this Stats snapshot
@@ -83,8 +84,8 @@ func (stats *Stats) AddDebuffRES(flag model.BehaviorFlag, amt float64) {
 }
 
 // Get the current value of a property within this Stats snapshot
-func (stats *Stats) GetProperty(prop model.Property) float64 {
-	return stats.props[prop]
+func (stats *Stats) GetProperty(p prop.Property) float64 {
+	return stats.props[p]
 }
 
 // Get the debuff RES for a given set of behavior flagss
@@ -157,9 +158,9 @@ func (stats *Stats) MaxEnergy() float64 {
 // HP = HP_BASE * (1 + HP_PERCENT) + HP_FLAT + HP_CONVERT
 func (stats *Stats) MaxHP() float64 {
 	return statCalc(
-		stats.props[model.Property_HP_BASE],
-		stats.props[model.Property_HP_PERCENT],
-		stats.props[model.Property_HP_FLAT]+stats.props[model.Property_HP_CONVERT])
+		stats.props[prop.HPBase],
+		stats.props[prop.HPPercent],
+		stats.props[prop.HPFlat]+stats.props[prop.HPConvert])
 }
 
 // HP = HP_BASE * (1 + HP_PERCENT) + HP_FLAT + HP_CONVERT
@@ -171,70 +172,68 @@ func (stats *Stats) HP() float64 {
 // ATK = ATK_BASE * (1 + ATK_PERCENT) + ATK_FLAT + ATK_CONVERT
 func (stats *Stats) ATK() float64 {
 	return statCalc(
-		stats.props[model.Property_ATK_BASE],
-		stats.props[model.Property_ATK_PERCENT],
-		stats.props[model.Property_ATK_FLAT]+stats.props[model.Property_ATK_CONVERT])
+		stats.props[prop.ATKBase],
+		stats.props[prop.ATKPercent],
+		stats.props[prop.ATKFlat]+stats.props[prop.ATKConvert])
 }
 
 // DEF = DEF_BASE * (1 + DEF_PERCENT) + DEF_FLAT + DEF_CONVERT
 func (stats *Stats) DEF() float64 {
 	return statCalc(
-		stats.props[model.Property_DEF_BASE],
-		stats.props[model.Property_DEF_PERCENT],
-		stats.props[model.Property_DEF_FLAT]+stats.props[model.Property_DEF_CONVERT])
+		stats.props[prop.DEFBase],
+		stats.props[prop.DEFPercent],
+		stats.props[prop.DEFFlat]+stats.props[prop.DEFConvert])
 }
 
 // SPD = SPD_BASE * (1 + SPD_PERCENT) + SPD_FLAT + SPD_CONVERT
 func (stats *Stats) SPD() float64 {
 	return statCalc(
-		stats.props[model.Property_SPD_BASE],
-		stats.props[model.Property_SPD_PERCENT],
-		stats.props[model.Property_SPD_FLAT]+stats.props[model.Property_SPD_CONVERT])
+		stats.props[prop.SPDBase],
+		stats.props[prop.SPDPercent],
+		stats.props[prop.SPDFlat]+stats.props[prop.SPDConvert])
 }
 
 // AGGRO = AGGRO_BASE * (1 + AGGRO_PERCENT) + AGGRO_FLAT
 func (stats *Stats) Aggro() float64 {
 	return statCalc(
-		stats.props[model.Property_AGGRO_BASE],
-		stats.props[model.Property_AGGRO_PERCENT],
-		stats.props[model.Property_AGGRO_FLAT])
+		stats.props[prop.AggroBase],
+		stats.props[prop.AggroPercent],
+		stats.props[prop.AggroFlat])
 }
 
 // CRIT CHANCE = CRIT_CHANCE + CRIT_CHANCE_CONVERT
 func (stats *Stats) CritChance() float64 {
-	return stats.props[model.Property_CRIT_CHANCE]
+	return stats.props[prop.CritChance]
 }
 
 // CRIT DAMAGE = CRIT_DMG + CRIT_DMG_CONVERT
 func (stats *Stats) CritDamage() float64 {
-	return stats.props[model.Property_CRIT_DMG]
+	return stats.props[prop.CritDMG]
 }
 
 // HEAL BOOST = HEAL_BOOST + HEAL_BOOST_CONVERT
 func (stats *Stats) HealBoost() float64 {
-	return stats.props[model.Property_HEAL_BOOST] + stats.props[model.Property_HEAL_BOOST_CONVERT]
+	return stats.props[prop.HealBoost] + stats.props[prop.HealBoostConvert]
 }
 
 // EHR = EFFECT_HIT_RATE + EFFECT_HIT_RATE_CONVERT
 func (stats *Stats) EffectHitRate() float64 {
-	return stats.props[model.Property_EFFECT_HIT_RATE] +
-		stats.props[model.Property_EFFECT_HIT_RATE_CONVERT]
+	return stats.props[prop.EffectHitRate] + stats.props[prop.EffectHitRateConvert]
 }
 
 // EFFECT RES = EFFECT_RES + EFFECT_RES_CONVERT
 func (stats *Stats) EffectRES() float64 {
-	return stats.props[model.Property_EFFECT_RES] +
-		stats.props[model.Property_EFFECT_RES_CONVERT]
+	return stats.props[prop.EffectRES] + stats.props[prop.EffectRESConvert]
 }
 
 // REGEN = ENERGY_REGEN + ENERGY_REGEN_CONVERT
 func (stats *Stats) EnergyRegen() float64 {
-	return stats.props[model.Property_ENERGY_REGEN] + stats.props[model.Property_ENERGY_REGEN_CONVERT]
+	return stats.props[prop.EnergyRegen] + stats.props[prop.EnergyRegenConvert]
 }
 
 // BREAK EFFECT = BREAK_EFFECT + BREAK_EFFECT_CONVERT
 func (stats *Stats) BreakEffect() float64 {
-	return stats.props[model.Property_BREAK_EFFECT]
+	return stats.props[prop.BreakEffect]
 }
 
 func statCalc(base, percent, flat float64) float64 {

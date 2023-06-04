@@ -6,6 +6,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -21,11 +22,11 @@ func init() {
 		Effects: []relic.SetEffect{
 			{
 				MinCount: 2,
-				Stats:    info.PropMap{model.Property_ATK_PERCENT: 0.12},
+				Stats:    info.PropMap{prop.ATKPercent: 0.12},
 			},
 			{
 				MinCount: 4,
-				Stats:    info.PropMap{model.Property_SPD_PERCENT: 0.06},
+				Stats:    info.PropMap{prop.SPDPercent: 0.06},
 				CreateEffect: func(engine engine.Engine, owner key.TargetID) {
 					engine.AddModifier(owner, info.Modifier{
 						Name:   mod,
@@ -40,7 +41,7 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnBeforeHit: func(mod *modifier.ModifierInstance, e event.BeforeHitEvent) {
 				if e.Hit.AttackType == model.AttackType_NORMAL {
-					e.Hit.Attacker.AddProperty(model.Property_ALL_DMG_PERCENT, 0.1)
+					e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.1)
 				}
 			},
 		},

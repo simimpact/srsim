@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -104,7 +105,7 @@ func (s *Service) ModifyStance(target, source key.TargetID, amt float64) error {
 	}
 
 	stats := s.Stats(target)
-	new := attr.Stance + amt*(1+stats.GetProperty(model.Property_ALL_STANCE_DMG_PERCENT))
+	new := attr.Stance + amt*(1+stats.GetProperty(prop.AllStanceDMGPercent))
 	return s.SetStance(target, source, new)
 }
 

@@ -8,6 +8,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/equip/relic"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -38,9 +39,9 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 	relics := make(map[key.Relic]int)
 	for _, r := range char.Relics {
 		relics[key.Relic(r.Key)] += 1
-		baseStats.Modify(r.MainStat.Stat, r.MainStat.Amount)
+		baseStats.Modify(prop.FromProto(r.MainStat.Stat), r.MainStat.Amount)
 		for _, sub := range r.SubStats {
-			baseStats.Modify(sub.Stat, sub.Amount)
+			baseStats.Modify(prop.FromProto(sub.Stat), sub.Amount)
 		}
 	}
 
@@ -115,13 +116,13 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 
 func newBaseStats(data PromotionData, level int) info.PropMap {
 	out := info.NewPropMap()
-	out.Modify(model.Property_ATK_BASE, data.ATKBase+data.ATKAdd*float64(level-1))
-	out.Modify(model.Property_DEF_BASE, data.DEFBase+data.DEFAdd*float64(level-1))
-	out.Modify(model.Property_HP_BASE, data.HPBase+data.HPAdd*float64(level-1))
-	out.Modify(model.Property_SPD_BASE, data.SPD)
-	out.Modify(model.Property_CRIT_CHANCE, data.CritChance)
-	out.Modify(model.Property_CRIT_DMG, data.CritDMG)
-	out.Modify(model.Property_AGGRO_BASE, data.Aggro)
+	out.Modify(prop.ATKBase, data.ATKBase+data.ATKAdd*float64(level-1))
+	out.Modify(prop.DEFBase, data.DEFBase+data.DEFAdd*float64(level-1))
+	out.Modify(prop.HPBase, data.HPBase+data.HPAdd*float64(level-1))
+	out.Modify(prop.SPDBase, data.SPD)
+	out.Modify(prop.AggroBase, data.Aggro)
+	out.Modify(prop.CritChance, data.CritChance)
+	out.Modify(prop.CritDMG, data.CritDMG)
 	return out
 }
 
@@ -143,7 +144,7 @@ func processTraces(traces TraceMap, stats info.PropMap, wanted []string, asc int
 
 		// mark as an active trace and add to info
 		active[id] = true
-		if trace.Stat != model.Property_INVALID_PROP {
+		if trace.Stat != prop.Invalid {
 			stats.Modify(trace.Stat, trace.Amount)
 		}
 	}

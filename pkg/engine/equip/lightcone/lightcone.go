@@ -6,6 +6,7 @@ import (
 
 	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -70,7 +71,7 @@ func (c Config) Ascension(maxLvl int) int {
 }
 
 func AddBaseStats(stats info.PropMap, data PromotionData, level int) {
-	stats.Modify(model.Property_ATK_BASE, data.ATKBase+data.ATKAdd*float64(level-1))
-	stats.Modify(model.Property_DEF_BASE, data.DEFBase+data.DEFAdd*float64(level-1))
-	stats.Modify(model.Property_HP_BASE, data.HPBase+data.HPAdd*float64(level-1))
+	stats.Modify(prop.ATKBase, data.ATKBase+data.ATKAdd*float64(level-1))
+	stats.Modify(prop.DEFBase, data.DEFBase+data.DEFAdd*float64(level-1))
+	stats.Modify(prop.HPBase, data.HPBase+data.HPAdd*float64(level-1))
 }

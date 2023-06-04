@@ -6,9 +6,9 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/mock"
-	"github.com/simimpact/srsim/pkg/model"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -46,10 +46,10 @@ func TestOnPropertyChangeBuff(t *testing.T) {
 		Listeners: modifier.Listeners{
 			OnPropertyChange: func(mod *modifier.ModifierInstance) {
 				stats := mod.Engine().Stats(mod.Owner())
-				if stats.GetProperty(model.Property_DEF_PERCENT) >= 0.1 {
-					mod.SetProperty(model.Property_ALL_DMG_PERCENT, 0.1)
+				if stats.GetProperty(prop.DEFPercent) >= 0.1 {
+					mod.SetProperty(prop.AllDamagePercent, 0.1)
 				} else {
-					mod.SetProperty(model.Property_ALL_DMG_PERCENT, 0.0)
+					mod.SetProperty(prop.AllDamagePercent, 0.0)
 				}
 			},
 		},
@@ -68,13 +68,13 @@ func TestOnPropertyChangeBuff(t *testing.T) {
 		Source:          target,
 		Duration:        1,
 		TickImmediately: true,
-		Stats:           info.PropMap{model.Property_DEF_PERCENT: 0.15},
+		Stats:           info.PropMap{prop.DEFPercent: 0.15},
 	})
 
 	mods = manager.EvalModifiers(target)
 	expectedProps = info.PropMap{
-		model.Property_DEF_PERCENT:     0.15,
-		model.Property_ALL_DMG_PERCENT: 0.1,
+		prop.DEFPercent:       0.15,
+		prop.AllDamagePercent: 0.1,
 	}
 	assert.Equal(t, expectedProps, mods.Props)
 
@@ -106,7 +106,7 @@ func TestReplaceStacking(t *testing.T) {
 		Stacking:          modifier.Replace,
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.ModifierInstance) {
-				mod.AddProperty(model.Property_CRIT_CHANCE, 0.05*mod.Count())
+				mod.AddProperty(prop.CritChance, 0.05*mod.Count())
 			},
 		},
 	})
@@ -118,7 +118,7 @@ func TestReplaceStacking(t *testing.T) {
 	})
 
 	mods = manager.EvalModifiers(target)
-	expectedProps = info.PropMap{model.Property_CRIT_CHANCE: 0.05}
+	expectedProps = info.PropMap{prop.CritChance: 0.05}
 	assert.Equal(t, expectedProps, mods.Props)
 
 	manager.Tick(target, info.TurnStart)
@@ -135,7 +135,7 @@ func TestReplaceStacking(t *testing.T) {
 	})
 
 	mods = manager.EvalModifiers(target)
-	expectedProps = info.PropMap{model.Property_CRIT_CHANCE: 0.05 * float64(int(3))}
+	expectedProps = info.PropMap{prop.CritChance: 0.05 * float64(int(3))}
 	assert.Equal(t, expectedProps, mods.Props)
 
 	manager.Tick(target, info.ModifierPhase1)
@@ -149,7 +149,7 @@ func TestReplaceStacking(t *testing.T) {
 	})
 
 	mods = manager.EvalModifiers(target)
-	expectedProps = info.PropMap{model.Property_CRIT_CHANCE: 0.05 * float64(int(5))}
+	expectedProps = info.PropMap{prop.CritChance: 0.05 * float64(int(5))}
 	assert.Equal(t, expectedProps, mods.Props)
 
 	manager.Tick(target, info.ModifierPhase1)
@@ -179,7 +179,7 @@ func TestReplaceStackingBySource(t *testing.T) {
 		Stacking: modifier.ReplaceBySource,
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.ModifierInstance) {
-				mod.AddProperty(model.Property_QUANTUM_PEN, 0.1)
+				mod.AddProperty(prop.QuantumPEN, 0.1)
 			},
 		},
 	})
@@ -197,6 +197,6 @@ func TestReplaceStackingBySource(t *testing.T) {
 	})
 
 	mods := manager.EvalModifiers(target)
-	expectedProps := info.PropMap{model.Property_QUANTUM_PEN: 0.2}
+	expectedProps := info.PropMap{prop.QuantumPEN: 0.2}
 	assert.Equal(t, expectedProps, mods.Props)
 }

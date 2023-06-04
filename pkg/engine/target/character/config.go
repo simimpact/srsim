@@ -3,6 +3,7 @@ package character
 import (
 	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -23,7 +24,7 @@ type Config struct {
 type TraceMap map[string]Trace
 
 type Trace struct {
-	Stat      model.Property
+	Stat      prop.Property
 	Amount    float64
 	Ascension int
 	Level     int

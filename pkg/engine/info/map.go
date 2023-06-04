@@ -1,13 +1,16 @@
 package info
 
-import "github.com/simimpact/srsim/pkg/model"
+import (
+	"github.com/simimpact/srsim/pkg/engine/prop"
+	"github.com/simimpact/srsim/pkg/model"
+)
 
-type PropMap map[model.Property]float64
+type PropMap map[prop.Property]float64
 type DebuffRESMap map[model.BehaviorFlag]float64
 type WeaknessMap map[model.DamageType]bool
 
 func NewPropMap() PropMap {
-	return make(map[model.Property]float64)
+	return make(map[prop.Property]float64)
 }
 
 func NewDebuffRESMap() DebuffRESMap {
@@ -19,18 +22,18 @@ func NewWeaknessMap() WeaknessMap {
 }
 
 // adds a property to the PropMap using the correct equation (additive, multiplicative, or special)
-func (m PropMap) Modify(prop model.Property, amt float64) {
-	if prop == model.Property_ALL_DMG_REDUCE || prop == model.Property_FATIGUE {
-		m[prop] = 1 - (1-m[prop])*(1-amt)
+func (m PropMap) Modify(p prop.Property, amt float64) {
+	if p == prop.AllDamageReduce || p == prop.Fatigue {
+		m[p] = 1 - (1-m[p])*(1-amt)
 	} else {
-		m[prop] += amt
+		m[p] += amt
 	}
 }
 
 // resets the given property to the given value (will overwrite the existing value)
-func (m PropMap) Set(prop model.Property, amt float64) {
-	m[prop] = 0
-	m.Modify(prop, amt)
+func (m PropMap) Set(p prop.Property, amt float64) {
+	m[p] = 0
+	m.Modify(p, amt)
 }
 
 // Adds a debuff res to the DebuffRESMap for the given behavior flag
