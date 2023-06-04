@@ -16,6 +16,9 @@ const (
 	amt string       = "amount"
 )
 
+// Increases the wearer's DEF by 24% and Effect Hit Rate by 24%. Increases the chance for the
+// wearer to be attacked by enemies. When the wearer is attacked, increase their DEF by
+// an extra 24% until the end of the wearer's turn.
 func init() {
 	lightcone.Register(key.MomentOfVictory, lightcone.Config{
 		CreatePassive: Create,
@@ -38,22 +41,23 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	engine.AddModifier(owner, info.Modifier{
 		Name:   mod,
 		Source: owner,
-		Params: map[string]float64{
-			amt: 0.24 + 0.04*float64(lc.Ascension),
-		},
+		State:  0.24 + 0.04*float64(lc.Ascension),
 	})
 }
 
 func onAdd(mod *modifier.ModifierInstance) {
+	amount := mod.State().(float64)
 	mod.AddProperty(prop.AggroPercent, 2.0)
-	mod.AddProperty(prop.DEFPercent, mod.Params()[amt])
-	mod.AddProperty(prop.EffectHitRate, mod.Params()[amt])
+	mod.AddProperty(prop.DEFPercent, amount)
+	mod.AddProperty(prop.EffectHitRate, amount)
 }
 
+// reset back to 1x amount at end of turn
 func onPhase2(mod *modifier.ModifierInstance) {
-	mod.SetProperty(prop.DEFPercent, mod.Params()[amt])
+	mod.SetProperty(prop.DEFPercent, mod.State().(float64))
 }
 
+// after attack,
 func onAfterBeingAttacked(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
-	mod.SetProperty(prop.DEFPercent, 2.0*mod.Params()[amt])
+	mod.SetProperty(prop.DEFPercent, 2.0*mod.State().(float64))
 }

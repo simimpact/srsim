@@ -119,6 +119,10 @@ func TestRemoveModifierFromSource(t *testing.T) {
 }
 
 func TestRemoveModifierWithOnRemoveListener(t *testing.T) {
+	type state struct {
+		OnRemoveCalled bool
+	}
+
 	manager, mockCtrl := NewTestManagerWithEvents(t)
 	defer mockCtrl.Finish()
 
@@ -126,11 +130,12 @@ func TestRemoveModifierWithOnRemoveListener(t *testing.T) {
 	name := key.Modifier("TestRemoveModifierWithListener")
 
 	mod := &ModifierInstance{
-		name:   name,
-		params: make(map[string]float64),
+		name:  name,
+		state: &state{},
 		listeners: Listeners{
 			OnRemove: func(modifier *ModifierInstance) {
-				modifier.Params()["OnRemoveCalled"] = 1.0
+				state := modifier.State().(*state)
+				state.OnRemoveCalled = true
 			},
 		},
 	}
@@ -139,8 +144,9 @@ func TestRemoveModifierWithOnRemoveListener(t *testing.T) {
 
 	called := 0
 	manager.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemovedEvent) {
+		state := event.Modifier.State.(*state)
 		assert.Equal(t, name, event.Modifier.Name)
-		assert.Contains(t, event.Modifier.Params, "OnRemoveCalled")
+		assert.True(t, state.OnRemoveCalled)
 		called += 1
 	})
 
@@ -150,6 +156,10 @@ func TestRemoveModifierWithOnRemoveListener(t *testing.T) {
 }
 
 func TestRemoveModifierSelf(t *testing.T) {
+	type state struct {
+		OnRemoveCalled bool
+	}
+
 	manager, mockCtrl := NewTestManagerWithEvents(t)
 	defer mockCtrl.Finish()
 
@@ -157,12 +167,13 @@ func TestRemoveModifierSelf(t *testing.T) {
 	name := key.Modifier("TestRemoveModifierSelf")
 
 	mod := &ModifierInstance{
-		name:   name,
-		owner:  target,
-		params: make(map[string]float64),
+		name:  name,
+		owner: target,
+		state: &state{},
 		listeners: Listeners{
 			OnRemove: func(modifier *ModifierInstance) {
-				modifier.Params()["OnRemoveCalled"] = 1.0
+				state := modifier.State().(*state)
+				state.OnRemoveCalled = true
 			},
 		},
 		manager: manager,
@@ -172,8 +183,9 @@ func TestRemoveModifierSelf(t *testing.T) {
 
 	called := 0
 	manager.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemovedEvent) {
+		state := event.Modifier.State.(*state)
 		assert.Equal(t, name, event.Modifier.Name)
-		assert.Contains(t, event.Modifier.Params, "OnRemoveCalled")
+		assert.True(t, state.OnRemoveCalled)
 		called += 1
 	})
 

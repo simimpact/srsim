@@ -15,20 +15,26 @@ func TestDuplicateRegistration(t *testing.T) {
 }
 
 func TestRegisterWithListeners(t *testing.T) {
+	type state struct {
+		Called int
+	}
+
 	key := key.Modifier("TestModifierListeners")
 	Register(key, Config{
 		Listeners: Listeners{
 			OnAdd: func(modifier *ModifierInstance) {
-				modifier.Params()["Called"] = 1
+				state := modifier.State().(*state)
+				state.Called = 1
 			},
 		},
 	})
 
 	mod := &ModifierInstance{
-		params: make(map[string]float64),
+		state: &state{},
 	}
 	modifierCatalog[key].Listeners.OnAdd(mod)
-	assert.Equal(t, 1.0, mod.params["Called"])
+	s := mod.state.(*state)
+	assert.Equal(t, 1, s.Called)
 }
 
 func TestConfigHasFlag(t *testing.T) {

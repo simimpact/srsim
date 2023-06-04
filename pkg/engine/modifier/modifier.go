@@ -12,7 +12,7 @@ type ModifierInstance struct {
 	name                     key.Modifier
 	owner                    key.TargetID
 	source                   key.TargetID
-	params                   map[string]float64
+	state                    any
 	tickImmediately          bool
 	canTickImmediatelyPhase2 bool
 	duration                 int
@@ -34,7 +34,7 @@ func (mgr *Manager) newInstance(owner key.TargetID, mod info.Modifier) *Modifier
 		owner:             owner,
 		name:              mod.Name,
 		source:            mod.Source,
-		params:            mod.Params,
+		state:             mod.State,
 		tickImmediately:   mod.TickImmediately,
 		duration:          mod.Duration,
 		count:             mod.Count,
@@ -48,9 +48,6 @@ func (mgr *Manager) newInstance(owner key.TargetID, mod info.Modifier) *Modifier
 		flags:             config.BehaviorFlags,
 	}
 
-	if mi.params == nil {
-		mi.params = make(map[string]float64)
-	}
 	if mi.stats == nil {
 		mi.stats = info.NewPropMap()
 	}
@@ -148,9 +145,10 @@ func (mi *ModifierInstance) Owner() key.TargetID {
 	return mi.owner
 }
 
-// Any custom params to be defined that are used by the underlying modifier logic
-func (mi *ModifierInstance) Params() map[string]float64 {
-	return mi.params
+// Returns the state struct associated with this modifier instance (created in AddModifier call)
+// This state struct is untyped. Up to modifier logic to type assert to the desired struct type
+func (mi *ModifierInstance) State() any {
+	return mi.state
 }
 
 // How long before this instance expires. Will be removed when Duration == 0. A negative duration
@@ -195,10 +193,9 @@ func (mi *ModifierInstance) ToModel() info.Modifier {
 	res.AddAll(mi.debuffRES)
 
 	return info.Modifier{
-		Name:   mi.name,
-		Source: mi.source,
-		Params: mi.params,
-		// Chance: mi.chance,
+		Name:              mi.name,
+		Source:            mi.source,
+		State:             mi.state,
 		Duration:          mi.duration,
 		TickImmediately:   mi.tickImmediately,
 		Count:             mi.count,

@@ -12,8 +12,9 @@ type Modifier struct {
 	Name key.Modifier
 	// TargetID for who created this modifier instance
 	Source key.TargetID
-	// Any custom params to be defined that are used by the underlying modifier logic
-	Params map[string]float64
+	// Custom state that can be used to parameterize modifier logic (listeners can depend on state)
+	// Note: State will be JSON serialized for logging purposes, so should be serialization friendly.
+	State any
 	// If specified, modifier will be applied with a random chance against the resistance
 	// 		add prob = 1 - chance * (1 + source ERR) * (1 - target EffectRES) * (1 - target Debuff RES)
 	// If unspecified, modifier will always be added (using the defined stacking logic)

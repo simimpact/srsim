@@ -177,23 +177,29 @@ func TestAddUnregistered(t *testing.T) {
 	defer mockCtrl.Finish()
 	defer FailOnPanic(t)
 
+	type state struct {
+		Mod float64
+	}
+
 	target := key.TargetID(1)
 	name := key.Modifier("TestAddUnregistered")
 	mod1 := info.Modifier{
 		Name:   name,
 		Source: target,
-		Params: map[string]float64{"Mod1": 5.0},
+		State:  state{Mod: 5.0},
 	}
 	mod2 := info.Modifier{
 		Name:   name,
 		Source: target,
-		Params: map[string]float64{"Mod2": 1.0},
+		State:  state{Mod: 1.0},
 	}
 
 	called := 0
 	manager.engine.Events().ModifierAdded.Subscribe(func(event event.ModifierAddedEvent) {
+		state := event.Modifier.State.(state)
+
 		if called == 0 {
-			assert.Equal(t, map[string]float64{"Mod1": 5.0}, event.Modifier.Params)
+			assert.Equal(t, 5.0, state.Mod)
 		} else {
 			assert.Fail(t, "ModifierAddedEvent expected to only emit once")
 		}
@@ -213,17 +219,21 @@ func TestAddMultiple(t *testing.T) {
 	defer mockCtrl.Finish()
 	defer FailOnPanic(t)
 
+	type state struct {
+		Mod float64
+	}
+
 	target := key.TargetID(1)
 	name := key.Modifier("TestAddMultiple")
 	mod1 := info.Modifier{
 		Name:   name,
 		Source: target,
-		Params: map[string]float64{"Mod1": 5.0},
+		State:  state{Mod: 5.0},
 	}
 	mod2 := info.Modifier{
 		Name:   name,
 		Source: target,
-		Params: map[string]float64{"Mod2": 1.0},
+		State:  state{Mod: 1.0},
 	}
 
 	Register(name, Config{
@@ -232,10 +242,12 @@ func TestAddMultiple(t *testing.T) {
 
 	called := 0
 	manager.engine.Events().ModifierAdded.Subscribe(func(event event.ModifierAddedEvent) {
+		state := event.Modifier.State.(state)
+
 		if called == 0 {
-			assert.Equal(t, map[string]float64{"Mod1": 5.0}, event.Modifier.Params)
+			assert.Equal(t, 5.0, state.Mod)
 		} else {
-			assert.Equal(t, map[string]float64{"Mod2": 1.0}, event.Modifier.Params)
+			assert.Equal(t, 1.0, state.Mod)
 		}
 		called += 1
 	})
