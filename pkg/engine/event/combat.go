@@ -34,18 +34,18 @@ type BeforeHitEvent struct {
 
 type DamageResultEventHandler = handler.EventHandler[DamageResultEvent]
 type DamageResultEvent struct {
-	Attacker        key.TargetID
-	Defender        key.TargetID
-	AttackType      model.AttackType
-	DamageType      model.DamageType
-	AttackEffect    model.AttackEffect
-	BaseDamage      float64
-	BonusDamage     float64
-	TotalDamage     float64
-	HPDamage        float64
-	ShieldDamage    float64
-	HealthRemaining float64
-	IsCrit          bool
+	Attacker         key.TargetID
+	Defender         key.TargetID
+	AttackType       model.AttackType
+	DamageType       model.DamageType
+	AttackEffect     model.AttackEffect
+	BaseDamage       float64
+	BonusDamage      float64
+	TotalDamage      float64
+	HPDamage         float64
+	ShieldDamage     float64
+	HPRatioRemaining float64
+	IsCrit           bool
 }
 
 type AfterHitEventHandler = handler.EventHandler[AfterHitEvent]

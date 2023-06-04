@@ -11,7 +11,9 @@ import (
 
 type AttributeGetter interface {
 	Stats(target key.TargetID) *info.Stats
-	// TODO: getters for internal use (IsAlive, IsStanceBroken, IsMaxEnergy?)
+	Stance(target key.TargetID) float64
+	Energy(target key.TargetID) float64
+	HPRatio(target key.TargetID) float64
 }
 
 type AttributeModifier interface {
@@ -52,10 +54,14 @@ func (s *Service) Stats(target key.TargetID) *info.Stats {
 	return info.NewStats(target, attr, mods)
 }
 
-// TODO:
-// 	- AddTarget specific functions
-//	- BaseStats struct
+func (s *Service) HPRatio(target key.TargetID) float64 {
+	return s.targets[target].HPRatio
+}
 
-// Metadata to have for stats (easy access):
-//	- level
-//	- weaknesses
+func (s *Service) Energy(target key.TargetID) float64 {
+	return s.targets[target].Energy
+}
+
+func (s *Service) Stance(target key.TargetID) float64 {
+	return s.targets[target].Stance
+}

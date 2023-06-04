@@ -7,8 +7,6 @@ import (
 )
 
 func (mgr *Manager) Attack(atk info.Attack, effect model.AttackEffect) {
-	// TODO: validate, dead check
-
 	// start an attack
 	if !mgr.isInAttack && isAttackStartable(atk.AttackType) {
 		// TODO: make this a struct?

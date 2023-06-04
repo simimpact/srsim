@@ -55,18 +55,18 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 	// NOTE: BaseDamage multipliers, EnergyGain, and StanceDamage should be scaled by HitRatio
 
 	mgr.event.DamageResult.Emit(event.DamageResultEvent{
-		Attacker:        hit.Attacker.ID(),
-		Defender:        hit.Defender.ID(),
-		AttackType:      hit.AttackType,
-		DamageType:      hit.DamageType,
-		AttackEffect:    hit.AttackEffect,
-		BaseDamage:      0,     // TODO
-		BonusDamage:     0,     // TODO
-		TotalDamage:     0,     // TODO
-		ShieldDamage:    0,     // TODO
-		HPDamage:        0,     // TODO
-		HealthRemaining: 0,     // TODO
-		IsCrit:          false, // TODO
+		Attacker:         hit.Attacker.ID(),
+		Defender:         hit.Defender.ID(),
+		AttackType:       hit.AttackType,
+		DamageType:       hit.DamageType,
+		AttackEffect:     hit.AttackEffect,
+		BaseDamage:       0, // TODO
+		BonusDamage:      0, // TODO
+		TotalDamage:      0, // TODO
+		ShieldDamage:     0, // TODO
+		HPDamage:         0, // TODO
+		HPRatioRemaining: mgr.attr.HPRatio(hit.Defender.ID()),
+		IsCrit:           false, // TODO
 	})
 
 	if mgr.isInAttack {
