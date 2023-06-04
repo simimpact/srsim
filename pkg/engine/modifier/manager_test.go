@@ -200,3 +200,69 @@ func TestReplaceStackingBySource(t *testing.T) {
 	expectedProps := info.PropMap{prop.QuantumPEN: 0.2}
 	assert.Equal(t, expectedProps, mods.Props)
 }
+
+func TestTickImmediatelyBeforeAction(t *testing.T) {
+	// 1. Add Mod w/ tick immediately (1 turn duration)
+	// 2. tick action
+	// 3. tick phase 2
+	// 4. verify mod gone
+	manager, mockCtrl := NewTestManager(t)
+	defer mockCtrl.Finish()
+
+	var mods info.ModifierState
+	mod := key.Modifier("TestTickImmediatelyBeforeAction")
+	target := key.TargetID(3)
+
+	manager.Tick(target, info.ModifierPhase1)
+
+	manager.AddModifier(target, info.Modifier{
+		Name:            mod,
+		Source:          target,
+		Duration:        1,
+		TickImmediately: true,
+		Stats:           info.PropMap{prop.ATKPercent: 0.1},
+	})
+
+	mods = manager.EvalModifiers(target)
+	expectedProps := info.PropMap{prop.ATKPercent: 0.1}
+	assert.Equal(t, expectedProps, mods.Props)
+
+	manager.Tick(target, info.ActionEnd)
+	manager.Tick(target, info.ModifierPhase2)
+
+	mods = manager.EvalModifiers(target)
+	assert.Empty(t, mods.Props)
+}
+
+func TestTickImmediatelyAfterAction(t *testing.T) {
+	// 1. tick action
+	// 2. Add Mod w/ tick immediately (1 turn duration)
+	// 3. tick phase 2
+	// 4. verify mod still there
+	manager, mockCtrl := NewTestManager(t)
+	defer mockCtrl.Finish()
+
+	var mods info.ModifierState
+	mod := key.Modifier("TestTickImmediatelyBeforeAction")
+	target := key.TargetID(3)
+
+	manager.Tick(target, info.ModifierPhase1)
+	manager.Tick(target, info.ActionEnd)
+
+	manager.AddModifier(target, info.Modifier{
+		Name:            mod,
+		Source:          target,
+		Duration:        1,
+		TickImmediately: true,
+		Stats:           info.PropMap{prop.ATKPercent: 0.1},
+	})
+
+	mods = manager.EvalModifiers(target)
+	expectedProps := info.PropMap{prop.ATKPercent: 0.1}
+	assert.Equal(t, expectedProps, mods.Props)
+
+	manager.Tick(target, info.ModifierPhase2)
+
+	mods = manager.EvalModifiers(target)
+	assert.Equal(t, expectedProps, mods.Props)
+}

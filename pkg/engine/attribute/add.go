@@ -12,7 +12,7 @@ type BaseStats struct {
 	Level       int
 	Stats       info.PropMap
 	DebuffRES   info.DebuffRESMap
-	Weaknesses  []model.DamageType
+	Weakness    []model.DamageType
 	StartEnergy float64
 	MaxEnergy   float64
 	MaxStance   float64
@@ -33,7 +33,7 @@ func (s *Service) AddTarget(target key.TargetID, base BaseStats) error {
 	}
 
 	wMap := info.NewWeaknessMap()
-	for _, w := range base.Weaknesses {
+	for _, w := range base.Weakness {
 		wMap[w] = true
 	}
 
@@ -41,7 +41,7 @@ func (s *Service) AddTarget(target key.TargetID, base BaseStats) error {
 		Level:         base.Level,
 		BaseStats:     base.Stats,
 		BaseDebuffRES: base.DebuffRES,
-		Weaknesses:    wMap,
+		Weakness:      wMap,
 		MaxStance:     base.MaxStance,
 		Stance:        base.MaxStance,
 		MaxEnergy:     base.MaxEnergy,

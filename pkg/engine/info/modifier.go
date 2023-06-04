@@ -44,17 +44,19 @@ type Modifier struct {
 	// stack is added. Specifying this field will overrride the default value for this defined in the
 	// ModifierConfig (which defaults to 0 if undefined)
 	CountAddWhenStack float64
-
-	Stats     PropMap
+	// Any stats/properties that are added to the target by this modifier.
+	Stats PropMap
+	// Any additional debuff res that are applied to the target by this modifier.
 	DebuffRES DebuffRESMap
+	// Any additional weaknesses that are applied to the target by this modifier.
+	Weakness WeaknessMap
 }
 
 type ModifierState struct {
 	Props     PropMap
 	DebuffRES DebuffRESMap
+	Weakness  WeaknessMap
 	Flags     []model.BehaviorFlag
 	Counts    map[model.StatusType]int
 	Modifiers []key.Modifier
 }
-
-// TODO: ToProto for logging

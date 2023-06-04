@@ -10,7 +10,7 @@ type Attributes struct {
 	Level         int
 	BaseStats     PropMap
 	BaseDebuffRES DebuffRESMap
-	Weaknesses    WeaknessMap
+	Weakness      WeaknessMap
 	HPRatio       float64
 	Energy        float64
 	MaxEnergy     float64
@@ -39,7 +39,7 @@ type Stats struct {
 	maxStance    float64
 	props        PropMap
 	debuffRES    DebuffRESMap
-	weaknesses   WeaknessMap
+	weakness     WeaknessMap
 	flags        []model.BehaviorFlag
 	statusCounts map[model.StatusType]int
 	modifiers    []key.Modifier
@@ -50,6 +50,7 @@ type Stats struct {
 func NewStats(id key.TargetID, attributes *Attributes, mods ModifierState) *Stats {
 	mods.Props.AddAll(attributes.BaseStats)
 	mods.DebuffRES.AddAll(attributes.BaseDebuffRES)
+	mods.Weakness.AddAll(attributes.Weakness)
 	// TODO: merge weaknesses between attributes + mods for cases of weakness app like Silver Wolf
 	return &Stats{
 		id:           id,
@@ -59,7 +60,7 @@ func NewStats(id key.TargetID, attributes *Attributes, mods ModifierState) *Stat
 		maxEnergy:    attributes.MaxEnergy,
 		stance:       attributes.Stance,
 		maxStance:    attributes.MaxStance,
-		weaknesses:   attributes.Weaknesses,
+		weakness:     attributes.Weakness,
 		props:        mods.Props,
 		debuffRES:    mods.DebuffRES,
 		flags:        mods.Flags,
@@ -117,7 +118,7 @@ func (stats *Stats) Modifiers() []key.Modifier {
 
 // Returns true if this target is weak to the given damage type
 func (stats *Stats) IsWeakTo(t model.DamageType) bool {
-	return stats.weaknesses[t]
+	return stats.weakness[t]
 }
 
 // The current level of the target.

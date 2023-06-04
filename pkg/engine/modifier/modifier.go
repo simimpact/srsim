@@ -21,6 +21,7 @@ type ModifierInstance struct {
 	countAddWhenStack        float64
 	stats                    info.PropMap
 	debuffRES                info.DebuffRESMap
+	weakness                 info.WeaknessMap
 	renewTurn                int
 	manager                  *Manager
 	listeners                Listeners
@@ -42,6 +43,7 @@ func (mgr *Manager) newInstance(owner key.TargetID, mod info.Modifier) *Modifier
 		countAddWhenStack: mod.CountAddWhenStack,
 		stats:             mod.Stats,
 		debuffRES:         mod.DebuffRES,
+		weakness:          mod.Weakness,
 		manager:           mgr,
 		listeners:         config.Listeners,
 		statusType:        config.StatusType,
@@ -53,6 +55,9 @@ func (mgr *Manager) newInstance(owner key.TargetID, mod info.Modifier) *Modifier
 	}
 	if mi.debuffRES == nil {
 		mi.debuffRES = info.NewDebuffRESMap()
+	}
+	if mi.weakness == nil {
+		mi.weakness = info.NewWeaknessMap()
 	}
 
 	// Apply defaults from config as fallback
@@ -110,6 +115,19 @@ func (mi *ModifierInstance) AddDebuffRES(flag model.BehaviorFlag, amt float64) {
 	mi.debuffRES.Modify(flag, amt)
 }
 
+// Adds a new weakness to this modifier. In stats snapshots, the modifier owner will now be listed
+// as weak to this damage type.
+func (mi *ModifierInstance) AddWeakness(weakness model.DamageType) {
+	mi.weakness[weakness] = true
+}
+
+// Removes the given weakness from the modifier's weakness list. NOTE: This does not remove
+// the weakness from the target if it is applied by another modifier or is in the modifier's base
+// stats.
+func (mi *ModifierInstance) RemoveWeakness(weakness model.DamageType) {
+	delete(mi.weakness, weakness)
+}
+
 // Get the current value of a property set by this modifier instance
 func (mi *ModifierInstance) GetProperty(prop prop.Property) float64 {
 	return mi.stats[prop]
@@ -118,6 +136,11 @@ func (mi *ModifierInstance) GetProperty(prop prop.Property) float64 {
 // Get the current value of a debuff res set by this modifier instance
 func (mi *ModifierInstance) GetDebuffRES(flags ...model.BehaviorFlag) float64 {
 	return mi.debuffRES.GetDebuffRES(flags...)
+}
+
+// check if this modifier instance has applied this specific weakness type to the target
+func (mi *ModifierInstance) HasWeakness(dmgType model.DamageType) bool {
+	return mi.weakness[dmgType]
 }
 
 // Remove this modifier instance

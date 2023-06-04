@@ -15,6 +15,7 @@ import (
 func (mgr *Manager) EvalModifiers(target key.TargetID) info.ModifierState {
 	props := info.NewPropMap()
 	debuffRES := info.NewDebuffRESMap()
+	weakness := info.NewWeaknessMap()
 	counts := make(map[model.StatusType]int)
 	flagSet := make(map[model.BehaviorFlag]struct{})
 	modSet := make(map[key.Modifier]struct{})
@@ -22,6 +23,7 @@ func (mgr *Manager) EvalModifiers(target key.TargetID) info.ModifierState {
 	for _, mod := range mgr.targets[target] {
 		props.AddAll(mod.stats)
 		debuffRES.AddAll(mod.debuffRES)
+		weakness.AddAll(mod.weakness)
 		counts[mod.statusType] += 1
 		modSet[mod.name] = struct{}{}
 
@@ -33,6 +35,7 @@ func (mgr *Manager) EvalModifiers(target key.TargetID) info.ModifierState {
 	return info.ModifierState{
 		Props:     props,
 		DebuffRES: debuffRES,
+		Weakness:  weakness,
 		Counts:    counts,
 		Flags:     toList(flagSet),
 		Modifiers: toList(modSet),

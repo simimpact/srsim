@@ -57,6 +57,7 @@ func TestEvalWithMod(t *testing.T) {
 	assert.Equal(t, expectedCounts, result.Counts)
 	assert.Equal(t, []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL}, result.Flags)
 	assert.Equal(t, []key.Modifier{name}, result.Modifiers)
+	assert.Empty(t, result.Weakness)
 }
 
 func TestEvalWithMultipleMods(t *testing.T) {
@@ -81,6 +82,7 @@ func TestEvalWithMultipleMods(t *testing.T) {
 		flags:      []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL, model.BehaviorFlag_STAT_CTRL_STUN},
 		stats:      info.PropMap{prop.AllDamageTaken: 0.1},
 		debuffRES:  info.DebuffRESMap{model.BehaviorFlag_STAT_CTRL: -0.05},
+		weakness:   info.WeaknessMap{model.DamageType_ICE: true},
 	}
 
 	mod3Name := key.Modifier("TestEvalWithMultipleMods3")
@@ -89,6 +91,7 @@ func TestEvalWithMultipleMods(t *testing.T) {
 		flags:     []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL, model.BehaviorFlag_STAT_ATTACH_WEAKNESS},
 		stats:     info.PropMap{},
 		debuffRES: info.DebuffRESMap{},
+		weakness:  info.WeaknessMap{model.DamageType_QUANTUM: true},
 	}
 
 	manager.targets[target] = append(manager.targets[target], mod1, mod2, mod3, mod3)
@@ -120,4 +123,5 @@ func TestEvalWithMultipleMods(t *testing.T) {
 	assert.Equal(t, expectedCounts, result.Counts)
 	assert.ElementsMatch(t, expectedFlags, result.Flags)
 	assert.ElementsMatch(t, []key.Modifier{mod1Name, mod2Name, mod3Name}, result.Modifiers)
+	assert.Contains(t, result.Weakness, model.DamageType_ICE, model.DamageType_QUANTUM)
 }

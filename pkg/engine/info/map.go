@@ -71,3 +71,12 @@ func (m DebuffRESMap) AddAll(other DebuffRESMap) {
 		}
 	}
 }
+
+// Add all weaknesses from the other WeaknessMap to this WeaknessMap
+func (m WeaknessMap) AddAll(other WeaknessMap) {
+	for k, v := range other {
+		if v {
+			m[k] = v
+		}
+	}
+}
