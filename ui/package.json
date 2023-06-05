@@ -27,12 +27,15 @@
     "build:web": "yarn workspace @srsim/web build"
   },
   "devDependencies": {
+    "@radix-ui/react-slot": "^1.0.2",
     "@types/eslint": "^8",
     "@types/prettier": "^2",
     "@types/watch": "^1",
     "@typescript-eslint/eslint-plugin": "^5.59.1",
     "@typescript-eslint/parser": "^5.59.1",
     "autoprefixer": "^10.4.14",
+    "class-variance-authority": "^0.6.0",
+    "clsx": "^1.2.1",
     "concurrently": "^8.0.1",
     "eslint": "^8.39.0",
     "eslint-config-prettier": "^8.8.0",
@@ -51,7 +54,9 @@
     "prettier": "^2.8.8",
     "rimraf": "^3",
     "syncpack": "^9.8.6",
+    "tailwind-merge": "^1.13.0",
     "tailwindcss": "^3.3.2",
+    "tailwindcss-animate": "^1.0.5",
     "typescript": "^5.0.4",
     "watch": "^1.0.2"
   },
