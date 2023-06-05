@@ -7,6 +7,8 @@ import "github.com/simimpact/srsim/pkg/engine/event/handler"
 type System struct {
 	Initialize  InitializeEventHandler
 	BattleStart BattleStartEventHandler
+	TurnEnd     TurnEndEventHandler
+	Termination TerminationEventHandler
 
 	AttackStart  AttackStartEventHandler
 	AttackEnd    AttackEndEventHandler

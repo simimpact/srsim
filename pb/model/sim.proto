@@ -55,3 +55,10 @@ message Enemy {
     repeated double res = 5 [ json_name = "res" ];
     repeated double debuff_res = 6 [ json_name = "debuff_res" ];
 }
+
+enum TerminationReson {
+    INVALID_TERMINATION = 0;
+    BATTLE_LOSS = 1;
+    BATTLE_WIN = 2;
+    TIMEOUT = 3;
+}

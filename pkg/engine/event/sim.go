@@ -2,6 +2,8 @@ package event
 
 import (
 	"github.com/simimpact/srsim/pkg/engine/event/handler"
+	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
@@ -12,9 +14,27 @@ type InitializeEvent struct {
 	// TODO: sim metadata (build date, commit hash, etc)?
 }
 
-// TODO: event data (current state of enemies and characters?)
-// can we/should we reuse this event to occur at the start of each wave?
-type BattleStartEventHandler = handler.EventHandler[struct{}]
+type BattleStartEventHandler = handler.EventHandler[BattleStartEvent]
+type BattleStartEvent struct {
+	CharInfo     map[key.TargetID]info.Character
+	EnemyInfo    map[key.TargetID]info.Enemy
+	CharStats    []*info.Stats
+	EnemyStats   []*info.Stats
+	NeutralStats []*info.Stats
+}
+
+type TurnEndEventHandler = handler.EventHandler[TurnEndEvent]
+type TurnEndEvent struct {
+	Characters []*info.Stats
+	Enemies    []*info.Stats
+	Neutrals   []*info.Stats
+}
+
+type TerminationEventHandler = handler.EventHandler[TerminationEvent]
+type TerminationEvent struct {
+	TotalAV float64
+	Reason  model.TerminationReson
+}
 
 type ActionStartEvent struct {
 }

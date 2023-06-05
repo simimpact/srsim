@@ -58,7 +58,7 @@ func (sim *simulation) CharacterInfo(target key.TargetID) (info.Character, error
 	return sim.charManager.Info(target)
 }
 
-func (sim *simulation) EnemyInfo(target key.TargetID) (model.Enemy, error) {
+func (sim *simulation) EnemyInfo(target key.TargetID) (info.Enemy, error) {
 	panic("not implemented") // TODO: Implement
 }
 
@@ -96,10 +96,6 @@ func (sim *simulation) AddShield() {
 }
 
 func (sim *simulation) RemoveShield() {
-	panic("not implemented") // TODO: Implement
-}
-
-func (sim *simulation) AddTarget() key.TargetID {
 	panic("not implemented") // TODO: Implement
 }
 

@@ -20,6 +20,58 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type TerminationReson int32
+
+const (
+	TerminationReson_INVALID_TERMINATION TerminationReson = 0
+	TerminationReson_BATTLE_LOSS         TerminationReson = 1
+	TerminationReson_BATTLE_WIN          TerminationReson = 2
+	TerminationReson_TIMEOUT             TerminationReson = 3
+)
+
+// Enum value maps for TerminationReson.
+var (
+	TerminationReson_name = map[int32]string{
+		0: "INVALID_TERMINATION",
+		1: "BATTLE_LOSS",
+		2: "BATTLE_WIN",
+		3: "TIMEOUT",
+	}
+	TerminationReson_value = map[string]int32{
+		"INVALID_TERMINATION": 0,
+		"BATTLE_LOSS":         1,
+		"BATTLE_WIN":          2,
+		"TIMEOUT":             3,
+	}
+)
+
+func (x TerminationReson) Enum() *TerminationReson {
+	p := new(TerminationReson)
+	*p = x
+	return p
+}
+
+func (x TerminationReson) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (TerminationReson) Descriptor() protoreflect.EnumDescriptor {
+	return file_pb_model_sim_proto_enumTypes[0].Descriptor()
+}
+
+func (TerminationReson) Type() protoreflect.EnumType {
+	return &file_pb_model_sim_proto_enumTypes[0]
+}
+
+func (x TerminationReson) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use TerminationReson.Descriptor instead.
+func (TerminationReson) EnumDescriptor() ([]byte, []int) {
+	return file_pb_model_sim_proto_rawDescGZIP(), []int{0}
+}
+
 type SimConfig struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -611,10 +663,16 @@ var file_pb_model_sim_proto_rawDesc = []byte{
 	0x09, 0x52, 0x0a, 0x77, 0x65, 0x61, 0x6b, 0x6e, 0x65, 0x73, 0x73, 0x65, 0x73, 0x12, 0x10, 0x0a,
 	0x03, 0x72, 0x65, 0x73, 0x18, 0x05, 0x20, 0x03, 0x28, 0x01, 0x52, 0x03, 0x72, 0x65, 0x73, 0x12,
 	0x1e, 0x0a, 0x0a, 0x64, 0x65, 0x62, 0x75, 0x66, 0x66, 0x5f, 0x72, 0x65, 0x73, 0x18, 0x06, 0x20,
-	0x03, 0x28, 0x01, 0x52, 0x0a, 0x64, 0x65, 0x62, 0x75, 0x66, 0x66, 0x5f, 0x72, 0x65, 0x73, 0x42,
-	0x26, 0x5a, 0x24, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x73, 0x69,
-	0x6d, 0x69, 0x6d, 0x70, 0x61, 0x63, 0x74, 0x2f, 0x73, 0x72, 0x73, 0x69, 0x6d, 0x2f, 0x70, 0x6b,
-	0x67, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x03, 0x28, 0x01, 0x52, 0x0a, 0x64, 0x65, 0x62, 0x75, 0x66, 0x66, 0x5f, 0x72, 0x65, 0x73, 0x2a,
+	0x59, 0x0a, 0x10, 0x54, 0x65, 0x72, 0x6d, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65,
+	0x73, 0x6f, 0x6e, 0x12, 0x17, 0x0a, 0x13, 0x49, 0x4e, 0x56, 0x41, 0x4c, 0x49, 0x44, 0x5f, 0x54,
+	0x45, 0x52, 0x4d, 0x49, 0x4e, 0x41, 0x54, 0x49, 0x4f, 0x4e, 0x10, 0x00, 0x12, 0x0f, 0x0a, 0x0b,
+	0x42, 0x41, 0x54, 0x54, 0x4c, 0x45, 0x5f, 0x4c, 0x4f, 0x53, 0x53, 0x10, 0x01, 0x12, 0x0e, 0x0a,
+	0x0a, 0x42, 0x41, 0x54, 0x54, 0x4c, 0x45, 0x5f, 0x57, 0x49, 0x4e, 0x10, 0x02, 0x12, 0x0b, 0x0a,
+	0x07, 0x54, 0x49, 0x4d, 0x45, 0x4f, 0x55, 0x54, 0x10, 0x03, 0x42, 0x26, 0x5a, 0x24, 0x67, 0x69,
+	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x73, 0x69, 0x6d, 0x69, 0x6d, 0x70, 0x61,
+	0x63, 0x74, 0x2f, 0x73, 0x72, 0x73, 0x69, 0x6d, 0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x6d, 0x6f, 0x64,
+	0x65, 0x6c, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -629,26 +687,28 @@ func file_pb_model_sim_proto_rawDescGZIP() []byte {
 	return file_pb_model_sim_proto_rawDescData
 }
 
+var file_pb_model_sim_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_pb_model_sim_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_pb_model_sim_proto_goTypes = []interface{}{
-	(*SimConfig)(nil),         // 0: model.SimConfig
-	(*SimulatorSettings)(nil), // 1: model.SimulatorSettings
-	(*Relic)(nil),             // 2: model.Relic
-	(*RelicStat)(nil),         // 3: model.RelicStat
-	(*LightCone)(nil),         // 4: model.LightCone
-	(*Character)(nil),         // 5: model.Character
-	(*Enemy)(nil),             // 6: model.Enemy
-	(Property)(0),             // 7: model.Property
+	(TerminationReson)(0),     // 0: model.TerminationReson
+	(*SimConfig)(nil),         // 1: model.SimConfig
+	(*SimulatorSettings)(nil), // 2: model.SimulatorSettings
+	(*Relic)(nil),             // 3: model.Relic
+	(*RelicStat)(nil),         // 4: model.RelicStat
+	(*LightCone)(nil),         // 5: model.LightCone
+	(*Character)(nil),         // 6: model.Character
+	(*Enemy)(nil),             // 7: model.Enemy
+	(Property)(0),             // 8: model.Property
 }
 var file_pb_model_sim_proto_depIdxs = []int32{
-	1, // 0: model.SimConfig.settings:type_name -> model.SimulatorSettings
-	5, // 1: model.SimConfig.characters:type_name -> model.Character
-	6, // 2: model.SimConfig.enemies:type_name -> model.Enemy
-	3, // 3: model.Relic.main_stat:type_name -> model.RelicStat
-	3, // 4: model.Relic.sub_stats:type_name -> model.RelicStat
-	7, // 5: model.RelicStat.stat:type_name -> model.Property
-	4, // 6: model.Character.cone:type_name -> model.LightCone
-	2, // 7: model.Character.relics:type_name -> model.Relic
+	2, // 0: model.SimConfig.settings:type_name -> model.SimulatorSettings
+	6, // 1: model.SimConfig.characters:type_name -> model.Character
+	7, // 2: model.SimConfig.enemies:type_name -> model.Enemy
+	4, // 3: model.Relic.main_stat:type_name -> model.RelicStat
+	4, // 4: model.Relic.sub_stats:type_name -> model.RelicStat
+	8, // 5: model.RelicStat.stat:type_name -> model.Property
+	5, // 6: model.Character.cone:type_name -> model.LightCone
+	3, // 7: model.Character.relics:type_name -> model.Relic
 	8, // [8:8] is the sub-list for method output_type
 	8, // [8:8] is the sub-list for method input_type
 	8, // [8:8] is the sub-list for extension type_name
@@ -753,13 +813,14 @@ func file_pb_model_sim_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_pb_model_sim_proto_rawDesc,
-			NumEnums:      0,
+			NumEnums:      1,
 			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_pb_model_sim_proto_goTypes,
 		DependencyIndexes: file_pb_model_sim_proto_depIdxs,
+		EnumInfos:         file_pb_model_sim_proto_enumTypes,
 		MessageInfos:      file_pb_model_sim_proto_msgTypes,
 	}.Build()
 	File_pb_model_sim_proto = out.File

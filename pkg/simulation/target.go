@@ -11,6 +11,11 @@ const (
 	TargetNeutral
 )
 
+// TODO: AddTarget
+func (sim *simulation) AddTarget() key.TargetID {
+	panic("not implemented") // TODO: Implement
+}
+
 func (sim *simulation) IsValid(target key.TargetID) bool {
 	if _, ok := sim.targets[target]; ok {
 		return true

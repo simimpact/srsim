@@ -145,7 +145,7 @@ type Info interface {
 	CharacterInfo(target key.TargetID) (info.Character, error)
 
 	// Metadata for the given enemy, such as their current level and weaknesses.
-	EnemyInfo(target key.TargetID) (model.Enemy, error)
+	EnemyInfo(target key.TargetID) (info.Enemy, error)
 }
 
 type Target interface {

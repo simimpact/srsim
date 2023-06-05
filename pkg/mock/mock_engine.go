@@ -149,10 +149,10 @@ func (mr *MockEngineMockRecorder) Enemies() *gomock.Call {
 }
 
 // EnemyInfo mocks base method.
-func (m *MockEngine) EnemyInfo(arg0 key.TargetID) (model.Enemy, error) {
+func (m *MockEngine) EnemyInfo(arg0 key.TargetID) (info.Enemy, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "EnemyInfo", arg0)
-	ret0, _ := ret[0].(model.Enemy)
+	ret0, _ := ret[0].(info.Enemy)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

@@ -38,3 +38,7 @@ func (mgr *Manager) Info(id key.TargetID) (info.Enemy, error) {
 	}
 	return info.Enemy{}, fmt.Errorf("target is not an enemy: %v", id)
 }
+
+func (mgr *Manager) Enemies() map[key.TargetID]info.Enemy {
+	return mgr.info
+}

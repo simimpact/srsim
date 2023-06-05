@@ -38,3 +38,7 @@ func (mgr *Manager) Info(id key.TargetID) (info.Character, error) {
 	}
 	return info.Character{}, fmt.Errorf("target is not a character: %v", id)
 }
+
+func (mgr *Manager) Characters() map[key.TargetID]info.Character {
+	return mgr.info
+}
