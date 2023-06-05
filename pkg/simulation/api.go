@@ -9,149 +9,120 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-func (sim *Simulation) Events() *event.System {
+func (sim *simulation) Events() *event.System {
 	return sim.event
 }
 
-func (sim *Simulation) Rand() *rand.Rand {
+func (sim *simulation) Rand() *rand.Rand {
 	return sim.rand
 }
 
-func (sim *Simulation) AddModifier(target key.TargetID, instance info.Modifier) (bool, error) {
+func (sim *simulation) AddModifier(target key.TargetID, instance info.Modifier) (bool, error) {
 	return sim.modManager.AddModifier(target, instance)
 }
 
-func (sim *Simulation) RemoveModifier(target key.TargetID, modifier key.Modifier) {
+func (sim *simulation) RemoveModifier(target key.TargetID, modifier key.Modifier) {
 	sim.modManager.RemoveModifier(target, modifier)
 }
 
-func (sim *Simulation) RemoveModifierFromSource(target key.TargetID, source key.TargetID, modifier key.Modifier) {
+func (sim *simulation) RemoveModifierFromSource(target key.TargetID, source key.TargetID, modifier key.Modifier) {
 	sim.modManager.RemoveModifierFromSource(target, source, modifier)
 }
 
-func (sim *Simulation) ExtendModifierDuration(target key.TargetID, modifier key.Modifier, amt int) {
+func (sim *simulation) ExtendModifierDuration(target key.TargetID, modifier key.Modifier, amt int) {
 	sim.modManager.ExtendDuration(target, modifier, amt)
 }
 
-func (sim *Simulation) ExtendModifierCount(target key.TargetID, modifier key.Modifier, amt float64) {
+func (sim *simulation) ExtendModifierCount(target key.TargetID, modifier key.Modifier, amt float64) {
 	sim.modManager.ExtendCount(target, modifier, amt)
 }
 
-func (sim *Simulation) HasModifier(target key.TargetID, modifier key.Modifier) bool {
+func (sim *simulation) HasModifier(target key.TargetID, modifier key.Modifier) bool {
 	return sim.modManager.HasModifier(target, modifier)
 }
 
-func (sim *Simulation) ModifierCount(target key.TargetID, statusType model.StatusType) int {
+func (sim *simulation) ModifierCount(target key.TargetID, statusType model.StatusType) int {
 	state := sim.modManager.EvalModifiers(target)
 	return state.Counts[statusType]
 }
 
-func (sim *Simulation) HasBehaviorFlag(target key.TargetID, flags ...model.BehaviorFlag) bool {
+func (sim *simulation) HasBehaviorFlag(target key.TargetID, flags ...model.BehaviorFlag) bool {
 	return sim.modManager.HasFlag(target, flags...)
 }
 
-func (sim *Simulation) Stats(target key.TargetID) *info.Stats {
+func (sim *simulation) Stats(target key.TargetID) *info.Stats {
 	return sim.attributeService.Stats(target)
 }
 
-func (sim *Simulation) CharacterInfo(target key.TargetID) (info.Character, error) {
+func (sim *simulation) CharacterInfo(target key.TargetID) (info.Character, error) {
 	return sim.charManager.Info(target)
 }
 
-func (sim *Simulation) EnemyInfo(target key.TargetID) (model.Enemy, error) {
+func (sim *simulation) EnemyInfo(target key.TargetID) (model.Enemy, error) {
 	panic("not implemented") // TODO: Implement
 }
 
-func (sim *Simulation) IsCharacter(target key.TargetID) bool {
-	panic("not implemented") // TODO: Implement
-}
-
-func (sim *Simulation) IsEnemy(target key.TargetID) bool {
-	panic("not implemented") // TODO: Implement
-}
-
-func (sim *Simulation) AdjacentTo(target key.TargetID) []key.TargetID {
-	panic("not implemented") // TODO: Implement
-}
-
-func (sim *Simulation) Characters() []key.TargetID {
-	panic("not implemented") // TODO: Implement
-}
-
-func (sim *Simulation) Enemies() []key.TargetID {
-	panic("not implemented") // TODO: Implement
-}
-
-func (sim *Simulation) Neutrals() []key.TargetID {
-	panic("not implemented") // TODO: Implement
-}
-
-func (sim *Simulation) IsValid(target key.TargetID) bool {
-	// TODO: Implement
-	return target != 0
-}
-
-func (sim *Simulation) SetGauge(target key.TargetID, amt float64) error {
+func (sim *simulation) SetGauge(target key.TargetID, amt float64) error {
 	return sim.turnManager.SetGauge(target, amt)
 }
 
-func (sim *Simulation) ModifyGaugeNormalized(target key.TargetID, amt float64) error {
+func (sim *simulation) ModifyGaugeNormalized(target key.TargetID, amt float64) error {
 	return sim.turnManager.ModifyGaugeNormalized(target, amt)
 }
 
-func (sim *Simulation) ModifyGaugeAV(target key.TargetID, amt float64) error {
+func (sim *simulation) ModifyGaugeAV(target key.TargetID, amt float64) error {
 	return sim.turnManager.ModifyGaugeAV(target, amt)
 }
 
-func (sim *Simulation) SetCurrentGaugeCost(amt float64) {
+func (sim *simulation) SetCurrentGaugeCost(amt float64) {
 	sim.turnManager.SetCurrentGaugeCost(amt)
 }
 
-func (sim *Simulation) ModifyCurrentGaugeCost(amt float64) {
+func (sim *simulation) ModifyCurrentGaugeCost(amt float64) {
 	sim.turnManager.ModifyCurrentGaugeCost(amt)
 }
 
-func (sim *Simulation) Attack(atk info.Attack) {
+func (sim *simulation) Attack(atk info.Attack) {
 	// TODO:
 	sim.combatManager.Attack(atk, model.AttackEffect_INVALID_ATTACK_EFFECT)
 }
 
-func (sim *Simulation) Heal(heal info.Heal) {
+func (sim *simulation) Heal(heal info.Heal) {
 	sim.combatManager.Heal(heal)
 }
 
-func (sim *Simulation) AddShield() {
+func (sim *simulation) AddShield() {
 	panic("not implemented") // TODO: Implement
 }
 
-func (sim *Simulation) RemoveShield() {
+func (sim *simulation) RemoveShield() {
 	panic("not implemented") // TODO: Implement
 }
 
-func (sim *Simulation) AddTarget() key.TargetID {
+func (sim *simulation) AddTarget() key.TargetID {
 	panic("not implemented") // TODO: Implement
 }
 
-func (sim *Simulation) SetHP(target key.TargetID, source key.TargetID, amt float64) error {
+func (sim *simulation) SetHP(target key.TargetID, source key.TargetID, amt float64) error {
 	return sim.attributeService.SetHP(target, source, amt)
 }
 
-func (sim *Simulation) ModifyHPByRatio(target key.TargetID, source key.TargetID, data info.ModifyHPByRatio) error {
+func (sim *simulation) ModifyHPByRatio(target key.TargetID, source key.TargetID, data info.ModifyHPByRatio) error {
 	return sim.attributeService.ModifyHPByRatio(target, source, data)
 }
 
-func (sim *Simulation) ModifyHPByAmount(target key.TargetID, source key.TargetID, amt float64) error {
+func (sim *simulation) ModifyHPByAmount(target key.TargetID, source key.TargetID, amt float64) error {
 	return sim.attributeService.ModifyHPByAmount(target, source, amt)
 }
 
-func (sim *Simulation) ModifyStance(target key.TargetID, source key.TargetID, amt float64) error {
+func (sim *simulation) ModifyStance(target key.TargetID, source key.TargetID, amt float64) error {
 	return sim.attributeService.ModifyStance(target, source, amt)
 }
 
-func (sim *Simulation) ModifyEnergy(target key.TargetID, amt float64) error {
+func (sim *simulation) ModifyEnergy(target key.TargetID, amt float64) error {
 	return sim.attributeService.ModifyEnergy(target, amt)
 }
 
-func (sim *Simulation) ModifyEnergyFixed(target key.TargetID, amt float64) error {
+func (sim *simulation) ModifyEnergyFixed(target key.TargetID, amt float64) error {
 	return sim.attributeService.ModifyEnergyFixed(target, amt)
 }

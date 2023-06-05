@@ -19,6 +19,8 @@ type AttributeGetter interface {
 type AttributeModifier interface {
 	AttributeGetter
 
+	AddTarget(target key.TargetID, base BaseStats) error
+
 	SetHP(target, source key.TargetID, amt float64) error
 	ModifyHPByRatio(target, source key.TargetID, data info.ModifyHPByRatio) error
 	ModifyHPByAmount(target, source key.TargetID, amt float64) error

@@ -15,7 +15,6 @@ func NewTargetIDGenerator() *TargetIDGenerator {
 
 // Generate a new TargetID
 func (gen *TargetIDGenerator) New() TargetID {
-	// TODO: random id instead to ensure no one depends on its value?
 	out := gen.state
 	gen.state += 1
 	return TargetID(out)

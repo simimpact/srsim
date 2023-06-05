@@ -29,7 +29,6 @@ type Engine interface {
 	Combat
 	Shield
 	Turn
-	Validator
 	Info
 	Target
 
@@ -141,11 +140,6 @@ type Turn interface {
 	ModifyCurrentGaugeCost(amt float64)
 }
 
-type Validator interface {
-	// Check if the given TargetID is valid
-	IsValid(target key.TargetID) bool
-}
-
 type Info interface {
 	// Metadata for the given character, such as their current level, ascension, traces, etc.
 	CharacterInfo(target key.TargetID) (info.Character, error)
@@ -155,6 +149,9 @@ type Info interface {
 }
 
 type Target interface {
+	// Check if the given TargetID is valid
+	IsValid(target key.TargetID) bool
+
 	// returns true if the given TargetID is for a character
 	IsCharacter(target key.TargetID) bool
 
@@ -164,10 +161,10 @@ type Target interface {
 	// returns the ids of targets that are adjacent to the given targent (empty if there are none)
 	AdjacentTo(target key.TargetID) []key.TargetID
 
-	// returns a list of all character target ids
+	// returns a list of all active character target ids (dead characters will not be returned)
 	Characters() []key.TargetID
 
-	// returns a list of all enemy target ids
+	// returns a list of all enemy target ids (dead enemies will not be returned)
 	Enemies() []key.TargetID
 
 	// returns a list of all neutral target ids (these are special cases, such as the Lightning-Lord)

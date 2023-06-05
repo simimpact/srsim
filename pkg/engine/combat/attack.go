@@ -7,6 +7,10 @@ import (
 )
 
 func (mgr *Manager) Attack(atk info.Attack, effect model.AttackEffect) {
+	if len(atk.Targets) == 0 {
+		return
+	}
+
 	// start an attack
 	if !mgr.isInAttack && isAttackStartable(atk.AttackType) {
 		// TODO: make this a struct?

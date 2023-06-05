@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/simimpact/srsim/pkg/gcs"
+	"github.com/simimpact/srsim/pkg/gcs/eval"
 	"github.com/simimpact/srsim/pkg/model"
 	"github.com/simimpact/srsim/pkg/simulation"
 )
@@ -53,7 +54,13 @@ func (p *Pool) worker() {
 		case <-p.ctx.Done():
 			return
 		case job := <-p.workChan:
-			res, err := simulation.Run(p.ctx, job.Script, job.Config)
+			seed, err := simulation.RandSeed()
+			if err != nil {
+				p.errChan <- err
+				return
+			}
+
+			res, err := simulation.Run(job.Config, eval.New(job.Script.Program, p.ctx), seed)
 			if err != nil {
 				p.errChan <- err
 				return

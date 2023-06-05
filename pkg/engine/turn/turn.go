@@ -86,9 +86,9 @@ func (mgr *Manager) RemoveTarget(id key.TargetID) {
 	}
 }
 
-func (mgr *Manager) StartTurn() (key.TargetID, error) {
+func (mgr *Manager) StartTurn() (key.TargetID, float64, error) {
 	if mgr.activeTurn {
-		return -1, fmt.Errorf("cannot start turn when already in an active turn: %+v", mgr)
+		return -1, 0, fmt.Errorf("cannot start turn when already in an active turn: %+v", mgr)
 	}
 
 	// reset gauge cost for this new turn
@@ -117,7 +117,7 @@ func (mgr *Manager) StartTurn() (key.TargetID, error) {
 		TotalAV:   mgr.totalAV,
 		TurnOrder: []event.TurnStatus{}, // TODO: populate
 	})
-	return mgr.activeTarget, nil
+	return mgr.activeTarget, av, nil
 }
 
 func (mgr *Manager) ResetTurn() error {

@@ -1,10 +1,9 @@
 package key
 
-
-type EnemyKey string
+type Enemy string
 
 const (
-	DummyEnemy EnemyKey = "dummy_enemy"
+	DummyEnemy Enemy = "dummy_enemy"
 )
 
 type ActionType int

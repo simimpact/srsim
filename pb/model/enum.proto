@@ -108,7 +108,8 @@ enum Property {
 
 enum BehaviorFlag {
   INVALID_FLAG = 0;
-  reserved 1 to 99;
+  DISABLE_ACTION = 1;
+  reserved 2 to 99;
 
   // STATS_ are the behavior flags primarily used for DebuffRES
   STAT_CTRL = 100;
