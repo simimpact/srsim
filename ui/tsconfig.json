@@ -17,8 +17,5 @@
     "noFallthroughCasesInSwitch": true,
     "strict": true,
     "noEmit": true,
-    "paths": {
-      "@/*": ["./packages/web/src/*"]
-    }
   }
 }
