@@ -6,16 +6,14 @@ import { cn } from "@/utils/classname";
 // these are the default props that will be injected into every <Button />
 // you can split the big class into smaller ones with cn() if case your
 // editor doesn't open intellisense
-// NOTE: CAVEAT!, don't put comments inside cva inside the 1st argument
-// (inside around the cn() part) as that will break the tailwind regex
+// NOTE: CAVEAT!, don't put comments inside the cva function as that will break
+// the tailwind regex.
+// TL;DR tailwind regex and the lsp around big object is kinda janky
+// https://github.com/joe-bell/cva/discussions/85
 const buttonVariants = cva(
-  cn(
-    "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors ring-offset-background",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none"
-  ),
+  "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none",
   {
     variants: {
-      // this the style of the variant getting appended to in <Button variant={""} />
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
@@ -43,6 +41,7 @@ export interface ButtonProps
   asChild?: boolean;
 }
 
+/** Anatomy: https://ui.shadcn.com/docs/components/button#usage */
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
