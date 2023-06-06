@@ -15,20 +15,25 @@ interface Props extends VariantProps<typeof cardVariants> {
   name: string;
   rarity: number;
 }
-const CharacterCard = ({ name }: Props) => {
+const CharacterCard = ({ name, variant }: Props) => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Card Title</CardTitle>
-        <CardDescription>Card Description</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p>Card Content</p>
-      </CardContent>
-      <CardFooter>
-        <p>Card Footer</p>
-      </CardFooter>
-    </Card>
+    <div className="flex">
+      {/* TODO: inject this with the variant */}
+      <div className="bg-fire pl-4 rounded-lg">
+        <Card>
+          <CardHeader>
+            <CardTitle>{name}</CardTitle>
+            <CardDescription>Card Description</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p>Card Content</p>
+          </CardContent>
+          <CardFooter>
+            <p>Card Footer</p>
+          </CardFooter>
+        </Card>
+      </div>
+    </div>
   );
 };
 export { CharacterCard };
