@@ -1,11 +1,18 @@
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
-import { cn } from "../../utils/classname";
+import { cn } from "@/utils/classname";
 
 // these are the default props that will be injected into every <Button />
+// you can split the big class into smaller ones with cn() if case your
+// editor doesn't open intellisense
+// NOTE: CAVEAT!, don't put comments inside cva inside the 1st argument
+// (inside around the cn() part) as that will break the tailwind regex
 const buttonVariants = cva(
-  "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background",
+  cn(
+    "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors ring-offset-background",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none"
+  ),
   {
     variants: {
       // this the style of the variant getting appended to in <Button variant={""} />
