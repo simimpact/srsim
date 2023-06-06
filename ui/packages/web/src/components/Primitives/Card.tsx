@@ -2,11 +2,10 @@ import { type VariantProps, cva } from "class-variance-authority";
 import * as React from "react";
 import { cn } from "@/utils/classname";
 
-// TODO: move universal classes from default to base
-const cardVariants = cva("", {
+const cardVariants = cva("rounded-lg border shadow-sm", {
   variants: {
     variant: {
-      default: "rounded-lg border bg-card text-card-foreground shadow-sm",
+      default: "bg-card text-card-foreground",
       fire: "bg-fire text-fire-foreground hover:bg-fire/90",
       ice: "bg-ice text-ice-foreground hover:bg-ice/90",
       wind: "bg-wind text-wind-foreground hover:bg-wind/90",

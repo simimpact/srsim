@@ -1,4 +1,5 @@
 import { VariantProps } from "class-variance-authority";
+import { cn } from "@/utils/classname";
 import {
   Card,
   CardContent,
@@ -10,29 +11,26 @@ import {
 } from "../Primitives/Card";
 
 interface Props extends VariantProps<typeof cardVariants> {
-  // this will eventually be expanded when character has more info like id,
-  // rarity etc
   name: string;
   rarity: number;
 }
-const CharacterCard = ({ name, variant }: Props) => {
+const CharacterCard = ({ name, rarity, variant }: Props) => {
   return (
-    <div className="flex">
-      {/* TODO: inject this with the variant */}
-      <div className="bg-fire pl-4 rounded-lg">
-        <Card>
-          <CardHeader>
+    <div className={cn(cardVariants({ variant }), "pl-4 border-0")}>
+      <Card>
+        <CardHeader>
+          <div className="flex gap-4 justify-center">
             <CardTitle>{name}</CardTitle>
-            <CardDescription>Card Description</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Card Content</p>
-          </CardContent>
-          <CardFooter>
-            <p>Card Footer</p>
-          </CardFooter>
-        </Card>
-      </div>
+            <CardDescription>{rarity} *</CardDescription>
+          </div>
+        </CardHeader>
+        <CardContent className="flex justify-center">
+          <p className="font-bold">Disappear among the sea of butterflies</p>
+        </CardContent>
+        <CardFooter className="justify-center">
+          <p>Illusion of the past</p>
+        </CardFooter>
+      </Card>
     </div>
   );
 };
