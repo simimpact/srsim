@@ -31,10 +31,8 @@ type Engine interface {
 	Turn
 	Info
 	Target
+	Insert
 
-	// TODO: Execute Queue
-	//	For callback + skill methods, need an "AttackState" passed in which allows you to do operations
-	//	such as decide when `AttackEnd` happens (if left uncalled, will happen after all logic executes)
 	// TODO: Skill Point (Boost Point). Other sim metadata calls?
 }
 
@@ -116,6 +114,16 @@ type Shield interface {
 	// TODO:
 	AddShield()
 	RemoveShield()
+}
+
+type Insert interface {
+	// Inserts a new action into the turn queue to be executed by this target. This will cause
+	// action evaluation to execute again and run the sim logic to determine which action that
+	// should be performed (attack or skill)
+	InsertAction(target key.TargetID) error
+
+	// Inserts a generic "ability" into the queue. This is for follow up attacks, counters, etc.
+	InsertAbility(i info.Insert)
 }
 
 type Turn interface {

@@ -114,10 +114,24 @@ type Listeners struct {
 
 	// Called after a heal is performed and the attached target is the receiver
 	OnAfterBeingHeal func(mod *ModifierInstance, e event.HealEndEvent)
+
+	// ------------ sim events
+
+	// Called when an action starts being executed (attack, skill, ult)
+	OnBeforeAction func(mod *ModifierInstance, e event.ActionEvent)
+
+	// Called when an action finishes being executed (attack, skill, ult)
+	OnAfterAction func(mod *ModifierInstance, e event.ActionEvent)
 }
 
 func (mgr *Manager) subscribe() {
 	events := mgr.engine.Events()
+
+	// sim events
+	events.ActionStart.Subscribe(mgr.actionStart)
+	events.ActionEnd.Subscribe(mgr.actionEnd)
+	events.UltStart.Subscribe(mgr.actionStart)
+	events.UltEnd.Subscribe(mgr.actionEnd)
 
 	// attribute events
 	events.HPChange.Subscribe(mgr.hpChange)
@@ -430,6 +444,24 @@ func (mgr *Manager) stanceBreakEnd(e event.StanceBreakEndEvent) {
 		f := mod.listeners.OnEndBreak
 		if f != nil {
 			f(mod)
+		}
+	}
+}
+
+func (mgr *Manager) actionStart(e event.ActionEvent) {
+	for _, mod := range mgr.targets[e.Target] {
+		f := mod.listeners.OnBeforeAction
+		if f != nil {
+			f(mod, e)
+		}
+	}
+}
+
+func (mgr *Manager) actionEnd(e event.ActionEvent) {
+	for _, mod := range mgr.targets[e.Target] {
+		f := mod.listeners.OnAfterAction
+		if f != nil {
+			f(mod, e)
 		}
 	}
 }

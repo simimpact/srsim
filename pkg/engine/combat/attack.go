@@ -36,12 +36,14 @@ func (mgr *Manager) Attack(atk info.Attack, effect model.SkillEffect) {
 }
 
 func (mgr *Manager) EndAttack() {
-	mgr.isInAttack = false
-	mgr.event.AttackEnd.Emit(event.AttackEndEvent{
-		Attacker:    mgr.attackInfo.attacker,
-		Targets:     mgr.attackInfo.targets,
-		AttackType:  mgr.attackInfo.attackType,
-		SkillEffect: mgr.attackInfo.skillEffect,
-		DamageType:  mgr.attackInfo.damageType,
-	})
+	if mgr.isInAttack {
+		mgr.isInAttack = false
+		mgr.event.AttackEnd.Emit(event.AttackEndEvent{
+			Attacker:    mgr.attackInfo.attacker,
+			Targets:     mgr.attackInfo.targets,
+			AttackType:  mgr.attackInfo.attackType,
+			SkillEffect: mgr.attackInfo.skillEffect,
+			DamageType:  mgr.attackInfo.damageType,
+		})
+	}
 }

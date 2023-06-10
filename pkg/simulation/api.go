@@ -83,8 +83,7 @@ func (sim *simulation) ModifyCurrentGaugeCost(amt float64) {
 }
 
 func (sim *simulation) Attack(atk info.Attack) {
-	// TODO:
-	sim.combatManager.Attack(atk, model.SkillEffect_INVALID_SKILL_EFFECT)
+	sim.combatManager.Attack(atk, sim.skillEffect)
 }
 
 func (sim *simulation) Heal(heal info.Heal) {

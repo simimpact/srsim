@@ -9,6 +9,12 @@ type System struct {
 	BattleStart BattleStartEventHandler
 	TurnEnd     TurnEndEventHandler
 	Termination TerminationEventHandler
+	ActionStart ActionStartEventHandler
+	ActionEnd   ActionEndEventHandler
+	UltStart    UltStartEventHandler
+	UltEnd      UltEndEventHandler
+	InsertStart InsertStartEventHandler
+	InsertEnd   InsertEndEventHandler
 
 	AttackStart AttackStartEventHandler
 	AttackEnd   AttackEndEventHandler

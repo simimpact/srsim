@@ -11,19 +11,6 @@ import (
 
 type stateFn func(*simulation) (stateFn, error)
 
-// executes the initial function + any chain it returns
-func (s *simulation) execute(init stateFn) error {
-	var err error
-	for state := init; state != nil; {
-		state, err = state(s)
-		if err != nil {
-			//handle error here
-			return err
-		}
-	}
-	return nil
-}
-
 func (s *simulation) run() (*model.IterationResult, error) {
 	var err error
 	//TODO: per Kyle this is totally unnecessary; for that reason alone this will stay
@@ -120,11 +107,7 @@ func startBattle(s *simulation) (stateFn, error) {
 		NeutralStats: neutralStats,
 	})
 
-	if err := s.execute(engage); err != nil {
-		return nil, fmt.Errorf("error attempting to perform engage %w", err)
-	}
-
-	return s.executeQueue(info.BattleStart, beginTurn)
+	return engage, nil
 }
 
 // start turn. This will determine which target is taking their turn and will progress time.
@@ -152,6 +135,7 @@ func phase1(s *simulation) (stateFn, error) {
 	isFrozen := s.HasBehaviorFlag(s.active, model.BehaviorFlag_STAT_CTRL_FROZEN)
 
 	// tick any modifiers that listen for phase1 (primarily dots)
+	// TODO: skillEffect is here invalid. Is there a skill effect for dots?
 	s.modManager.Tick(s.active, info.ModifierPhase1)
 
 	// skip all other phase1 logic when frozen and go straight to phase2
@@ -187,8 +171,7 @@ func phase2(s *simulation) (stateFn, error) {
 	s.modManager.Tick(s.active, info.ActionEnd)
 
 	// execute anything that is in the execution queue. any follow ups, bursts, etc.
-	next, err := s.executeQueue(info.InsertAbilityPhase2, endTurn)
-	if next == nil || err != nil {
+	if next, err := s.executeQueue(info.InsertAbilityPhase2, endTurn); next == nil || err != nil {
 		return nil, err
 	}
 
@@ -199,6 +182,8 @@ func phase2(s *simulation) (stateFn, error) {
 
 // finalize that this is the end of the turn. Mainly just emitting the turn end event
 func endTurn(s *simulation) (stateFn, error) {
+	// TODO: cleanup check (reuse code from death subscription)
+
 	// emit TurnEnd event to log the current state of all remaining targets
 	charStats := make([]*info.Stats, len(s.characters))
 	for i, t := range s.characters {

@@ -8,6 +8,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/combat"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/queue"
 	"github.com/simimpact/srsim/pkg/engine/target/character"
 	"github.com/simimpact/srsim/pkg/engine/target/enemy"
 	"github.com/simimpact/srsim/pkg/engine/turn"
@@ -29,6 +30,7 @@ type simulation struct {
 	idGen            *key.TargetIDGenerator
 	rand             *rand.Rand
 	event            *event.System
+	queue            *queue.Handler
 	modManager       *modifier.Manager
 	attributeService *attribute.Service
 	charManager      *character.Manager
@@ -44,6 +46,7 @@ type simulation struct {
 	neutrals    []key.TargetID
 	totalAV     float64
 	active      key.TargetID
+	skillEffect model.SkillEffect
 }
 
 func Run(cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationResult, error) {
@@ -53,6 +56,7 @@ func Run(cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationRes
 		seed: seed,
 
 		event: &event.System{},
+		queue: queue.New(),
 		rand:  rand.New(rand.NewSource(seed)),
 		idGen: key.NewTargetIDGenerator(),
 

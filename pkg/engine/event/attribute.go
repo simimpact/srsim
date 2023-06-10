@@ -12,6 +12,7 @@ type HPChangeEvent struct {
 	NewHPRatio float64
 	OldHP      float64
 	NewHP      float64
+	// TODO: need more params (IsHPChangeByDamage?)
 }
 
 type LimboWaitHealEventHandler = handler.CancelableEventHandler[LimboWaitHealEvent]

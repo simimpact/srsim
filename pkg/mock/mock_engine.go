@@ -246,6 +246,32 @@ func (mr *MockEngineMockRecorder) Heal(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Heal", reflect.TypeOf((*MockEngine)(nil).Heal), arg0)
 }
 
+// InsertAbility mocks base method.
+func (m *MockEngine) InsertAbility(arg0 info.Insert) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "InsertAbility", arg0)
+}
+
+// InsertAbility indicates an expected call of InsertAbility.
+func (mr *MockEngineMockRecorder) InsertAbility(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertAbility", reflect.TypeOf((*MockEngine)(nil).InsertAbility), arg0)
+}
+
+// InsertAction mocks base method.
+func (m *MockEngine) InsertAction(arg0 key.TargetID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "InsertAction", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// InsertAction indicates an expected call of InsertAction.
+func (mr *MockEngineMockRecorder) InsertAction(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertAction", reflect.TypeOf((*MockEngine)(nil).InsertAction), arg0)
+}
+
 // IsCharacter mocks base method.
 func (m *MockEngine) IsCharacter(arg0 key.TargetID) bool {
 	m.ctrl.T.Helper()

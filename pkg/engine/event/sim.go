@@ -36,8 +36,23 @@ type TerminationEvent struct {
 	Reason  model.TerminationReson
 }
 
-type ActionStartEvent struct {
+type ActionStartEventHandler = handler.EventHandler[ActionEvent]
+type ActionEndEventHandler = handler.EventHandler[ActionEvent]
+type ActionEvent struct {
+	Target      key.TargetID
+	SkillEffect model.SkillEffect
+	AttackType  model.AttackType
+	IsInsert    bool
 }
 
-type ActionEndEvent struct {
+type UltStartEventHandler = handler.EventHandler[ActionEvent]
+type UltEndEventHandler = handler.EventHandler[ActionEvent]
+
+type InsertStartEventHandler = handler.EventHandler[InsertEvent]
+type InsertEndEventHandler = handler.EventHandler[InsertEvent]
+type InsertEvent struct {
+	Target      key.TargetID
+	SkillEffect model.SkillEffect
+	AbortFlags  []model.BehaviorFlag
+	Priority    info.InsertPriority
 }
