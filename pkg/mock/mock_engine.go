@@ -134,6 +134,18 @@ func (mr *MockEngineMockRecorder) Characters() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Characters", reflect.TypeOf((*MockEngine)(nil).Characters))
 }
 
+// EndAttack mocks base method.
+func (m *MockEngine) EndAttack() {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "EndAttack")
+}
+
+// EndAttack indicates an expected call of EndAttack.
+func (mr *MockEngineMockRecorder) EndAttack() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EndAttack", reflect.TypeOf((*MockEngine)(nil).EndAttack))
+}
+
 // Enemies mocks base method.
 func (m *MockEngine) Enemies() []key.TargetID {
 	m.ctrl.T.Helper()
@@ -244,11 +256,9 @@ func (mr *MockEngineMockRecorder) InsertAbility(arg0 interface{}) *gomock.Call {
 }
 
 // InsertAction mocks base method.
-func (m *MockEngine) InsertAction(arg0 key.TargetID) error {
+func (m *MockEngine) InsertAction(arg0 key.TargetID) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "InsertAction", arg0)
-	ret0, _ := ret[0].(error)
-	return ret0
+	m.ctrl.Call(m, "InsertAction", arg0)
 }
 
 // InsertAction indicates an expected call of InsertAction.
@@ -499,6 +509,20 @@ func (m *MockEngine) RemoveShield() {
 func (mr *MockEngineMockRecorder) RemoveShield() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveShield", reflect.TypeOf((*MockEngine)(nil).RemoveShield))
+}
+
+// SP mocks base method.
+func (m *MockEngine) SP() int {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SP")
+	ret0, _ := ret[0].(int)
+	return ret0
+}
+
+// SP indicates an expected call of SP.
+func (mr *MockEngineMockRecorder) SP() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SP", reflect.TypeOf((*MockEngine)(nil).SP))
 }
 
 // SetCurrentGaugeCost mocks base method.

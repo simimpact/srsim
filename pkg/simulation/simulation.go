@@ -48,7 +48,6 @@ type simulation struct {
 	totalAV     float64
 	active      key.TargetID
 	skillEffect model.SkillEffect
-	isInsert    bool
 }
 
 func Run(cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationResult, error) {

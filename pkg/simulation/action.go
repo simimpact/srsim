@@ -6,6 +6,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/queue"
+	"github.com/simimpact/srsim/pkg/engine/target"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -15,22 +16,24 @@ import (
 //		LC such as "In the Name of the World" buff these insert actions
 //	- Do Insert abilities (follow up attacks, counters, etc) count as an Action (similar to above)?
 
-// TODO: support more than just characters
-func (sim *simulation) InsertAction(target key.TargetID) error {
-	if !sim.IsCharacter(target) {
-		return fmt.Errorf("target must be a character to insert an action %v", target)
+func (sim *simulation) InsertAction(target key.TargetID) {
+	var priority info.InsertPriority
+	switch sim.targets[target] {
+	case TargetEnemy:
+		priority = info.EnemyInsertAction
+	default:
+		priority = info.CharInsertAction
 	}
 
 	sim.queue.Insert(queue.Task{
 		Source:   target,
-		Priority: info.CharInsertAction,
+		Priority: priority,
 		AbortFlags: []model.BehaviorFlag{
 			model.BehaviorFlag_STAT_CTRL,
 			model.BehaviorFlag_DISABLE_ACTION,
 		},
-		Execute: func() { sim.executeCharAction(target, true) },
+		Execute: func() { sim.executeAction(target, true) },
 	})
-	return nil
 }
 
 func (sim *simulation) InsertAbility(i info.Insert) {
@@ -43,8 +46,12 @@ func (sim *simulation) InsertAbility(i info.Insert) {
 }
 
 func (sim *simulation) ultCheck() {
+	// TODO: enemy ult support?
 	bursts := sim.eval.BurstCheck()
 	for _, value := range bursts {
+		// TODO: need a "burst type" for cases like MC (passed to executeUlt)
+		// TODO: need a target evaluator key to be passed to executeUlt
+
 		sim.queue.Insert(queue.Task{
 			Source:   value.Target,
 			Priority: info.CharInsertUlt,
@@ -52,34 +59,9 @@ func (sim *simulation) ultCheck() {
 				model.BehaviorFlag_STAT_CTRL,
 				model.BehaviorFlag_DISABLE_ACTION,
 			},
-			Execute: func() { sim.executeCharUlt(value.Target) },
+			Execute: func() { sim.executeUlt(value.Target) },
 		})
 	}
-}
-
-// run engagement logic for the first wave of a battle. This is any techniques + if the engagement
-// of the battle should be a "weakness" engage (player's favor) or "ambush" engage (enemy's favor)
-func engage(s *simulation) (stateFn, error) {
-	// TODO: waveCount & only do this call if is first wave
-	// TODO: execute any techniques + engagement logic
-	// TODO: weakness engage vs ambush
-	// TODO: emit EngageEvent
-	return s.executeQueue(info.BattleStart, beginTurn)
-}
-
-func action(s *simulation) (stateFn, error) {
-	switch s.targets[s.active] {
-	case TargetCharacter:
-		s.executeCharAction(s.active, false)
-	case TargetEnemy:
-		// TODO:
-	case TargetNeutral:
-		// TODO:
-	}
-
-	s.skillEffect = model.SkillEffect_INVALID_SKILL_EFFECT
-	s.ultCheck()
-	return phase2, nil
 }
 
 // execute everything on the queue. After queue execution is complete, return the next stateFn
@@ -120,98 +102,82 @@ func (s *simulation) executeQueue(phase info.BattlePhase, next stateFn) (stateFn
 	return next, nil
 }
 
-func (sim *simulation) executeCharAction(target key.TargetID, isInsert bool) error {
-	char, err := sim.charManager.Get(target)
-	if err != nil {
-		return err
-	}
-	skillInfo, err := sim.charManager.SkillInfo(target)
-	if err != nil {
-		return err
-	}
+func (sim *simulation) executeAction(id key.TargetID, isInsert bool) error {
+	var executable target.ExecutableAction
+	var err error
 
-	var (
-		skillEffect  model.SkillEffect
-		attackType   model.AttackType
-		validTargets model.TargetType
-	)
-
-	// TODO: this is hardcoded action behavior logic. This should be doing logic eval instead
-	// of something hardcoded
-	// TODO: sim.eval.NextAction?
-	// TODO: determine skillEffect & attackType from eval
-	//
-	// current hardcoded logic: use skill if possible, otherwise attack
-	check := skillInfo.Skill.CanUse
-	if sim.sp > 0 && (check == nil || check(sim, char)) {
-		attackType = model.AttackType_SKILL
-		skillEffect = skillInfo.Skill.SkillEffect
-		validTargets = skillInfo.Skill.ValidTargets
-		sim.ModifySP(-skillInfo.Skill.SPCost)
-	} else {
-		attackType = model.AttackType_NORMAL
-		skillEffect = skillInfo.Attack.SkillEffect
-		validTargets = skillInfo.Attack.ValidTargets
-		sim.ModifySP(+1)
+	switch sim.targets[id] {
+	case TargetCharacter:
+		executable, err = sim.charManager.ExecuteAction(id, isInsert)
+		if err != nil {
+			return fmt.Errorf("error building char executable action %w", err)
+		}
+	case TargetEnemy:
+		// TODO:
+	case TargetNeutral:
+		// TODO:
+	default:
+		return fmt.Errorf("unsupported target type: %v", sim.targets[id])
 	}
 
-	// TODO: use Target Evaluator to determine target to use
-	primaryTarget := sim.getPrimaryTarget(target, validTargets)
+	sim.ModifySP(executable.SPChange)
 
-	// set skill effect on sim state and emit start event
-	sim.skillEffect = skillEffect
-	sim.isInsert = isInsert
+	sim.skillEffect = executable.SkillEffect
 	sim.event.ActionStart.Emit(event.ActionEvent{
-		Target:      target,
-		SkillEffect: skillEffect,
-		AttackType:  attackType,
+		Target:      id,
+		SkillEffect: executable.SkillEffect,
+		AttackType:  executable.AttackType,
 		IsInsert:    isInsert,
 	})
 
 	// execute action
-	if attackType == model.AttackType_SKILL {
-		char.Skill(primaryTarget, sim)
-	} else {
-		char.Attack(primaryTarget, sim)
-	}
+	executable.Execute()
 
 	// end attack if in one. no-op if not in an attack
 	// emit end events
 	sim.combatManager.EndAttack()
 	sim.event.ActionEnd.Emit(event.ActionEvent{
-		Target:      target,
-		SkillEffect: skillEffect,
-		AttackType:  attackType,
+		Target:      id,
+		SkillEffect: executable.SkillEffect,
+		AttackType:  executable.AttackType,
 		IsInsert:    isInsert,
 	})
-
 	return nil
 }
 
-// TODO: may need to take in a burst type for MC case of having dual bursts?
-func (sim *simulation) executeCharUlt(target key.TargetID) {
-	// TODO: get ult execution function + this ult's skill effect
-	var skillEffect model.SkillEffect
+func (sim *simulation) executeUlt(id key.TargetID) error {
+	var executable target.ExecutableUlt
+	var err error
 
-	sim.skillEffect = skillEffect
+	switch sim.targets[id] {
+	case TargetCharacter:
+		executable, err = sim.charManager.ExecuteUlt(id)
+		if err != nil {
+			return fmt.Errorf("error building char executable ult %w", err)
+		}
+	default:
+		return fmt.Errorf("unsupported target type: %v", sim.targets[id])
+	}
+
+	sim.skillEffect = executable.SkillEffect
 	sim.event.UltStart.Emit(event.ActionEvent{
-		Target:      target,
-		SkillEffect: skillEffect,
+		Target:      id,
+		SkillEffect: executable.SkillEffect,
 		AttackType:  model.AttackType_ULT,
 		IsInsert:    true,
 	})
 
-	// TODO: execute ult here
+	executable.Execute()
 
 	// end attack if in one. no-op if not in an attack
 	sim.combatManager.EndAttack()
-
 	sim.event.UltEnd.Emit(event.ActionEvent{
-		Target:      target,
-		SkillEffect: skillEffect,
+		Target:      id,
+		SkillEffect: executable.SkillEffect,
 		AttackType:  model.AttackType_ULT,
 		IsInsert:    true,
 	})
+	return nil
 }
 
 func (sim *simulation) executeInsert(i info.Insert) {
@@ -228,52 +194,10 @@ func (sim *simulation) executeInsert(i info.Insert) {
 
 	// end attack if in one. no-op if not in an attack
 	sim.combatManager.EndAttack()
-
 	sim.event.InsertEnd.Emit(event.InsertEvent{
 		Target:      i.Source,
 		SkillEffect: i.SkillEffect,
 		AbortFlags:  i.AbortFlags,
 		Priority:    i.Priority,
 	})
-}
-
-// TODO: this is just placeholder. Should also take in a Target Evaluator to execute
-func (sim *simulation) getPrimaryTarget(source key.TargetID, options model.TargetType) key.TargetID {
-	switch options {
-	case model.TargetType_ALLIES:
-		if sim.IsEnemy(source) {
-			return sim.enemies[0]
-		}
-		return sim.characters[0]
-	case model.TargetType_ENEMIES:
-		if sim.IsEnemy(source) {
-			return sim.characters[0]
-		}
-		return sim.enemies[0]
-	case model.TargetType_SELF:
-		return source
-	default:
-		return source
-	}
-}
-
-// model simulation into an ActionState
-
-func (sim *simulation) EndAttack() {
-	sim.combatManager.EndAttack()
-}
-
-func (sim *simulation) IsInsert() bool {
-	return sim.isInsert
-}
-
-func (sim *simulation) SkillEffect() model.SkillEffect {
-	return sim.skillEffect
-}
-
-func (sim *simulation) CharacterInfo() info.Character {
-	if c, err := sim.charManager.Info(sim.active); err != nil {
-		return c
-	}
-	return info.Character{}
 }

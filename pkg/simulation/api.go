@@ -23,6 +23,10 @@ func (sim *simulation) ModifySP(amt int) int {
 	return sim.sp
 }
 
+func (sim *simulation) SP() int {
+	return sim.sp
+}
+
 func (sim *simulation) AddModifier(target key.TargetID, instance info.Modifier) (bool, error) {
 	return sim.modManager.AddModifier(target, instance)
 }
@@ -90,6 +94,10 @@ func (sim *simulation) Attack(atk info.Attack) {
 
 func (sim *simulation) Heal(heal info.Heal) {
 	sim.combatManager.Heal(heal)
+}
+
+func (sim *simulation) EndAttack() {
+	sim.combatManager.EndAttack()
 }
 
 func (sim *simulation) AddShield() {

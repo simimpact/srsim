@@ -27,6 +27,9 @@ type Engine interface {
 	// Add or remove Skill Points from the current sim state. Returns the new SP amount
 	ModifySP(amt int) int
 
+	// Return the current number of available Skill Points.
+	SP() int
+
 	Modifier
 	Attribute
 	Combat
@@ -106,6 +109,10 @@ type Combat interface {
 	// are being hit
 	Attack(atk info.Attack)
 
+	// If there is an active attack, this will cause the AttackEnd event to emit. This should only
+	// be used in character implementations since it can fundamentally change how characters behave.
+	EndAttack()
+
 	// Performs the given heal where Source is the healer and Targets are all targets that are
 	// being healed
 	Heal(heal info.Heal)
@@ -121,7 +128,7 @@ type Insert interface {
 	// Inserts a new action into the turn queue to be executed by this target. This will cause
 	// action evaluation to execute again and run the sim logic to determine which action that
 	// should be performed (attack or skill)
-	InsertAction(target key.TargetID) error
+	InsertAction(target key.TargetID)
 
 	// Inserts a generic "ability" into the queue. This is for follow up attacks, counters, etc.
 	InsertAbility(i info.Insert)

@@ -110,6 +110,16 @@ func startBattle(s *simulation) (stateFn, error) {
 	return engage, nil
 }
 
+// run engagement logic for the first wave of a battle. This is any techniques + if the engagement
+// of the battle should be a "weakness" engage (player's favor) or "ambush" engage (enemy's favor)
+func engage(s *simulation) (stateFn, error) {
+	// TODO: waveCount & only do this call if is first wave
+	// TODO: execute any techniques + engagement logic
+	// TODO: weakness engage vs ambush
+	// TODO: emit EngageEvent
+	return s.executeQueue(info.BattleStart, beginTurn)
+}
+
 // start turn. This will determine which target is taking their turn and will progress time.
 // This does not directly emit a TurnStartEvent since the underlying turn manager does that for us.
 func beginTurn(s *simulation) (stateFn, error) {
@@ -160,6 +170,17 @@ func phase1(s *simulation) (stateFn, error) {
 	}
 
 	return s.executeQueue(info.InsertAbilityPhase1, action)
+}
+
+// actually execute the action for this turn and then move on to phase2 once done
+func action(s *simulation) (stateFn, error) {
+	if err := s.executeAction(s.active, false); err != nil {
+		return nil, fmt.Errorf("unknown error executing action %w", err)
+	}
+
+	s.skillEffect = model.SkillEffect_INVALID_SKILL_EFFECT
+	s.ultCheck() // this check is somewhat redudant
+	return phase2, nil
 }
 
 // phase2 is the time after action and before end of turn. This is where follow up attacks occur,
