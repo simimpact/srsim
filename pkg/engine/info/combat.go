@@ -75,7 +75,7 @@ type Hit struct {
 	DamageType model.DamageType
 
 	// The effect of the hit (determined by the attack itself)
-	AttackEffect model.AttackEffect
+	SkillEffect model.SkillEffect
 
 	// Map of damage formula -> damage percentage. This is for calculating the "Base Damage" of the
 	// attack. IE: info.DamageMap{model.BY_ATK: 0.5} = 50% of ATK.

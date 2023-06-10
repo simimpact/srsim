@@ -17,11 +17,11 @@ type Manager struct {
 }
 
 type attackInfo struct {
-	attacker     key.TargetID
-	targets      []key.TargetID
-	attackType   model.AttackType
-	attackEffect model.AttackEffect
-	damageType   model.DamageType
+	attacker    key.TargetID
+	targets     []key.TargetID
+	attackType  model.AttackType
+	skillEffect model.SkillEffect
+	damageType  model.DamageType
 }
 
 func New(event *event.System, attr attribute.AttributeModifier) *Manager {

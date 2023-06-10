@@ -6,7 +6,7 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-func (mgr *Manager) Attack(atk info.Attack, effect model.AttackEffect) {
+func (mgr *Manager) Attack(atk info.Attack, effect model.SkillEffect) {
 	if len(atk.Targets) == 0 || mgr.attr.HPRatio(atk.Source) == 0 {
 		return
 	}
@@ -15,11 +15,11 @@ func (mgr *Manager) Attack(atk info.Attack, effect model.AttackEffect) {
 	if !mgr.isInAttack && atk.AttackType.IsQualified() {
 		mgr.isInAttack = true
 		mgr.attackInfo = attackInfo{
-			attacker:     atk.Source,
-			targets:      atk.Targets,
-			attackType:   atk.AttackType,
-			damageType:   atk.DamageType,
-			attackEffect: effect,
+			attacker:    atk.Source,
+			targets:     atk.Targets,
+			attackType:  atk.AttackType,
+			damageType:  atk.DamageType,
+			skillEffect: effect,
 		}
 
 		mgr.event.AttackStart.Emit(event.AttackStartEvent{
@@ -38,10 +38,10 @@ func (mgr *Manager) Attack(atk info.Attack, effect model.AttackEffect) {
 func (mgr *Manager) EndAttack() {
 	mgr.isInAttack = false
 	mgr.event.AttackEnd.Emit(event.AttackEndEvent{
-		Attacker:     mgr.attackInfo.attacker,
-		Targets:      mgr.attackInfo.targets,
-		AttackType:   mgr.attackInfo.attackType,
-		AttackEffect: mgr.attackInfo.attackEffect,
-		DamageType:   mgr.attackInfo.damageType,
+		Attacker:    mgr.attackInfo.attacker,
+		Targets:     mgr.attackInfo.targets,
+		AttackType:  mgr.attackInfo.attackType,
+		SkillEffect: mgr.attackInfo.skillEffect,
+		DamageType:  mgr.attackInfo.damageType,
 	})
 }

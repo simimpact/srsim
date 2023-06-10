@@ -172,8 +172,8 @@ enum AttackType {
   ELEMENT_DAMAGE = 9;
 }
 
-enum AttackEffect {
-  INVALID_ATTACK_EFFECT = 0;
+enum SkillEffect {
+  INVALID_SKILL_EFFECT = 0;
   SINGLE = 1;
   AOE = 2;
   SHIELD_BREAK = 3;
