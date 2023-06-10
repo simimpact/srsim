@@ -38,6 +38,7 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 		HPDamage:         0, // TODO
 		HPRatioRemaining: mgr.attr.HPRatio(hit.Defender.ID()),
 		IsCrit:           false, // TODO
+		UseSnapshot:      hit.UseSnapshot,
 	})
 }
 
@@ -66,5 +67,6 @@ func (mgr *Manager) newHit(target key.TargetID, atk info.Attack) *info.Hit {
 		HitRatio:     ratio,
 		AsPureDamage: atk.AsPureDamage,
 		DamageValue:  atk.DamageValue,
+		UseSnapshot:  atk.UseSnapshot,
 	}
 }

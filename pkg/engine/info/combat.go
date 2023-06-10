@@ -53,6 +53,10 @@ type Attack struct {
 
 	// An additional flat damage amount that can be added to the base damage
 	DamageValue float64
+
+	// If set to true, will execute this attack in a "snapshot" state. This means that any modifiers
+	// that subscribe to hit listeners will not be executed. This is used by break damage dots.
+	UseSnapshot bool
 }
 
 type Hit struct {
@@ -105,6 +109,10 @@ type Hit struct {
 
 	// An additional flat damage amount that can be added to the base damage
 	DamageValue float64
+
+	// If set to true, will execute this hit in a "snapshot" state. This means that any modifiers
+	// that subscribe to hit listeners will not be executed. This is used by break damage dots.
+	UseSnapshot bool
 }
 
 type Heal struct {
@@ -120,4 +128,8 @@ type Heal struct {
 
 	// Additional flat healing that can be added to the base heal amount.
 	HealValue float64
+
+	// If set to true, will execute this heal in a "snapshot" state. This means that any modifiers
+	// that subscribe to heal listeners will not be executed. This is used by phase1 heals.
+	UseSnapshot bool
 }

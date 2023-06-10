@@ -13,10 +13,11 @@ func (mgr *Manager) Heal(heal info.Heal) {
 		}
 
 		e := &event.HealStartEvent{
-			Target:    mgr.attr.Stats(t),
-			Healer:    mgr.attr.Stats(heal.Source),
-			BaseHeal:  baseHeal,
-			HealValue: heal.HealValue,
+			Target:      mgr.attr.Stats(t),
+			Healer:      mgr.attr.Stats(heal.Source),
+			BaseHeal:    baseHeal,
+			HealValue:   heal.HealValue,
+			UseSnapshot: heal.UseSnapshot,
 		}
 		mgr.event.HealStart.Emit(e)
 
@@ -24,9 +25,10 @@ func (mgr *Manager) Heal(heal info.Heal) {
 		// TOOD: call ModifyHP to add the new HP to the healed target
 
 		mgr.event.HealEnd.Emit(event.HealEndEvent{
-			Target:     t,
-			Healer:     heal.Source,
-			HealAmount: 0, // TODO:
+			Target:      t,
+			Healer:      heal.Source,
+			HealAmount:  0, // TODO:
+			UseSnapshot: heal.UseSnapshot,
 		})
 	}
 }

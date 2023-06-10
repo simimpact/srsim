@@ -237,7 +237,13 @@ func (mgr *Manager) attackEnd(e event.AttackEndEvent) {
 
 func (mgr *Manager) hitStart(e event.HitStartEvent) {
 	qualified := e.Hit.AttackType.IsQualified()
+	snapshot := e.Hit.UseSnapshot
+
 	for _, mod := range mgr.targets[e.Attacker] {
+		if snapshot && !mod.modifySnapshot {
+			continue
+		}
+
 		f := mod.listeners.OnBeforeHitAll
 		if f != nil {
 			f(mod, e)
@@ -250,6 +256,10 @@ func (mgr *Manager) hitStart(e event.HitStartEvent) {
 	}
 
 	for _, mod := range mgr.targets[e.Defender] {
+		if snapshot && !mod.modifySnapshot {
+			continue
+		}
+
 		f := mod.listeners.OnBeforeBeingHitAll
 		if f != nil {
 			f(mod, e)
@@ -264,7 +274,13 @@ func (mgr *Manager) hitStart(e event.HitStartEvent) {
 
 func (mgr *Manager) hitEnd(e event.HitEndEvent) {
 	qualified := e.AttackType.IsQualified()
+	snapshot := e.UseSnapshot
+
 	for _, mod := range mgr.targets[e.Attacker] {
+		if snapshot && !mod.modifySnapshot {
+			continue
+		}
+
 		f := mod.listeners.OnAfterHitAll
 		if f != nil {
 			f(mod, e)
@@ -277,6 +293,10 @@ func (mgr *Manager) hitEnd(e event.HitEndEvent) {
 	}
 
 	for _, mod := range mgr.targets[e.Defender] {
+		if snapshot && !mod.modifySnapshot {
+			continue
+		}
+
 		f := mod.listeners.OnAfterBeingHitAll
 		if f != nil {
 			f(mod, e)
@@ -290,13 +310,24 @@ func (mgr *Manager) hitEnd(e event.HitEndEvent) {
 }
 
 func (mgr *Manager) healStart(e *event.HealStartEvent) {
+	snapshot := e.UseSnapshot
+
 	for _, mod := range mgr.targets[e.Healer.ID()] {
+		if snapshot && !mod.modifySnapshot {
+			continue
+		}
+
 		f := mod.listeners.OnBeforeDealHeal
 		if f != nil {
 			f(mod, e)
 		}
 	}
+
 	for _, mod := range mgr.targets[e.Target.ID()] {
+		if snapshot && !mod.modifySnapshot {
+			continue
+		}
+
 		f := mod.listeners.OnBeforeBeingHeal
 		if f != nil {
 			f(mod, e)
@@ -305,13 +336,24 @@ func (mgr *Manager) healStart(e *event.HealStartEvent) {
 }
 
 func (mgr *Manager) healEnd(e event.HealEndEvent) {
+	snapshot := e.UseSnapshot
+
 	for _, mod := range mgr.targets[e.Healer] {
+		if snapshot && !mod.modifySnapshot {
+			continue
+		}
+
 		f := mod.listeners.OnAfterDealHeal
 		if f != nil {
 			f(mod, e)
 		}
 	}
+
 	for _, mod := range mgr.targets[e.Target] {
+		if snapshot && !mod.modifySnapshot {
+			continue
+		}
+
 		f := mod.listeners.OnAfterBeingHeal
 		if f != nil {
 			f(mod, e)

@@ -27,6 +27,7 @@ type ModifierInstance struct {
 	listeners                Listeners
 	statusType               model.StatusType
 	flags                    []model.BehaviorFlag
+	modifySnapshot           bool
 }
 
 func (mgr *Manager) newInstance(owner key.TargetID, mod info.Modifier) *ModifierInstance {
@@ -44,6 +45,7 @@ func (mgr *Manager) newInstance(owner key.TargetID, mod info.Modifier) *Modifier
 		stats:             mod.Stats,
 		debuffRES:         mod.DebuffRES,
 		weakness:          mod.Weakness,
+		modifySnapshot:    mod.CanModifySnapshot,
 		manager:           mgr,
 		listeners:         config.Listeners,
 		statusType:        config.StatusType,
@@ -226,5 +228,6 @@ func (mi *ModifierInstance) ToModel() info.Modifier {
 		CountAddWhenStack: mi.countAddWhenStack,
 		Stats:             props,
 		DebuffRES:         res,
+		CanModifySnapshot: mi.modifySnapshot,
 	}
 }

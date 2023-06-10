@@ -46,19 +46,22 @@ type HitEndEvent struct {
 	ShieldDamage     float64
 	HPRatioRemaining float64
 	IsCrit           bool
+	UseSnapshot      bool
 }
 
 type HealStartEventHandler = handler.MutableEventHandler[HealStartEvent]
 type HealStartEvent struct {
-	Target    *info.Stats
-	Healer    *info.Stats
-	BaseHeal  info.HealMap
-	HealValue float64
+	Target      *info.Stats
+	Healer      *info.Stats
+	BaseHeal    info.HealMap
+	HealValue   float64
+	UseSnapshot bool
 }
 
 type HealEndEventHandler = handler.EventHandler[HealEndEvent]
 type HealEndEvent struct {
-	Target     key.TargetID
-	Healer     key.TargetID
-	HealAmount float64
+	Target      key.TargetID
+	Healer      key.TargetID
+	HealAmount  float64
+	UseSnapshot bool
 }
