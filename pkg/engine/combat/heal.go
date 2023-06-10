@@ -25,10 +25,11 @@ func (mgr *Manager) Heal(heal info.Heal) {
 		// TOOD: call ModifyHP to add the new HP to the healed target
 
 		mgr.event.HealEnd.Emit(event.HealEndEvent{
-			Target:      t,
-			Healer:      heal.Source,
-			HealAmount:  0, // TODO:
-			UseSnapshot: heal.UseSnapshot,
+			Target:             t,
+			Healer:             heal.Source,
+			HealAmount:         0, // TODO:
+			OverflowHealAmount: 0, // TODO:
+			UseSnapshot:        heal.UseSnapshot,
 		})
 	}
 }

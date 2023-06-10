@@ -60,8 +60,9 @@ type HealStartEvent struct {
 
 type HealEndEventHandler = handler.EventHandler[HealEndEvent]
 type HealEndEvent struct {
-	Target      key.TargetID
-	Healer      key.TargetID
-	HealAmount  float64
-	UseSnapshot bool
+	Target             key.TargetID
+	Healer             key.TargetID
+	HealAmount         float64
+	OverflowHealAmount float64
+	UseSnapshot        bool
 }
