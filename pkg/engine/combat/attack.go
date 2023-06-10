@@ -7,13 +7,12 @@ import (
 )
 
 func (mgr *Manager) Attack(atk info.Attack, effect model.AttackEffect) {
-	if len(atk.Targets) == 0 {
+	if len(atk.Targets) == 0 || mgr.attr.HPRatio(atk.Source) == 0 {
 		return
 	}
 
 	// start an attack
-	if !mgr.isInAttack && isAttackStartable(atk.AttackType) {
-		// TODO: make this a struct?
+	if !mgr.isInAttack && atk.AttackType.IsQualified() {
 		mgr.isInAttack = true
 		mgr.attackInfo = attackInfo{
 			attacker:     atk.Source,
@@ -45,8 +44,4 @@ func (mgr *Manager) EndAttack() {
 		AttackEffect: mgr.attackInfo.attackEffect,
 		DamageType:   mgr.attackInfo.damageType,
 	})
-}
-
-func isAttackStartable(t model.AttackType) bool {
-	return t != model.AttackType_DOT && t != model.AttackType_PURSUED
 }

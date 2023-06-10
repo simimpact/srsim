@@ -25,15 +25,15 @@ type AttackEndEvent struct {
 	DamageType   model.DamageType
 }
 
-type BeforeHitEventHandler = handler.EventHandler[BeforeHitEvent]
-type BeforeHitEvent struct {
+type HitStartEventHandler = handler.EventHandler[HitStartEvent]
+type HitStartEvent struct {
 	Attacker key.TargetID
 	Defender key.TargetID
 	Hit      *info.Hit
 }
 
-type DamageResultEventHandler = handler.EventHandler[DamageResultEvent]
-type DamageResultEvent struct {
+type HitEndEventHandler = handler.EventHandler[HitEndEvent]
+type HitEndEvent struct {
 	Attacker         key.TargetID
 	Defender         key.TargetID
 	AttackType       model.AttackType
@@ -48,26 +48,16 @@ type DamageResultEvent struct {
 	IsCrit           bool
 }
 
-type AfterHitEventHandler = handler.EventHandler[AfterHitEvent]
-type AfterHitEvent struct {
-	Attacker     key.TargetID
-	Defender     key.TargetID
-	AttackType   model.AttackType
-	DamageType   model.DamageType
-	AttackEffect model.AttackEffect
-	IsCrit       bool
-}
-
-type BeforeHealEventHandler = handler.MutableEventHandler[BeforeHealEvent]
-type BeforeHealEvent struct {
+type HealStartEventHandler = handler.MutableEventHandler[HealStartEvent]
+type HealStartEvent struct {
 	Target    *info.Stats
 	Healer    *info.Stats
 	BaseHeal  info.HealMap
 	HealValue float64
 }
 
-type AfterHealEventHandler = handler.EventHandler[AfterHealEvent]
-type AfterHealEvent struct {
+type HealEndEventHandler = handler.EventHandler[HealEndEvent]
+type HealEndEvent struct {
 	Target     key.TargetID
 	Healer     key.TargetID
 	HealAmount float64

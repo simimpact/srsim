@@ -10,13 +10,12 @@ type System struct {
 	TurnEnd     TurnEndEventHandler
 	Termination TerminationEventHandler
 
-	AttackStart  AttackStartEventHandler
-	AttackEnd    AttackEndEventHandler
-	BeforeHit    BeforeHitEventHandler
-	DamageResult DamageResultEventHandler
-	AfterHit     AfterHitEventHandler
-	BeforeHeal   BeforeHealEventHandler
-	AfterHeal    AfterHealEventHandler
+	AttackStart AttackStartEventHandler
+	AttackEnd   AttackEndEventHandler
+	HitStart    HitStartEventHandler
+	HitEnd      HitEndEventHandler
+	HealStart   HealStartEventHandler
+	HealEnd     HealEndEventHandler
 
 	CharacterAdded CharacterAddedEventHandler
 
