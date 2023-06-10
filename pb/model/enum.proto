@@ -214,3 +214,10 @@ enum ModifyHPRatioType {
   MAX_HP = 1;
   CURRENT_HP = 2;
 }
+
+enum TargetType {
+  INVALID_TARGET_TYPE = 0;
+  SELF = 1;
+  ALLIES = 2;
+  ENEMIES = 3;
+}

@@ -145,7 +145,7 @@ func phase1(s *simulation) (stateFn, error) {
 
 	// reset the stance if this is start of enemy turn and their stance is 0
 	if s.IsEnemy(s.active) && s.attributeService.Stance(s.active) <= 0 {
-		info, err := s.EnemyInfo(s.active)
+		info, err := s.enemyManager.Info(s.active)
 		if err != nil {
 			return nil, fmt.Errorf("error when getting enemy info in phase1 %w", err)
 		}

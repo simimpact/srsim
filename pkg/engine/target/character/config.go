@@ -9,16 +9,14 @@ import (
 )
 
 type Config struct {
-	Create     func(engine engine.Engine, id key.TargetID, info info.Character) CharInstance
+	Create     func(engine engine.Engine, id key.TargetID, info info.Character) info.CharInstance
 	Promotions []PromotionData
 	Rarity     int
 	Element    model.DamageType
 	Path       model.Path
 	MaxEnergy  float64
 	Traces     TraceMap
-	// TODO:
-	//	- ability metadata
-	//	- body
+	SkillInfo  SkillInfo
 }
 
 type TraceMap map[string]Trace
@@ -42,6 +40,39 @@ type PromotionData struct {
 	CritChance float64
 	CritDMG    float64
 	Aggro      float64
+}
+
+type SkillInfo struct {
+	Attack    AttackData
+	Skill     SkillData
+	Ult       UltData
+	Technique TechniqueData
+}
+
+type SkillValidateFunc func(engine engine.Engine, char info.CharInstance) bool
+
+type AttackData struct {
+	SkillEffect  model.SkillEffect
+	ValidTargets model.TargetType
+}
+
+type SkillData struct {
+	SPCost       int
+	SkillEffect  model.SkillEffect
+	ValidTargets model.TargetType
+	CanUse       SkillValidateFunc
+}
+
+type UltData struct {
+	SkillEffect  model.SkillEffect
+	ValidTargets model.TargetType
+}
+
+type TechniqueData struct {
+	TechniqueCost int
+	SkillEffect   model.SkillEffect
+	ValidTargets  model.TargetType
+	IsAttack      bool
 }
 
 func (c Config) ascension(maxLvl int) int {

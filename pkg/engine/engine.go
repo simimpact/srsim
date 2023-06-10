@@ -24,6 +24,9 @@ type Engine interface {
 	// Random number generator
 	Rand() *rand.Rand
 
+	// Add or remove Skill Points from the current sim state. Returns the new SP amount
+	ModifySP(amt int) int
+
 	Modifier
 	Attribute
 	Combat
@@ -32,8 +35,6 @@ type Engine interface {
 	Info
 	Target
 	Insert
-
-	// TODO: Skill Point (Boost Point). Other sim metadata calls?
 }
 
 type Modifier interface {
@@ -149,11 +150,9 @@ type Turn interface {
 }
 
 type Info interface {
-	// Metadata for the given character, such as their current level, ascension, traces, etc.
-	CharacterInfo(target key.TargetID) (info.Character, error)
-
-	// Metadata for the given enemy, such as their current level and weaknesses.
-	EnemyInfo(target key.TargetID) (info.Enemy, error)
+	// Gets the char instance associated with this id. Useful if you want to access the char state
+	// from a modifier or other disassociated logic
+	CharacterInstance(id key.TargetID) (info.CharInstance, error)
 }
 
 type Target interface {

@@ -17,6 +17,12 @@ func (sim *simulation) Rand() *rand.Rand {
 	return sim.rand
 }
 
+func (sim *simulation) ModifySP(amt int) int {
+	// TODO: emit event
+	sim.sp += amt
+	return sim.sp
+}
+
 func (sim *simulation) AddModifier(target key.TargetID, instance info.Modifier) (bool, error) {
 	return sim.modManager.AddModifier(target, instance)
 }
@@ -54,12 +60,8 @@ func (sim *simulation) Stats(target key.TargetID) *info.Stats {
 	return sim.attributeService.Stats(target)
 }
 
-func (sim *simulation) CharacterInfo(target key.TargetID) (info.Character, error) {
-	return sim.charManager.Info(target)
-}
-
-func (sim *simulation) EnemyInfo(target key.TargetID) (info.Enemy, error) {
-	panic("not implemented") // TODO: Implement
+func (sim *simulation) CharacterInstance(id key.TargetID) (info.CharInstance, error) {
+	return sim.charManager.Get(id)
 }
 
 func (sim *simulation) SetGauge(target key.TargetID, amt float64) error {

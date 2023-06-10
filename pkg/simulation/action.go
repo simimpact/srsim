@@ -120,15 +120,47 @@ func (s *simulation) executeQueue(phase info.BattlePhase, next stateFn) (stateFn
 	return next, nil
 }
 
-func (sim *simulation) executeCharAction(target key.TargetID, isInsert bool) {
+func (sim *simulation) executeCharAction(target key.TargetID, isInsert bool) error {
+	char, err := sim.charManager.Get(target)
+	if err != nil {
+		return err
+	}
+	skillInfo, err := sim.charManager.SkillInfo(target)
+	if err != nil {
+		return err
+	}
+
+	var (
+		skillEffect  model.SkillEffect
+		attackType   model.AttackType
+		validTargets model.TargetType
+	)
+
+	// TODO: this is hardcoded action behavior logic. This should be doing logic eval instead
+	// of something hardcoded
 	// TODO: sim.eval.NextAction?
 	// TODO: determine skillEffect & attackType from eval
-	// TODO: SP increase/decrease depending on action chosen
-	// TODO: Target Evaluator to determine target to use
-	var skillEffect model.SkillEffect
-	var attackType model.AttackType
+	//
+	// current hardcoded logic: use skill if possible, otherwise attack
+	check := skillInfo.Skill.CanUse
+	if sim.sp > 0 && (check == nil || check(sim, char)) {
+		attackType = model.AttackType_SKILL
+		skillEffect = skillInfo.Skill.SkillEffect
+		validTargets = skillInfo.Skill.ValidTargets
+		sim.ModifySP(-skillInfo.Skill.SPCost)
+	} else {
+		attackType = model.AttackType_NORMAL
+		skillEffect = skillInfo.Attack.SkillEffect
+		validTargets = skillInfo.Attack.ValidTargets
+		sim.ModifySP(+1)
+	}
 
+	// TODO: use Target Evaluator to determine target to use
+	primaryTarget := sim.getPrimaryTarget(target, validTargets)
+
+	// set skill effect on sim state and emit start event
 	sim.skillEffect = skillEffect
+	sim.isInsert = isInsert
 	sim.event.ActionStart.Emit(event.ActionEvent{
 		Target:      target,
 		SkillEffect: skillEffect,
@@ -136,17 +168,24 @@ func (sim *simulation) executeCharAction(target key.TargetID, isInsert bool) {
 		IsInsert:    isInsert,
 	})
 
-	// TODO: execute action here
+	// execute action
+	if attackType == model.AttackType_SKILL {
+		char.Skill(primaryTarget, sim)
+	} else {
+		char.Attack(primaryTarget, sim)
+	}
 
 	// end attack if in one. no-op if not in an attack
+	// emit end events
 	sim.combatManager.EndAttack()
-
 	sim.event.ActionEnd.Emit(event.ActionEvent{
 		Target:      target,
 		SkillEffect: skillEffect,
 		AttackType:  attackType,
 		IsInsert:    isInsert,
 	})
+
+	return nil
 }
 
 // TODO: may need to take in a burst type for MC case of having dual bursts?
@@ -196,4 +235,45 @@ func (sim *simulation) executeInsert(i info.Insert) {
 		AbortFlags:  i.AbortFlags,
 		Priority:    i.Priority,
 	})
+}
+
+// TODO: this is just placeholder. Should also take in a Target Evaluator to execute
+func (sim *simulation) getPrimaryTarget(source key.TargetID, options model.TargetType) key.TargetID {
+	switch options {
+	case model.TargetType_ALLIES:
+		if sim.IsEnemy(source) {
+			return sim.enemies[0]
+		}
+		return sim.characters[0]
+	case model.TargetType_ENEMIES:
+		if sim.IsEnemy(source) {
+			return sim.characters[0]
+		}
+		return sim.enemies[0]
+	case model.TargetType_SELF:
+		return source
+	default:
+		return source
+	}
+}
+
+// model simulation into an ActionState
+
+func (sim *simulation) EndAttack() {
+	sim.combatManager.EndAttack()
+}
+
+func (sim *simulation) IsInsert() bool {
+	return sim.isInsert
+}
+
+func (sim *simulation) SkillEffect() model.SkillEffect {
+	return sim.skillEffect
+}
+
+func (sim *simulation) CharacterInfo() info.Character {
+	if c, err := sim.charManager.Info(sim.active); err != nil {
+		return c
+	}
+	return info.Character{}
 }

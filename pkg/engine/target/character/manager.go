@@ -12,7 +12,7 @@ import (
 type Manager struct {
 	engine    engine.Engine
 	attr      attribute.AttributeModifier
-	instances map[key.TargetID]CharInstance
+	instances map[key.TargetID]info.CharInstance
 	info      map[key.TargetID]info.Character
 }
 
@@ -20,12 +20,12 @@ func New(engine engine.Engine, attr attribute.AttributeModifier) *Manager {
 	return &Manager{
 		engine:    engine,
 		attr:      attr,
-		instances: make(map[key.TargetID]CharInstance, 4),
+		instances: make(map[key.TargetID]info.CharInstance, 4),
 		info:      make(map[key.TargetID]info.Character, 4),
 	}
 }
 
-func (mgr *Manager) Get(id key.TargetID) (CharInstance, error) {
+func (mgr *Manager) Get(id key.TargetID) (info.CharInstance, error) {
 	if instance, ok := mgr.instances[id]; ok {
 		return instance, nil
 	}
@@ -41,4 +41,11 @@ func (mgr *Manager) Info(id key.TargetID) (info.Character, error) {
 
 func (mgr *Manager) Characters() map[key.TargetID]info.Character {
 	return mgr.info
+}
+
+func (mgr *Manager) SkillInfo(id key.TargetID) (SkillInfo, error) {
+	if i, ok := mgr.info[id]; ok {
+		return characterCatalog[i.Key].SkillInfo, nil
+	}
+	return SkillInfo{}, fmt.Errorf("target is not a character: %v", id)
 }

@@ -105,19 +105,19 @@ func (mr *MockEngineMockRecorder) Attack(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Attack", reflect.TypeOf((*MockEngine)(nil).Attack), arg0)
 }
 
-// CharacterInfo mocks base method.
-func (m *MockEngine) CharacterInfo(arg0 key.TargetID) (info.Character, error) {
+// CharacterInstance mocks base method.
+func (m *MockEngine) CharacterInstance(arg0 key.TargetID) (info.CharInstance, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CharacterInfo", arg0)
-	ret0, _ := ret[0].(info.Character)
+	ret := m.ctrl.Call(m, "CharacterInstance", arg0)
+	ret0, _ := ret[0].(info.CharInstance)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// CharacterInfo indicates an expected call of CharacterInfo.
-func (mr *MockEngineMockRecorder) CharacterInfo(arg0 interface{}) *gomock.Call {
+// CharacterInstance indicates an expected call of CharacterInstance.
+func (mr *MockEngineMockRecorder) CharacterInstance(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CharacterInfo", reflect.TypeOf((*MockEngine)(nil).CharacterInfo), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CharacterInstance", reflect.TypeOf((*MockEngine)(nil).CharacterInstance), arg0)
 }
 
 // Characters mocks base method.
@@ -146,21 +146,6 @@ func (m *MockEngine) Enemies() []key.TargetID {
 func (mr *MockEngineMockRecorder) Enemies() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Enemies", reflect.TypeOf((*MockEngine)(nil).Enemies))
-}
-
-// EnemyInfo mocks base method.
-func (m *MockEngine) EnemyInfo(arg0 key.TargetID) (info.Enemy, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "EnemyInfo", arg0)
-	ret0, _ := ret[0].(info.Enemy)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// EnemyInfo indicates an expected call of EnemyInfo.
-func (mr *MockEngineMockRecorder) EnemyInfo(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnemyInfo", reflect.TypeOf((*MockEngine)(nil).EnemyInfo), arg0)
 }
 
 // Events mocks base method.
@@ -422,6 +407,20 @@ func (m *MockEngine) ModifyHPByRatio(arg0, arg1 key.TargetID, arg2 info.ModifyHP
 func (mr *MockEngineMockRecorder) ModifyHPByRatio(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyHPByRatio", reflect.TypeOf((*MockEngine)(nil).ModifyHPByRatio), arg0, arg1, arg2)
+}
+
+// ModifySP mocks base method.
+func (m *MockEngine) ModifySP(arg0 int) int {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ModifySP", arg0)
+	ret0, _ := ret[0].(int)
+	return ret0
+}
+
+// ModifySP indicates an expected call of ModifySP.
+func (mr *MockEngineMockRecorder) ModifySP(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifySP", reflect.TypeOf((*MockEngine)(nil).ModifySP), arg0)
 }
 
 // ModifyStance mocks base method.

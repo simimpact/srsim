@@ -27,7 +27,7 @@ type char struct {
 	info   info.Character
 }
 
-func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character) character.CharInstance {
+func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character) info.CharInstance {
 	c := &char{
 		engine: engine,
 		id:     id,
@@ -41,14 +41,18 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 	return c
 }
 
-func (c *char) Attack(target key.TargetID) {
+func (c *char) Attack(target key.TargetID, state info.ActionState) {
 
 }
 
-func (c *char) Skill(target key.TargetID) {
+func (c *char) Skill(target key.TargetID, state info.ActionState) {
 
 }
 
-func (c *char) Burst(target key.TargetID) {
+func (c *char) Burst(target key.TargetID, state info.ActionState) {
+
+}
+
+func (c *char) Technique(target key.TargetID, state info.ActionState) {
 
 }
