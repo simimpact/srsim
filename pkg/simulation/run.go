@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/simimpact/srsim/pkg/engine/event"
+	"github.com/simimpact/srsim/pkg/engine/hook"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
@@ -32,7 +33,7 @@ func initialize(s *simulation) (stateFn, error) {
 	s.subscribe()
 
 	// enable all registered startup hooks
-	for k, hook := range hooks {
+	for k, hook := range hook.StartupHooks() {
 		if err := hook(s); err != nil {
 			return nil, fmt.Errorf("error executing hook %v", k)
 		}
