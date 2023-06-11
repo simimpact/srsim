@@ -97,8 +97,6 @@ func (s *simulation) executeQueue(phase info.BattlePhase, next stateFn) (stateFn
 		}
 		s.ultCheck()
 	}
-
-	s.skillEffect = model.SkillEffect_INVALID_SKILL_EFFECT
 	return next, nil
 }
 
@@ -120,14 +118,12 @@ func (sim *simulation) executeAction(id key.TargetID, isInsert bool) error {
 		return fmt.Errorf("unsupported target type: %v", sim.targets[id])
 	}
 
-	sim.ModifySP(executable.SPChange)
+	sim.ModifySP(executable.SPDelta)
 
-	sim.skillEffect = executable.SkillEffect
 	sim.event.ActionStart.Emit(event.ActionEvent{
-		Target:      id,
-		SkillEffect: executable.SkillEffect,
-		AttackType:  executable.AttackType,
-		IsInsert:    isInsert,
+		Target:     id,
+		AttackType: executable.AttackType,
+		IsInsert:   isInsert,
 	})
 
 	// execute action
@@ -137,10 +133,9 @@ func (sim *simulation) executeAction(id key.TargetID, isInsert bool) error {
 	// emit end events
 	sim.combat.EndAttack()
 	sim.event.ActionEnd.Emit(event.ActionEvent{
-		Target:      id,
-		SkillEffect: executable.SkillEffect,
-		AttackType:  executable.AttackType,
-		IsInsert:    isInsert,
+		Target:     id,
+		AttackType: executable.AttackType,
+		IsInsert:   isInsert,
 	})
 	return nil
 }
@@ -159,12 +154,10 @@ func (sim *simulation) executeUlt(id key.TargetID) error {
 		return fmt.Errorf("unsupported target type: %v", sim.targets[id])
 	}
 
-	sim.skillEffect = executable.SkillEffect
 	sim.event.UltStart.Emit(event.ActionEvent{
-		Target:      id,
-		SkillEffect: executable.SkillEffect,
-		AttackType:  model.AttackType_ULT,
-		IsInsert:    true,
+		Target:     id,
+		AttackType: model.AttackType_ULT,
+		IsInsert:   true,
 	})
 
 	executable.Execute()
@@ -172,21 +165,18 @@ func (sim *simulation) executeUlt(id key.TargetID) error {
 	// end attack if in one. no-op if not in an attack
 	sim.combat.EndAttack()
 	sim.event.UltEnd.Emit(event.ActionEvent{
-		Target:      id,
-		SkillEffect: executable.SkillEffect,
-		AttackType:  model.AttackType_ULT,
-		IsInsert:    true,
+		Target:     id,
+		AttackType: model.AttackType_ULT,
+		IsInsert:   true,
 	})
 	return nil
 }
 
 func (sim *simulation) executeInsert(i info.Insert) {
-	sim.skillEffect = i.SkillEffect
 	sim.event.InsertStart.Emit(event.InsertEvent{
-		Target:      i.Source,
-		SkillEffect: i.SkillEffect,
-		AbortFlags:  i.AbortFlags,
-		Priority:    i.Priority,
+		Target:     i.Source,
+		AbortFlags: i.AbortFlags,
+		Priority:   i.Priority,
 	})
 
 	// execute insert
@@ -195,9 +185,8 @@ func (sim *simulation) executeInsert(i info.Insert) {
 	// end attack if in one. no-op if not in an attack
 	sim.combat.EndAttack()
 	sim.event.InsertEnd.Emit(event.InsertEvent{
-		Target:      i.Source,
-		SkillEffect: i.SkillEffect,
-		AbortFlags:  i.AbortFlags,
-		Priority:    i.Priority,
+		Target:     i.Source,
+		AbortFlags: i.AbortFlags,
+		Priority:   i.Priority,
 	})
 }

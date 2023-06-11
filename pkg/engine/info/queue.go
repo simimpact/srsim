@@ -15,9 +15,6 @@ type Insert struct {
 	// The target this insert is associated with (used to look up their current state)
 	Source key.TargetID
 
-	// The skill effect of this insert (passive, AoE, blast, support, etc). Used for filters
-	SkillEffect model.SkillEffect
-
 	// Before this insert executes, will check the Source for if it contains any of the given
 	// abort flags. If an abort flag matches, this insert will not be executed.
 	AbortFlags []model.BehaviorFlag

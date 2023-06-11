@@ -9,20 +9,18 @@ import (
 
 type AttackStartEventHandler = handler.EventHandler[AttackStartEvent]
 type AttackStartEvent struct {
-	Attacker    key.TargetID
-	Targets     []key.TargetID
-	AttackType  model.AttackType
-	SkillEffect model.SkillEffect
-	DamageType  model.DamageType
+	Attacker   key.TargetID
+	Targets    []key.TargetID
+	AttackType model.AttackType
+	DamageType model.DamageType
 }
 
 type AttackEndEventHandler = handler.EventHandler[AttackEndEvent]
 type AttackEndEvent struct {
-	Attacker    key.TargetID
-	Targets     []key.TargetID
-	AttackType  model.AttackType
-	SkillEffect model.SkillEffect
-	DamageType  model.DamageType
+	Attacker   key.TargetID
+	Targets    []key.TargetID
+	AttackType model.AttackType
+	DamageType model.DamageType
 }
 
 type HitStartEventHandler = handler.EventHandler[HitStartEvent]
@@ -38,7 +36,6 @@ type HitEndEvent struct {
 	Defender         key.TargetID
 	AttackType       model.AttackType
 	DamageType       model.DamageType
-	SkillEffect      model.SkillEffect
 	BaseDamage       float64
 	BonusDamage      float64
 	TotalDamage      float64

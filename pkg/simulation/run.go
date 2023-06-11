@@ -145,7 +145,6 @@ func phase1(s *simulation) (stateFn, error) {
 	isFrozen := s.HasBehaviorFlag(s.active, model.BehaviorFlag_STAT_CTRL_FROZEN)
 
 	// tick any modifiers that listen for phase1 (primarily dots)
-	// TODO: skillEffect is here invalid. Is there a skill effect for dots?
 	s.modifier.Tick(s.active, info.ModifierPhase1)
 
 	// skip all other phase1 logic when frozen and go straight to phase2
@@ -177,9 +176,6 @@ func action(s *simulation) (stateFn, error) {
 	if err := s.executeAction(s.active, false); err != nil {
 		return nil, fmt.Errorf("unknown error executing action %w", err)
 	}
-
-	s.skillEffect = model.SkillEffect_INVALID_SKILL_EFFECT
-	s.ultCheck() // this check is somewhat redudant
 	return phase2, nil
 }
 

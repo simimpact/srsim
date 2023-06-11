@@ -172,26 +172,6 @@ enum AttackType {
   ELEMENT_DAMAGE = 9;
 }
 
-enum SkillEffect {
-  INVALID_SKILL_EFFECT = 0;
-  SINGLE = 1;
-  AOE = 2;
-  SHIELD_BREAK = 3;
-  BOUNCE = 4;
-  BLAST = 5;
-  SUPPORT = 6;
-  WEAKEN = 7;
-  IMPAIR = 8;
-  RESTORE = 9;
-  TAUNT = 10;
-  DEFENSE = 11;
-  DAMAGE = 12;
-  ENHANCE = 13;
-  TRANSFORM = 14;
-  PASSIVE = 15;
-  MAZE_ATTACK = 16;
-}
-
 enum DamageFormula {
   INVALID_DAMAGE_FORMULA = 0;
   BY_ATK = 1;

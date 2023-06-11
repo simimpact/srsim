@@ -56,10 +56,6 @@ type ActionState interface {
 	// 	- QQ skill reuse
 	IsInsert() bool
 
-	// Returns the SkillEffect of this action. This should match what was defined in the
-	// character config.
-	SkillEffect() model.SkillEffect
-
 	// Returns info/metadata on the character, such as eidolon level, set of enabled traces, current
 	// level, max level, level of each skill, etc
 	CharacterInfo() Character

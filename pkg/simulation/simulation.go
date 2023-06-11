@@ -40,15 +40,14 @@ type simulation struct {
 	combat   *combat.Manager
 
 	// state
-	sp          int
-	tp          int
-	targets     map[key.TargetID]info.TargetClass
-	characters  []key.TargetID
-	enemies     []key.TargetID
-	neutrals    []key.TargetID
-	totalAV     float64
-	active      key.TargetID
-	skillEffect model.SkillEffect
+	sp         int
+	tp         int
+	targets    map[key.TargetID]info.TargetClass
+	characters []key.TargetID
+	enemies    []key.TargetID
+	neutrals   []key.TargetID
+	totalAV    float64
+	active     key.TargetID
 }
 
 func Run(cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationResult, error) {

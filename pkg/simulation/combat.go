@@ -3,7 +3,7 @@ package simulation
 import "github.com/simimpact/srsim/pkg/engine/info"
 
 func (sim *simulation) Attack(atk info.Attack) {
-	sim.combat.Attack(atk, sim.skillEffect)
+	sim.combat.Attack(atk)
 }
 
 func (sim *simulation) Heal(heal info.Heal) {

@@ -30,7 +30,6 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 		Defender:         hit.Defender.ID(),
 		AttackType:       hit.AttackType,
 		DamageType:       hit.DamageType,
-		SkillEffect:      hit.SkillEffect,
 		BaseDamage:       0, // TODO
 		BonusDamage:      0, // TODO
 		TotalDamage:      0, // TODO
@@ -60,7 +59,6 @@ func (mgr *Manager) newHit(target key.TargetID, atk info.Attack) *info.Hit {
 		Defender:     mgr.attr.Stats(target),
 		AttackType:   atk.AttackType,
 		DamageType:   atk.DamageType,
-		SkillEffect:  mgr.attackInfo.skillEffect,
 		BaseDamage:   baseDamage,
 		EnergyGain:   atk.EnergyGain,
 		StanceDamage: atk.StanceDamage,

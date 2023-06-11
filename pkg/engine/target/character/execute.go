@@ -30,11 +30,11 @@ func (mgr *Manager) ExecuteAction(id key.TargetID, isInsert bool) (target.Execut
 	// TODO: this is hardcoded action behavior logic. This should be doing logic eval instead
 	// of something hardcoded
 	// TODO: eval.NextAction?
-	// TODO: determine skillEffect & attackType from eval
+	// TODO: determine attackType from eval
 	//
 	// current hardcoded logic: use skill if possible, otherwise attack
 	check := skillInfo.Skill.CanUse
-	if mgr.engine.SP() > skillInfo.Skill.SPCost && (check == nil || check(mgr.engine, char)) {
+	if mgr.engine.SP() > skillInfo.Skill.SPNeed && (check == nil || check(mgr.engine, char)) {
 
 		// TODO: this is placeholder evaltarget. Need to get what evaluator to use from AST
 		primaryTarget, err := evaltarget.Evaluate(mgr.engine, evaltarget.Info{
@@ -50,16 +50,14 @@ func (mgr *Manager) ExecuteAction(id key.TargetID, isInsert bool) (target.Execut
 		return target.ExecutableAction{
 			Execute: func() {
 				char.Skill(primaryTarget, actionState{
-					mgr:         mgr,
-					source:      id,
-					isInsert:    isInsert,
-					skillEffect: skillInfo.Skill.SkillEffect,
+					mgr:      mgr,
+					source:   id,
+					isInsert: isInsert,
 				})
 			},
-			SPChange:    -skillInfo.Skill.SPCost,
-			SkillEffect: skillInfo.Skill.SkillEffect,
-			AttackType:  model.AttackType_SKILL,
-			IsInsert:    isInsert,
+			SPDelta:    -skillInfo.Skill.SPNeed,
+			AttackType: model.AttackType_SKILL,
+			IsInsert:   isInsert,
 		}, nil
 	}
 
@@ -77,16 +75,14 @@ func (mgr *Manager) ExecuteAction(id key.TargetID, isInsert bool) (target.Execut
 	return target.ExecutableAction{
 		Execute: func() {
 			char.Attack(primaryTarget, actionState{
-				mgr:         mgr,
-				source:      id,
-				isInsert:    isInsert,
-				skillEffect: skillInfo.Attack.SkillEffect,
+				mgr:      mgr,
+				source:   id,
+				isInsert: isInsert,
 			})
 		},
-		SPChange:    +1,
-		SkillEffect: skillInfo.Attack.SkillEffect,
-		AttackType:  model.AttackType_NORMAL,
-		IsInsert:    isInsert,
+		SPDelta:    skillInfo.Attack.SPAdd,
+		AttackType: model.AttackType_NORMAL,
+		IsInsert:   isInsert,
 	}, nil
 }
 
@@ -96,10 +92,9 @@ func (mgr *Manager) ExecuteAction(id key.TargetID, isInsert bool) (target.Execut
 //   - What UltType to use (to support case of MC)
 //
 // This should be a simple function that just:
-//  1. gets the SkillEffect of the relevant UltType
-//  2. find the method to execute in the character instance based on UltType
-//  3. call TargetEvaluator to determine the primary target
-//  4. return ExecutableUlt w/ this information bundled
+//  1. find the method to execute in the character instance based on UltType
+//  2. call TargetEvaluator to determine the primary target
+//  3. return ExecutableUlt w/ this information bundled
 func (mgr *Manager) ExecuteUlt(id key.TargetID) (target.ExecutableUlt, error) {
 	skillInfo, err := mgr.SkillInfo(id)
 	if err != nil {
@@ -122,13 +117,11 @@ func (mgr *Manager) ExecuteUlt(id key.TargetID) (target.ExecutableUlt, error) {
 		return target.ExecutableUlt{
 			Execute: func() {
 				singleUlt.Ult(primaryTarget, actionState{
-					mgr:         mgr,
-					source:      id,
-					isInsert:    true,
-					skillEffect: skillInfo.Ult.SkillEffect,
+					mgr:      mgr,
+					source:   id,
+					isInsert: true,
 				})
 			},
-			SkillEffect: skillInfo.Ult.SkillEffect,
 		}, nil
 	} else if multiUlt, ok := char.(info.MultiUlt); ok {
 		primaryTarget, err := evaltarget.Evaluate(mgr.engine, evaltarget.Info{
@@ -144,33 +137,25 @@ func (mgr *Manager) ExecuteUlt(id key.TargetID) (target.ExecutableUlt, error) {
 		return target.ExecutableUlt{
 			Execute: func() {
 				multiUlt.UltAttack(primaryTarget, actionState{
-					mgr:         mgr,
-					source:      id,
-					isInsert:    true,
-					skillEffect: skillInfo.Ult.SkillEffect,
+					mgr:      mgr,
+					source:   id,
+					isInsert: true,
 				})
 			},
-			SkillEffect: skillInfo.Ult.SkillEffect,
 		}, nil
 	}
 	return target.ExecutableUlt{}, fmt.Errorf("unknown ult signature for char %v", id)
 }
 
 type actionState struct {
-	mgr         *Manager
-	source      key.TargetID
-	isInsert    bool
-	skillEffect model.SkillEffect
+	mgr      *Manager
+	source   key.TargetID
+	isInsert bool
 }
 
 func (a actionState) IsInsert() bool {
 	return a.isInsert
 }
-
-func (a actionState) SkillEffect() model.SkillEffect {
-	return a.skillEffect
-}
-
 func (a actionState) EndAttack() {
 	a.mgr.engine.EndAttack()
 }
