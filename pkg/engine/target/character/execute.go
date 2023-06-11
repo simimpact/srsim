@@ -34,13 +34,13 @@ func (mgr *Manager) ExecuteAction(id key.TargetID, isInsert bool) (target.Execut
 	//
 	// current hardcoded logic: use skill if possible, otherwise attack
 	check := skillInfo.Skill.CanUse
-	if mgr.engine.SP() > skillInfo.Skill.SPNeed && (check == nil || check(mgr.engine, char)) {
+	if mgr.engine.SP() >= skillInfo.Skill.SPNeed && (check == nil || check(mgr.engine, char)) {
 
 		// TODO: this is placeholder evaltarget. Need to get what evaluator to use from AST
 		primaryTarget, err := evaltarget.Evaluate(mgr.engine, evaltarget.Info{
 			Source:      id,
 			Evaluator:   evaltarget.LowestHP,
-			TargetType:  skillInfo.Skill.ValidTargets,
+			TargetType:  skillInfo.Skill.TargetType,
 			SourceClass: info.ClassCharacter,
 		})
 		if err != nil {
@@ -65,7 +65,7 @@ func (mgr *Manager) ExecuteAction(id key.TargetID, isInsert bool) (target.Execut
 	primaryTarget, err := evaltarget.Evaluate(mgr.engine, evaltarget.Info{
 		Source:      id,
 		Evaluator:   evaltarget.LowestHP,
-		TargetType:  skillInfo.Attack.ValidTargets,
+		TargetType:  skillInfo.Attack.TargetType,
 		SourceClass: info.ClassCharacter,
 	})
 	if err != nil {
@@ -107,7 +107,7 @@ func (mgr *Manager) ExecuteUlt(id key.TargetID) (target.ExecutableUlt, error) {
 		primaryTarget, err := evaltarget.Evaluate(mgr.engine, evaltarget.Info{
 			Source:      id,
 			Evaluator:   evaltarget.LowestHP,
-			TargetType:  skillInfo.Attack.ValidTargets,
+			TargetType:  skillInfo.Attack.TargetType,
 			SourceClass: info.ClassCharacter,
 		})
 		if err != nil {
@@ -127,7 +127,7 @@ func (mgr *Manager) ExecuteUlt(id key.TargetID) (target.ExecutableUlt, error) {
 		primaryTarget, err := evaltarget.Evaluate(mgr.engine, evaltarget.Info{
 			Source:      id,
 			Evaluator:   evaltarget.LowestHP,
-			TargetType:  skillInfo.Attack.ValidTargets,
+			TargetType:  skillInfo.Attack.TargetType,
 			SourceClass: info.ClassCharacter,
 		})
 		if err != nil {

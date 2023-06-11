@@ -18,6 +18,23 @@ func init() {
 		MaxEnergy:  120,
 		Promotions: promotions,
 		Traces:     traces,
+		SkillInfo: character.SkillInfo{
+			Attack: character.Attack{
+				SPAdd:      1,
+				TargetType: model.TargetType_ALLIES,
+			},
+			Skill: character.Skill{
+				SPNeed:     1,
+				TargetType: model.TargetType_ALLIES,
+			},
+			Ult: character.Ult{
+				TargetType: model.TargetType_SELF,
+			},
+			Technique: character.Technique{
+				TargetType: model.TargetType_ALLIES,
+				IsAttack:   true,
+			},
+		},
 	})
 }
 

@@ -45,30 +45,30 @@ type PromotionData struct {
 type SkillInfo struct {
 	Attack    Attack
 	Skill     Skill
-	Ult       []Ult
+	Ult       Ult
 	Technique Technique
 }
 
 type SkillValidateFunc func(engine engine.Engine, char info.CharInstance) bool
 
 type Attack struct {
-	SPAdd        int
-	ValidTargets model.TargetType
+	SPAdd      int
+	TargetType model.TargetType
 }
 
 type Skill struct {
-	SPNeed       int
-	ValidTargets model.TargetType
-	CanUse       SkillValidateFunc
+	SPNeed     int
+	TargetType model.TargetType
+	CanUse     SkillValidateFunc
 }
 
 type Ult struct {
-	ValidTargets model.TargetType
+	TargetType model.TargetType
 }
 
 type Technique struct {
-	ValidTargets model.TargetType
-	IsAttack     bool
+	TargetType model.TargetType
+	IsAttack   bool
 }
 
 func (c Config) ascension(maxLvl int) int {
