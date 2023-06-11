@@ -21,9 +21,9 @@ type AttributeModifier interface {
 
 	AddTarget(target key.TargetID, base BaseStats) error
 
-	SetHP(target, source key.TargetID, amt float64) error
-	ModifyHPByRatio(target, source key.TargetID, data info.ModifyHPByRatio) error
-	ModifyHPByAmount(target, source key.TargetID, amt float64) error
+	SetHP(target, source key.TargetID, amt float64, isDamage bool) error
+	ModifyHPByRatio(target, source key.TargetID, data info.ModifyHPByRatio, isDamage bool) error
+	ModifyHPByAmount(target, source key.TargetID, amt float64, isDamage bool) error
 
 	SetEnergy(target key.TargetID, amt float64) error
 	ModifyEnergy(target key.TargetID, amt float64) error

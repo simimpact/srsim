@@ -7,12 +7,12 @@ import (
 
 type HPChangeEventHandler = handler.EventHandler[HPChangeEvent]
 type HPChangeEvent struct {
-	Target     key.TargetID
-	OldHPRatio float64
-	NewHPRatio float64
-	OldHP      float64
-	NewHP      float64
-	// TODO: need more params (IsHPChangeByDamage?)
+	Target             key.TargetID
+	OldHPRatio         float64
+	NewHPRatio         float64
+	OldHP              float64
+	NewHP              float64
+	IsHPChangeByDamage bool
 }
 
 type LimboWaitHealEventHandler = handler.CancelableEventHandler[LimboWaitHealEvent]

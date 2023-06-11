@@ -44,15 +44,15 @@ func (sim *simulation) HPRatio(target key.TargetID) float64 {
 }
 
 func (sim *simulation) SetHP(target key.TargetID, source key.TargetID, amt float64) error {
-	return sim.attr.SetHP(target, source, amt)
+	return sim.attr.SetHP(target, source, amt, false)
 }
 
 func (sim *simulation) ModifyHPByRatio(target key.TargetID, source key.TargetID, data info.ModifyHPByRatio) error {
-	return sim.attr.ModifyHPByRatio(target, source, data)
+	return sim.attr.ModifyHPByRatio(target, source, data, false)
 }
 
 func (sim *simulation) ModifyHPByAmount(target key.TargetID, source key.TargetID, amt float64) error {
-	return sim.attr.ModifyHPByAmount(target, source, amt)
+	return sim.attr.ModifyHPByAmount(target, source, amt, false)
 }
 
 func (sim *simulation) ModifyStance(target key.TargetID, source key.TargetID, amt float64) error {
