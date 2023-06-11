@@ -61,6 +61,14 @@ type Listeners struct {
 	// Called when the attached target break status ends (stance resets to max).
 	OnEndBreak func(mod *ModifierInstance)
 
+	// ------------ shield events
+
+	// Called when a shield has been added to the attached target.
+	OnShieldAdded func(mod *ModifierInstance, e event.ShieldAddedEvent)
+
+	// Called when a shield has been removed from the attached target.
+	OnShieldRemoved func(mod *ModifierInstance, e event.ShieldRemovedEvent)
+
 	// ------------ combat events
 
 	// Called when an attack starts and the attached target is the attacker.
@@ -141,6 +149,10 @@ func (mgr *Manager) subscribe() {
 	events.StanceChange.Subscribe(mgr.stanceChange)
 	events.StanceBreak.Subscribe(mgr.stanceBreak)
 	events.StanceBreakEnd.Subscribe(mgr.stanceBreakEnd)
+
+	// shield events
+	events.ShieldAdded.Subscribe(mgr.shieldAdded)
+	events.ShieldRemoved.Subscribe(mgr.shieldRemoved)
 
 	// combat events
 	events.AttackStart.Subscribe(mgr.attackStart)
@@ -460,6 +472,24 @@ func (mgr *Manager) actionStart(e event.ActionEvent) {
 func (mgr *Manager) actionEnd(e event.ActionEvent) {
 	for _, mod := range mgr.targets[e.Target] {
 		f := mod.listeners.OnAfterAction
+		if f != nil {
+			f(mod, e)
+		}
+	}
+}
+
+func (mgr *Manager) shieldAdded(e event.ShieldAddedEvent) {
+	for _, mod := range mgr.targets[e.Info.Target] {
+		f := mod.listeners.OnShieldAdded
+		if f != nil {
+			f(mod, e)
+		}
+	}
+}
+
+func (mgr *Manager) shieldRemoved(e event.ShieldRemovedEvent) {
+	for _, mod := range mgr.targets[e.Target] {
+		f := mod.listeners.OnShieldRemoved
 		if f != nil {
 			f(mod, e)
 		}

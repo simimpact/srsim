@@ -32,6 +32,10 @@ type System struct {
 	ModifierExtendedDuration ModifierExtendedDurationEventHandler
 	ModifierExtendedCount    ModifierExtendedCountEventHandler
 
+	ShieldAdded   ShieldAddedEventHandler
+	ShieldRemoved ShieldRemovedEventHandler
+	ShieldChange  ShieldChangeEventHandler
+
 	HPChange       HPChangeEventHandler
 	LimboWaitHeal  LimboWaitHealEventHandler
 	TargetDeath    TargetDeathEventHandler

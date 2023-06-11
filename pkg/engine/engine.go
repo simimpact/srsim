@@ -136,9 +136,19 @@ type Combat interface {
 }
 
 type Shield interface {
-	// TODO:
-	AddShield()
-	RemoveShield()
+	// Adds a new shield to the targets in the shield info. This shield will be keyed on the given id.
+	// If another shield exists on the target with the given id, that shield will be replaced with the
+	// incoming shield.
+	AddShield(id key.Shield, shield info.Shield)
+
+	// Returns true if this target has an active shield of the given key currently on them
+	HasShield(target key.TargetID, shield key.Shield) bool
+
+	// Returns true if this target has an active shield on them
+	IsShielded(target key.TargetID) bool
+
+	// Removes the given shield from the target. If this shield is no longer present, will be a no-op
+	RemoveShield(id key.Shield, target key.TargetID)
 }
 
 type Insert interface {

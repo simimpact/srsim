@@ -13,11 +13,3 @@ func (sim *simulation) Heal(heal info.Heal) {
 func (sim *simulation) EndAttack() {
 	sim.combat.EndAttack()
 }
-
-func (sim *simulation) AddShield() {
-	panic("not implemented") // TODO: Implement
-}
-
-func (sim *simulation) RemoveShield() {
-	panic("not implemented") // TODO: Implement
-}

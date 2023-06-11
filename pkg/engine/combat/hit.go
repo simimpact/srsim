@@ -20,6 +20,8 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 	// 4. ModifyHP of the remaining damage
 	// 5. Emit DamageResultEvent
 
+	// remainingDamage := mgr.shld.AbsorbDamage(hit.Defender.ID(), damage)
+
 	// NOTE:
 	// * BaseDamage multipliers, EnergyGain, and StanceDamage should be scaled by HitRatio
 	// * dots & element damage do not crit (unknown if also ByPureDamage?)

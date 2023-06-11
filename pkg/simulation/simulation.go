@@ -10,6 +10,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/queue"
+	"github.com/simimpact/srsim/pkg/engine/shield"
 	"github.com/simimpact/srsim/pkg/engine/target/character"
 	"github.com/simimpact/srsim/pkg/engine/target/enemy"
 	"github.com/simimpact/srsim/pkg/engine/turn"
@@ -38,6 +39,7 @@ type simulation struct {
 	enemy    *enemy.Manager
 	turn     *turn.Manager
 	combat   *combat.Manager
+	shield   *shield.Manager
 
 	// state
 	sp         int
@@ -70,12 +72,19 @@ func Run(cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationRes
 	}
 
 	// init services
+
+	// core stats
 	s.modifier = modifier.NewManager(s)
 	s.attr = attribute.New(s.event, s.modifier)
+
+	// target management
 	s.char = character.New(s, s.attr)
 	s.enemy = enemy.New(s, s.attr)
+
+	// game logic
 	s.turn = turn.New(s.event, s.attr)
-	s.combat = combat.New(s.event, s.attr)
+	s.shield = shield.New(s.event, s.attr)
+	s.combat = combat.New(s.event, s.attr, s.shield)
 
 	return s.run()
 }

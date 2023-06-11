@@ -68,15 +68,15 @@ func (mr *MockEngineMockRecorder) AddNeutralTarget() *gomock.Call {
 }
 
 // AddShield mocks base method.
-func (m *MockEngine) AddShield() {
+func (m *MockEngine) AddShield(arg0 key.Shield, arg1 info.Shield) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "AddShield")
+	m.ctrl.Call(m, "AddShield", arg0, arg1)
 }
 
 // AddShield indicates an expected call of AddShield.
-func (mr *MockEngineMockRecorder) AddShield() *gomock.Call {
+func (mr *MockEngineMockRecorder) AddShield(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddShield", reflect.TypeOf((*MockEngine)(nil).AddShield))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddShield", reflect.TypeOf((*MockEngine)(nil).AddShield), arg0, arg1)
 }
 
 // AdjacentTo mocks base method.
@@ -315,6 +315,20 @@ func (mr *MockEngineMockRecorder) HasModifier(arg0, arg1 interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HasModifier", reflect.TypeOf((*MockEngine)(nil).HasModifier), arg0, arg1)
 }
 
+// HasShield mocks base method.
+func (m *MockEngine) HasShield(arg0 key.TargetID, arg1 key.Shield) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "HasShield", arg0, arg1)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// HasShield indicates an expected call of HasShield.
+func (mr *MockEngineMockRecorder) HasShield(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HasShield", reflect.TypeOf((*MockEngine)(nil).HasShield), arg0, arg1)
+}
+
 // Heal mocks base method.
 func (m *MockEngine) Heal(arg0 info.Heal) {
 	m.ctrl.T.Helper()
@@ -377,6 +391,20 @@ func (m *MockEngine) IsEnemy(arg0 key.TargetID) bool {
 func (mr *MockEngineMockRecorder) IsEnemy(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsEnemy", reflect.TypeOf((*MockEngine)(nil).IsEnemy), arg0)
+}
+
+// IsShielded mocks base method.
+func (m *MockEngine) IsShielded(arg0 key.TargetID) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsShielded", arg0)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// IsShielded indicates an expected call of IsShielded.
+func (mr *MockEngineMockRecorder) IsShielded(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsShielded", reflect.TypeOf((*MockEngine)(nil).IsShielded), arg0)
 }
 
 // IsValid mocks base method.
@@ -596,15 +624,15 @@ func (mr *MockEngineMockRecorder) RemoveNeutralTarget(arg0 interface{}) *gomock.
 }
 
 // RemoveShield mocks base method.
-func (m *MockEngine) RemoveShield() {
+func (m *MockEngine) RemoveShield(arg0 key.Shield, arg1 key.TargetID) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RemoveShield")
+	m.ctrl.Call(m, "RemoveShield", arg0, arg1)
 }
 
 // RemoveShield indicates an expected call of RemoveShield.
-func (mr *MockEngineMockRecorder) RemoveShield() *gomock.Call {
+func (mr *MockEngineMockRecorder) RemoveShield(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveShield", reflect.TypeOf((*MockEngine)(nil).RemoveShield))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveShield", reflect.TypeOf((*MockEngine)(nil).RemoveShield), arg0, arg1)
 }
 
 // SP mocks base method.
