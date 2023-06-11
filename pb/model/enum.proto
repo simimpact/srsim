@@ -163,7 +163,6 @@ enum DamageType {
   WIND = 5;
   QUANTUM = 6;
   IMAGINARY = 7;
-  HEAL = 8;
 }
 
 enum AttackType {

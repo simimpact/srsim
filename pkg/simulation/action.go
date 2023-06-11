@@ -46,7 +46,6 @@ func (sim *simulation) InsertAbility(i info.Insert) {
 }
 
 func (sim *simulation) ultCheck() {
-	// TODO: enemy ult support?
 	bursts := sim.eval.BurstCheck()
 	for _, value := range bursts {
 		// TODO: need a "burst type" for cases like MC (passed to executeUlt)
@@ -111,7 +110,10 @@ func (sim *simulation) executeAction(id key.TargetID, isInsert bool) error {
 			return fmt.Errorf("error building char executable action %w", err)
 		}
 	case info.ClassEnemy:
-		// TODO:
+		executable, err = sim.enemy.ExecuteAction(id)
+		if err != nil {
+			return fmt.Errorf("error building enemy executable action %w", err)
+		}
 	case info.ClassNeutral:
 		// TODO:
 	default:
