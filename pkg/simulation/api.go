@@ -64,6 +64,18 @@ func (sim *simulation) Stats(target key.TargetID) *info.Stats {
 	return sim.attributeService.Stats(target)
 }
 
+func (sim *simulation) Stance(target key.TargetID) float64 {
+	return sim.attributeService.Stance(target)
+}
+
+func (sim *simulation) Energy(target key.TargetID) float64 {
+	return sim.attributeService.Energy(target)
+}
+
+func (sim *simulation) HPRatio(target key.TargetID) float64 {
+	return sim.attributeService.HPRatio(target)
+}
+
 func (sim *simulation) CharacterInstance(id key.TargetID) (info.CharInstance, error) {
 	return sim.charManager.Get(id)
 }

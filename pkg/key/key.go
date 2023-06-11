@@ -15,3 +15,5 @@ const (
 	ActionBurst
 	EndActionType
 )
+
+type TargetEvaluator string

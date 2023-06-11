@@ -160,6 +160,20 @@ func (mr *MockEngineMockRecorder) Enemies() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Enemies", reflect.TypeOf((*MockEngine)(nil).Enemies))
 }
 
+// Energy mocks base method.
+func (m *MockEngine) Energy(arg0 key.TargetID) float64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Energy", arg0)
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// Energy indicates an expected call of Energy.
+func (mr *MockEngineMockRecorder) Energy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Energy", reflect.TypeOf((*MockEngine)(nil).Energy), arg0)
+}
+
 // Events mocks base method.
 func (m *MockEngine) Events() *event.System {
 	m.ctrl.T.Helper()
@@ -196,6 +210,20 @@ func (m *MockEngine) ExtendModifierDuration(arg0 key.TargetID, arg1 key.Modifier
 func (mr *MockEngineMockRecorder) ExtendModifierDuration(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExtendModifierDuration", reflect.TypeOf((*MockEngine)(nil).ExtendModifierDuration), arg0, arg1, arg2)
+}
+
+// HPRatio mocks base method.
+func (m *MockEngine) HPRatio(arg0 key.TargetID) float64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "HPRatio", arg0)
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// HPRatio indicates an expected call of HPRatio.
+func (mr *MockEngineMockRecorder) HPRatio(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HPRatio", reflect.TypeOf((*MockEngine)(nil).HPRatio), arg0)
 }
 
 // HasBehaviorFlag mocks base method.
@@ -563,6 +591,20 @@ func (m *MockEngine) SetHP(arg0, arg1 key.TargetID, arg2 float64) error {
 func (mr *MockEngineMockRecorder) SetHP(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetHP", reflect.TypeOf((*MockEngine)(nil).SetHP), arg0, arg1, arg2)
+}
+
+// Stance mocks base method.
+func (m *MockEngine) Stance(arg0 key.TargetID) float64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Stance", arg0)
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// Stance indicates an expected call of Stance.
+func (mr *MockEngineMockRecorder) Stance(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Stance", reflect.TypeOf((*MockEngine)(nil).Stance), arg0)
 }
 
 // Stats mocks base method.

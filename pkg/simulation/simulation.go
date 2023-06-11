@@ -7,6 +7,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/combat"
 	"github.com/simimpact/srsim/pkg/engine/event"
+	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/queue"
 	"github.com/simimpact/srsim/pkg/engine/target/character"
@@ -41,7 +42,7 @@ type simulation struct {
 	// state
 	sp          int
 	tp          int
-	targets     map[key.TargetID]TargetType
+	targets     map[key.TargetID]info.TargetClass
 	characters  []key.TargetID
 	enemies     []key.TargetID
 	neutrals    []key.TargetID
@@ -63,7 +64,7 @@ func Run(cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationRes
 
 		sp:         3,
 		tp:         4, // TODO: define starting amount in config?
-		targets:    make(map[key.TargetID]TargetType, 15),
+		targets:    make(map[key.TargetID]info.TargetClass, 15),
 		characters: make([]key.TargetID, 0, 4),
 		enemies:    make([]key.TargetID, 0, 5),
 		neutrals:   make([]key.TargetID, 0, 5),

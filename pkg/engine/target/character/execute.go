@@ -5,6 +5,7 @@ import (
 
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/target"
+	"github.com/simimpact/srsim/pkg/engine/target/evaltarget"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -34,13 +35,23 @@ func (mgr *Manager) ExecuteAction(id key.TargetID, isInsert bool) (target.Execut
 	// current hardcoded logic: use skill if possible, otherwise attack
 	check := skillInfo.Skill.CanUse
 	if mgr.engine.SP() > skillInfo.Skill.SPCost && (check == nil || check(mgr.engine, char)) {
-		// TODO: TargetEval key -> evaluator
-		// TODO: target eval
+
+		// TODO: this is placeholder evaltarget. Need to get what evaluator to use from AST
+		primaryTarget, err := evaltarget.Evaluate(mgr.engine, evaltarget.Info{
+			Source:      id,
+			Evaluator:   evaltarget.LowestHP,
+			TargetType:  skillInfo.Skill.ValidTargets,
+			SourceClass: info.ClassCharacter,
+		})
+		if err != nil {
+			return target.ExecutableAction{}, err
+		}
+
 		return target.ExecutableAction{
 			Execute: func() {
-				char.Skill(id, actionState{
+				char.Skill(primaryTarget, actionState{
 					mgr:         mgr,
-					target:      id,
+					source:      id,
 					isInsert:    isInsert,
 					skillEffect: skillInfo.Skill.SkillEffect,
 				})
@@ -52,13 +63,22 @@ func (mgr *Manager) ExecuteAction(id key.TargetID, isInsert bool) (target.Execut
 		}, nil
 	}
 
-	// TODO: TargetEval key -> evaluator
-	// TODO: target eval
+	// TODO: this is placeholder evaltarget. Need to get what evaluator to use from AST
+	primaryTarget, err := evaltarget.Evaluate(mgr.engine, evaltarget.Info{
+		Source:      id,
+		Evaluator:   evaltarget.LowestHP,
+		TargetType:  skillInfo.Attack.ValidTargets,
+		SourceClass: info.ClassCharacter,
+	})
+	if err != nil {
+		return target.ExecutableAction{}, err
+	}
+
 	return target.ExecutableAction{
 		Execute: func() {
-			char.Skill(id, actionState{
+			char.Attack(primaryTarget, actionState{
 				mgr:         mgr,
-				target:      id,
+				source:      id,
 				isInsert:    isInsert,
 				skillEffect: skillInfo.Attack.SkillEffect,
 			})
@@ -89,29 +109,45 @@ func (mgr *Manager) ExecuteUlt(id key.TargetID) (target.ExecutableUlt, error) {
 
 	// TODO: This is hardcoded ult behavior.
 	if singleUlt, ok := char.(info.SingleUlt); ok {
-		// TODO: TargetEval key -> evaluator
-		// TODO: target eval
+		primaryTarget, err := evaltarget.Evaluate(mgr.engine, evaltarget.Info{
+			Source:      id,
+			Evaluator:   evaltarget.LowestHP,
+			TargetType:  skillInfo.Attack.ValidTargets,
+			SourceClass: info.ClassCharacter,
+		})
+		if err != nil {
+			return target.ExecutableUlt{}, err
+		}
+
 		return target.ExecutableUlt{
 			Execute: func() {
-				singleUlt.Ult(id, actionState{
+				singleUlt.Ult(primaryTarget, actionState{
 					mgr:         mgr,
-					target:      id,
+					source:      id,
 					isInsert:    true,
-					skillEffect: skillInfo.Attack.SkillEffect,
+					skillEffect: skillInfo.Ult.SkillEffect,
 				})
 			},
 			SkillEffect: skillInfo.Ult.SkillEffect,
 		}, nil
 	} else if multiUlt, ok := char.(info.MultiUlt); ok {
-		// TODO: TargetEval key -> evaluator
-		// TODO: target eval
+		primaryTarget, err := evaltarget.Evaluate(mgr.engine, evaltarget.Info{
+			Source:      id,
+			Evaluator:   evaltarget.LowestHP,
+			TargetType:  skillInfo.Attack.ValidTargets,
+			SourceClass: info.ClassCharacter,
+		})
+		if err != nil {
+			return target.ExecutableUlt{}, err
+		}
+
 		return target.ExecutableUlt{
 			Execute: func() {
-				multiUlt.UltAttack(id, actionState{
+				multiUlt.UltAttack(primaryTarget, actionState{
 					mgr:         mgr,
-					target:      id,
+					source:      id,
 					isInsert:    true,
-					skillEffect: skillInfo.Attack.SkillEffect,
+					skillEffect: skillInfo.Ult.SkillEffect,
 				})
 			},
 			SkillEffect: skillInfo.Ult.SkillEffect,
@@ -122,7 +158,7 @@ func (mgr *Manager) ExecuteUlt(id key.TargetID) (target.ExecutableUlt, error) {
 
 type actionState struct {
 	mgr         *Manager
-	target      key.TargetID
+	source      key.TargetID
 	isInsert    bool
 	skillEffect model.SkillEffect
 }
@@ -140,5 +176,5 @@ func (a actionState) EndAttack() {
 }
 
 func (a actionState) CharacterInfo() info.Character {
-	return a.mgr.info[a.target]
+	return a.mgr.info[a.source]
 }

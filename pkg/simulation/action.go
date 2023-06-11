@@ -19,7 +19,7 @@ import (
 func (sim *simulation) InsertAction(target key.TargetID) {
 	var priority info.InsertPriority
 	switch sim.targets[target] {
-	case TargetEnemy:
+	case info.ClassEnemy:
 		priority = info.EnemyInsertAction
 	default:
 		priority = info.CharInsertAction
@@ -107,14 +107,14 @@ func (sim *simulation) executeAction(id key.TargetID, isInsert bool) error {
 	var err error
 
 	switch sim.targets[id] {
-	case TargetCharacter:
+	case info.ClassCharacter:
 		executable, err = sim.charManager.ExecuteAction(id, isInsert)
 		if err != nil {
 			return fmt.Errorf("error building char executable action %w", err)
 		}
-	case TargetEnemy:
+	case info.ClassEnemy:
 		// TODO:
-	case TargetNeutral:
+	case info.ClassNeutral:
 		// TODO:
 	default:
 		return fmt.Errorf("unsupported target type: %v", sim.targets[id])
@@ -150,7 +150,7 @@ func (sim *simulation) executeUlt(id key.TargetID) error {
 	var err error
 
 	switch sim.targets[id] {
-	case TargetCharacter:
+	case info.ClassCharacter:
 		executable, err = sim.charManager.ExecuteUlt(id)
 		if err != nil {
 			return fmt.Errorf("error building char executable ult %w", err)

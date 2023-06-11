@@ -54,7 +54,7 @@ func initialize(s *simulation) (stateFn, error) {
 			return nil, fmt.Errorf("error initializing character %w", err)
 		}
 
-		s.targets[id] = TargetCharacter
+		s.targets[id] = info.ClassCharacter
 		s.characters = append(s.characters, id)
 	}
 
@@ -74,7 +74,7 @@ func startBattle(s *simulation) (stateFn, error) {
 			return nil, fmt.Errorf("error initializing enemy %w", err)
 		}
 
-		s.targets[id] = TargetEnemy
+		s.targets[id] = info.ClassEnemy
 		s.enemies = append(s.enemies, id)
 	}
 

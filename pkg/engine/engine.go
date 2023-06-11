@@ -77,6 +77,15 @@ type Attribute interface {
 	// only be applied to the snapshot.
 	Stats(target key.TargetID) *info.Stats
 
+	// Gets the current stance amount of the target.
+	Stance(target key.TargetID) float64
+
+	// Gets the current energy amount of the target.
+	Energy(target key.TargetID) float64
+
+	// Gets the current HP ratio of the target (value between 0 and 1)
+	HPRatio(target key.TargetID) float64
+
 	// Sets the target HP to the given amount. Source target is used for tracking who owns this HP
 	// modification in the event that the modification kills the target.
 	SetHP(target, source key.TargetID, amt float64) error
