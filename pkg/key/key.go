@@ -1,10 +1,7 @@
 package key
 
-type Enemy string
-
-const (
-	DummyEnemy Enemy = "dummy_enemy"
-)
+type Modifier string
+type TargetEvaluator string
 
 type ActionType int
 
@@ -15,5 +12,3 @@ const (
 	ActionBurst
 	EndActionType
 )
-
-type TargetEvaluator string

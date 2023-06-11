@@ -2,7 +2,6 @@ package key
 
 type TargetID int
 
-// todo: functions to create target ids
 type TargetIDGenerator struct {
 	state int
 }
