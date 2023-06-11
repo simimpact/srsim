@@ -18,6 +18,10 @@ func (sim *simulation) RemoveModifierFromSource(target key.TargetID, source key.
 	sim.modifier.RemoveModifierFromSource(target, source, modifier)
 }
 
+func (sim *simulation) DispelStatus(target key.TargetID, dispel info.Dispel) {
+	sim.modifier.DispelStatus(target, dispel)
+}
+
 func (sim *simulation) ExtendModifierDuration(target key.TargetID, modifier key.Modifier, amt int) {
 	sim.modifier.ExtendDuration(target, modifier, amt)
 }
@@ -37,4 +41,8 @@ func (sim *simulation) ModifierCount(target key.TargetID, statusType model.Statu
 
 func (sim *simulation) HasBehaviorFlag(target key.TargetID, flags ...model.BehaviorFlag) bool {
 	return sim.modifier.HasFlag(target, flags...)
+}
+
+func (sim *simulation) GetModifiers(target key.TargetID, modifier key.Modifier) []info.Modifier {
+	return sim.modifier.GetModifiers(target, modifier)
 }

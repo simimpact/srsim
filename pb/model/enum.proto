@@ -136,6 +136,13 @@ enum StatusType {
   STATUS_DEBUFF = 2;
 }
 
+enum DispelOrder {
+  INVALID_DISPEL_ORDER = 0;
+  LAST_ADDED = 1;
+  FIRST_ADDED = 2;
+  RANDOM = 3;
+}
+
 enum Path {
   INVALID_PATH = 0;
   PRESERVATION = 1;

@@ -48,6 +48,10 @@ type Modifier interface {
 	// Removes all instances of a modifier from the target, only where source matches the given source
 	RemoveModifierFromSource(target, source key.TargetID, modifier key.Modifier)
 
+	// Removes modifiers based on the given dispel data. The goal of this is to remove modifiers by
+	// their StatusType rather than by name (IE: abilities that dispel buffs/debuffs on a target)
+	DispelStatus(target key.TargetID, dispel info.Dispel)
+
 	// Extends the duration of all instances of the given modifier by the amount
 	ExtendModifierDuration(target key.TargetID, modifier key.Modifier, amt int)
 
@@ -64,6 +68,10 @@ type Modifier interface {
 	// Returns true if the target has the given behavior flag from an attached modifier. If multiple
 	// flags are passed, will return true if at least one is attached
 	HasBehaviorFlag(target key.TargetID, flags ...model.BehaviorFlag) bool
+
+	// Returns a list of read-only modifiers that are currently attached to the given target. This
+	// should rarely be used
+	GetModifiers(target key.TargetID, modifier key.Modifier) []info.Modifier
 }
 
 type Attribute interface {

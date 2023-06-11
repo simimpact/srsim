@@ -149,6 +149,18 @@ func (mr *MockEngineMockRecorder) Characters() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Characters", reflect.TypeOf((*MockEngine)(nil).Characters))
 }
 
+// DispelStatus mocks base method.
+func (m *MockEngine) DispelStatus(arg0 key.TargetID, arg1 info.Dispel) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "DispelStatus", arg0, arg1)
+}
+
+// DispelStatus indicates an expected call of DispelStatus.
+func (mr *MockEngineMockRecorder) DispelStatus(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DispelStatus", reflect.TypeOf((*MockEngine)(nil).DispelStatus), arg0, arg1)
+}
+
 // EndAttack mocks base method.
 func (m *MockEngine) EndAttack() {
 	m.ctrl.T.Helper()
@@ -240,6 +252,20 @@ func (m *MockEngine) ExtendModifierDuration(arg0 key.TargetID, arg1 key.Modifier
 func (mr *MockEngineMockRecorder) ExtendModifierDuration(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExtendModifierDuration", reflect.TypeOf((*MockEngine)(nil).ExtendModifierDuration), arg0, arg1, arg2)
+}
+
+// GetModifiers mocks base method.
+func (m *MockEngine) GetModifiers(arg0 key.TargetID, arg1 key.Modifier) []info.Modifier {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetModifiers", arg0, arg1)
+	ret0, _ := ret[0].([]info.Modifier)
+	return ret0
+}
+
+// GetModifiers indicates an expected call of GetModifiers.
+func (mr *MockEngineMockRecorder) GetModifiers(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetModifiers", reflect.TypeOf((*MockEngine)(nil).GetModifiers), arg0, arg1)
 }
 
 // HPRatio mocks base method.

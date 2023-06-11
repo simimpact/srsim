@@ -67,6 +67,19 @@ type Modifier struct {
 	CanModifySnapshot bool
 }
 
+type Dispel struct {
+	// what type of modifiers should be dispelled (BUFF, DEBUFF, or OTHER)
+	Status model.StatusType
+
+	// what modifiers should be dispelled given the order they were added to the target.
+	Order model.DispelOrder
+
+	// the number of modifiers to dispel of the given status type. If unspecified or <= 0, will remove
+	// all modifiers matching the given status type.
+	Count int
+}
+
+// this is an intermediary state to creating the final Stats snapshot
 type ModifierState struct {
 	Props     PropMap
 	DebuffRES DebuffRESMap
