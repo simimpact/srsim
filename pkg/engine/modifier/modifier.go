@@ -45,11 +45,11 @@ func (mgr *Manager) newInstance(owner key.TargetID, mod info.Modifier) *Modifier
 		stats:             mod.Stats,
 		debuffRES:         mod.DebuffRES,
 		weakness:          mod.Weakness,
-		modifySnapshot:    mod.CanModifySnapshot,
 		manager:           mgr,
 		listeners:         config.Listeners,
 		statusType:        config.StatusType,
 		flags:             config.BehaviorFlags,
+		modifySnapshot:    config.CanModifySnapshot,
 	}
 
 	if mi.stats == nil {
@@ -228,6 +228,5 @@ func (mi *ModifierInstance) ToModel() info.Modifier {
 		CountAddWhenStack: mi.countAddWhenStack,
 		Stats:             props,
 		DebuffRES:         res,
-		CanModifySnapshot: mi.modifySnapshot,
 	}
 }

@@ -23,16 +23,57 @@ func Register(key key.Modifier, modifier Config) {
 }
 
 type Config struct {
-	Stacking          StackingBehavior
-	Listeners         Listeners
-	Duration          int
-	Count             float64
-	MaxCount          float64
+	// Determines how duplicate modifiers will "stack" when added. Note: not all stacking behaviors can
+	// stack modifiers.
+	//
+	// If unspecified, will default to the UNIQUE StackingBehavior
+	Stacking StackingBehavior
+
+	// Listeners to define any custom modifier logic. This allows you to hook onto sim behavior to add
+	// conditional logic (IE: modify stats OnBeforeHit to increase damage)
+	Listeners Listeners
+
+	// If specified, modifier will only be applied for the given duration number of turns.
+	// If unspecified, will default to -1 (can be overwritten by AddModifier)
+	//
+	// When Duration reaches 0, this modifier instance will be removed. A negative duration means
+	// that this modifier will never expire
+	Duration int
+
+	// If specified, modifier will have the count number of stacks. In the event that an instance of
+	// this modifier already exists, specifying count may replace, add to, or keep the existing stack
+	// count depending on what the modifier "stacking" logic is.
+	// If unspecified, will default to 1 (can be overwritten by AddModifier)
+	//
+	// When count reaches 0, the modifier will be removed from the target.
+	Count float64
+
+	// If specified, will set the max count allowed on this modifier in the event that it gets
+	// reapplied/stacks and this instance is used.
+	// If unspecified, will default to 1 (can be overwritten by AddModifier)
+	MaxCount float64
+
+	// When Count is unspecified, CountAddWhenStack determines how much to add to count when a new
+	// stack is added.
+	//
+	// If unspecified, will default to 0 (can be overwritten by AddModifier)
 	CountAddWhenStack float64
-	TickMoment        TickMoment
-	BehaviorFlags     []model.BehaviorFlag
-	StatusType        model.StatusType
-	// TODO: WorkingTurn?
+
+	// When this modifier "ticks" (phase1 or phase2). If unspecified, will default to phase2
+	TickMoment TickMoment
+
+	// Any BehaviorFlags that are associated with this modifier. These behavior flags trigger custom
+	// behavior depending on the flag specified. IE: STAT_ flags will be used on "chance" modifier
+	// applications to determine if the defender has any DebuffRES to use against this modifier.
+	BehaviorFlags []model.BehaviorFlag
+
+	// The type of status this modifier is (BUFF, DEBUFF, or OTHER). If unspecified, will default to
+	// OTHER
+	StatusType model.StatusType
+
+	// Attacks and Heals can execute in a "snapshot" state. In this state, the modifier listeners will
+	// not be called by default. Can be overwritten by setting this field to true
+	CanModifySnapshot bool
 }
 
 // Determines how duplicate modifiers will "stack" when added. Note: not all stacking behaviors can

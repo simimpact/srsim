@@ -61,10 +61,6 @@ type Modifier struct {
 
 	// Any additional weaknesses that are applied to the target by this modifier.
 	Weakness WeaknessMap
-
-	// Attacks and Heals can execute in a "snapshot" state. In this state, the modifier listeners will
-	// not be called by default. Can be overwritten by setting this field to true
-	CanModifySnapshot bool
 }
 
 type Dispel struct {
