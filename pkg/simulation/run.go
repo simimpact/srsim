@@ -148,8 +148,8 @@ func phase1(s *simulation) (stateFn, error) {
 	// tick any modifiers that listen for phase1 (primarily dots)
 	s.modifier.Tick(s.active, info.ModifierPhase1)
 
-	// skip all other phase1 logic when frozen and go straight to phase2
-	if isFrozen {
+	// skip the action if this target has the DISABLE_ACTION flag or was frozen at start of turn
+	if isFrozen || s.HasBehaviorFlag(s.active, model.BehaviorFlag_DISABLE_ACTION) {
 		return phase2, nil
 	}
 
@@ -162,11 +162,6 @@ func phase1(s *simulation) (stateFn, error) {
 		if err := s.attr.SetStance(s.active, s.active, info.MaxStance); err != nil {
 			return nil, fmt.Errorf("error when reseting target stance %w", err)
 		}
-	}
-
-	// skip the action if this target has the DISABLE_ACTION flag
-	if s.HasBehaviorFlag(s.active, model.BehaviorFlag_DISABLE_ACTION) {
-		return phase2, nil
 	}
 
 	return s.executeQueue(info.InsertAbilityPhase1, action)
