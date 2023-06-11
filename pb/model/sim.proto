@@ -60,7 +60,7 @@ message DebuffRES {
     double amount = 2 [ json_name = "amount" ];
 }
 
-enum TerminationReson {
+enum TerminationReason {
     INVALID_TERMINATION = 0;
     BATTLE_LOSS = 1;
     BATTLE_WIN = 2;

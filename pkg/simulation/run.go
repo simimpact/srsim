@@ -225,16 +225,16 @@ func endTurn(s *simulation) (stateFn, error) {
 
 // check if we want to exit the sim. If not, return the next state that was passed in
 func (s *simulation) exitCheck(next stateFn) (stateFn, error) {
-	var reason model.TerminationReson
+	var reason model.TerminationReason
 	if len(s.characters) == 0 {
-		reason = model.TerminationReson_BATTLE_LOSS
+		reason = model.TerminationReason_BATTLE_LOSS
 	} else if len(s.enemies) == 0 {
-		reason = model.TerminationReson_BATTLE_WIN
+		reason = model.TerminationReason_BATTLE_WIN
 	} else if int(s.totalAV/100) >= int(s.cfg.Settings.CycleLimit) {
-		reason = model.TerminationReson_TIMEOUT
+		reason = model.TerminationReason_TIMEOUT
 	}
 
-	if reason != model.TerminationReson_INVALID_TERMINATION {
+	if reason != model.TerminationReason_INVALID_TERMINATION {
 		s.event.Termination.Emit(event.TerminationEvent{
 			TotalAV: s.totalAV,
 			Reason:  reason,

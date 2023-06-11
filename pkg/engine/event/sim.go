@@ -33,7 +33,7 @@ type TurnEndEvent struct {
 type TerminationEventHandler = handler.EventHandler[TerminationEvent]
 type TerminationEvent struct {
 	TotalAV float64
-	Reason  model.TerminationReson
+	Reason  model.TerminationReason
 }
 
 type ActionStartEventHandler = handler.EventHandler[ActionEvent]
