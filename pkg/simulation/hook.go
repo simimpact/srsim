@@ -43,7 +43,7 @@ func (s *simulation) onDeath(e event.TargetDeathEvent) {
 	}
 
 	// remove this target from the turn order
-	s.turnManager.RemoveTarget(e.Target)
+	s.turn.RemoveTarget(e.Target)
 }
 
 func remove(arr []key.TargetID, id key.TargetID) []key.TargetID {

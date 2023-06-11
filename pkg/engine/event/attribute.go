@@ -50,3 +50,9 @@ type StanceBreakEndEventHandler = handler.EventHandler[StanceBreakEndEvent]
 type StanceBreakEndEvent struct {
 	Target key.TargetID
 }
+
+type SPChangeEventHandler = handler.EventHandler[SPChangeEvent]
+type SPChangeEvent struct {
+	OldSP int
+	NewSP int
+}

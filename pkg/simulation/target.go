@@ -6,7 +6,12 @@ import (
 )
 
 // TODO: AddTarget
-func (sim *simulation) AddTarget() key.TargetID {
+func (sim *simulation) AddNeutralTarget() key.TargetID {
+	panic("not implemented") // TODO: Implement
+}
+
+// TODO: AddTarget
+func (sim *simulation) RemoveNeutralTarget(id key.TargetID) {
 	panic("not implemented") // TODO: Implement
 }
 

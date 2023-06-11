@@ -50,7 +50,7 @@ func initialize(s *simulation) (stateFn, error) {
 	// us wanting to retain characters in the same state between multiple waves (if ever supported)
 	for _, char := range s.cfg.Characters {
 		id := s.idGen.New()
-		if err := s.charManager.AddCharacter(id, char); err != nil {
+		if err := s.char.AddCharacter(id, char); err != nil {
 			return nil, fmt.Errorf("error initializing character %w", err)
 		}
 
@@ -70,7 +70,7 @@ func initialize(s *simulation) (stateFn, error) {
 func startBattle(s *simulation) (stateFn, error) {
 	for _, enemy := range s.cfg.Enemies {
 		id := s.idGen.New()
-		if err := s.enemyManager.AddEnemy(id, enemy); err != nil {
+		if err := s.enemy.AddEnemy(id, enemy); err != nil {
 			return nil, fmt.Errorf("error initializing enemy %w", err)
 		}
 
@@ -84,24 +84,24 @@ func startBattle(s *simulation) (stateFn, error) {
 	copy(all, s.characters)
 	copy(all[len(s.characters):], s.neutrals)
 	copy(all[len(s.characters)+len(s.neutrals):], s.enemies)
-	s.turnManager.AddTargets(all...)
+	s.turn.AddTargets(all...)
 
 	// emit BattleStart event to log the "start state" of everything
 	charStats := make([]*info.Stats, len(s.characters))
 	for i, t := range s.characters {
-		charStats[i] = s.attributeService.Stats(t)
+		charStats[i] = s.attr.Stats(t)
 	}
 	enemyStats := make([]*info.Stats, len(s.enemies))
 	for i, t := range s.enemies {
-		enemyStats[i] = s.attributeService.Stats(t)
+		enemyStats[i] = s.attr.Stats(t)
 	}
 	neutralStats := make([]*info.Stats, len(s.neutrals))
 	for i, t := range s.neutrals {
-		neutralStats[i] = s.attributeService.Stats(t)
+		neutralStats[i] = s.attr.Stats(t)
 	}
 	s.event.BattleStart.Emit(event.BattleStartEvent{
-		CharInfo:     s.charManager.Characters(),
-		EnemyInfo:    s.enemyManager.Enemies(),
+		CharInfo:     s.char.Characters(),
+		EnemyInfo:    s.enemy.Enemies(),
 		CharStats:    charStats,
 		EnemyStats:   enemyStats,
 		NeutralStats: neutralStats,
@@ -124,7 +124,7 @@ func engage(s *simulation) (stateFn, error) {
 // This does not directly emit a TurnStartEvent since the underlying turn manager does that for us.
 func beginTurn(s *simulation) (stateFn, error) {
 	// determine who's turn it is and increase total AV
-	next, av, err := s.turnManager.StartTurn()
+	next, av, err := s.turn.StartTurn()
 	if !s.IsValid(next) || err != nil {
 		return nil, fmt.Errorf(
 			"unexpected: turn manager returned an invalid target for next turn %w", err)
@@ -132,7 +132,7 @@ func beginTurn(s *simulation) (stateFn, error) {
 	s.active = next
 	s.totalAV += av
 
-	s.modManager.Tick(s.active, info.TurnStart)
+	s.modifier.Tick(s.active, info.TurnStart)
 	return phase1, nil
 }
 
@@ -146,7 +146,7 @@ func phase1(s *simulation) (stateFn, error) {
 
 	// tick any modifiers that listen for phase1 (primarily dots)
 	// TODO: skillEffect is here invalid. Is there a skill effect for dots?
-	s.modManager.Tick(s.active, info.ModifierPhase1)
+	s.modifier.Tick(s.active, info.ModifierPhase1)
 
 	// skip all other phase1 logic when frozen and go straight to phase2
 	if isFrozen {
@@ -154,12 +154,12 @@ func phase1(s *simulation) (stateFn, error) {
 	}
 
 	// reset the stance if this is start of enemy turn and their stance is 0
-	if s.IsEnemy(s.active) && s.attributeService.Stance(s.active) <= 0 {
-		info, err := s.enemyManager.Info(s.active)
+	if s.IsEnemy(s.active) && s.attr.Stance(s.active) <= 0 {
+		info, err := s.enemy.Info(s.active)
 		if err != nil {
 			return nil, fmt.Errorf("error when getting enemy info in phase1 %w", err)
 		}
-		if err := s.attributeService.SetStance(s.active, s.active, info.MaxStance); err != nil {
+		if err := s.attr.SetStance(s.active, s.active, info.MaxStance); err != nil {
 			return nil, fmt.Errorf("error when reseting target stance %w", err)
 		}
 	}
@@ -188,8 +188,8 @@ func action(s *simulation) (stateFn, error) {
 func phase2(s *simulation) (stateFn, error) {
 	// start of phase2 is treated as an "ActionEnd" for any clean up. We have it here instead of
 	// inside of action for the cases where the action was skipped.
-	s.turnManager.ResetTurn()
-	s.modManager.Tick(s.active, info.ActionEnd)
+	s.turn.ResetTurn()
+	s.modifier.Tick(s.active, info.ActionEnd)
 
 	// execute anything that is in the execution queue. any follow ups, bursts, etc.
 	if next, err := s.executeQueue(info.InsertAbilityPhase2, endTurn); next == nil || err != nil {
@@ -197,7 +197,7 @@ func phase2(s *simulation) (stateFn, error) {
 	}
 
 	// tick all phase2 modifiers before finally ending the turn
-	s.modManager.Tick(s.active, info.ModifierPhase2)
+	s.modifier.Tick(s.active, info.ModifierPhase2)
 	return endTurn, nil
 }
 
@@ -208,15 +208,15 @@ func endTurn(s *simulation) (stateFn, error) {
 	// emit TurnEnd event to log the current state of all remaining targets
 	charStats := make([]*info.Stats, len(s.characters))
 	for i, t := range s.characters {
-		charStats[i] = s.attributeService.Stats(t)
+		charStats[i] = s.attr.Stats(t)
 	}
 	enemyStats := make([]*info.Stats, len(s.enemies))
 	for i, t := range s.enemies {
-		enemyStats[i] = s.attributeService.Stats(t)
+		enemyStats[i] = s.attr.Stats(t)
 	}
 	neutralStats := make([]*info.Stats, len(s.neutrals))
 	for i, t := range s.neutrals {
-		neutralStats[i] = s.attributeService.Stats(t)
+		neutralStats[i] = s.attr.Stats(t)
 	}
 	s.event.TurnEnd.Emit(event.TurnEndEvent{
 		Characters: charStats,

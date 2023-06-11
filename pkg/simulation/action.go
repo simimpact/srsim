@@ -80,7 +80,7 @@ func (s *simulation) executeQueue(phase info.BattlePhase, next stateFn) (stateFn
 		insert := s.queue.Pop()
 
 		// if source has no HP, skip this insert
-		if s.attributeService.HPRatio(insert.Source) <= 0 {
+		if s.attr.HPRatio(insert.Source) <= 0 {
 			continue
 		}
 
@@ -108,7 +108,7 @@ func (sim *simulation) executeAction(id key.TargetID, isInsert bool) error {
 
 	switch sim.targets[id] {
 	case info.ClassCharacter:
-		executable, err = sim.charManager.ExecuteAction(id, isInsert)
+		executable, err = sim.char.ExecuteAction(id, isInsert)
 		if err != nil {
 			return fmt.Errorf("error building char executable action %w", err)
 		}
@@ -135,7 +135,7 @@ func (sim *simulation) executeAction(id key.TargetID, isInsert bool) error {
 
 	// end attack if in one. no-op if not in an attack
 	// emit end events
-	sim.combatManager.EndAttack()
+	sim.combat.EndAttack()
 	sim.event.ActionEnd.Emit(event.ActionEvent{
 		Target:      id,
 		SkillEffect: executable.SkillEffect,
@@ -151,7 +151,7 @@ func (sim *simulation) executeUlt(id key.TargetID) error {
 
 	switch sim.targets[id] {
 	case info.ClassCharacter:
-		executable, err = sim.charManager.ExecuteUlt(id)
+		executable, err = sim.char.ExecuteUlt(id)
 		if err != nil {
 			return fmt.Errorf("error building char executable ult %w", err)
 		}
@@ -170,7 +170,7 @@ func (sim *simulation) executeUlt(id key.TargetID) error {
 	executable.Execute()
 
 	// end attack if in one. no-op if not in an attack
-	sim.combatManager.EndAttack()
+	sim.combat.EndAttack()
 	sim.event.UltEnd.Emit(event.ActionEvent{
 		Target:      id,
 		SkillEffect: executable.SkillEffect,
@@ -193,7 +193,7 @@ func (sim *simulation) executeInsert(i info.Insert) {
 	i.Execute()
 
 	// end attack if in one. no-op if not in an attack
-	sim.combatManager.EndAttack()
+	sim.combat.EndAttack()
 	sim.event.InsertEnd.Emit(event.InsertEvent{
 		Target:      i.Source,
 		SkillEffect: i.SkillEffect,

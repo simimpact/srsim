@@ -38,6 +38,7 @@ type System struct {
 	StanceChange   StanceChangeEventHandler
 	StanceBreak    StanceBreakEventHandler
 	StanceBreakEnd StanceBreakEndEventHandler
+	SPChange       SPChangeEventHandler
 
 	TurnTargetsAdded       TurnTargetsAddedEventHandler
 	TurnStart              TurnStartEventHandler

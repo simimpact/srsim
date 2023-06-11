@@ -24,12 +24,6 @@ type Engine interface {
 	// Random number generator
 	Rand() *rand.Rand
 
-	// Add or remove Skill Points from the current sim state. Returns the new SP amount
-	ModifySP(amt int) int
-
-	// Return the current number of available Skill Points.
-	SP() int
-
 	Modifier
 	Attribute
 	Combat
@@ -111,6 +105,12 @@ type Attribute interface {
 	// Modifies the target energy by the given flat amount. This amount is fixed and will not be
 	// increased by the target's Energy Regeneration.
 	ModifyEnergyFixed(target key.TargetID, amt float64) error
+
+	// Add or remove Skill Points from the current sim state. Returns the new SP amount
+	ModifySP(amt int) int
+
+	// Return the current number of available Skill Points.
+	SP() int
 }
 
 type Combat interface {
@@ -169,6 +169,12 @@ type Info interface {
 	// Gets the char instance associated with this id. Useful if you want to access the char state
 	// from a modifier or other disassociated logic
 	CharacterInstance(id key.TargetID) (info.CharInstance, error)
+
+	// Metadata for the given character, such as their current level, ascension, traces, etc.
+	CharacterInfo(target key.TargetID) (info.Character, error)
+
+	// Metadata for the given enemy, such as their current level and weaknesses.
+	EnemyInfo(target key.TargetID) (info.Enemy, error)
 }
 
 type Target interface {
@@ -194,5 +200,7 @@ type Target interface {
 	Neutrals() []key.TargetID
 
 	// TODO: target type, (Light, Dark, Neutral)
-	AddTarget() key.TargetID
+	AddNeutralTarget() key.TargetID
+
+	RemoveNeutralTarget(id key.TargetID)
 }

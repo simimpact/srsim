@@ -53,6 +53,20 @@ func (mr *MockEngineMockRecorder) AddModifier(arg0, arg1 interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddModifier", reflect.TypeOf((*MockEngine)(nil).AddModifier), arg0, arg1)
 }
 
+// AddNeutralTarget mocks base method.
+func (m *MockEngine) AddNeutralTarget() key.TargetID {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddNeutralTarget")
+	ret0, _ := ret[0].(key.TargetID)
+	return ret0
+}
+
+// AddNeutralTarget indicates an expected call of AddNeutralTarget.
+func (mr *MockEngineMockRecorder) AddNeutralTarget() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddNeutralTarget", reflect.TypeOf((*MockEngine)(nil).AddNeutralTarget))
+}
+
 // AddShield mocks base method.
 func (m *MockEngine) AddShield() {
 	m.ctrl.T.Helper()
@@ -63,20 +77,6 @@ func (m *MockEngine) AddShield() {
 func (mr *MockEngineMockRecorder) AddShield() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddShield", reflect.TypeOf((*MockEngine)(nil).AddShield))
-}
-
-// AddTarget mocks base method.
-func (m *MockEngine) AddTarget() key.TargetID {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddTarget")
-	ret0, _ := ret[0].(key.TargetID)
-	return ret0
-}
-
-// AddTarget indicates an expected call of AddTarget.
-func (mr *MockEngineMockRecorder) AddTarget() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTarget", reflect.TypeOf((*MockEngine)(nil).AddTarget))
 }
 
 // AdjacentTo mocks base method.
@@ -103,6 +103,21 @@ func (m *MockEngine) Attack(arg0 info.Attack) {
 func (mr *MockEngineMockRecorder) Attack(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Attack", reflect.TypeOf((*MockEngine)(nil).Attack), arg0)
+}
+
+// CharacterInfo mocks base method.
+func (m *MockEngine) CharacterInfo(arg0 key.TargetID) (info.Character, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CharacterInfo", arg0)
+	ret0, _ := ret[0].(info.Character)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CharacterInfo indicates an expected call of CharacterInfo.
+func (mr *MockEngineMockRecorder) CharacterInfo(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CharacterInfo", reflect.TypeOf((*MockEngine)(nil).CharacterInfo), arg0)
 }
 
 // CharacterInstance mocks base method.
@@ -158,6 +173,21 @@ func (m *MockEngine) Enemies() []key.TargetID {
 func (mr *MockEngineMockRecorder) Enemies() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Enemies", reflect.TypeOf((*MockEngine)(nil).Enemies))
+}
+
+// EnemyInfo mocks base method.
+func (m *MockEngine) EnemyInfo(arg0 key.TargetID) (info.Enemy, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EnemyInfo", arg0)
+	ret0, _ := ret[0].(info.Enemy)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// EnemyInfo indicates an expected call of EnemyInfo.
+func (mr *MockEngineMockRecorder) EnemyInfo(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnemyInfo", reflect.TypeOf((*MockEngine)(nil).EnemyInfo), arg0)
 }
 
 // Energy mocks base method.
@@ -525,6 +555,18 @@ func (m *MockEngine) RemoveModifierFromSource(arg0, arg1 key.TargetID, arg2 key.
 func (mr *MockEngineMockRecorder) RemoveModifierFromSource(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveModifierFromSource", reflect.TypeOf((*MockEngine)(nil).RemoveModifierFromSource), arg0, arg1, arg2)
+}
+
+// RemoveNeutralTarget mocks base method.
+func (m *MockEngine) RemoveNeutralTarget(arg0 key.TargetID) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RemoveNeutralTarget", arg0)
+}
+
+// RemoveNeutralTarget indicates an expected call of RemoveNeutralTarget.
+func (mr *MockEngineMockRecorder) RemoveNeutralTarget(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveNeutralTarget", reflect.TypeOf((*MockEngine)(nil).RemoveNeutralTarget), arg0)
 }
 
 // RemoveShield mocks base method.
