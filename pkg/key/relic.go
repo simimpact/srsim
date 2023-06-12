@@ -3,6 +3,6 @@ package key
 type Relic string
 
 const (
-	MusketeerOfWildWheat Relic = "musketeerofwildwheat"
-	SpaceSealingStation  Relic = "spacesealingstation"
+	MusketeerOfWildWheat Relic = "musketeer_of_wild_wheat"
+	SpaceSealingStation  Relic = "space_sealing_station"
 )

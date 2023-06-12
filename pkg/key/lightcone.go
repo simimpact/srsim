@@ -7,5 +7,5 @@ const (
 	Fermata LightCone = "fermata"
 
 	// Preservation
-	MomentOfVictory LightCone = "momentofvictory"
+	MomentOfVictory LightCone = "moment_of_victory"
 )
