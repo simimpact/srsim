@@ -45,7 +45,7 @@ func init() {
 				// TODO
 			},
 			OnAfterBeingAttacked: func(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
-				mod.Engine().RemoveModifier(mod.Owner(), A6)
+				mod.RemoveSelf()
 			},
 		},
 	})

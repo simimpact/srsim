@@ -39,12 +39,24 @@ func init() {
 		StatusType: model.StatusType_STATUS_BUFF,
 		Listeners: modifier.Listeners{
 			OnLimboWaitHeal: func(mod *modifier.ModifierInstance) bool {
-				mod.Engine().Heal(info.Heal{
-					Targets:  []key.TargetID{mod.Owner()},
-					Source:   mod.Owner(),
-					BaseHeal: info.HealMap{model.HealFormula_BY_TARGET_MAX_HP: 0.25},
+
+				// Dispel all debuffs
+				mod.Engine().DispelStatus(mod.Owner(), info.Dispel{
+					Status: model.StatusType_STATUS_DEBUFF,
+					Order:  model.DispelOrder_LAST_ADDED,
 				})
-				mod.Engine().RemoveModifier(mod.Owner(), E4)
+
+				// Queue Heal
+				mod.Engine().InsertAbility(info.Insert{
+					Execute: func() {
+						mod.Engine().SetHP(mod.Owner(),
+							mod.Owner(), mod.OwnerStats().MaxHP()*0.25)
+					},
+					Source:   mod.Owner(),
+					Priority: info.CharReviveSelf,
+				})
+
+				mod.RemoveSelf()
 				return true
 			},
 		},
