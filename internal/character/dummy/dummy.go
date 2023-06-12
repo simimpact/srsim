@@ -66,7 +66,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 
 }
 
-func (c *char) Burst(target key.TargetID, state info.ActionState) {
+func (c *char) Ult(target key.TargetID, state info.ActionState) {
 
 }
 

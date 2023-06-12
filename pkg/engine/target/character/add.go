@@ -163,12 +163,32 @@ func abilityLevels(levels []uint32) info.AbilityLevel {
 		switch i {
 		case 0:
 			out.Attack = int(level)
+			if out.Attack < 1 {
+				out.Attack = 1
+			} else if out.Attack > 9 {
+				out.Attack = 9
+			}
 		case 1:
 			out.Skill = int(level)
+			if out.Skill < 1 {
+				out.Skill = 1
+			} else if out.Skill > 15 {
+				out.Skill = 15
+			}
 		case 2:
 			out.Ult = int(level)
+			if out.Ult < 1 {
+				out.Ult = 1
+			} else if out.Ult > 15 {
+				out.Ult = 15
+			}
 		case 3:
 			out.Talent = int(level)
+			if out.Talent < 1 {
+				out.Talent = 1
+			} else if out.Talent > 15 {
+				out.Talent = 15
+			}
 		}
 	}
 
