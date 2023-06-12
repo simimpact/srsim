@@ -5,12 +5,17 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/equip/lightcone"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-// Increases the wearer's ATK by 48%.
-// Whenever the wearer defeats an enemy, they restore HP equal to 24% of their ATK.
+const (
+	NowheretoRun key.Modifier = "nowhere-to-run"
+)
+
+// Increases the wearer's ATK by 24%/30%/36%/42%/48%.
+// Whenever the wearer defeats an enemy, they restore HP equal to 12%/15%/18%/21%/24% of their ATK.
 
 func init() {
 	lightcone.Register(key.NowheretoRun, lightcone.Config{
@@ -28,9 +33,21 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
+	amtATKPercent := 0.24 + 0.06*float64(lc.Ascension)
+	amtHeal := 0.12 + 0.06*float64(lc.Ascension)
 
+	engine.AddModifier(owner, info.Modifier{
+		Name:   NowheretoRun,
+		Source: owner,
+		Stats:  info.PropMap{prop.ATKPercent: amtATKPercent},
+		State:  amtHeal,
+	})
 }
 
 func onTriggerDeath(mod *modifier.ModifierInstance, target key.TargetID) {
-
+	mod.Engine().Heal(info.Heal{
+		Targets:  []key.TargetID{mod.Owner()},
+		Source:   mod.Owner(),
+		BaseHeal: info.HealMap{model.HealFormula_BY_HEALER_ATK: mod.State().(float64)},
+	})
 }
