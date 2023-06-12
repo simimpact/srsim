@@ -121,9 +121,9 @@ func (sim *simulation) executeAction(id key.TargetID, isInsert bool) error {
 	}
 
 	sim.ModifySP(executable.SPDelta)
-
+	sim.clearActionTargets()
 	sim.event.ActionStart.Emit(event.ActionEvent{
-		Target:     id,
+		Owner:      id,
 		AttackType: executable.AttackType,
 		IsInsert:   isInsert,
 	})
@@ -135,7 +135,8 @@ func (sim *simulation) executeAction(id key.TargetID, isInsert bool) error {
 	// emit end events
 	sim.combat.EndAttack()
 	sim.event.ActionEnd.Emit(event.ActionEvent{
-		Target:     id,
+		Owner:      id,
+		Targets:    sim.actionTargets,
 		AttackType: executable.AttackType,
 		IsInsert:   isInsert,
 	})
@@ -156,8 +157,9 @@ func (sim *simulation) executeUlt(id key.TargetID) error {
 		return fmt.Errorf("unsupported target type: %v", sim.targets[id])
 	}
 
+	sim.clearActionTargets()
 	sim.event.UltStart.Emit(event.ActionEvent{
-		Target:     id,
+		Owner:      id,
 		AttackType: model.AttackType_ULT,
 		IsInsert:   true,
 	})
@@ -167,7 +169,8 @@ func (sim *simulation) executeUlt(id key.TargetID) error {
 	// end attack if in one. no-op if not in an attack
 	sim.combat.EndAttack()
 	sim.event.UltEnd.Emit(event.ActionEvent{
-		Target:     id,
+		Owner:      id,
+		Targets:    sim.actionTargets,
 		AttackType: model.AttackType_ULT,
 		IsInsert:   true,
 	})
@@ -175,8 +178,9 @@ func (sim *simulation) executeUlt(id key.TargetID) error {
 }
 
 func (sim *simulation) executeInsert(i info.Insert) {
+	sim.clearActionTargets()
 	sim.event.InsertStart.Emit(event.InsertEvent{
-		Target:     i.Source,
+		Owner:      i.Source,
 		AbortFlags: i.AbortFlags,
 		Priority:   i.Priority,
 	})
@@ -187,8 +191,15 @@ func (sim *simulation) executeInsert(i info.Insert) {
 	// end attack if in one. no-op if not in an attack
 	sim.combat.EndAttack()
 	sim.event.InsertEnd.Emit(event.InsertEvent{
-		Target:     i.Source,
+		Owner:      i.Source,
+		Targets:    sim.actionTargets,
 		AbortFlags: i.AbortFlags,
 		Priority:   i.Priority,
 	})
+}
+
+func (s *simulation) clearActionTargets() {
+	for k := range s.actionTargets {
+		delete(s.actionTargets, k)
+	}
 }

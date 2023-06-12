@@ -39,7 +39,8 @@ type TerminationEvent struct {
 type ActionStartEventHandler = handler.EventHandler[ActionEvent]
 type ActionEndEventHandler = handler.EventHandler[ActionEvent]
 type ActionEvent struct {
-	Target     key.TargetID
+	Owner      key.TargetID
+	Targets    map[key.TargetID]bool
 	AttackType model.AttackType
 	IsInsert   bool
 }
@@ -50,7 +51,8 @@ type UltEndEventHandler = handler.EventHandler[ActionEvent]
 type InsertStartEventHandler = handler.EventHandler[InsertEvent]
 type InsertEndEventHandler = handler.EventHandler[InsertEvent]
 type InsertEvent struct {
-	Target     key.TargetID
+	Owner      key.TargetID
+	Targets    map[key.TargetID]bool
 	AbortFlags []model.BehaviorFlag
 	Priority   info.InsertPriority
 }

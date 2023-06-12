@@ -7,26 +7,32 @@ import (
 )
 
 func (sim *simulation) AddModifier(target key.TargetID, instance info.Modifier) (bool, error) {
+	sim.actionTargets[target] = true
 	return sim.modifier.AddModifier(target, instance)
 }
 
 func (sim *simulation) RemoveModifier(target key.TargetID, modifier key.Modifier) {
+	sim.actionTargets[target] = true
 	sim.modifier.RemoveModifier(target, modifier)
 }
 
-func (sim *simulation) RemoveModifierFromSource(target key.TargetID, source key.TargetID, modifier key.Modifier) {
+func (sim *simulation) RemoveModifierFromSource(target, source key.TargetID, modifier key.Modifier) {
+	sim.actionTargets[target] = true
 	sim.modifier.RemoveModifierFromSource(target, source, modifier)
 }
 
 func (sim *simulation) DispelStatus(target key.TargetID, dispel info.Dispel) {
+	sim.actionTargets[target] = true
 	sim.modifier.DispelStatus(target, dispel)
 }
 
 func (sim *simulation) ExtendModifierDuration(target key.TargetID, modifier key.Modifier, amt int) {
+	sim.actionTargets[target] = true
 	sim.modifier.ExtendDuration(target, modifier, amt)
 }
 
 func (sim *simulation) ExtendModifierCount(target key.TargetID, modifier key.Modifier, amt float64) {
+	sim.actionTargets[target] = true
 	sim.modifier.ExtendCount(target, modifier, amt)
 }
 

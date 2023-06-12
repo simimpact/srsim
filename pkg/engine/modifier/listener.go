@@ -461,7 +461,7 @@ func (mgr *Manager) stanceBreakEnd(e event.StanceBreakEndEvent) {
 }
 
 func (mgr *Manager) actionStart(e event.ActionEvent) {
-	for _, mod := range mgr.targets[e.Target] {
+	for _, mod := range mgr.targets[e.Owner] {
 		f := mod.listeners.OnBeforeAction
 		if f != nil {
 			f(mod, e)
@@ -470,7 +470,7 @@ func (mgr *Manager) actionStart(e event.ActionEvent) {
 }
 
 func (mgr *Manager) actionEnd(e event.ActionEvent) {
-	for _, mod := range mgr.targets[e.Target] {
+	for _, mod := range mgr.targets[e.Owner] {
 		f := mod.listeners.OnAfterAction
 		if f != nil {
 			f(mod, e)

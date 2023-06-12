@@ -6,10 +6,12 @@ import (
 )
 
 func (sim *simulation) AddShield(id key.Shield, shield info.Shield) {
+	sim.actionTargets[shield.Target] = true
 	sim.shield.AddShield(id, shield)
 }
 
 func (sim *simulation) RemoveShield(id key.Shield, target key.TargetID) {
+	sim.actionTargets[target] = true
 	sim.shield.RemoveShield(id, target)
 }
 

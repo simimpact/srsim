@@ -43,39 +43,48 @@ func (sim *simulation) HPRatio(target key.TargetID) float64 {
 	return sim.attr.HPRatio(target)
 }
 
-func (sim *simulation) SetHP(target key.TargetID, source key.TargetID, amt float64) error {
+func (sim *simulation) SetHP(target, source key.TargetID, amt float64) error {
+	sim.actionTargets[target] = true
 	return sim.attr.SetHP(target, source, amt, false)
 }
 
-func (sim *simulation) ModifyHPByRatio(target key.TargetID, source key.TargetID, data info.ModifyHPByRatio) error {
+func (sim *simulation) ModifyHPByRatio(target, source key.TargetID, data info.ModifyHPByRatio) error {
+	sim.actionTargets[target] = true
 	return sim.attr.ModifyHPByRatio(target, source, data, false)
 }
 
-func (sim *simulation) ModifyHPByAmount(target key.TargetID, source key.TargetID, amt float64) error {
+func (sim *simulation) ModifyHPByAmount(target, source key.TargetID, amt float64) error {
+	sim.actionTargets[target] = true
 	return sim.attr.ModifyHPByAmount(target, source, amt, false)
 }
 
-func (sim *simulation) ModifyStance(target key.TargetID, source key.TargetID, amt float64) error {
+func (sim *simulation) ModifyStance(target, source key.TargetID, amt float64) error {
+	sim.actionTargets[target] = true
 	return sim.attr.ModifyStance(target, source, amt)
 }
 
 func (sim *simulation) ModifyEnergy(target key.TargetID, amt float64) error {
+	sim.actionTargets[target] = true
 	return sim.attr.ModifyEnergy(target, amt)
 }
 
 func (sim *simulation) ModifyEnergyFixed(target key.TargetID, amt float64) error {
+	sim.actionTargets[target] = true
 	return sim.attr.ModifyEnergyFixed(target, amt)
 }
 
 func (sim *simulation) SetGauge(target key.TargetID, amt float64) error {
+	sim.actionTargets[target] = true
 	return sim.turn.SetGauge(target, amt)
 }
 
 func (sim *simulation) ModifyGaugeNormalized(target key.TargetID, amt float64) error {
+	sim.actionTargets[target] = true
 	return sim.turn.ModifyGaugeNormalized(target, amt)
 }
 
 func (sim *simulation) ModifyGaugeAV(target key.TargetID, amt float64) error {
+	sim.actionTargets[target] = true
 	return sim.turn.ModifyGaugeAV(target, amt)
 }
 

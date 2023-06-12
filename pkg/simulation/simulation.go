@@ -42,14 +42,15 @@ type simulation struct {
 	shield   *shield.Manager
 
 	// state
-	sp         int
-	tp         int
-	targets    map[key.TargetID]info.TargetClass
-	characters []key.TargetID
-	enemies    []key.TargetID
-	neutrals   []key.TargetID
-	totalAV    float64
-	active     key.TargetID
+	sp            int
+	tp            int
+	targets       map[key.TargetID]info.TargetClass
+	characters    []key.TargetID
+	enemies       []key.TargetID
+	neutrals      []key.TargetID
+	totalAV       float64
+	active        key.TargetID
+	actionTargets map[key.TargetID]bool
 }
 
 func Run(cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationResult, error) {
@@ -63,12 +64,13 @@ func Run(cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationRes
 		rand:  rand.New(rand.NewSource(seed)),
 		idGen: key.NewTargetIDGenerator(),
 
-		sp:         3,
-		tp:         4, // TODO: define starting amount in config?
-		targets:    make(map[key.TargetID]info.TargetClass, 15),
-		characters: make([]key.TargetID, 0, 4),
-		enemies:    make([]key.TargetID, 0, 5),
-		neutrals:   make([]key.TargetID, 0, 5),
+		sp:            3,
+		tp:            4, // TODO: define starting amount in config?
+		targets:       make(map[key.TargetID]info.TargetClass, 15),
+		characters:    make([]key.TargetID, 0, 4),
+		enemies:       make([]key.TargetID, 0, 5),
+		neutrals:      make([]key.TargetID, 0, 5),
+		actionTargets: make(map[key.TargetID]bool, 10),
 	}
 
 	// init services
