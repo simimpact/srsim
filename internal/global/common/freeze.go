@@ -20,7 +20,6 @@ type FreezeState struct {
 func init() {
 	modifier.Register(Freeze, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
-		TickMoment: modifier.ModifierPhase1End,
 		StatusType: model.StatusType_STATUS_DEBUFF,
 		BehaviorFlags: []model.BehaviorFlag{
 			model.BehaviorFlag_DISABLE_ACTION,

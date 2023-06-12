@@ -140,16 +140,11 @@ func beginTurn(s *simulation) (stateFn, error) {
 // phase1 is the time between the start of the turn and the action being performed. This is when
 // stuff like dots deal damage, stance gets reset, and any bursts happen prior to the action.
 func phase1(s *simulation) (stateFn, error) {
-	// super special case where if they are frozen at the start of the turn, need to skip break
-	// reset because that is just how frozen works. Need to make this check BEFORE the tick, since
-	// once the tick happens frozen will be removed.
-	isFrozen := s.HasBehaviorFlag(s.active, model.BehaviorFlag_STAT_CTRL_FROZEN)
-
 	// tick any modifiers that listen for phase1 (primarily dots)
 	s.modifier.Tick(s.active, info.ModifierPhase1)
 
-	// skip the action if this target has the DISABLE_ACTION flag or was frozen at start of turn
-	if isFrozen || s.HasBehaviorFlag(s.active, model.BehaviorFlag_DISABLE_ACTION) {
+	// skip the action if this target has the DISABLE_ACTION flag
+	if s.HasBehaviorFlag(s.active, model.BehaviorFlag_DISABLE_ACTION) {
 		return phase2, nil
 	}
 
