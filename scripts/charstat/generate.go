@@ -268,6 +268,58 @@ func ProcessCharacter(
 	if err := tdata.Execute(fdata, data); err != nil {
 		log.Fatal(err)
 	}
+
+	fatk, err := os.Create(filepath.Join(path, "attack.go"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer fatk.Close()
+	tatk, err := template.New("outattack").Parse(tmplAtk)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := tatk.Execute(fatk, data); err != nil {
+		log.Fatal(err)
+	}
+
+	fskill, err := os.Create(filepath.Join(path, "skill.go"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer fskill.Close()
+	tskill, err := template.New("outskill").Parse(tmplSkill)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := tskill.Execute(fskill, data); err != nil {
+		log.Fatal(err)
+	}
+
+	fult, err := os.Create(filepath.Join(path, "ult.go"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer fult.Close()
+	tult, err := template.New("outult").Parse(tmplUlt)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := tult.Execute(fult, data); err != nil {
+		log.Fatal(err)
+	}
+
+	ftech, err := os.Create(filepath.Join(path, "technique.go"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer ftech.Close()
+	ttech, err := template.New("outtech").Parse(tmplTechnique)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := ttech.Execute(ftech, data); err != nil {
+		log.Fatal(err)
+	}
 }
 
 var tmplChar = `package {{.KeyLower}}
@@ -371,3 +423,51 @@ var traces = character.TraceMap{
 	},
 	{{- end}}
 }`
+
+var tmplAtk = `package {{.KeyLower}}
+
+import (
+	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/key"
+)
+
+func (c *char) Attack(target key.TargetID, state info.ActionState) {
+
+}
+`
+
+var tmplSkill = `package {{.KeyLower}}
+
+import (
+	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/key"
+)
+
+func (c *char) Skill(target key.TargetID, state info.ActionState) {
+	
+}
+`
+
+var tmplUlt = `package {{.KeyLower}}
+
+import (
+	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/key"
+)
+
+func (c *char) Ult(target key.TargetID, state info.ActionState) {
+	
+}
+`
+
+var tmplTechnique = `package {{.KeyLower}}
+
+import (
+	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/key"
+)
+
+func (c *char) Technique(target key.TargetID, state info.ActionState) {
+	
+}
+`
