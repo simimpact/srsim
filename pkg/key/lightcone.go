@@ -20,4 +20,7 @@ const (
 
 	// Preservation
 	MomentOfVictory LightCone = "moment_of_victory"
+
+	// Abundance
+	FineFruit LightCone = "fine_fruit"
 )
