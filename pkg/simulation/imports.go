@@ -5,6 +5,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/global"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/themoleswelcomeyou"
 	_ "github.com/simimpact/srsim/internal/lightcone/erudition/passkey"
+	_ "github.com/simimpact/srsim/internal/lightcone/harmony/chorus"
 	_ "github.com/simimpact/srsim/internal/lightcone/hunt/dartingarrow"
 	_ "github.com/simimpact/srsim/internal/lightcone/nihility/fermata"
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/momentofvictory"

@@ -15,6 +15,9 @@ const (
 	// Erudition
 	Passkey LightCone = "passkey"
 
+	// Harmony
+	Chorus LightCone = "chorus"
+
 	// Preservation
 	MomentOfVictory LightCone = "moment_of_victory"
 )
