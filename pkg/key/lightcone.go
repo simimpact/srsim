@@ -12,6 +12,9 @@ const (
 	// Nihility
 	Fermata LightCone = "fermata"
 
+	// Erudition
+	Passkey LightCone = "passkey"
+
 	// Preservation
 	MomentOfVictory LightCone = "moment_of_victory"
 )
