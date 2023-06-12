@@ -6,6 +6,7 @@ const (
 	// Destruction
 	TheMolesWelcomeYou LightCone = "the_moles_welcome_you"
 	NowheretoRun                 = "nowhere_to_run"
+	MutualDemise                 = "mutual_demise"
 	// Hunt
 	DartingArrow LightCone = "darting_arrow"
 
