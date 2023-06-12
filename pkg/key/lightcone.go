@@ -5,7 +5,7 @@ type LightCone string
 const (
 	// Destruction
 	TheMolesWelcomeYou LightCone = "the_moles_welcome_you"
-
+	NowheretoRun                 = "nowhere_to_run"
 	// Hunt
 	DartingArrow LightCone = "darting_arrow"
 
@@ -13,7 +13,7 @@ const (
 	Fermata LightCone = "fermata"
 
 	// Erudition
-	Passkey LightCone = "passkey"
+	Passkey  LightCone = "passkey"
 	DataBank LightCone = "data_bank"
 
 	// Harmony
