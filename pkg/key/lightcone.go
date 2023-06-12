@@ -15,6 +15,7 @@ const (
 	// Erudition
 	Passkey  LightCone = "passkey"
 	DataBank LightCone = "data_bank"
+	BeforeDawn LightCone = "before_dawn"
 
 	// Harmony
 	Chorus LightCone = "chorus"
