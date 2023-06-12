@@ -51,13 +51,12 @@ func init() {
 
 //Add crit dmg modifier 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	amt := 0.15 + 0.03*float64(lc.Ascension)
-
+	amt := 0.30 + 0.06* float64(lc.Ascension)
 	engine.AddModifier(owner, info.Modifier{
 		Name:   BeforeDawn,
 		Source: owner,
-		Stats:  info.PropMap{prop.CritDMG: amt * 2},
-		State:  amt,
+		Stats:  info.PropMap{prop.CritDMG: amt},
+		State:  float64(lc.Ascension),
 	})
 
 	
@@ -67,7 +66,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 func onBeforeHit(mod *modifier.ModifierInstance, e event.HitStartEvent) {
 	if e.Hit.AttackType == model.AttackType_ULT ||
 		e.Hit.AttackType == model.AttackType_SKILL {
-		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, mod.State().(float64))
+		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.15 + 0.03*mod.State().(float64))
 	}
 }
 
@@ -97,7 +96,7 @@ func onAfterAction(mod *modifier.ModifierInstance, e event.ActionEvent){
 			Name:   SomnusCorpus,
 			Source: mod.Owner(),
 			State: &somnusState{
-				amt: amt * 2.66666666667,
+				amt: 0.40 + 0.08 * amt,
 			  },
 		})
 	}
