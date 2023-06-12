@@ -15,14 +15,14 @@ import (
 //After the wearer uses their Skill or Ultimate, they gain Somnus Corpus.
 //Upon triggering a follow-up attack, Somnus Corpus will be consumed and the follow-up attack DMG increases by x%.
 const (
-	BeforeDawn key.Modifier = "before_dawn"
+	BeforeDawn   key.Modifier = "before_dawn"
 	SomnusCorpus key.Modifier = "somnus_corpus"
 )
 
 type somnusState struct {
-	amt float64
+	amt  float64
 	used bool
-  }
+}
 
 //
 func init() {
@@ -35,7 +35,7 @@ func init() {
 
 	modifier.Register(BeforeDawn, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHit: onBeforeHit,
+			OnBeforeHit:   onBeforeHit,
 			OnAfterAction: onAfterAction,
 		},
 	})
@@ -43,15 +43,15 @@ func init() {
 	modifier.Register(SomnusCorpus, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
 		Listeners: modifier.Listeners{
-			OnBeforeHit: onBeforeHitSomnus,
+			OnBeforeHit:   onBeforeHitSomnus,
 			OnAfterAttack: onAfterAttack,
 		},
 	})
 }
 
-//Add crit dmg modifier 
+//Add crit dmg modifier
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	amt := 0.30 + 0.06* float64(lc.Ascension)
+	amt := 0.30 + 0.06*float64(lc.Ascension)
 	engine.AddModifier(owner, info.Modifier{
 		Name:   BeforeDawn,
 		Source: owner,
@@ -59,21 +59,20 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		State:  float64(lc.Ascension),
 	})
 
-	
 }
 
 //BeforeHit if its ult or skill add the dmg% to that hit
 func onBeforeHit(mod *modifier.ModifierInstance, e event.HitStartEvent) {
 	if e.Hit.AttackType == model.AttackType_ULT ||
 		e.Hit.AttackType == model.AttackType_SKILL {
-		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.15 + 0.03*mod.State().(float64))
+		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.15+0.03*mod.State().(float64))
 	}
 }
 
 //Beforehit if its follow and it has the SomnusCorpusMod add the dmg% to that hit and change used to true
 func onBeforeHitSomnus(mod *modifier.ModifierInstance, e event.HitStartEvent) {
 	state := mod.State().(*somnusState)
-	if e.Hit.AttackType == model.AttackType_INSERT  {
+	if e.Hit.AttackType == model.AttackType_INSERT {
 		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, state.amt)
 		state.used = true
 	}
@@ -83,12 +82,12 @@ func onBeforeHitSomnus(mod *modifier.ModifierInstance, e event.HitStartEvent) {
 func onAfterAttack(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
 	state := mod.State().(*somnusState)
 	if state.used {
-	  mod.RemoveSelf()
+		mod.RemoveSelf()
 	}
-  }
+}
 
 //AfterAction if its ult or skill add the SomnusCorpusMod
-func onAfterAction(mod *modifier.ModifierInstance, e event.ActionEvent){
+func onAfterAction(mod *modifier.ModifierInstance, e event.ActionEvent) {
 	if e.AttackType == model.AttackType_ULT ||
 		e.AttackType == model.AttackType_SKILL {
 		amt := mod.State().(float64)
@@ -96,8 +95,8 @@ func onAfterAction(mod *modifier.ModifierInstance, e event.ActionEvent){
 			Name:   SomnusCorpus,
 			Source: mod.Owner(),
 			State: &somnusState{
-				amt: 0.40 + 0.08 * amt,
-			  },
+				amt: 0.40 + 0.08*amt,
+			},
 		})
 	}
 }
