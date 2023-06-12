@@ -6,7 +6,7 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-var attackHits = []float64{0.5, 0.5}
+var attackHits = []float64{0.3, 0.7}
 
 func (c *char) Attack(target key.TargetID, state info.ActionState) {
 	for _, hitRatio := range attackHits {
