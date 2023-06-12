@@ -9,6 +9,9 @@ import (
 var ultHits = []float64{0.3, 0.1, 0.6}
 
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
+
+	c.e2()
+
 	for _, hitRatio := range ultHits {
 
 		// Primary Target
@@ -26,13 +29,19 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		})
 
 		// Adjacent Targets
+		additionalMod := 0.5
+
+		if c.info.Eidolon >= 6 {
+			additionalMod = 1
+		}
+
 		c.engine.Attack(info.Attack{
 			Source:     c.id,
 			Targets:    c.engine.AdjacentTo(target),
 			DamageType: model.DamageType_THUNDER,
 			AttackType: model.AttackType_ULT,
 			BaseDamage: info.DamageMap{
-				model.DamageFormula_BY_ATK: 0.5 * ultDMG[c.info.AbilityLevel.Ult],
+				model.DamageFormula_BY_ATK: additionalMod * ultDMG[c.info.AbilityLevel.Ult],
 			},
 			StanceDamage: 60.0,
 			EnergyGain:   0.0,

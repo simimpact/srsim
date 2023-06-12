@@ -13,6 +13,8 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		Floor:     1,
 	})
 
+	c.e2()
+
 	c.engine.Attack(info.Attack{
 		Source:     c.id,
 		Targets:    []key.TargetID{target},
