@@ -14,8 +14,8 @@ const (
 	Fermata LightCone = "fermata"
 
 	// Erudition
-	Passkey  LightCone = "passkey"
-	DataBank LightCone = "data_bank"
+	Passkey    LightCone = "passkey"
+	DataBank   LightCone = "data_bank"
 	BeforeDawn LightCone = "before_dawn"
 
 	// Harmony
@@ -25,5 +25,6 @@ const (
 	MomentOfVictory LightCone = "moment_of_victory"
 
 	// Abundance
-	FineFruit LightCone = "fine_fruit"
+	FineFruit      LightCone = "fine_fruit"
+	Multiplication LightCone = "multiplication"
 )
