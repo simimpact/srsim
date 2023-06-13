@@ -63,6 +63,10 @@ func init() {
 }
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
+	// A6:
+	//	If there are 3 or more debuff(s) affecting the enemy when the Skill is
+	//	used, then the Skill decreases the enemy's All-Type RES by an additional
+	//	3%.
 	allDamageDown := -skillResDown[c.info.AbilityLevel.Skill-1]
 	if c.info.Traces["1006103"] && c.engine.ModifierCount(target, model.StatusType_STATUS_DEBUFF) >= 3 {
 		allDamageDown -= 0.03
@@ -75,6 +79,9 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		Stats:    info.PropMap{prop.AllDamageRES: allDamageDown},
 	})
 
+	// A4:
+	//	The duration of the Weakness implanted by Silver Wolf's Skill increases
+	//	by 1 turn(s).
 	duration := 2
 	if c.info.Traces["1006102"] {
 		duration += 1
