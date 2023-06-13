@@ -32,7 +32,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	mod := info.Modifier{
 		Name:   Chorus,
 		Source: owner,
-		Stats:  info.PropMap{prop.ATKPercent: 0.08 + 0.01*float64(lc.Rank)},
+		Stats:  info.PropMap{prop.ATKPercent: 0.08 + 0.01*float64(lc.Imposition)},
 	}
 
 	engine.Events().BattleStart.Subscribe(func(event event.BattleStartEvent) {
