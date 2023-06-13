@@ -7,6 +7,8 @@ import (
 )
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
+	c.e4(target)
+
 	c.engine.Attack(info.Attack{
 		Source:     c.id,
 		Targets:    []key.TargetID{target},
@@ -28,6 +30,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	})
 
 	if c.engine.ModifierCount(target, model.StatusType_STATUS_BUFF) < oldModCount {
+		c.e2()
 		c.a6()
 	}
 
