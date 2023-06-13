@@ -3,6 +3,7 @@ package simulation
 import (
 	_ "github.com/simimpact/srsim/internal/character/arlan"
 	_ "github.com/simimpact/srsim/internal/character/danheng"
+	_ "github.com/simimpact/srsim/internal/character/silverwolf"
 	_ "github.com/simimpact/srsim/internal/global"
 	_ "github.com/simimpact/srsim/internal/lightcone/abundance/finefruit"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/mutualdemise"
