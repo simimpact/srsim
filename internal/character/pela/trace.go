@@ -26,11 +26,9 @@ func init() {
 	modifier.Register(A2, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: func(mod *modifier.ModifierInstance, e event.HitStartEvent) {
-				dmgBoost := 0.0
 				if mod.Engine().ModifierCount(e.Hit.Defender.ID(), model.StatusType_STATUS_DEBUFF) >= 1 {
-					dmgBoost = 0.2
+					e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.2)
 				}
-				mod.SetProperty(prop.AllDamagePercent, dmgBoost)
 			},
 		},
 	})
@@ -46,7 +44,7 @@ func init() {
 	modifier.Register(A6, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeHit: func(mod *modifier.ModifierInstance, e event.HitStartEvent) {
-				mod.SetProperty(prop.AllDamagePercent, 0.2)
+				e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.2)
 			},
 			OnAfterAttack: func(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
 				mod.RemoveSelf()
