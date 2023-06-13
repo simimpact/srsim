@@ -20,6 +20,13 @@ func init() {
 	})
 }
 
+func (c *char) initTalent() {
+	c.engine.AddModifier(c.id, info.Modifier{
+		Name:   Talent,
+		Source: c.id,
+	})
+}
+
 func talentAfterAttack(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
 	if mod.Engine().HasModifier(mod.Owner(), TalentCD) {
 		return
