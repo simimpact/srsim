@@ -110,8 +110,8 @@ func (c *char) e4Listener(e event.AttackEndEvent) {
 		BaseDamage: info.DamageMap{
 			model.DamageFormula_BY_ATK: atk[c.info.AbilityLevel.Attack-1] * 0.8,
 		},
-		StanceDamage: 30.0, // TODO
-		EnergyGain:   0.0,
+		StanceDamage: 30.0,
+		EnergyGain:   0.0, // TODO
 	})
 
 	// Set on CD
