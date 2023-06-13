@@ -43,7 +43,7 @@ func init() {
 
 	modifier.Register(A6, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHit: func(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+			OnBeforeHitAll: func(mod *modifier.ModifierInstance, e event.HitStartEvent) {
 				e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.2)
 			},
 			OnAfterAttack: func(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
