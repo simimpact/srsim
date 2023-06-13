@@ -32,6 +32,7 @@ func init() {
 	// Using Skill to remove buff(s) increases SPD by 10% for 2 turn(s).
 	modifier.Register(E2, modifier.Config{
 		Stacking:      modifier.ReplaceBySource,
+		StatusType:    model.StatusType_STATUS_BUFF,
 		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_UP},
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.ModifierInstance) {
@@ -44,17 +45,17 @@ func init() {
 	modifier.Register(E4, modifier.Config{
 		TickMoment: modifier.ModifierPhase1End,
 		Stacking:   modifier.ReplaceBySource,
+		StatusType: model.StatusType_STATUS_DEBUFF,
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.ModifierInstance) {
-				mod.SetProperty(prop.IceDamageRES, 0.12)
+				mod.SetProperty(prop.IceDamageRES, -0.12)
 			},
 		},
 	})
 
 	// When Pela attacks a debuffed enemy, she deals Additional Ice DMG equal to 40% of Pela's ATK to the enemy.
 	modifier.Register(E6, modifier.Config{
-		TickMoment: modifier.ModifierPhase1End,
-		Stacking:   modifier.ReplaceBySource,
+		Stacking: modifier.ReplaceBySource,
 		Listeners: modifier.Listeners{
 			OnAfterAttack: func(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
 				for _, trg := range e.Targets {
