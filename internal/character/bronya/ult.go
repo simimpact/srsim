@@ -48,4 +48,6 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			TickImmediately: true,
 		})
 	}
+
+	c.engine.ModifyEnergy(c.id, 5.0)
 }

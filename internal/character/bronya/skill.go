@@ -51,4 +51,6 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		},
 	})
 
+	// Add energy
+	c.engine.ModifyEnergy(c.id, 30.0)
 }
