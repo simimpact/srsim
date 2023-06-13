@@ -1,6 +1,7 @@
 package silverwolf
 
 import (
+	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
@@ -36,30 +37,39 @@ func init() {
 		StatusType:    model.StatusType_STATUS_DEBUFF,
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.ModifierInstance) {
-				types := info.WeaknessMap{}
-				for _, char := range mod.Engine().Characters() {
-					info, _ := mod.Engine().CharacterInfo(char)
-					types[info.Element] = true
-				}
-				for t := model.DamageType_PHYSICAL; t <= model.DamageType_IMAGINARY; t++ {
-					if mod.OwnerStats().IsWeakTo(t) {
-						delete(types, t)
-					}
-				}
-				keys := []model.DamageType{}
-				for t := range types {
-					keys = append(keys, t)
-				}
-				if len(keys) == 0 {
+				dmgType, ok := chooseWeaknessType(mod.Engine(), mod.Owner())
+				if !ok {
 					mod.RemoveSelf()
 					return
 				}
-				dmgType := keys[mod.Engine().Rand().Intn(len(keys))]
 				mod.AddWeakness(dmgType)
 				mod.SetProperty(damageType_ResProperty[dmgType], -0.2)
 			},
 		},
 	})
+}
+
+func chooseWeaknessType(engine engine.Engine, target key.TargetID) (model.DamageType, bool) {
+	types := info.WeaknessMap{}
+	// add team damage types
+	for _, char := range engine.Characters() {
+		info, _ := engine.CharacterInfo(char)
+		types[info.Element] = true
+	}
+	// remove enemy damage types
+	for t := model.DamageType_PHYSICAL; t <= model.DamageType_IMAGINARY; t++ {
+		if engine.Stats(target).IsWeakTo(t) {
+			delete(types, t)
+		}
+	}
+	keys := []model.DamageType{}
+	for t := range types {
+		keys = append(keys, t)
+	}
+	if len(keys) == 0 {
+		return model.DamageType_INVALID_DAMAGE_TYPE, false
+	}
+	return keys[engine.Rand().Intn(len(keys))], true
 }
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
