@@ -41,4 +41,9 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		StanceDamage: 90.0,
 		EnergyGain:   5.0,
 	})
+
+	state.EndAttack()
+
+	c.e4(target)
+	c.e1(target)
 }
