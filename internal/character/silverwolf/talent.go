@@ -1,6 +1,7 @@
 package silverwolf
 
 import (
+	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
@@ -60,25 +61,33 @@ func init() {
 	modifier.Register(TalentCheck, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAfterAttack: func(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
-				char, _ := mod.Engine().CharacterInfo(e.Attacker)
 				for _, trg := range e.Targets {
-					bugs := []key.Modifier{}
-					// get list of bugs not present on target
-					for _, b := range []key.Modifier{BugATK, BugDEF, BugSPD} {
-						if len(mod.Engine().GetModifiers(trg, b)) == 0 {
-							bugs = append(bugs, b)
-						}
-					}
-					mod.Engine().AddModifier(trg, info.Modifier{
-						Name:     bugs[mod.Engine().Rand().Intn(len(bugs))],
-						Source:   e.Attacker,
-						Duration: 3,
-						Chance:   talentChance[char.AbilityLevel.Talent-1],
-					})
+					mod.Engine().AddModifier(trg, newRandomBug(mod.Engine(), trg, e.Attacker))
 				}
 			},
 		},
 	})
+}
+
+func newRandomBug(engine engine.Engine, target key.TargetID, source key.TargetID) info.Modifier {
+	char, _ := engine.CharacterInfo(source)
+	bugs := []key.Modifier{}
+	// get list of bugs not present on target
+	for _, b := range []key.Modifier{BugATK, BugDEF, BugSPD} {
+		if len(engine.GetModifiers(target, b)) == 0 {
+			bugs = append(bugs, b)
+		}
+	}
+	duration := 3
+	if char.Traces["1006101"] {
+		duration += 1
+	}
+	return info.Modifier{
+		Name:     bugs[engine.Rand().Intn(len(bugs))],
+		Source:   source,
+		Duration: duration,
+		Chance:   talentChance[char.AbilityLevel.Talent-1],
+	}
 }
 
 func (c *char) initTalent() {

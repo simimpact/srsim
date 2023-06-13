@@ -21,8 +21,9 @@ func init() {
 	})
 
 	modifier.Register(SkillWeakType, modifier.Config{
-		Stacking:   modifier.Replace,
-		StatusType: model.StatusType_STATUS_DEBUFF,
+		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_ATTACH_WEAKNESS},
+		Stacking:      modifier.Replace,
+		StatusType:    model.StatusType_STATUS_DEBUFF,
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.ModifierInstance) {
 				types := info.WeaknessMap{}
@@ -46,18 +47,26 @@ func init() {
 }
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
+	allDamageDown := -skillResDown[c.info.AbilityLevel.Skill-1]
+	if c.info.Traces["1006103"] && c.engine.ModifierCount(target, model.StatusType_STATUS_DEBUFF) >= 3 {
+		allDamageDown -= 0.03
+	}
 	c.engine.AddModifier(target, info.Modifier{
 		Name:     SkillResDown,
 		Source:   c.id,
 		Duration: 2,
 		Chance:   1,
-		Stats:    info.PropMap{prop.AllDamageRES: -skillResDown[c.info.AbilityLevel.Skill-1]},
+		Stats:    info.PropMap{prop.AllDamageRES: allDamageDown},
 	})
 
+	duration := 2
+	if c.info.Traces["1006102"] {
+		duration += 1
+	}
 	c.engine.AddModifier(target, info.Modifier{
 		Name:     SkillWeakType,
 		Source:   c.id,
-		Duration: 2,
+		Duration: duration,
 		Chance:   skillChance[c.info.AbilityLevel.Skill-1],
 	})
 
