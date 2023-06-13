@@ -59,7 +59,7 @@ func chooseWeaknessType(engine engine.Engine, target key.TargetID) (model.Damage
 	// remove enemy damage types
 	for t := model.DamageType_PHYSICAL; t <= model.DamageType_IMAGINARY; t++ {
 		if engine.Stats(target).IsWeakTo(t) {
-			delete(types, t)
+			types.Remove(t)
 		}
 	}
 	keys := []model.DamageType{}

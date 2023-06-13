@@ -62,7 +62,7 @@ func (c *char) e1(target key.TargetID) {
 // target. This effect can be triggered for a maximum of 5 time(s) during
 // each use of her Ultimate.
 func (c *char) e4(target key.TargetID) {
-	if c.info.Eidolon >= 6 {
+	if c.info.Eidolon >= 4 {
 		debuffCount := c.engine.ModifierCount(target, model.StatusType_STATUS_DEBUFF)
 		if debuffCount > 5 {
 			debuffCount = 5
@@ -83,12 +83,6 @@ func (c *char) e4(target key.TargetID) {
 
 func (c *char) initEidolons() {
 	if c.info.Eidolon >= 2 {
-		for _, enemy := range c.engine.Enemies() {
-			c.engine.AddModifier(enemy, info.Modifier{
-				Name:   E2,
-				Source: c.id,
-			})
-		}
 		c.engine.Events().EnemyAdded.Subscribe(func(e event.EnemyAddedEvent) {
 			c.engine.AddModifier(e.Id, info.Modifier{
 				Name:   E2,

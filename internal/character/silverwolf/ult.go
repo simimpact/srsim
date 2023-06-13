@@ -23,11 +23,12 @@ func init() {
 
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	c.engine.AddModifier(target, info.Modifier{
-		Name:     UltDefDown,
-		Source:   c.id,
-		Duration: 3,
-		Chance:   ultChance[c.info.AbilityLevel.Ult-1],
-		Stats:    info.PropMap{prop.DEFPercent: -ultDefDown[c.info.AbilityLevel.Ult-1]},
+		Name:            UltDefDown,
+		Source:          c.id,
+		Duration:        3,
+		Chance:          ultChance[c.info.AbilityLevel.Ult-1],
+		Stats:           info.PropMap{prop.DEFPercent: -ultDefDown[c.info.AbilityLevel.Ult-1]},
+		TickImmediately: true,
 	})
 
 	c.engine.Attack(info.Attack{
