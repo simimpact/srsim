@@ -7,6 +7,14 @@ import (
 )
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
+	oldModCount := c.engine.ModifierCount(target, model.StatusType_STATUS_BUFF)
+
+	c.engine.DispelStatus(target, info.Dispel{
+		Status: model.StatusType_STATUS_BUFF,
+		Order:  model.DispelOrder_LAST_ADDED,
+		Count:  1,
+	})
+
 	c.e4(target)
 
 	c.engine.Attack(info.Attack{
@@ -21,18 +29,10 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		EnergyGain:   30.0,
 	})
 
-	oldModCount := c.engine.ModifierCount(target, model.StatusType_STATUS_BUFF)
-
-	c.engine.DispelStatus(target, info.Dispel{
-		Status: model.StatusType_STATUS_BUFF,
-		Order:  model.DispelOrder_LAST_ADDED,
-		Count:  1,
-	})
+	state.EndAttack()
 
 	if c.engine.ModifierCount(target, model.StatusType_STATUS_BUFF) < oldModCount {
 		c.e2()
 		c.a6()
 	}
-
-	state.EndAttack()
 }
