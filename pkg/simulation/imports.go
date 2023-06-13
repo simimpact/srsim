@@ -14,6 +14,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/erudition/databank"
 	_ "github.com/simimpact/srsim/internal/lightcone/erudition/passkey"
 	_ "github.com/simimpact/srsim/internal/lightcone/harmony/chorus"
+	_ "github.com/simimpact/srsim/internal/lightcone/harmony/meshingcogs"
 	_ "github.com/simimpact/srsim/internal/lightcone/hunt/dartingarrow"
 	_ "github.com/simimpact/srsim/internal/lightcone/nihility/fermata"
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/momentofvictory"
