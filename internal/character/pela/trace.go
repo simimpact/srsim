@@ -71,6 +71,12 @@ func (c *char) initTraces() {
 	}
 
 	if c.info.Traces["1106102"] {
+		for _, char := range c.engine.Characters() {
+			c.engine.AddModifier(char, info.Modifier{
+				Name:   A4,
+				Source: c.id,
+			})
+		}
 		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAddedEvent) {
 			c.engine.AddModifier(e.Id, info.Modifier{
 				Name:   A4,
