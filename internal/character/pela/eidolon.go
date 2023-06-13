@@ -34,11 +34,6 @@ func init() {
 		Stacking:      modifier.ReplaceBySource,
 		StatusType:    model.StatusType_STATUS_BUFF,
 		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_UP},
-		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
-				mod.SetProperty(prop.SPDPercent, 0.1)
-			},
-		},
 	})
 
 	// When using Skill, there is a 100% base chance to reduce the target enemy's Ice RES by 12% for 2 turn(s).
@@ -46,11 +41,6 @@ func init() {
 		TickMoment: modifier.ModifierPhase1End,
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_DEBUFF,
-		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
-				mod.SetProperty(prop.IceDamageRES, -0.12)
-			},
-		},
 	})
 
 	// When Pela attacks a debuffed enemy, she deals Additional Ice DMG equal to 40% of Pela's ATK to the enemy.
@@ -83,6 +73,7 @@ func (c *char) e2() {
 			Name:     E2,
 			Source:   c.id,
 			Duration: 2,
+			Stats:    info.PropMap{prop.SPDPercent: 0.1},
 		})
 	}
 }
@@ -94,6 +85,7 @@ func (c *char) e4(target key.TargetID) {
 			Source:   c.id,
 			Chance:   1,
 			Duration: 2,
+			Stats:    info.PropMap{prop.IceDamageRES: -0.12},
 		})
 	}
 }
