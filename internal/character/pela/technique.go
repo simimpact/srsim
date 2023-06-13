@@ -13,7 +13,7 @@ const (
 )
 
 func init() {
-	modifier.Register(UltDefDown, modifier.Config{
+	modifier.Register(TechniqueDefDown, modifier.Config{
 		TickMoment:    modifier.ModifierPhase1End,
 		Stacking:      modifier.ReplaceBySource,
 		StatusType:    model.StatusType_STATUS_DEBUFF,
@@ -37,7 +37,7 @@ func (c *char) Technique(target key.TargetID, state info.ActionState) {
 
 	for _, trg := range targets {
 		c.engine.AddModifier(trg, info.Modifier{
-			Name:     UltDefDown,
+			Name:     TechniqueDefDown,
 			Source:   c.id,
 			Chance:   1,
 			Duration: 2,
