@@ -18,4 +18,7 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 		StanceDamage: 30.0,
 		EnergyGain:   20.0,
 	})
+
+	// Talent
+	c.engine.ModifyCurrentGaugeCost(-talent[c.info.AbilityLevel.Talent-1])
 }
