@@ -50,5 +50,10 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 		info:   charInfo,
 	}
 
+	c.engine.AddModifier(c.id, info.Modifier{
+		Name:   Talent,
+		Source: c.id,
+	})
+
 	return c
 }
