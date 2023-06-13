@@ -40,7 +40,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	engine.AddModifier(owner, info.Modifier{
 		Name:   DartingArrowCheck,
 		Source: owner,
-		State:  0.24 + 0.06*float64(lc.Ascension),
+		State:  0.24 + 0.06*float64(lc.Rank),
 	})
 }
 

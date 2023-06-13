@@ -39,7 +39,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	engine.AddModifier(owner, info.Modifier{
 		Name:   TheMolesWelcomeYou,
 		Source: owner,
-		State:  0.12 + 0.03*float64(lc.Ascension),
+		State:  0.12 + 0.03*float64(lc.Rank),
 	})
 }
 

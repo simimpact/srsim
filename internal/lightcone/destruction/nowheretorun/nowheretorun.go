@@ -33,8 +33,8 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	amtATKPercent := 0.18 + 0.06*float64(lc.Ascension)
-	amtHeal := 0.09 + 0.03*float64(lc.Ascension)
+	amtATKPercent := 0.18 + 0.06*float64(lc.Rank)
+	amtHeal := 0.09 + 0.03*float64(lc.Rank)
 
 	engine.AddModifier(owner, info.Modifier{
 		Name:   NowheretoRun,

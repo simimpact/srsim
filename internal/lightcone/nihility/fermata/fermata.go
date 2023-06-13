@@ -34,7 +34,7 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	amt := 0.16 + 0.04*float64(lc.Ascension)
+	amt := 0.16 + 0.04*float64(lc.Rank)
 
 	engine.AddModifier(owner, info.Modifier{
 		Name:   mod,
