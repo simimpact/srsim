@@ -9,11 +9,11 @@ import (
 )
 
 const (
-	UltDefShred key.Modifier = "pela-ult-def-shred"
+	UltDefDown key.Modifier = "pela-ult-def-down"
 )
 
 func init() {
-	modifier.Register(UltDefShred, modifier.Config{
+	modifier.Register(UltDefDown, modifier.Config{
 		Stacking:      modifier.ReplaceBySource,
 		StatusType:    model.StatusType_STATUS_DEBUFF,
 		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_DEF_DOWN},
@@ -25,7 +25,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 
 	for _, trg := range targets {
 		c.engine.AddModifier(trg, info.Modifier{
-			Name:     UltDefShred,
+			Name:     UltDefDown,
 			Source:   c.id,
 			Chance:   1,
 			Duration: 2,
