@@ -31,10 +31,10 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	engine.AddModifier(owner,info.Modifier{
-		Name: DataBank,
+	engine.AddModifier(owner, info.Modifier{
+		Name:   DataBank,
 		Source: owner,
-		State: 0.21 + float64(lc.Ascension)*0.07,
+		State:  0.21 + float64(lc.Imposition)*0.07,
 	})
 
 }
