@@ -85,11 +85,11 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 		Traces:       traces,
 		AbilityLevel: abilityLevels(char.Talents),
 		LightCone: info.LightCone{
-			Key:       key.LightCone(char.Cone.Key),
-			Level:     lcLvl,
-			Ascension: lcAsc,
-			Rank:      int(char.Cone.Imposition),
-			Path:      lcConfig.Path,
+			Key:        key.LightCone(char.Cone.Key),
+			Level:      lcLvl,
+			Ascension:  lcAsc,
+			Imposition: int(char.Cone.Imposition),
+			Path:       lcConfig.Path,
 		},
 		Relics: relics,
 	}

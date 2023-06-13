@@ -51,12 +51,12 @@ func init() {
 
 //Add crit dmg modifier
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	amt := 0.30 + 0.06*float64(lc.Ascension)
+	amt := 0.30 + 0.06*float64(lc.Imposition)
 	engine.AddModifier(owner, info.Modifier{
 		Name:   BeforeDawn,
 		Source: owner,
 		Stats:  info.PropMap{prop.CritDMG: amt},
-		State:  float64(lc.Ascension),
+		State:  float64(lc.Imposition),
 	})
 
 }
