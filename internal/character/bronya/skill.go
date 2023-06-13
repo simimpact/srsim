@@ -30,6 +30,9 @@ func init() {
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
 
+	// Try E1
+	c.e1()
+
 	// Dispel
 	c.engine.DispelStatus(target, info.Dispel{
 		Status: model.StatusType_STATUS_DEBUFF,
@@ -42,6 +45,13 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		c.engine.SetGauge(target, 0)
 	}
 
+	buffDuration := 1
+
+	// E6 Duration increase
+	if c.info.Eidolon >= 6 {
+		buffDuration = 2
+	}
+
 	// Damage increase
 	c.engine.AddModifier(target, info.Modifier{
 		Name:   Skill,
@@ -49,7 +59,11 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		State: skillState{
 			bonusDamage: skill[c.info.AbilityLevel.Skill-1],
 		},
+		Duration: buffDuration,
 	})
+
+	// Try E2
+	c.e2(target)
 
 	// Add energy
 	c.engine.ModifyEnergy(c.id, 30.0)
