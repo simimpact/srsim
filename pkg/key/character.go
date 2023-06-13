@@ -6,5 +6,6 @@ const (
 	Arlan          Character = "arlan"
 	DanHeng        Character = "danheng"
 	Pela           Character = "pela"
+	SilverWolf     Character = "silverwolf"
 	DummyCharacter Character = "dummy_character"
 )
