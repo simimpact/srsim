@@ -22,7 +22,7 @@ func init() {
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	engine.Events().BattleStart.Subscribe(func(event event.BattleStartEvent) {
 		for char := range event.CharInfo {
-			engine.ModifyEnergy(char, 4.5+1.5*float64(lc.Ascension))
+			engine.ModifyEnergy(char, 4.5+1.5*float64(lc.Imposition))
 		}
 	})
 }

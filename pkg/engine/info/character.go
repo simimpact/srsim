@@ -26,11 +26,11 @@ type AbilityLevel struct {
 }
 
 type LightCone struct {
-	Key       key.LightCone
-	Level     int
-	Ascension int
-	Rank      int
-	Path      model.Path
+	Key        key.LightCone
+	Level      int
+	Ascension  int
+	Imposition int
+	Path       model.Path
 }
 
 type CharInstance interface {
