@@ -41,9 +41,9 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			Name:   Ult,
 			Source: c.id,
 			State: ultState{
-				bonusAtkPerc:     ultAtkPerc[c.info.AbilityLevel.Ult],
-				bonusCDmgDefault: ultCDmgDefault[c.info.AbilityLevel.Ult],
-				bonusCDmgBronya:  ultCDmgBronya[c.info.AbilityLevel.Ult] * c.engine.Stats(c.id).CritDamage(),
+				bonusAtkPerc:     ultAtkPerc[c.info.AbilityLevel.Ult-1],
+				bonusCDmgDefault: ultCDmgDefault[c.info.AbilityLevel.Ult-1],
+				bonusCDmgBronya:  ultCDmgBronya[c.info.AbilityLevel.Ult-1] * c.engine.Stats(c.id).CritDamage(),
 			},
 			TickImmediately: true,
 		})

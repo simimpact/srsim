@@ -47,7 +47,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		Name:   Skill,
 		Source: c.id,
 		State: skillState{
-			bonusDamage: skill[c.info.AbilityLevel.Skill],
+			bonusDamage: skill[c.info.AbilityLevel.Skill-1],
 		},
 	})
 
