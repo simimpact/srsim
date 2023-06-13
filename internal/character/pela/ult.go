@@ -21,9 +21,21 @@ func init() {
 }
 
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
+	targets := c.engine.Enemies()
+
+	for _, trg := range targets {
+		c.engine.AddModifier(trg, info.Modifier{
+			Name:     UltDefShred,
+			Source:   c.id,
+			Chance:   1,
+			Duration: 2,
+			Stats:    info.PropMap{prop.DEFPercent: -ultDefShred[c.info.AbilityLevel.Ult-1]},
+		})
+	}
+
 	c.engine.Attack(info.Attack{
 		Source:     c.id,
-		Targets:    c.engine.Enemies(),
+		Targets:    targets,
 		DamageType: model.DamageType_ICE,
 		AttackType: model.AttackType_ULT,
 		BaseDamage: info.DamageMap{
@@ -31,14 +43,6 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		},
 		StanceDamage: 60.0,
 		EnergyGain:   5,
-	})
-
-	c.engine.AddModifier(c.id, info.Modifier{
-		Name:     UltDefShred,
-		Source:   c.id,
-		Chance:   1,
-		Duration: 2,
-		Stats:    info.PropMap{prop.DEFPercent: -ultDefShred[c.info.AbilityLevel.Ult-1]},
 	})
 
 	state.EndAttack()
