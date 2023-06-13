@@ -13,6 +13,16 @@ const (
 	SkillWeakType key.Modifier = "silverwolf-skill-weak-type"
 )
 
+var damageType_ResProperty = map[model.DamageType]prop.Property{
+	model.DamageType_PHYSICAL:  prop.PhysicalDamageRES,
+	model.DamageType_FIRE:      prop.FireDamageRES,
+	model.DamageType_ICE:       prop.IceDamageRES,
+	model.DamageType_THUNDER:   prop.ThunderDamageRES,
+	model.DamageType_WIND:      prop.WindDamageRES,
+	model.DamageType_QUANTUM:   prop.QuantumDamageRES,
+	model.DamageType_IMAGINARY: prop.ImaginaryDamageRES,
+}
+
 func init() {
 	modifier.Register(SkillResDown, modifier.Config{
 		TickMoment: modifier.ModifierPhase1End,
@@ -40,7 +50,13 @@ func init() {
 				for t := range types {
 					keys = append(keys, t)
 				}
-				mod.AddWeakness(keys[mod.Engine().Rand().Intn(len(keys))])
+				if len(keys) == 0 {
+					mod.RemoveSelf()
+					return
+				}
+				dmgType := keys[mod.Engine().Rand().Intn(len(keys))]
+				mod.AddWeakness(dmgType)
+				mod.SetProperty(damageType_ResProperty[dmgType], -0.2)
 			},
 		},
 	})
