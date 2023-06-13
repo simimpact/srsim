@@ -24,6 +24,5 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 		})
 	}
 
-	// end attack + attempt A4
 	state.EndAttack()
 }
