@@ -19,7 +19,8 @@ const (
 	BeforeDawn LightCone = "before_dawn"
 
 	// Harmony
-	Chorus LightCone = "chorus"
+	Chorus      LightCone = "chorus"
+	MeshingCogs LightCone = "meshing_cogs"
 
 	// Preservation
 	MomentOfVictory LightCone = "moment_of_victory"
