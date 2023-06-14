@@ -12,7 +12,8 @@ import (
 )
 
 const (
-	MutualDemise key.Modifier = "mutual-demise"
+	MutualDemiseCheck key.Modifier = "mutual-demise-check"
+	MutualDemiseBuff  key.Modifier = "mutual-demise-buff"
 )
 
 func init() {
@@ -23,36 +24,37 @@ func init() {
 		Promotions:    promotions,
 	})
 
-	modifier.Register(MutualDemise, modifier.Config{
+	modifier.Register(MutualDemiseCheck, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnHPChange: onHPChange,
-			OnAdd:      onAdd,
+			OnAdd: adjustCritRate,
+			OnHPChange: func(mod *modifier.ModifierInstance, e event.HPChangeEvent) {
+				adjustCritRate(mod)
+			},
 		},
+	})
+
+	modifier.Register(MutualDemiseBuff, modifier.Config{
+		StatusType: model.StatusType_STATUS_BUFF,
 	})
 }
 
-//If the wearer's HP is less than 80%, CRIT Rate increases by 12%/15%/18%/21%/24%
-
-func adjustCritRate(mod *modifier.ModifierInstance) {
-	if mod.Engine().HPRatio(mod.Owner()) < 0.8 {
-		mod.SetProperty(prop.CritChance, mod.State().(float64))
-	} else {
-		mod.SetProperty(prop.CritChance, 0)
-	}
-}
-
+// If the wearer's HP is less than 80%, CRIT Rate increases by 12%/15%/18%/21%/24%
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	engine.AddModifier(owner, info.Modifier{
-		Name:   MutualDemise,
+		Name:   MutualDemiseCheck,
 		Source: owner,
 		State:  0.09 + 0.03*float64(lc.Imposition),
 	})
 }
 
-func onAdd(mod *modifier.ModifierInstance) {
-	adjustCritRate(mod)
-}
-
-func onHPChange(mod *modifier.ModifierInstance, e event.HPChangeEvent) {
-	adjustCritRate(mod)
+func adjustCritRate(mod *modifier.ModifierInstance) {
+	if mod.Engine().HPRatio(mod.Owner()) < 0.8 {
+		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
+			Name:   MutualDemiseBuff,
+			Source: mod.Owner(),
+			Stats:  info.PropMap{prop.CritChance: mod.State().(float64)},
+		})
+	} else {
+		mod.Engine().RemoveModifier(mod.Owner(), MutualDemiseBuff)
+	}
 }
