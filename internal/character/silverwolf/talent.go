@@ -29,7 +29,7 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.ModifierInstance) {
 				char, _ := mod.Engine().CharacterInfo(mod.Source())
-				mod.SetProperty(prop.ATKPercent, -talentATK[char.AbilityLevel.Talent-1])
+				mod.SetProperty(prop.ATKPercent, -talentATK[char.TalentLevelIndex()])
 			},
 		},
 	})
@@ -41,7 +41,7 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.ModifierInstance) {
 				char, _ := mod.Engine().CharacterInfo(mod.Source())
-				mod.SetProperty(prop.DEFPercent, -talentDEF[char.AbilityLevel.Talent-1])
+				mod.SetProperty(prop.DEFPercent, -talentDEF[char.TalentLevelIndex()])
 			},
 		},
 	})
@@ -53,7 +53,7 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.ModifierInstance) {
 				char, _ := mod.Engine().CharacterInfo(mod.Source())
-				mod.SetProperty(prop.SPDPercent, -talentSPD[char.AbilityLevel.Talent-1])
+				mod.SetProperty(prop.SPDPercent, -talentSPD[char.TalentLevelIndex()])
 			},
 		},
 	})
@@ -74,7 +74,7 @@ func newRandomBug(engine engine.Engine, target key.TargetID, source key.TargetID
 	bugs := []key.Modifier{}
 	// get list of bugs not present on target
 	for _, b := range []key.Modifier{BugATK, BugDEF, BugSPD} {
-		if len(engine.GetModifiers(target, b)) == 0 {
+		if !engine.HasModifier(target, b) {
 			bugs = append(bugs, b)
 		}
 	}
@@ -86,7 +86,7 @@ func newRandomBug(engine engine.Engine, target key.TargetID, source key.TargetID
 		Name:     bugs[engine.Rand().Intn(len(bugs))],
 		Source:   source,
 		Duration: duration,
-		Chance:   talentChance[char.AbilityLevel.Talent-1],
+		Chance:   talentChance[char.TalentLevelIndex()],
 	}
 }
 

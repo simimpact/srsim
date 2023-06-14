@@ -49,8 +49,8 @@ func init() {
 				// Queue Heal
 				mod.Engine().InsertAbility(info.Insert{
 					Execute: func() {
-						mod.Engine().SetHP(mod.Owner(),
-							mod.Owner(), mod.OwnerStats().MaxHP()*0.25)
+						mod.Engine().SetHP(
+							mod.Owner(), mod.Owner(), mod.OwnerStats().MaxHP()*0.25)
 					},
 					Source:   mod.Owner(),
 					Priority: info.CharReviveSelf,

@@ -21,7 +21,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		DamageType: model.DamageType_THUNDER,
 		AttackType: model.AttackType_SKILL,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_ATK: skill[c.info.AbilityLevel.Skill],
+			model.DamageFormula_BY_ATK: skill[c.info.SkillLevelIndex()],
 		},
 		StanceDamage: 60.0,
 		EnergyGain:   30.0,

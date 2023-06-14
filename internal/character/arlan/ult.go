@@ -21,7 +21,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			DamageType: model.DamageType_THUNDER,
 			AttackType: model.AttackType_ULT,
 			BaseDamage: info.DamageMap{
-				model.DamageFormula_BY_ATK: ultDMG[c.info.AbilityLevel.Ult],
+				model.DamageFormula_BY_ATK: ultDMG[c.info.UltLevelIndex()],
 			},
 			StanceDamage: 60.0,
 			EnergyGain:   5.0,
@@ -41,7 +41,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			DamageType: model.DamageType_THUNDER,
 			AttackType: model.AttackType_ULT,
 			BaseDamage: info.DamageMap{
-				model.DamageFormula_BY_ATK: additionalMod * ultDMG[c.info.AbilityLevel.Ult],
+				model.DamageFormula_BY_ATK: additionalMod * ultDMG[c.info.UltLevelIndex()],
 			},
 			StanceDamage: 60.0,
 			EnergyGain:   0.0,

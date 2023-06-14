@@ -29,7 +29,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			Source:   c.id,
 			Chance:   1,
 			Duration: 2,
-			Stats:    info.PropMap{prop.DEFPercent: -ultDefShred[c.info.AbilityLevel.Ult-1]},
+			Stats:    info.PropMap{prop.DEFPercent: -ultDefShred[c.info.UltLevelIndex()]},
 		})
 	}
 
@@ -39,7 +39,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		DamageType: model.DamageType_ICE,
 		AttackType: model.AttackType_ULT,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_ATK: ult[c.info.AbilityLevel.Ult-1],
+			model.DamageFormula_BY_ATK: ult[c.info.UltLevelIndex()],
 		},
 		StanceDamage: 60.0,
 		EnergyGain:   5,

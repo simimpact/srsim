@@ -77,7 +77,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	//	If there are 3 or more debuff(s) affecting the enemy when the Skill is
 	//	used, then the Skill decreases the enemy's All-Type RES by an additional
 	//	3%.
-	allDamageDown := -skillResDown[c.info.AbilityLevel.Skill-1]
+	allDamageDown := -skillResDown[c.info.SkillLevelIndex()]
 	if c.info.Traces["1006103"] && c.engine.ModifierCount(target, model.StatusType_STATUS_DEBUFF) >= 3 {
 		allDamageDown -= 0.03
 	}
@@ -100,7 +100,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		Name:     SkillWeakType,
 		Source:   c.id,
 		Duration: duration,
-		Chance:   skillChance[c.info.AbilityLevel.Skill-1],
+		Chance:   skillChance[c.info.SkillLevelIndex()],
 	})
 
 	c.engine.Attack(info.Attack{
@@ -109,7 +109,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		DamageType: model.DamageType_QUANTUM,
 		AttackType: model.AttackType_SKILL,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_ATK: skill[c.info.AbilityLevel.Skill-1],
+			model.DamageFormula_BY_ATK: skill[c.info.SkillLevelIndex()],
 		},
 		StanceDamage: 60.0,
 		EnergyGain:   30.0,

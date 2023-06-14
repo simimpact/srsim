@@ -11,7 +11,7 @@ func (c *char) Technique(target key.TargetID, state info.ActionState) {
 		Source:     c.id,
 		Targets:    c.engine.Enemies(),
 		DamageType: model.DamageType_THUNDER,
-		AttackType: model.AttackType_MAZE_NORMAL,
+		AttackType: model.AttackType_MAZE,
 		BaseDamage: info.DamageMap{
 			model.DamageFormula_BY_ATK: 0.8,
 		},

@@ -20,9 +20,8 @@ func init() {
 				char, _ := mod.Engine().CharacterInfo(mod.Owner())
 				for _, trg := range e.Targets {
 					if mod.Engine().ModifierCount(trg, model.StatusType_STATUS_DEBUFF) >= 1 {
-						mod.Engine().ModifyEnergy(mod.Owner(), talent[char.AbilityLevel.Talent-1])
+						mod.Engine().ModifyEnergy(mod.Owner(), talent[char.TalentLevelIndex()])
 						return
-
 					}
 				}
 			},
