@@ -8,6 +8,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/global"
 	_ "github.com/simimpact/srsim/internal/lightcone/abundance/finefruit"
 	_ "github.com/simimpact/srsim/internal/lightcone/abundance/multiplication"
+	_ "github.com/simimpact/srsim/internal/lightcone/destruction/asecretvow"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/mutualdemise"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/nowheretorun"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/themoleswelcomeyou"
