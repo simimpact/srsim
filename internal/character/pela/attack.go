@@ -16,7 +16,7 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 			DamageType: model.DamageType_ICE,
 			AttackType: model.AttackType_NORMAL,
 			BaseDamage: info.DamageMap{
-				model.DamageFormula_BY_ATK: atk[c.info.AbilityLevel.Attack-1],
+				model.DamageFormula_BY_ATK: atk[c.info.AttackLevelIndex()],
 			},
 			StanceDamage: 30.0,
 			EnergyGain:   20.0,

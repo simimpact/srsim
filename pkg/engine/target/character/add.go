@@ -162,35 +162,24 @@ func abilityLevels(levels []uint32) info.AbilityLevel {
 	for i, level := range levels {
 		switch i {
 		case 0:
-			out.Attack = int(level)
-			if out.Attack < 1 {
-				out.Attack = 1
-			} else if out.Attack > 9 {
-				out.Attack = 9
-			}
+			out.Attack = limitAbilityLevel(int(level), 9)
 		case 1:
-			out.Skill = int(level)
-			if out.Skill < 1 {
-				out.Skill = 1
-			} else if out.Skill > 15 {
-				out.Skill = 15
-			}
+			out.Skill = limitAbilityLevel(int(level), 15)
 		case 2:
-			out.Ult = int(level)
-			if out.Ult < 1 {
-				out.Ult = 1
-			} else if out.Ult > 15 {
-				out.Ult = 15
-			}
+			out.Ult = limitAbilityLevel(int(level), 15)
 		case 3:
-			out.Talent = int(level)
-			if out.Talent < 1 {
-				out.Talent = 1
-			} else if out.Talent > 15 {
-				out.Talent = 15
-			}
+			out.Talent = limitAbilityLevel(int(level), 15)
 		}
 	}
 
 	return out
+}
+
+func limitAbilityLevel(lvl, max int) int {
+	if lvl < 1 {
+		return 1
+	} else if lvl > max {
+		return max
+	}
+	return lvl
 }
