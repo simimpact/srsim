@@ -16,9 +16,9 @@ const (
 	amt string       = "amount"
 )
 
-// Increases the wearer's DEF by 24% and Effect Hit Rate by 24%. Increases the chance for the
-// wearer to be attacked by enemies. When the wearer is attacked, increase their DEF by
-// an extra 24% until the end of the wearer's turn.
+// Increases the wearer's DEF by 24%/28%/32%/36%/40% and Effect Hit Rate by 24%/28%/32%/36%/40%.
+// Increases the chance for the wearer to be attacked by enemies. When the wearer is attacked,
+// increase their DEF by an extra 24%/28%/32%/36%/40% until the end of the wearer's turn
 func init() {
 	lightcone.Register(key.MomentOfVictory, lightcone.Config{
 		CreatePassive: Create,
@@ -41,7 +41,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	engine.AddModifier(owner, info.Modifier{
 		Name:   mod,
 		Source: owner,
-		State:  0.24 + 0.04*float64(lc.Imposition),
+		State:  0.20 + 0.04*float64(lc.Imposition),
 	})
 }
 

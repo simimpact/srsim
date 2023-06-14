@@ -15,8 +15,8 @@ const (
 	mod key.Modifier = "fermata"
 )
 
-// Increases the Break Effect dealt by the wearer by 16%, and increases their DMG to enemies
-// afflicted with Shock or Wind Shear by 16%. This also applies to DoT.
+// Increases the Break Effect dealt by the wearer by 16%/20%/24%/28%/32%, and increases their DMG
+// to enemies afflicted with Shock or Wind Shear by 16%/20%/24%/28%/32%. This also applies to DoT.
 func init() {
 	lightcone.Register(key.Fermata, lightcone.Config{
 		CreatePassive: Create,
@@ -34,7 +34,7 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	amt := 0.16 + 0.04*float64(lc.Imposition)
+	amt := 0.12 + 0.04*float64(lc.Imposition)
 
 	engine.AddModifier(owner, info.Modifier{
 		Name:   mod,
