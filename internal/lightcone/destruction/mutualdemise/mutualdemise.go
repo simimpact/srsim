@@ -23,7 +23,7 @@ func init() {
 		Promotions:    promotions,
 	})
 
-	modifier.Register(key.MutualDemise, modifier.Config{
+	modifier.Register(MutualDemise, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnHPChange: onHPChange,
 			OnAdd:      onAdd,

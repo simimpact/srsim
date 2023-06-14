@@ -25,7 +25,7 @@ func init() {
 		Promotions:    promotions,
 	})
 
-	modifier.Register(key.NowheretoRun, modifier.Config{
+	modifier.Register(NowheretoRun, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnTriggerDeath: onTriggerDeath,
 		},
