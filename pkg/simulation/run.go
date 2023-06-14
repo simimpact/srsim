@@ -88,24 +88,13 @@ func startBattle(s *simulation) (stateFn, error) {
 	s.turn.AddTargets(all...)
 
 	// emit BattleStart event to log the "start state" of everything
-	charStats := make([]*info.Stats, len(s.characters))
-	for i, t := range s.characters {
-		charStats[i] = s.attr.Stats(t)
-	}
-	enemyStats := make([]*info.Stats, len(s.enemies))
-	for i, t := range s.enemies {
-		enemyStats[i] = s.attr.Stats(t)
-	}
-	neutralStats := make([]*info.Stats, len(s.neutrals))
-	for i, t := range s.neutrals {
-		neutralStats[i] = s.attr.Stats(t)
-	}
+	snap := s.createSnapshot()
 	s.event.BattleStart.Emit(event.BattleStartEvent{
 		CharInfo:     s.char.Characters(),
 		EnemyInfo:    s.enemy.Enemies(),
-		CharStats:    charStats,
-		EnemyStats:   enemyStats,
-		NeutralStats: neutralStats,
+		CharStats:    snap.characters,
+		EnemyStats:   snap.enemies,
+		NeutralStats: snap.neutrals,
 	})
 
 	return engage, nil
@@ -190,25 +179,16 @@ func phase2(s *simulation) (stateFn, error) {
 
 // finalize that this is the end of the turn. Mainly just emitting the turn end event
 func endTurn(s *simulation) (stateFn, error) {
-	// TODO: cleanup check (reuse code from death subscription)
+	// check for special case where a target was supposed to be revived but never did (reviver died?)
+	s.deathCheck(s.characters)
+	s.deathCheck(s.enemies)
 
 	// emit TurnEnd event to log the current state of all remaining targets
-	charStats := make([]*info.Stats, len(s.characters))
-	for i, t := range s.characters {
-		charStats[i] = s.attr.Stats(t)
-	}
-	enemyStats := make([]*info.Stats, len(s.enemies))
-	for i, t := range s.enemies {
-		enemyStats[i] = s.attr.Stats(t)
-	}
-	neutralStats := make([]*info.Stats, len(s.neutrals))
-	for i, t := range s.neutrals {
-		neutralStats[i] = s.attr.Stats(t)
-	}
+	snap := s.createSnapshot()
 	s.event.TurnEnd.Emit(event.TurnEndEvent{
-		Characters: charStats,
-		Enemies:    enemyStats,
-		Neutrals:   neutralStats,
+		Characters: snap.characters,
+		Enemies:    snap.enemies,
+		Neutrals:   snap.neutrals,
 	})
 
 	return s.exitCheck(beginTurn)
