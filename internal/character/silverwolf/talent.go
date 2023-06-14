@@ -78,6 +78,10 @@ func newRandomBug(engine engine.Engine, target key.TargetID, source key.TargetID
 			bugs = append(bugs, b)
 		}
 	}
+	// if all bugs on target, application is random
+	if len(bugs) == 0 {
+		bugs = []key.Modifier{BugATK, BugDEF, BugSPD}
+	}
 	duration := 3
 	if char.Traces["1006101"] {
 		duration += 1
