@@ -31,12 +31,7 @@ func init() {
 
 	modifier.Register(E2Buff, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
-		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
-				mod.SetProperty(prop.SPDPercent, 0.3)
-			},
-		},
-		Duration: 1,
+		Duration:   1,
 	})
 
 	modifier.Register(E4Cooldown, modifier.Config{
@@ -70,6 +65,7 @@ func (c *char) e2(target key.TargetID) {
 		c.engine.AddModifier(target, info.Modifier{
 			Name:   E2Hover,
 			Source: c.id,
+			Stats:  info.PropMap{prop.SPDPercent: 0.3},
 		})
 	}
 }
