@@ -12,7 +12,8 @@ const (
 
 // Hunt
 const (
-	DartingArrow LightCone = "darting_arrow"
+	DartingArrow            LightCone = "darting_arrow"
+	CruisingintheStellarSea LightCone = "cruising_in_the_stellar_sea"
 )
 
 // Nihility
