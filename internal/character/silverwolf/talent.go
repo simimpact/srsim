@@ -61,9 +61,10 @@ func init() {
 	modifier.Register(TalentCheck, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAfterAttack: func(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
-				for _, trg := range e.Targets {
-					mod.Engine().AddModifier(trg, newRandomBug(mod.Engine(), trg, e.Attacker))
+				if len(e.Targets) == 0 {
+					return
 				}
+				mod.Engine().AddModifier(e.Targets[0], newRandomBug(mod.Engine(), e.Targets[0], e.Attacker))
 			},
 		},
 	})
