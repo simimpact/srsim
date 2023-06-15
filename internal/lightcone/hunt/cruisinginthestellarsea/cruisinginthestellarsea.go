@@ -12,10 +12,14 @@ import (
 )
 
 const (
-	CruisingintheStellarSeaCR       key.Modifier = "cruising_in_the_stellar_sea_cr"
-	CruisingintheStellarSeaATKCheck key.Modifier = "cruising_in_the_stellar_sea_atk_check"
-	CruisingintheStellarSeaATKBuff  key.Modifier = "cruising_in_the_stellar_sea_atk_buff"
+	CruisingintheStellarSea        key.Modifier = "cruising_in_the_stellar_sea"
+	CruisingintheStellarSeaATKBuff key.Modifier = "cruising_in_the_stellar_sea_atk_buff"
 )
+
+type Amts struct {
+	cr  float64
+	atk float64
+}
 
 // Increases CRIT rate by 8/10/12/14/16%
 // Increases CRIT rate against enemies w/ HP <= 50% by an extra 8/10/12/14/16%
@@ -28,14 +32,9 @@ func init() {
 		Promotions:    promotions,
 	})
 
-	modifier.Register(CruisingintheStellarSeaCR, modifier.Config{
+	modifier.Register(CruisingintheStellarSea, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: onBeforeHitAll,
-		},
-	})
-
-	modifier.Register(CruisingintheStellarSeaATKCheck, modifier.Config{
-		Listeners: modifier.Listeners{
 			OnTriggerDeath: onTriggerDeath,
 		},
 	})
@@ -51,27 +50,21 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	atk_amt := 0.15 + 0.05*float64(lc.Imposition)
 
 	engine.AddModifier(owner, info.Modifier{
-		Name:   CruisingintheStellarSeaCR,
+		Name:   CruisingintheStellarSea,
 		Source: owner,
 		Stats:  info.PropMap{prop.CritChance: cr_amt},
-		State:  cr_amt,
-	})
-
-	engine.AddModifier(owner, info.Modifier{
-		Name:   CruisingintheStellarSeaATKCheck,
-		Source: owner,
-		State:  atk_amt,
+		State:  Amts{cr: cr_amt, atk: atk_amt},
 	})
 }
 
 func onBeforeHitAll(mod *modifier.ModifierInstance, e event.HitStartEvent) {
 	if e.Hit.Defender.CurrentHPRatio() <= 0.5 {
-		e.Hit.Attacker.AddProperty(prop.CritChance, mod.State().(float64))
+		e.Hit.Attacker.AddProperty(prop.CritChance, mod.State().(Amts).cr)
 	}
 }
 
 func onTriggerDeath(mod *modifier.ModifierInstance, target key.TargetID) {
-	amt := mod.State().(float64)
+	amt := mod.State().(Amts).atk
 
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 		Name:     CruisingintheStellarSeaATKBuff,
