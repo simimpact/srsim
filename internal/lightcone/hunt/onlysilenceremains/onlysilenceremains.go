@@ -26,16 +26,8 @@ func init() {
 		Promotions:    promotions,
 	})
 
-	modifier.Register(OnlySilenceRemains, modifier.Config{
-		Listeners: modifier.Listeners{
-			OnTriggerDeath: onTriggerDeath,
-		},
-	})
-
-	modifier.Register(OnlySilenceRemainsCRBuff, modifier.Config{
-		Stacking:   modifier.ReplaceBySource,
-		StatusType: model.StatusType_STATUS_BUFF,
-	})
+	modifier.Register(OnlySilenceRemains, modifier.Config{})
+	modifier.Register(OnlySilenceRemainsCRBuff, modifier.Config{})
 }
 
 // Note: does not properly handle enemies running away (such as trotters)
@@ -47,16 +39,15 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		updateCRBuff(engine, owner, cr_amt)
 	})
 
+	engine.Events().TargetDeath.Subscribe(func(e event.TargetDeathEvent) {
+		updateCRBuff(engine, owner, cr_amt)
+	})
+
 	engine.AddModifier(owner, info.Modifier{
 		Name:   OnlySilenceRemains,
 		Source: owner,
 		Stats:  info.PropMap{prop.ATKPercent: atk_amt},
-		State:  cr_amt,
 	})
-}
-
-func onTriggerDeath(mod *modifier.ModifierInstance, target key.TargetID) {
-	updateCRBuff(mod.Engine(), mod.Owner(), mod.State().(float64))
 }
 
 func updateCRBuff(engine engine.Engine, owner key.TargetID, amt float64) {
