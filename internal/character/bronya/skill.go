@@ -12,19 +12,9 @@ const (
 	Skill key.Modifier = "bronya-skill"
 )
 
-type skillState struct {
-	bonusDamage float64
-}
-
 func init() {
 	modifier.Register(Skill, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
-		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
-				mod.SetProperty(prop.AllDamagePercent, mod.State().(skillState).bonusDamage)
-			},
-		},
-		Duration: 1,
 	})
 }
 
@@ -54,11 +44,9 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 
 	// Damage increase
 	c.engine.AddModifier(target, info.Modifier{
-		Name:   Skill,
-		Source: c.id,
-		State: skillState{
-			bonusDamage: skill[c.info.AbilityLevel.Skill-1],
-		},
+		Name:     Skill,
+		Source:   c.id,
+		Stats:    info.PropMap{prop.AllDamagePercent: skill[c.info.AbilityLevel.Skill-1]},
 		Duration: buffDuration,
 	})
 
