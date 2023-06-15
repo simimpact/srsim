@@ -4,6 +4,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -11,10 +12,6 @@ import (
 const (
 	Talent key.Modifier = "qingque-talent"
 )
-
-type talentState struct {
-	hiddenHandAtkBoost float64
-}
 
 func init() {
 	modifier.Register(Talent, modifier.Config{
@@ -31,9 +28,7 @@ func (c *char) talentTurnStartListener(e event.TurnStartEvent) {
 			c.engine.AddModifier(c.id, info.Modifier{
 				Name:   Talent,
 				Source: c.id,
-				State: talentState{
-					hiddenHandAtkBoost: talent[c.info.AbilityLevel.Talent],
-				},
+				Stats:  info.PropMap{prop.ATKPercent: talent[c.info.TalentLevelIndex()]},
 			})
 		}
 	}
