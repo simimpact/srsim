@@ -1,11 +1,11 @@
 package bronya
 
 import (
-	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
@@ -14,6 +14,7 @@ const (
 
 func init() {
 	modifier.Register(Technique, modifier.Config{
+		StatusType: model.StatusType_STATUS_BUFF,
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.ModifierInstance) {
 				mod.SetProperty(prop.ATKPercent, 0.15)
@@ -32,11 +33,4 @@ func (c *char) Technique(target key.TargetID, state info.ActionState) {
 			Source: c.id,
 		})
 	}
-
-	c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAddedEvent) {
-		c.engine.AddModifier(e.Id, info.Modifier{
-			Name:   Technique,
-			Source: c.id,
-		})
-	})
 }
