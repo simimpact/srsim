@@ -38,6 +38,11 @@ func init() {
 		},
 		Duration: 1,
 	})
+
+	modifier.Register(E4Cooldown, modifier.Config{
+		TickMoment: modifier.ModifierPhase1End,
+		Duration:   1,
+	})
 }
 
 func (c *char) e1() {
@@ -113,8 +118,7 @@ func (c *char) e4Listener(e event.AttackEndEvent) {
 
 	// Set on CD
 	c.engine.AddModifier(c.id, info.Modifier{
-		Name:     E4Cooldown,
-		Source:   c.id,
-		Duration: 1,
+		Name:   E4Cooldown,
+		Source: c.id,
 	})
 }
