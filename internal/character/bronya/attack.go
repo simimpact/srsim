@@ -13,7 +13,7 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 		DamageType: model.DamageType_WIND,
 		AttackType: model.AttackType_NORMAL,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_ATK: atk[c.info.AbilityLevel.Attack-1],
+			model.DamageFormula_BY_ATK: atk[c.info.AttackLevelIndex()],
 		},
 		StanceDamage: 30.0,
 		EnergyGain:   20.0,
@@ -22,5 +22,5 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 	state.EndAttack()
 
 	// Talent
-	c.engine.ModifyCurrentGaugeCost(-talent[c.info.AbilityLevel.Talent-1])
+	c.engine.ModifyCurrentGaugeCost(-talent[c.info.TalentLevelIndex()])
 }

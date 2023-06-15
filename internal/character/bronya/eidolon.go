@@ -108,7 +108,7 @@ func (c *char) e4Listener(e event.AttackEndEvent) {
 				DamageType: model.DamageType_WIND,
 				AttackType: model.AttackType_INSERT,
 				BaseDamage: info.DamageMap{
-					model.DamageFormula_BY_ATK: atk[c.info.AbilityLevel.Attack-1] * 0.8,
+					model.DamageFormula_BY_ATK: atk[c.info.AttackLevelIndex()] * 0.8,
 				},
 				StanceDamage: 30.0,
 				EnergyGain:   5.0,

@@ -28,9 +28,9 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		c.engine.AddModifier(trg, info.Modifier{
 			Name:   Ult,
 			Source: c.id,
-			Stats: info.PropMap{prop.ATKPercent: ultAtkPerc[c.info.AbilityLevel.Ult-1],
-				prop.CritDMG: ultCDmgDefault[c.info.AbilityLevel.Ult-1] +
-					ultCDmgBronya[c.info.AbilityLevel.Ult-1]*bronyaCDmg},
+			Stats: info.PropMap{prop.ATKPercent: ultAtkPerc[c.info.UltLevelIndex()],
+				prop.CritDMG: ultCDmgDefault[c.info.UltLevelIndex()] +
+					ultCDmgBronya[c.info.UltLevelIndex()]*bronyaCDmg},
 			TickImmediately: true,
 		})
 	}

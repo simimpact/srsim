@@ -46,7 +46,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	c.engine.AddModifier(target, info.Modifier{
 		Name:     Skill,
 		Source:   c.id,
-		Stats:    info.PropMap{prop.AllDamagePercent: skill[c.info.AbilityLevel.Skill-1]},
+		Stats:    info.PropMap{prop.AllDamagePercent: skill[c.info.SkillLevelIndex()]},
 		Duration: buffDuration,
 	})
 
