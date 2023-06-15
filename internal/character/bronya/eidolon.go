@@ -71,10 +71,7 @@ func (c *char) e2(target key.TargetID) {
 
 func (c *char) e4Listener(e event.AttackEndEvent) {
 
-	// has to be E4+
-	if c.info.Eidolon < 4 {
-		return
-	}
+	// Assumed to be E4+ from subscription
 
 	// has to be Ally Attacker
 	if !c.engine.IsCharacter(e.Attacker) {

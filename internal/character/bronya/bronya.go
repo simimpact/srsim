@@ -52,7 +52,9 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 
 	c.initTraces()
 
-	engine.Events().AttackEnd.Subscribe(c.e4Listener)
+	if c.info.Eidolon >= 4 {
+		engine.Events().AttackEnd.Subscribe(c.e4Listener)
+	}
 
 	return c
 }
