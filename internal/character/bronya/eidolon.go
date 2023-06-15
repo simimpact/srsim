@@ -104,16 +104,23 @@ func (c *char) e4Listener(e event.AttackEndEvent) {
 	target := toPickFrom[c.engine.Rand().Intn(len(toPickFrom))]
 
 	// Follow-up Attack
-	c.engine.Attack(info.Attack{
-		Source:     c.id,
-		Targets:    []key.TargetID{target},
-		DamageType: model.DamageType_WIND,
-		AttackType: model.AttackType_PURSUED,
-		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_ATK: atk[c.info.AbilityLevel.Attack-1] * 0.8,
+	c.engine.InsertAbility(info.Insert{
+		Execute: func() {
+			c.engine.Attack(info.Attack{
+				Source:     c.id,
+				Targets:    []key.TargetID{target},
+				DamageType: model.DamageType_WIND,
+				AttackType: model.AttackType_INSERT,
+				BaseDamage: info.DamageMap{
+					model.DamageFormula_BY_ATK: atk[c.info.AbilityLevel.Attack-1] * 0.8,
+				},
+				StanceDamage: 30.0,
+				EnergyGain:   5.0,
+			})
 		},
-		StanceDamage: 30.0,
-		EnergyGain:   0.0, // TODO
+		Source:     c.id,
+		Priority:   info.CharInsertAttackOthers,
+		AbortFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL, model.BehaviorFlag_DISABLE_ACTION},
 	})
 
 	// Set on CD
