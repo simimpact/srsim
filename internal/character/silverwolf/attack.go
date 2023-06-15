@@ -1,4 +1,4 @@
-package pela
+package silverwolf
 
 import (
 	"github.com/simimpact/srsim/pkg/engine/info"
@@ -6,14 +6,14 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-var attackHits = []float64{0.5, 0.5}
+var attackHits = []float64{0.25, 0.25, 0.5}
 
 func (c *char) Attack(target key.TargetID, state info.ActionState) {
 	for _, hitRatio := range attackHits {
 		c.engine.Attack(info.Attack{
 			Source:     c.id,
 			Targets:    []key.TargetID{target},
-			DamageType: model.DamageType_ICE,
+			DamageType: model.DamageType_QUANTUM,
 			AttackType: model.AttackType_NORMAL,
 			BaseDamage: info.DamageMap{
 				model.DamageFormula_BY_ATK: atk[c.info.AttackLevelIndex()],

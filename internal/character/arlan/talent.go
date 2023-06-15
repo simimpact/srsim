@@ -43,7 +43,7 @@ func (c *char) addTalentMod() {
 		Name:   Talent,
 		Source: c.id,
 		State: talentState{
-			maxBonusDamage: talent[c.info.AbilityLevel.Talent],
+			maxBonusDamage: talent[c.info.TalentLevelIndex()],
 		},
 	})
 }

@@ -15,9 +15,9 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	}
 
 	// base DMG% + added DMG% if enemy has a speed down modifier
-	dmg := ultWindDMG[c.info.AbilityLevel.Ult]
+	dmg := ultWindDMG[c.info.UltLevelIndex()]
 	if c.engine.HasBehaviorFlag(target, model.BehaviorFlag_STAT_SPEED_DOWN) {
-		dmg += ultSlowDMG[c.info.AbilityLevel.Ult]
+		dmg += ultSlowDMG[c.info.UltLevelIndex()]
 	}
 
 	c.engine.Attack(info.Attack{

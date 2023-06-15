@@ -2,28 +2,45 @@ package key
 
 type LightCone string
 
+// Destruction
 const (
-	// Destruction
 	TheMolesWelcomeYou LightCone = "the_moles_welcome_you"
-	NowheretoRun                 = "nowhere_to_run"
-	MutualDemise                 = "mutual_demise"
-	// Hunt
-	DartingArrow LightCone = "darting_arrow"
+	NowheretoRun       LightCone = "nowhere_to_run"
+	MutualDemise       LightCone = "mutual_demise"
+	ASecretVow         LightCone = "a_secret_vow"
+)
 
-	// Nihility
+// Hunt
+const (
+	DartingArrow            LightCone = "darting_arrow"
+	CruisingintheStellarSea LightCone = "cruising_in_the_stellar_sea"
+)
+
+// Nihility
+const (
 	Fermata LightCone = "fermata"
+)
 
-	// Erudition
-	Passkey  LightCone = "passkey"
-	DataBank LightCone = "data_bank"
+// Erudition
+const (
+	Passkey    LightCone = "passkey"
+	DataBank   LightCone = "data_bank"
 	BeforeDawn LightCone = "before_dawn"
+)
 
-	// Harmony
-	Chorus LightCone = "chorus"
+// Harmony
+const (
+	Chorus      LightCone = "chorus"
+	MeshingCogs LightCone = "meshing_cogs"
+)
 
-	// Preservation
+// Preservation
+const (
 	MomentOfVictory LightCone = "moment_of_victory"
+)
 
-	// Abundance
-	FineFruit LightCone = "fine_fruit"
+// Abundance
+const (
+	FineFruit      LightCone = "fine_fruit"
+	Multiplication LightCone = "multiplication"
 )

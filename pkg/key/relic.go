@@ -2,7 +2,12 @@ package key
 
 type Relic string
 
+// Cavern
 const (
 	MusketeerOfWildWheat Relic = "musketeer_of_wild_wheat"
-	SpaceSealingStation  Relic = "space_sealing_station"
+)
+
+// Planar
+const (
+	SpaceSealingStation Relic = "space_sealing_station"
 )

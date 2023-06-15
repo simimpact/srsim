@@ -25,7 +25,7 @@ func init() {
 		Promotions:    promotions,
 	})
 
-	modifier.Register(key.NowheretoRun, modifier.Config{
+	modifier.Register(NowheretoRun, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnTriggerDeath: onTriggerDeath,
 		},
@@ -33,8 +33,8 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	amtATKPercent := 0.18 + 0.06*float64(lc.Ascension)
-	amtHeal := 0.09 + 0.03*float64(lc.Ascension)
+	amtATKPercent := 0.18 + 0.06*float64(lc.Imposition)
+	amtHeal := 0.09 + 0.03*float64(lc.Imposition)
 
 	engine.AddModifier(owner, info.Modifier{
 		Name:   NowheretoRun,

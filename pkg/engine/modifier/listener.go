@@ -42,6 +42,9 @@ type Listeners struct {
 	// prevent the TargetDeathEvent from occuring. Used by revives.
 	OnLimboWaitHeal func(mod *ModifierInstance) bool
 
+	// Called when the attached target has taken fatal damage and no revive will occur.
+	OnBeforeDying func(mod *ModifierInstance)
+
 	// Called when the attached target kills another target. The given target ID is the target that
 	// has been killed.
 	OnTriggerDeath func(mod *ModifierInstance, target key.TargetID)
@@ -410,6 +413,13 @@ func (mgr *Manager) limboWaitHeal(e event.LimboWaitHealEvent) bool {
 }
 
 func (mgr *Manager) targetDeath(e event.TargetDeathEvent) {
+	for _, mod := range mgr.targets[e.Target] {
+		f := mod.listeners.OnBeforeDying
+		if f != nil {
+			f(mod)
+		}
+	}
+
 	for _, mod := range mgr.targets[e.Killer] {
 		f := mod.listeners.OnTriggerDeath
 		if f != nil {

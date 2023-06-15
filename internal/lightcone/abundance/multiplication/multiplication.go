@@ -1,4 +1,4 @@
-package databank
+package multiplication
 
 import (
 	"github.com/simimpact/srsim/pkg/engine"
@@ -6,41 +6,37 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
-	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-const (
-	DataBank key.Modifier = "data_bank"
-)
+const Multiplication = "multiplication"
 
 func init() {
-	lightcone.Register(key.DataBank, lightcone.Config{
+	lightcone.Register(key.Multiplication, lightcone.Config{
 		CreatePassive: Create,
 		Rarity:        3,
-		Path:          model.Path_ERUDITION,
+		Path:          model.Path_ABUNDANCE,
 		Promotions:    promotions,
 	})
 
-	modifier.Register(DataBank, modifier.Config{
+	modifier.Register(Multiplication, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHit: onBeforeHit,
+			OnBeforeAction: func(mod *modifier.ModifierInstance, e event.ActionEvent) {
+				imposition := mod.State().(int)
+				if e.AttackType == model.AttackType_NORMAL {
+					mod.Engine().ModifyCurrentGaugeCost(-0.1 - float64(imposition)*0.02)
+				}
+			},
 		},
 	})
+
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	engine.AddModifier(owner, info.Modifier{
-		Name:   DataBank,
+		Name:   Multiplication,
 		Source: owner,
-		State:  0.21 + float64(lc.Imposition)*0.07,
+		State:  lc.Imposition,
 	})
-
-}
-
-func onBeforeHit(mod *modifier.ModifierInstance, e event.HitStartEvent) {
-	if e.Hit.AttackType == model.AttackType_ULT {
-		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, mod.State().(float64))
-	}
 }

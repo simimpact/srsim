@@ -15,7 +15,7 @@ const (
 	DartingArrowBuff  key.Modifier = "darting-arrow-buff"
 )
 
-// When the wearer defeats an enemy, increases ATK by 24% for 3 turn(s).
+// When the wearer defeats an enemy, increases ATK by 24%/30%/36%/42%/48% for 3 turn(s).
 func init() {
 	lightcone.Register(key.DartingArrow, lightcone.Config{
 		CreatePassive: Create,
@@ -40,7 +40,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	engine.AddModifier(owner, info.Modifier{
 		Name:   DartingArrowCheck,
 		Source: owner,
-		State:  0.24 + 0.06*float64(lc.Ascension),
+		State:  0.18 + 0.06*float64(lc.Imposition),
 	})
 }
 

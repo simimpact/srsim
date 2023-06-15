@@ -17,33 +17,26 @@ import (
 //	Basic ATK deals 40% more DMG to Slowed enemies.
 
 const (
-	A2 key.Modifier = "dan-heng-a2"
-	A4 key.Modifier = "dan-heng-a4"
-	A6 key.Modifier = "dan-heng-a6"
+	A2Check key.Modifier = "dan-heng-a2-check"
+	A2Buff  key.Modifier = "dan-heng-a2-buff"
+	A4      key.Modifier = "dan-heng-a4"
+	A6      key.Modifier = "dan-heng-a6"
 )
 
 func init() {
-	modifier.Register(A2, modifier.Config{
-		TickMoment: modifier.ModifierPhase1End,
-		Stacking:   modifier.ReplaceBySource,
-		StatusType: model.StatusType_STATUS_BUFF,
+	// checks if we need to add/remove the A2 buff
+	modifier.Register(A2Check, modifier.Config{
 		Listeners: modifier.Listeners{
-			// set aggro down if starting at less than 50% HP
-			OnAdd: func(mod *modifier.ModifierInstance) {
-				if mod.Engine().HPRatio(mod.Owner()) <= 0.5 {
-					mod.SetProperty(prop.AggroPercent, -0.5)
-				}
-			},
-
-			// update aggro down based on new HP
+			OnAdd: a2HPCheck,
 			OnHPChange: func(mod *modifier.ModifierInstance, e event.HPChangeEvent) {
-				if e.NewHPRatio <= 0.5 {
-					mod.SetProperty(prop.AggroPercent, -0.5)
-				} else {
-					mod.SetProperty(prop.AggroPercent, 0)
-				}
+				a2HPCheck(mod)
 			},
 		},
+	})
+
+	// A2 aggro down buff
+	modifier.Register(A2Buff, modifier.Config{
+		StatusType: model.StatusType_STATUS_BUFF,
 	})
 
 	// A4 metadata
@@ -74,7 +67,7 @@ func init() {
 func (c *char) initTraces() {
 	if c.info.Traces["1002101"] {
 		c.engine.AddModifier(c.id, info.Modifier{
-			Name:   A2,
+			Name:   A2Check,
 			Source: c.id,
 		})
 	}
@@ -84,6 +77,18 @@ func (c *char) initTraces() {
 			Name:   A6,
 			Source: c.id,
 		})
+	}
+}
+
+func a2HPCheck(mod *modifier.ModifierInstance) {
+	if mod.Engine().HPRatio(mod.Owner()) <= 0.5 {
+		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
+			Name:   A2Buff,
+			Source: mod.Owner(),
+			Stats:  info.PropMap{prop.AggroPercent: -0.5},
+		})
+	} else {
+		mod.Engine().RemoveModifier(mod.Owner(), A2Buff)
 	}
 }
 

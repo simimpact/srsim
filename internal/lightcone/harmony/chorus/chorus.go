@@ -15,6 +15,8 @@ const (
 	Chorus key.Modifier = "chorus"
 )
 
+// After entering battle, increases the ATK of all allies by 8%/9%/10%/11%/12%.
+// Effects of the same type cannot stack.
 func init() {
 	lightcone.Register(key.Chorus, lightcone.Config{
 		CreatePassive: Create,
@@ -32,7 +34,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	mod := info.Modifier{
 		Name:   Chorus,
 		Source: owner,
-		Stats:  info.PropMap{prop.ATKPercent: 0.08 + 0.01*float64(lc.Ascension)},
+		Stats:  info.PropMap{prop.ATKPercent: 0.07 + 0.01*float64(lc.Imposition)},
 	}
 
 	engine.Events().BattleStart.Subscribe(func(event event.BattleStartEvent) {

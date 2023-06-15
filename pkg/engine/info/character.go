@@ -26,11 +26,11 @@ type AbilityLevel struct {
 }
 
 type LightCone struct {
-	Key       key.LightCone
-	Level     int
-	Ascension int
-	Rank      int
-	Path      model.Path
+	Key        key.LightCone
+	Level      int
+	Ascension  int
+	Imposition int
+	Path       model.Path
 }
 
 type CharInstance interface {
@@ -63,4 +63,24 @@ type ActionState interface {
 	// Will end the current active attack. When this happens is different for each skill implementation
 	// so it is important that it is correctly called at the right time.
 	EndAttack()
+}
+
+// gets the current attack level in base-0. Useful for indexing by level in implementation
+func (i Character) AttackLevelIndex() int {
+	return i.AbilityLevel.Attack - 1
+}
+
+// gets the current skill level in base-0. Useful for indexing by level in implementation
+func (i Character) SkillLevelIndex() int {
+	return i.AbilityLevel.Skill - 1
+}
+
+// gets the current ult level in base-0. Useful for indexing by level in implementation
+func (i Character) UltLevelIndex() int {
+	return i.AbilityLevel.Ult - 1
+}
+
+// gets the current talent level in base-0. Useful for indexing by level in implementation
+func (i Character) TalentLevelIndex() int {
+	return i.AbilityLevel.Talent - 1
 }
