@@ -23,14 +23,15 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	targets := c.engine.Characters()
 
 	bronyaCDmg := c.engine.Stats(c.id).CritDamage()
+	critBuff := ultCDmgDefault[c.info.UltLevelIndex()] +
+		ultCDmgBronya[c.info.UltLevelIndex()]*bronyaCDmg
 
 	for _, trg := range targets {
 		c.engine.AddModifier(trg, info.Modifier{
 			Name:   Ult,
 			Source: c.id,
 			Stats: info.PropMap{prop.ATKPercent: ultAtkPerc[c.info.UltLevelIndex()],
-				prop.CritDMG: ultCDmgDefault[c.info.UltLevelIndex()] +
-					ultCDmgBronya[c.info.UltLevelIndex()]*bronyaCDmg},
+				prop.CritDMG: critBuff},
 			TickImmediately: true,
 		})
 	}
