@@ -1,4 +1,4 @@
-package pela
+package silverwolf
 
 import (
 	"github.com/simimpact/srsim/pkg/engine/info"
@@ -9,41 +9,42 @@ import (
 )
 
 const (
-	UltDefDown key.Modifier = "pela-ult-def-down"
+	UltDefDown key.Modifier = "silverwolf-ult-def-down"
 )
 
 func init() {
 	modifier.Register(UltDefDown, modifier.Config{
+		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_DEF_DOWN},
 		Stacking:      modifier.ReplaceBySource,
 		StatusType:    model.StatusType_STATUS_DEBUFF,
-		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_DEF_DOWN},
+		TickMoment:    modifier.ModifierPhase1End,
 	})
 }
 
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
-	targets := c.engine.Enemies()
-
-	for _, trg := range targets {
-		c.engine.AddModifier(trg, info.Modifier{
-			Name:     UltDefDown,
-			Source:   c.id,
-			Chance:   1,
-			Duration: 2,
-			Stats:    info.PropMap{prop.DEFPercent: -ultDefShred[c.info.UltLevelIndex()]},
-		})
-	}
+	c.engine.AddModifier(target, info.Modifier{
+		Name:            UltDefDown,
+		Source:          c.id,
+		Duration:        3,
+		Chance:          ultChance[c.info.UltLevelIndex()],
+		Stats:           info.PropMap{prop.DEFPercent: -ultDefDown[c.info.UltLevelIndex()]},
+		TickImmediately: true,
+	})
 
 	c.engine.Attack(info.Attack{
 		Source:     c.id,
-		Targets:    targets,
-		DamageType: model.DamageType_ICE,
+		Targets:    []key.TargetID{target},
+		DamageType: model.DamageType_QUANTUM,
 		AttackType: model.AttackType_ULT,
 		BaseDamage: info.DamageMap{
 			model.DamageFormula_BY_ATK: ult[c.info.UltLevelIndex()],
 		},
-		StanceDamage: 60.0,
-		EnergyGain:   5,
+		StanceDamage: 90.0,
+		EnergyGain:   5.0,
 	})
 
 	state.EndAttack()
+
+	c.e4(target)
+	c.e1(target)
 }

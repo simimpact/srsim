@@ -60,7 +60,7 @@ func (c *char) talentActionEndListener(e event.ActionEvent) {
 		Name:   Talent,
 		Source: e.Owner,
 		State: talentState{
-			penAmt: talent[c.info.AbilityLevel.Talent],
+			penAmt: talent[c.info.TalentLevelIndex()],
 			cd:     cd,
 		},
 	})
@@ -88,5 +88,5 @@ func talentAfterAction(mod *modifier.ModifierInstance, e event.ActionEvent) {
 		TickImmediately: e.AttackType == model.AttackType_ULT,
 	})
 
-	mod.Engine().RemoveModifier(mod.Owner(), Talent)
+	mod.RemoveSelf()
 }
