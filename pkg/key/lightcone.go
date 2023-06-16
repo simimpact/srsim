@@ -14,7 +14,8 @@ const (
 const (
 	DartingArrow            LightCone = "darting_arrow"
 	CruisingintheStellarSea LightCone = "cruising_in_the_stellar_sea"
-	Arrows                  LightCone = "Arrows"
+	Arrows                  LightCone = "arrows"
+	Adversarial             LightCone = "adversarial"
 )
 
 // Nihility

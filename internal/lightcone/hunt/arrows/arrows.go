@@ -24,7 +24,9 @@ func init() {
 		Promotions:    promotions,
 	})
 
-	modifier.Register(Arrows, modifier.Config{})
+	modifier.Register(Arrows, modifier.Config{
+		StatusType: model.StatusType_STATUS_BUFF,
+	})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
