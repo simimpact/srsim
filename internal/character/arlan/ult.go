@@ -31,7 +31,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		// Adjacent Targets
 		additionalMod := 0.5
 
-		if c.info.Eidolon >= 6 {
+		if c.info.Eidolon >= 6 && c.engine.HPRatio(c.id) <= 0.5 {
 			additionalMod = 1
 		}
 
