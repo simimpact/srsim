@@ -32,8 +32,6 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 							model.DamageFormula_BY_ATK: atk[c.info.AttackLevelIndex()],
 						},
 						StanceDamage: 30.0,
-						// Energy gain might change
-						EnergyGain: 20.0,
 					})
 				},
 				Source:     c.id,
@@ -79,8 +77,6 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 							model.DamageFormula_BY_ATK: 2.4 * atk[c.info.AttackLevelIndex()],
 						},
 						StanceDamage: 60.0,
-						// Energy gain might change
-						EnergyGain: 20.0,
 					})
 					c.engine.Attack(info.Attack{
 						Source:     c.id,
