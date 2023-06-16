@@ -108,4 +108,5 @@ func (c *char) discardTile() {
 	} else {
 		// This should really never happen
 	}
+	c.e2()
 }

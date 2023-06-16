@@ -19,12 +19,19 @@ func init() {
 		Traces:     traces,
 		SkillInfo: character.SkillInfo{
 			Attack: character.Attack{
-				SPAdd:      1,
+				SPAdd:      0,
 				TargetType: model.TargetType_ENEMIES,
 			},
 			Skill: character.Skill{
 				SPNeed:     1,
 				TargetType: model.TargetType_SELF,
+				CanUse: func(engine engine.Engine, instance info.CharInstance) bool {
+					c := instance.(*char)
+					if c.tiles[0] == 4 {
+						return false
+					}
+					return true
+				},
 			},
 			Ult: character.Ult{
 				TargetType: model.TargetType_ENEMIES,
