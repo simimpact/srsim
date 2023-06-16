@@ -2,6 +2,7 @@ package simulation
 
 import (
 	_ "github.com/simimpact/srsim/internal/character/arlan"
+	_ "github.com/simimpact/srsim/internal/character/bronya"
 	_ "github.com/simimpact/srsim/internal/character/danheng"
 	_ "github.com/simimpact/srsim/internal/character/pela"
 	_ "github.com/simimpact/srsim/internal/character/qingque"
@@ -18,8 +19,11 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/erudition/passkey"
 	_ "github.com/simimpact/srsim/internal/lightcone/harmony/chorus"
 	_ "github.com/simimpact/srsim/internal/lightcone/harmony/meshingcogs"
+	_ "github.com/simimpact/srsim/internal/lightcone/hunt/adversarial"
+	_ "github.com/simimpact/srsim/internal/lightcone/hunt/arrows"
 	_ "github.com/simimpact/srsim/internal/lightcone/hunt/cruisinginthestellarsea"
 	_ "github.com/simimpact/srsim/internal/lightcone/hunt/dartingarrow"
+	_ "github.com/simimpact/srsim/internal/lightcone/hunt/onlysilenceremains"
 	_ "github.com/simimpact/srsim/internal/lightcone/nihility/fermata"
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/momentofvictory"
 	_ "github.com/simimpact/srsim/internal/relic/cavern/musketeer"
