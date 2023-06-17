@@ -12,6 +12,7 @@ import (
 )
 
 const (
+	CornucopiaCheck key.Modifier = "cornucopia-check"
 	CornucopiaBuff  key.Modifier = "cornucopia-buff"
 )
 
@@ -22,26 +23,29 @@ func init() {
 		Path:          model.Path_ABUNDANCE,
 		Promotions:    promotions,
 	})
-	
-	modifier.Register(CornucopiaBuff, modifier.Config{
+	//Implement checker here
+	modifier.Register(CornucopiaCheck, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeAction: buffHealsOnSkillUlt,
 			OnAfterAction: removeHealBuff,
 		},
-		Stacking: modifier.Unique,
 	})
-
+	//The actual buff modifier goes here
+	modifier.Register(CornucopiaBuff, modifier.Config{
+		StatusType: model.StatusType_STATUS_BUFF,
+	})
 }
 
-//When the wearer uses their Skill or Ultimate, their Outgoing Healing increases by 12%.
+//When the wearer uses their Skill or Ultimate, their Outgoing Healing increases by 12%(S1)
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	engine.AddModifier(owner, info.Modifier{
-		Name:   CornucopiaBuff,
+	//checker goes here
+	engine.AddModifier(owner, info.Modifier{ 
+		Name:   CornucopiaCheck,
 		Source: owner,
 		State:  0.09 + 0.03 * float64(lc.Imposition),
 	})
 }
-
+//add buff only on skill and ult actions
 func buffHealsOnSkillUlt(mod *modifier.ModifierInstance, e event.ActionEvent) {
 	healAmt := mod.State().(float64)
 	switch e.AttackType {
@@ -49,12 +53,11 @@ func buffHealsOnSkillUlt(mod *modifier.ModifierInstance, e event.ActionEvent) {
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 			Name:     CornucopiaBuff,
 			Source:   mod.Owner(),
-			Duration: -100,
 			Stats:    info.PropMap{prop.HealBoost: healAmt},
 		})
 	}
 }
-//is it neccessary to remove a permanent buff after each turn?
+//remove buff after each "action"
 func removeHealBuff(mod *modifier.ModifierInstance, e event.ActionEvent)  {
-	mod.Engine().RemoveModifier(mod.Owner(), mod.Name())
+	mod.Engine().RemoveModifier(mod.Owner(), CornucopiaBuff)
 }
