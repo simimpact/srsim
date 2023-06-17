@@ -47,4 +47,5 @@ const (
 const (
 	FineFruit      LightCone = "fine_fruit"
 	Multiplication LightCone = "multiplication"
+	Cornucopia     LightCone = "cornucopia"
 )
