@@ -22,6 +22,7 @@ const (
 	Swordplay               LightCone = "swordplay"
 	ReturntoDarkness        LightCone = "return_to_darkness"
 	SleepLiketheDead        LightCone = "sleep_like_the_dead"
+	IntheNight              LightCone = "in_the_night"
 )
 
 // Nihility
