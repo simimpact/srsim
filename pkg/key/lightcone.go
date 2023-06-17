@@ -45,7 +45,8 @@ const (
 
 // Abundance
 const (
-	FineFruit      LightCone = "fine_fruit"
-	Multiplication LightCone = "multiplication"
-	Cornucopia     LightCone = "cornucopia"
+	FineFruit                LightCone = "fine_fruit"
+	Multiplication           LightCone = "multiplication"
+	Cornucopia               LightCone = "cornucopia"
+	WarmthShortensColdNights LightCone = "warmth_shortens_cold_nights"
 )
