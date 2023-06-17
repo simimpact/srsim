@@ -36,7 +36,7 @@ const CharacterLineup = ({ isEnemy = false, header }: Props) => {
         </div>
       </DialogTrigger>
       <DialogContent>
-        <DialogHeader>Team name 123128</DialogHeader>
+        <DialogHeader className="text-card-foreground">Team name 123128</DialogHeader>
         <DialogDescription>
           <ul>
             {charCodes.map(({ name, code }) => (
