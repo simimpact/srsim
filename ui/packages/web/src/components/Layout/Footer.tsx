@@ -1,14 +1,14 @@
-import classNames from "classnames";
 import { useTranslation } from "react-i18next";
 import { IconContext } from "react-icons";
 import { AiFillGithub } from "react-icons/ai";
 import { FaDiscord } from "react-icons/fa";
 import { SiKofi } from "react-icons/si";
+import { cn } from "@/utils/classname";
 
 export const Footer = () => {
   const { t } = useTranslation();
 
-  const divider = classNames(
+  const divider = cn(
     "before:block",
     "before:h-px",
     "before:bg-gradient-to-r",
@@ -16,7 +16,7 @@ export const Footer = () => {
     "before:via-white/50"
   );
 
-  const linkClass = classNames("flex gap-2 items-center", "!text-gray-400 hover:!text-[#8abbff]");
+  const linkClass = cn("flex gap-2 items-center", "!text-gray-400 hover:!text-[#8abbff]");
 
   return (
     <div className={`w-full ${divider}`}>

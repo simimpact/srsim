@@ -25,16 +25,6 @@ const cardDescriptionVariant = cva("text-sm text-muted-foreground");
 const cardContentVariant = cva("p-6 pt-0");
 const cardFooterVariant = cva("flex items-center p-6 pt-0");
 
-export interface CardProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof cardVariants> {}
-interface CardHeadingProps
-  extends React.HTMLAttributes<HTMLHeadingElement>,
-    VariantProps<typeof cardVariants> {}
-interface CardParagraphProps
-  extends React.HTMLAttributes<HTMLParagraphElement>,
-    VariantProps<typeof cardVariants> {}
-
 /** Anatomy: https://ui.shadcn.com/docs/components/card#usage */
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ({ className, variant, ...props }, ref) => (
@@ -71,5 +61,15 @@ const CardFooter = React.forwardRef<HTMLDivElement, CardProps>(({ className, ...
   <div ref={ref} className={cn(cardFooterVariant({ className }))} {...props} />
 ));
 CardFooter.displayName = "CardFooter";
+
+export interface CardProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof cardVariants> {}
+interface CardHeadingProps
+  extends React.HTMLAttributes<HTMLHeadingElement>,
+    VariantProps<typeof cardVariants> {}
+interface CardParagraphProps
+  extends React.HTMLAttributes<HTMLParagraphElement>,
+    VariantProps<typeof cardVariants> {}
 
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent, cardVariants };

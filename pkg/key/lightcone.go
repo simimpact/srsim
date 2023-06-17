@@ -17,6 +17,7 @@ const (
 	Arrows                  LightCone = "arrows"
 	Adversarial             LightCone = "adversarial"
 	OnlySilenceRemains      LightCone = "only_silence_remains"
+	RiverFlowsinSpring      LightCone = "river_flows_in_spring"
 )
 
 // Nihility
@@ -46,4 +47,5 @@ const (
 const (
 	FineFruit      LightCone = "fine_fruit"
 	Multiplication LightCone = "multiplication"
+	Cornucopia     LightCone = "cornucopia"
 )

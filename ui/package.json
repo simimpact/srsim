@@ -27,7 +27,13 @@
     "build:web": "yarn workspace @srsim/web build"
   },
   "devDependencies": {
+    "@radix-ui/react-context-menu": "^2.1.4",
+    "@radix-ui/react-dialog": "^1.0.4",
+    "@radix-ui/react-hover-card": "^1.0.6",
+    "@radix-ui/react-menubar": "^1.0.3",
     "@radix-ui/react-slot": "^1.0.2",
+    "@radix-ui/react-toast": "^1.1.4",
+    "@radix-ui/react-tooltip": "^1.0.6",
     "@types/eslint": "^8",
     "@types/prettier": "^2",
     "@types/watch": "^1",
@@ -36,6 +42,7 @@
     "autoprefixer": "^10.4.14",
     "class-variance-authority": "^0.6.0",
     "clsx": "^1.2.1",
+    "cmdk": "^0.2.0",
     "concurrently": "^8.0.1",
     "eslint": "^8.39.0",
     "eslint-config-prettier": "^8.8.0",
@@ -45,9 +52,11 @@
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-workspaces": "^0.8.0",
+    "framer-motion": "^10.12.16",
     "husky": "^8.0.0",
     "lerna": "^6.6.1",
     "lint-staged": "^13.2.2",
+    "lucide-react": "^0.244.0",
     "madge": "^6.0.0",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.23",
@@ -58,6 +67,7 @@
     "tailwindcss": "^3.3.2",
     "tailwindcss-animate": "^1.0.5",
     "typescript": "^5.0.4",
+    "use-local-storage": "^3.0.0",
     "watch": "^1.0.2"
   },
   "lint-staged": {
