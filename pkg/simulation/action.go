@@ -46,20 +46,21 @@ func (sim *simulation) InsertAbility(i info.Insert) {
 }
 
 func (sim *simulation) ultCheck() {
-	bursts := sim.eval.BurstCheck()
-	for _, value := range bursts {
-		// TODO: need a "burst type" for cases like MC (passed to executeUlt)
-		// TODO: need a target evaluator key to be passed to executeUlt
+	for _, char := range sim.characters {
+		if sim.attr.FullEnergy(char) {
+			// TODO: need a "burst type" for cases like MC (passed to executeUlt)
+			// TODO: need a target evaluator key to be passed to executeUlt
 
-		sim.queue.Insert(queue.Task{
-			Source:   value.Target,
-			Priority: info.CharInsertUlt,
-			AbortFlags: []model.BehaviorFlag{
-				model.BehaviorFlag_STAT_CTRL,
-				model.BehaviorFlag_DISABLE_ACTION,
-			},
-			Execute: func() { sim.executeUlt(value.Target) },
-		})
+			sim.queue.Insert(queue.Task{
+				Source:   char,
+				Priority: info.CharInsertUlt,
+				AbortFlags: []model.BehaviorFlag{
+					model.BehaviorFlag_STAT_CTRL,
+					model.BehaviorFlag_DISABLE_ACTION,
+				},
+				Execute: func() { sim.executeUlt(char) },
+			})
+		}
 	}
 }
 
