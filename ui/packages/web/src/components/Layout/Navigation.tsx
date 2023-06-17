@@ -16,7 +16,6 @@ export const Navigation = () => {
     html.setAttribute("class", theme);
   }
 
-  // TODO: style later, too lazy
   return (
     <div
       className={cn(
