@@ -28,6 +28,7 @@ type dataTmpl struct {
 	MaxEnergy     int
 	PromotionData []character.PromotionData
 	Traces        character.TraceMap
+	SkillInfo     character.SkillInfo
 }
 
 var keyRegex = regexp.MustCompile(`\W+`) // for removing spaces
@@ -44,6 +45,7 @@ func main() {
 	var skills map[string]SkillTreeConfig
 	var promotions map[string]PromotionConfig
 	var textMap map[string]string
+	var avatarSkills map[string]SkillConfig
 
 	err := OpenConfig(&avatars, dmPath, "ExcelOutput", "AvatarConfig.json")
 	if err != nil {
@@ -65,6 +67,11 @@ func main() {
 		fmt.Println(err)
 		return
 	}
+	err = OpenConfig(&avatarSkills, dmPath, "ExcelOutput", "AvatarSkillConfig.json")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
 	for key, value := range avatars {
 		id, err := strconv.Atoi(key)
@@ -79,7 +86,16 @@ func main() {
 		case "{NICKNAME}":
 			charName = "Trailblazer" + value.DamageType
 		}
-		ProcessCharacter(charName, value, FindCharSkills(skills, id), promotions[key])
+
+		var avatarConfig AvatarConfig
+		err = OpenConfig(&avatarConfig, dmPath, value.JsonPath)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		info := FindSkillInfo(avatarSkills, avatarConfig, key)
+		ProcessCharacter(charName, value, FindCharSkills(skills, id), info, promotions[key])
 	}
 }
 
@@ -113,11 +129,62 @@ func FindCharSkills(skills map[string]SkillTreeConfig, id int) []SkillTreeConfig
 	return result
 }
 
+func FindSkillInfo(skills map[string]SkillConfig, config AvatarConfig, key string) character.SkillInfo {
+	info := character.SkillInfo{}
+	for k, value := range skills {
+		if strings.HasPrefix(k, key) {
+			var targetType model.TargetType
+			for _, s := range config.SkillList {
+				if s.Name == value["1"].SkillTriggerKey {
+					targetType = s.TargetInfo.GetType()
+					break
+				}
+			}
+
+			BPAdd := int(value["1"].BPAdd.Value)
+			if BPAdd < 0 {
+				BPAdd = 0
+			}
+
+			BPNeed := int(value["1"].BPNeed.Value)
+			if BPNeed < 0 {
+				BPNeed = 0
+			}
+
+			switch value["1"].SkillTriggerKey {
+			case "Skill01":
+				info.Attack = character.Attack{
+					SPAdd:      BPAdd,
+					TargetType: targetType,
+				}
+			case "Skill02":
+				info.Skill = character.Skill{
+					SPNeed:     BPNeed,
+					TargetType: targetType,
+				}
+			case "Skill03":
+				info.Ult = character.Ult{
+					TargetType: targetType,
+				}
+			case "SkillMaze":
+				info.Technique = character.Technique{
+					TargetType: targetType,
+					IsAttack:   value["1"].SkillEffect == "MazeAttack",
+				}
+			default:
+				continue
+			}
+		}
+	}
+	return info
+}
+
 func GetCharacterName(textMap map[string]string, hash int) string {
 	return textMap[strconv.Itoa(hash)]
 }
 
-func ProcessCharacter(name string, avatar AvatarInfo, skills []SkillTreeConfig, promotions PromotionConfig) {
+func ProcessCharacter(
+	name string, avatar AvatarInfo, skills []SkillTreeConfig, info character.SkillInfo, promotions PromotionConfig) {
 	data := dataTmpl{}
 	data.Key = keyRegex.ReplaceAllString(name, "")
 	data.KeyLower = strings.ToLower(data.Key)
@@ -125,6 +192,7 @@ func ProcessCharacter(name string, avatar AvatarInfo, skills []SkillTreeConfig, 
 	data.Element = avatar.GetDamageType()
 	data.Path = avatar.GetPath()
 	data.MaxEnergy = int(avatar.SPNeed.Value)
+	data.SkillInfo = info
 
 	data.PromotionData = make([]character.PromotionData, len(promotions))
 	for i := 0; i < len(promotions); i++ {
@@ -200,6 +268,58 @@ func ProcessCharacter(name string, avatar AvatarInfo, skills []SkillTreeConfig, 
 	if err := tdata.Execute(fdata, data); err != nil {
 		log.Fatal(err)
 	}
+
+	fatk, err := os.Create(filepath.Join(path, "attack.go"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer fatk.Close()
+	tatk, err := template.New("outattack").Parse(tmplAtk)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := tatk.Execute(fatk, data); err != nil {
+		log.Fatal(err)
+	}
+
+	fskill, err := os.Create(filepath.Join(path, "skill.go"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer fskill.Close()
+	tskill, err := template.New("outskill").Parse(tmplSkill)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := tskill.Execute(fskill, data); err != nil {
+		log.Fatal(err)
+	}
+
+	fult, err := os.Create(filepath.Join(path, "ult.go"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer fult.Close()
+	tult, err := template.New("outult").Parse(tmplUlt)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := tult.Execute(fult, data); err != nil {
+		log.Fatal(err)
+	}
+
+	ftech, err := os.Create(filepath.Join(path, "technique.go"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer ftech.Close()
+	ttech, err := template.New("outtech").Parse(tmplTechnique)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := ttech.Execute(ftech, data); err != nil {
+		log.Fatal(err)
+	}
 }
 
 var tmplChar = `package {{.KeyLower}}
@@ -221,6 +341,23 @@ func init() {
 		MaxEnergy:  {{.MaxEnergy}},
 		Promotions: promotions,
 		Traces:     traces,
+		SkillInfo: character.SkillInfo{
+			Attack: character.Attack{
+				SPAdd:      {{.SkillInfo.Attack.SPAdd}},
+				TargetType: model.TargetType_{{.SkillInfo.Attack.TargetType}},
+			},
+			Skill: character.Skill{
+				SPNeed:     {{.SkillInfo.Skill.SPNeed}},
+				TargetType: model.TargetType_{{.SkillInfo.Skill.TargetType}},
+			},
+			Ult: character.Ult{
+				TargetType: model.TargetType_{{.SkillInfo.Ult.TargetType}},
+			},
+			Technique: character.Technique{
+				TargetType: model.TargetType_{{.SkillInfo.Technique.TargetType}},
+				IsAttack:   {{.SkillInfo.Technique.IsAttack}},
+			},
+		},
 	})
 }
 
@@ -230,7 +367,7 @@ type char struct {
 	info   info.Character
 }
 
-func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character) character.CharInstance {
+func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character) info.CharInstance {
 	c := &char{
 		engine: engine,
 		id:     id,
@@ -241,7 +378,9 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 }
 `
 
-var tmplData = `package {{.KeyLower}}
+var tmplData = `// Code generated by "charstat"; DO NOT EDIT.
+
+package {{.KeyLower}}
 
 import (
 	"github.com/simimpact/srsim/pkg/engine/prop"
@@ -284,3 +423,51 @@ var traces = character.TraceMap{
 	},
 	{{- end}}
 }`
+
+var tmplAtk = `package {{.KeyLower}}
+
+import (
+	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/key"
+)
+
+func (c *char) Attack(target key.TargetID, state info.ActionState) {
+
+}
+`
+
+var tmplSkill = `package {{.KeyLower}}
+
+import (
+	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/key"
+)
+
+func (c *char) Skill(target key.TargetID, state info.ActionState) {
+	
+}
+`
+
+var tmplUlt = `package {{.KeyLower}}
+
+import (
+	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/key"
+)
+
+func (c *char) Ult(target key.TargetID, state info.ActionState) {
+	
+}
+`
+
+var tmplTechnique = `package {{.KeyLower}}
+
+import (
+	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/key"
+)
+
+func (c *char) Technique(target key.TargetID, state info.ActionState) {
+	
+}
+`

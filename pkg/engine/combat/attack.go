@@ -3,24 +3,21 @@ package combat
 import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
-	"github.com/simimpact/srsim/pkg/model"
 )
 
-func (mgr *Manager) Attack(atk info.Attack, effect model.AttackEffect) {
-	if len(atk.Targets) == 0 {
+func (mgr *Manager) Attack(atk info.Attack) {
+	if len(atk.Targets) == 0 || mgr.attr.HPRatio(atk.Source) == 0 {
 		return
 	}
 
 	// start an attack
-	if !mgr.isInAttack && isAttackStartable(atk.AttackType) {
-		// TODO: make this a struct?
+	if !mgr.isInAttack && atk.AttackType.IsQualified() {
 		mgr.isInAttack = true
 		mgr.attackInfo = attackInfo{
-			attacker:     atk.Source,
-			targets:      atk.Targets,
-			attackType:   atk.AttackType,
-			damageType:   atk.DamageType,
-			attackEffect: effect,
+			attacker:   atk.Source,
+			targets:    atk.Targets,
+			attackType: atk.AttackType,
+			damageType: atk.DamageType,
 		}
 
 		mgr.event.AttackStart.Emit(event.AttackStartEvent{
@@ -37,16 +34,13 @@ func (mgr *Manager) Attack(atk info.Attack, effect model.AttackEffect) {
 }
 
 func (mgr *Manager) EndAttack() {
-	mgr.isInAttack = false
-	mgr.event.AttackEnd.Emit(event.AttackEndEvent{
-		Attacker:     mgr.attackInfo.attacker,
-		Targets:      mgr.attackInfo.targets,
-		AttackType:   mgr.attackInfo.attackType,
-		AttackEffect: mgr.attackInfo.attackEffect,
-		DamageType:   mgr.attackInfo.damageType,
-	})
-}
-
-func isAttackStartable(t model.AttackType) bool {
-	return t != model.AttackType_DOT && t != model.AttackType_PURSUED
+	if mgr.isInAttack {
+		mgr.isInAttack = false
+		mgr.event.AttackEnd.Emit(event.AttackEndEvent{
+			Attacker:   mgr.attackInfo.attacker,
+			Targets:    mgr.attackInfo.targets,
+			AttackType: mgr.attackInfo.attackType,
+			DamageType: mgr.attackInfo.damageType,
+		})
+	}
 }

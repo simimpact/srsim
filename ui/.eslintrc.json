@@ -10,7 +10,8 @@
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module",
-    "project": "./tsconfig.json",
+    "project": ["packages/*/tsconfig.json"],
+    "tsconfigRootDir": "./",
     "createDefaultProgram": true
   },
   "ignorePatterns": ["**/dist/*", "**/protos.d.ts"],
@@ -35,10 +36,10 @@
     },
     "import/resolver": {
       "typescript": {
-        "project": ["tsconfig.json", "packages/*/tsconfig.json"]
+        "project": ["packages/*/tsconfig.json"]
       },
       "node": {
-        "project": ["tsconfig.json", "packages/*/tsconfig.json"]
+        "project": ["packages/*/tsconfig.json"]
       }
     }
   },

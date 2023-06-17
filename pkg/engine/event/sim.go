@@ -33,11 +33,26 @@ type TurnEndEvent struct {
 type TerminationEventHandler = handler.EventHandler[TerminationEvent]
 type TerminationEvent struct {
 	TotalAV float64
-	Reason  model.TerminationReson
+	Reason  model.TerminationReason
 }
 
-type ActionStartEvent struct {
+type ActionStartEventHandler = handler.EventHandler[ActionEvent]
+type ActionEndEventHandler = handler.EventHandler[ActionEvent]
+type ActionEvent struct {
+	Owner      key.TargetID
+	Targets    map[key.TargetID]bool
+	AttackType model.AttackType
+	IsInsert   bool
 }
 
-type ActionEndEvent struct {
+type UltStartEventHandler = handler.EventHandler[ActionEvent]
+type UltEndEventHandler = handler.EventHandler[ActionEvent]
+
+type InsertStartEventHandler = handler.EventHandler[InsertEvent]
+type InsertEndEventHandler = handler.EventHandler[InsertEvent]
+type InsertEvent struct {
+	Owner      key.TargetID
+	Targets    map[key.TargetID]bool
+	AbortFlags []model.BehaviorFlag
+	Priority   info.InsertPriority
 }

@@ -5,17 +5,19 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-func (s *Service) emitHPChangeEvents(target, source key.TargetID, oldRatio, newRatio, maxHP float64) error {
+func (s *Service) emitHPChangeEvents(
+	target, source key.TargetID, oldRatio, newRatio, maxHP float64, isDamage bool) error {
 	if oldRatio == newRatio {
 		return nil
 	}
 
 	s.event.HPChange.Emit(event.HPChangeEvent{
-		Target:     target,
-		OldHPRatio: oldRatio,
-		NewHPRatio: newRatio,
-		OldHP:      maxHP * oldRatio,
-		NewHP:      maxHP * newRatio,
+		Target:             target,
+		OldHPRatio:         oldRatio,
+		NewHPRatio:         newRatio,
+		OldHP:              maxHP * oldRatio,
+		NewHP:              maxHP * newRatio,
+		IsHPChangeByDamage: isDamage,
 	})
 
 	if newRatio > 0 {

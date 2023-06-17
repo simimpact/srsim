@@ -7,11 +7,12 @@ import (
 
 type HPChangeEventHandler = handler.EventHandler[HPChangeEvent]
 type HPChangeEvent struct {
-	Target     key.TargetID
-	OldHPRatio float64
-	NewHPRatio float64
-	OldHP      float64
-	NewHP      float64
+	Target             key.TargetID
+	OldHPRatio         float64
+	NewHPRatio         float64
+	OldHP              float64
+	NewHP              float64
+	IsHPChangeByDamage bool
 }
 
 type LimboWaitHealEventHandler = handler.CancelableEventHandler[LimboWaitHealEvent]
@@ -48,4 +49,10 @@ type StanceBreakEvent struct {
 type StanceBreakEndEventHandler = handler.EventHandler[StanceBreakEndEvent]
 type StanceBreakEndEvent struct {
 	Target key.TargetID
+}
+
+type SPChangeEventHandler = handler.EventHandler[SPChangeEvent]
+type SPChangeEvent struct {
+	OldSP int
+	NewSP int
 }

@@ -48,15 +48,19 @@ message Character {
 }
 
 message Enemy {
-    string key = 1 [ json_name="key" ];
     uint32 level = 2 [ json_name = "level" ];
     double hp = 3 [ json_name = "hp" ];
-    repeated string weaknesses = 4 [ json_name = "weaknesses" ];
-    repeated double res = 5 [ json_name = "res" ];
-    repeated double debuff_res = 6 [ json_name = "debuff_res" ];
+    double toughness = 4 [ json_name = "toughness" ];
+    repeated DamageType weaknesses = 5 [ json_name = "weaknesses" ];
+    repeated DebuffRES debuff_res = 6 [ json_name = "debuff_res" ];
 }
 
-enum TerminationReson {
+message DebuffRES {
+    BehaviorFlag stat = 1 [ json_name = "stat" ];
+    double amount = 2 [ json_name = "amount" ];
+}
+
+enum TerminationReason {
     INVALID_TERMINATION = 0;
     BATTLE_LOSS = 1;
     BATTLE_WIN = 2;

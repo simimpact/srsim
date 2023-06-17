@@ -31,11 +31,7 @@ type Engine interface {
 	Turn
 	Info
 	Target
-
-	// TODO: Execute Queue
-	//	For callback + skill methods, need an "AttackState" passed in which allows you to do operations
-	//	such as decide when `AttackEnd` happens (if left uncalled, will happen after all logic executes)
-	// TODO: Skill Point (Boost Point). Other sim metadata calls?
+	Insert
 }
 
 type Modifier interface {
@@ -51,6 +47,10 @@ type Modifier interface {
 
 	// Removes all instances of a modifier from the target, only where source matches the given source
 	RemoveModifierFromSource(target, source key.TargetID, modifier key.Modifier)
+
+	// Removes modifiers based on the given dispel data. The goal of this is to remove modifiers by
+	// their StatusType rather than by name (IE: abilities that dispel buffs/debuffs on a target)
+	DispelStatus(target key.TargetID, dispel info.Dispel)
 
 	// Extends the duration of all instances of the given modifier by the amount
 	ExtendModifierDuration(target key.TargetID, modifier key.Modifier, amt int)
@@ -68,12 +68,25 @@ type Modifier interface {
 	// Returns true if the target has the given behavior flag from an attached modifier. If multiple
 	// flags are passed, will return true if at least one is attached
 	HasBehaviorFlag(target key.TargetID, flags ...model.BehaviorFlag) bool
+
+	// Returns a list of read-only modifiers that are currently attached to the given target. This
+	// should rarely be used
+	GetModifiers(target key.TargetID, modifier key.Modifier) []info.Modifier
 }
 
 type Attribute interface {
 	// Gets a snapshot of the current target's stats. Any modifications to these stats will
 	// only be applied to the snapshot.
 	Stats(target key.TargetID) *info.Stats
+
+	// Gets the current stance amount of the target.
+	Stance(target key.TargetID) float64
+
+	// Gets the current energy amount of the target.
+	Energy(target key.TargetID) float64
+
+	// Gets the current HP ratio of the target (value between 0 and 1)
+	HPRatio(target key.TargetID) float64
 
 	// Sets the target HP to the given amount. Source target is used for tracking who owns this HP
 	// modification in the event that the modification kills the target.
@@ -100,6 +113,12 @@ type Attribute interface {
 	// Modifies the target energy by the given flat amount. This amount is fixed and will not be
 	// increased by the target's Energy Regeneration.
 	ModifyEnergyFixed(target key.TargetID, amt float64) error
+
+	// Add or remove Skill Points from the current sim state. Returns the new SP amount
+	ModifySP(amt int) int
+
+	// Return the current number of available Skill Points.
+	SP() int
 }
 
 type Combat interface {
@@ -107,15 +126,39 @@ type Combat interface {
 	// are being hit
 	Attack(atk info.Attack)
 
+	// If there is an active attack, this will cause the AttackEnd event to emit. This should only
+	// be used in character implementations since it can fundamentally change how characters behave.
+	EndAttack()
+
 	// Performs the given heal where Source is the healer and Targets are all targets that are
 	// being healed
 	Heal(heal info.Heal)
 }
 
 type Shield interface {
-	// TODO:
-	AddShield()
-	RemoveShield()
+	// Adds a new shield to the targets in the shield info. This shield will be keyed on the given id.
+	// If another shield exists on the target with the given id, that shield will be replaced with the
+	// incoming shield.
+	AddShield(id key.Shield, shield info.Shield)
+
+	// Returns true if this target has an active shield of the given key currently on them
+	HasShield(target key.TargetID, shield key.Shield) bool
+
+	// Returns true if this target has an active shield on them
+	IsShielded(target key.TargetID) bool
+
+	// Removes the given shield from the target. If this shield is no longer present, will be a no-op
+	RemoveShield(id key.Shield, target key.TargetID)
+}
+
+type Insert interface {
+	// Inserts a new action into the turn queue to be executed by this target. This will cause
+	// action evaluation to execute again and run the sim logic to determine which action that
+	// should be performed (attack or skill)
+	InsertAction(target key.TargetID)
+
+	// Inserts a generic "ability" into the queue. This is for follow up attacks, counters, etc.
+	InsertAbility(i info.Insert)
 }
 
 type Turn interface {
@@ -141,6 +184,10 @@ type Turn interface {
 }
 
 type Info interface {
+	// Gets the char instance associated with this id. Useful if you want to access the char state
+	// from a modifier or other disassociated logic
+	CharacterInstance(id key.TargetID) (info.CharInstance, error)
+
 	// Metadata for the given character, such as their current level, ascension, traces, etc.
 	CharacterInfo(target key.TargetID) (info.Character, error)
 
@@ -171,5 +218,7 @@ type Target interface {
 	Neutrals() []key.TargetID
 
 	// TODO: target type, (Light, Dark, Neutral)
-	AddTarget() key.TargetID
+	AddNeutralTarget() key.TargetID
+
+	RemoveNeutralTarget(id key.TargetID)
 }

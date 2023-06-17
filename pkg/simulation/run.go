@@ -4,25 +4,13 @@ import (
 	"fmt"
 
 	"github.com/simimpact/srsim/pkg/engine/event"
+	"github.com/simimpact/srsim/pkg/engine/hook"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 type stateFn func(*simulation) (stateFn, error)
-
-// executes the initial function + any chain it returns
-func (s *simulation) execute(init stateFn) error {
-	var err error
-	for state := init; state != nil; {
-		state, err = state(s)
-		if err != nil {
-			//handle error here
-			return err
-		}
-	}
-	return nil
-}
 
 func (s *simulation) run() (*model.IterationResult, error) {
 	var err error
@@ -45,7 +33,7 @@ func initialize(s *simulation) (stateFn, error) {
 	s.subscribe()
 
 	// enable all registered startup hooks
-	for k, hook := range hooks {
+	for k, hook := range hook.StartupHooks() {
 		if err := hook(s); err != nil {
 			return nil, fmt.Errorf("error executing hook %v", k)
 		}
@@ -63,11 +51,11 @@ func initialize(s *simulation) (stateFn, error) {
 	// us wanting to retain characters in the same state between multiple waves (if ever supported)
 	for _, char := range s.cfg.Characters {
 		id := s.idGen.New()
-		if err := s.charManager.AddCharacter(id, char); err != nil {
+		if err := s.char.AddCharacter(id, char); err != nil {
 			return nil, fmt.Errorf("error initializing character %w", err)
 		}
 
-		s.targets[id] = TargetCharacter
+		s.targets[id] = info.ClassCharacter
 		s.characters = append(s.characters, id)
 	}
 
@@ -83,11 +71,11 @@ func initialize(s *simulation) (stateFn, error) {
 func startBattle(s *simulation) (stateFn, error) {
 	for _, enemy := range s.cfg.Enemies {
 		id := s.idGen.New()
-		if err := s.enemyManager.AddEnemy(id, enemy); err != nil {
+		if err := s.enemy.AddEnemy(id, enemy); err != nil {
 			return nil, fmt.Errorf("error initializing enemy %w", err)
 		}
 
-		s.targets[id] = TargetEnemy
+		s.targets[id] = info.ClassEnemy
 		s.enemies = append(s.enemies, id)
 	}
 
@@ -97,33 +85,28 @@ func startBattle(s *simulation) (stateFn, error) {
 	copy(all, s.characters)
 	copy(all[len(s.characters):], s.neutrals)
 	copy(all[len(s.characters)+len(s.neutrals):], s.enemies)
-	s.turnManager.AddTargets(all...)
+	s.turn.AddTargets(all...)
 
 	// emit BattleStart event to log the "start state" of everything
-	charStats := make([]*info.Stats, len(s.characters))
-	for i, t := range s.characters {
-		charStats[i] = s.attributeService.Stats(t)
-	}
-	enemyStats := make([]*info.Stats, len(s.enemies))
-	for i, t := range s.enemies {
-		enemyStats[i] = s.attributeService.Stats(t)
-	}
-	neutralStats := make([]*info.Stats, len(s.neutrals))
-	for i, t := range s.neutrals {
-		neutralStats[i] = s.attributeService.Stats(t)
-	}
+	snap := s.createSnapshot()
 	s.event.BattleStart.Emit(event.BattleStartEvent{
-		CharInfo:     s.charManager.Characters(),
-		EnemyInfo:    s.enemyManager.Enemies(),
-		CharStats:    charStats,
-		EnemyStats:   enemyStats,
-		NeutralStats: neutralStats,
+		CharInfo:     s.char.Characters(),
+		EnemyInfo:    s.enemy.Enemies(),
+		CharStats:    snap.characters,
+		EnemyStats:   snap.enemies,
+		NeutralStats: snap.neutrals,
 	})
 
-	if err := s.execute(engage); err != nil {
-		return nil, fmt.Errorf("error attempting to perform engage %w", err)
-	}
+	return engage, nil
+}
 
+// run engagement logic for the first wave of a battle. This is any techniques + if the engagement
+// of the battle should be a "weakness" engage (player's favor) or "ambush" engage (enemy's favor)
+func engage(s *simulation) (stateFn, error) {
+	// TODO: waveCount & only do this call if is first wave
+	// TODO: execute any techniques + engagement logic
+	// TODO: weakness engage vs ambush
+	// TODO: emit EngageEvent
 	return s.executeQueue(info.BattleStart, beginTurn)
 }
 
@@ -131,7 +114,7 @@ func startBattle(s *simulation) (stateFn, error) {
 // This does not directly emit a TurnStartEvent since the underlying turn manager does that for us.
 func beginTurn(s *simulation) (stateFn, error) {
 	// determine who's turn it is and increase total AV
-	next, av, err := s.turnManager.StartTurn()
+	next, av, err := s.turn.StartTurn()
 	if !s.IsValid(next) || err != nil {
 		return nil, fmt.Errorf(
 			"unexpected: turn manager returned an invalid target for next turn %w", err)
@@ -139,43 +122,41 @@ func beginTurn(s *simulation) (stateFn, error) {
 	s.active = next
 	s.totalAV += av
 
-	s.modManager.Tick(s.active, info.TurnStart)
+	s.modifier.Tick(s.active, info.TurnStart)
 	return phase1, nil
 }
 
 // phase1 is the time between the start of the turn and the action being performed. This is when
 // stuff like dots deal damage, stance gets reset, and any bursts happen prior to the action.
 func phase1(s *simulation) (stateFn, error) {
-	// super special case where if they are frozen at the start of the turn, need to skip break
-	// reset because that is just how frozen works. Need to make this check BEFORE the tick, since
-	// once the tick happens frozen will be removed.
-	isFrozen := s.HasBehaviorFlag(s.active, model.BehaviorFlag_STAT_CTRL_FROZEN)
-
 	// tick any modifiers that listen for phase1 (primarily dots)
-	s.modManager.Tick(s.active, info.ModifierPhase1)
-
-	// skip all other phase1 logic when frozen and go straight to phase2
-	if isFrozen {
-		return phase2, nil
-	}
-
-	// reset the stance if this is start of enemy turn and their stance is 0
-	if s.IsEnemy(s.active) && s.attributeService.Stance(s.active) <= 0 {
-		info, err := s.EnemyInfo(s.active)
-		if err != nil {
-			return nil, fmt.Errorf("error when getting enemy info in phase1 %w", err)
-		}
-		if err := s.attributeService.SetStance(s.active, s.active, info.MaxStance); err != nil {
-			return nil, fmt.Errorf("error when reseting target stance %w", err)
-		}
-	}
+	s.modifier.Tick(s.active, info.ModifierPhase1)
 
 	// skip the action if this target has the DISABLE_ACTION flag
 	if s.HasBehaviorFlag(s.active, model.BehaviorFlag_DISABLE_ACTION) {
 		return phase2, nil
 	}
 
+	// reset the stance if this is start of enemy turn and their stance is 0
+	if s.IsEnemy(s.active) && s.attr.Stance(s.active) <= 0 {
+		info, err := s.enemy.Info(s.active)
+		if err != nil {
+			return nil, fmt.Errorf("error when getting enemy info in phase1 %w", err)
+		}
+		if err := s.attr.SetStance(s.active, s.active, info.MaxStance); err != nil {
+			return nil, fmt.Errorf("error when reseting target stance %w", err)
+		}
+	}
+
 	return s.executeQueue(info.InsertAbilityPhase1, action)
+}
+
+// actually execute the action for this turn and then move on to phase2 once done
+func action(s *simulation) (stateFn, error) {
+	if err := s.executeAction(s.active, false); err != nil {
+		return nil, fmt.Errorf("unknown error executing action %w", err)
+	}
+	return phase2, nil
 }
 
 // phase2 is the time after action and before end of turn. This is where follow up attacks occur,
@@ -183,39 +164,31 @@ func phase1(s *simulation) (stateFn, error) {
 func phase2(s *simulation) (stateFn, error) {
 	// start of phase2 is treated as an "ActionEnd" for any clean up. We have it here instead of
 	// inside of action for the cases where the action was skipped.
-	s.turnManager.ResetTurn()
-	s.modManager.Tick(s.active, info.ActionEnd)
+	s.turn.ResetTurn()
+	s.modifier.Tick(s.active, info.ActionEnd)
 
 	// execute anything that is in the execution queue. any follow ups, bursts, etc.
-	next, err := s.executeQueue(info.InsertAbilityPhase2, endTurn)
-	if next == nil || err != nil {
+	if next, err := s.executeQueue(info.InsertAbilityPhase2, endTurn); next == nil || err != nil {
 		return nil, err
 	}
 
 	// tick all phase2 modifiers before finally ending the turn
-	s.modManager.Tick(s.active, info.ModifierPhase2)
+	s.modifier.Tick(s.active, info.ModifierPhase2)
 	return endTurn, nil
 }
 
 // finalize that this is the end of the turn. Mainly just emitting the turn end event
 func endTurn(s *simulation) (stateFn, error) {
+	// check for special case where a target was supposed to be revived but never did (reviver died?)
+	s.deathCheck(s.characters)
+	s.deathCheck(s.enemies)
+
 	// emit TurnEnd event to log the current state of all remaining targets
-	charStats := make([]*info.Stats, len(s.characters))
-	for i, t := range s.characters {
-		charStats[i] = s.attributeService.Stats(t)
-	}
-	enemyStats := make([]*info.Stats, len(s.enemies))
-	for i, t := range s.enemies {
-		enemyStats[i] = s.attributeService.Stats(t)
-	}
-	neutralStats := make([]*info.Stats, len(s.neutrals))
-	for i, t := range s.neutrals {
-		neutralStats[i] = s.attributeService.Stats(t)
-	}
+	snap := s.createSnapshot()
 	s.event.TurnEnd.Emit(event.TurnEndEvent{
-		Characters: charStats,
-		Enemies:    enemyStats,
-		Neutrals:   neutralStats,
+		Characters: snap.characters,
+		Enemies:    snap.enemies,
+		Neutrals:   snap.neutrals,
 	})
 
 	return s.exitCheck(beginTurn)
@@ -223,16 +196,16 @@ func endTurn(s *simulation) (stateFn, error) {
 
 // check if we want to exit the sim. If not, return the next state that was passed in
 func (s *simulation) exitCheck(next stateFn) (stateFn, error) {
-	var reason model.TerminationReson
+	var reason model.TerminationReason
 	if len(s.characters) == 0 {
-		reason = model.TerminationReson_BATTLE_LOSS
+		reason = model.TerminationReason_BATTLE_LOSS
 	} else if len(s.enemies) == 0 {
-		reason = model.TerminationReson_BATTLE_WIN
+		reason = model.TerminationReason_BATTLE_WIN
 	} else if int(s.totalAV/100) >= int(s.cfg.Settings.CycleLimit) {
-		reason = model.TerminationReson_TIMEOUT
+		reason = model.TerminationReason_TIMEOUT
 	}
 
-	if reason != model.TerminationReson_INVALID_TERMINATION {
+	if reason != model.TerminationReason_INVALID_TERMINATION {
 		s.event.Termination.Emit(event.TerminationEvent{
 			TotalAV: s.totalAV,
 			Reason:  reason,

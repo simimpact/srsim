@@ -136,6 +136,13 @@ enum StatusType {
   STATUS_DEBUFF = 2;
 }
 
+enum DispelOrder {
+  INVALID_DISPEL_ORDER = 0;
+  LAST_ADDED = 1;
+  FIRST_ADDED = 2;
+  RANDOM = 3;
+}
+
 enum Path {
   INVALID_PATH = 0;
   PRESERVATION = 1;
@@ -156,7 +163,6 @@ enum DamageType {
   WIND = 5;
   QUANTUM = 6;
   IMAGINARY = 7;
-  HEAL = 8;
 }
 
 enum AttackType {
@@ -170,26 +176,6 @@ enum AttackType {
   MAZE_NORMAL = 7;
   INSERT = 8;
   ELEMENT_DAMAGE = 9;
-}
-
-enum AttackEffect {
-  INVALID_ATTACK_EFFECT = 0;
-  SINGLE = 1;
-  AOE = 2;
-  SHIELD_BREAK = 3;
-  BOUNCE = 4;
-  BLAST = 5;
-  SUPPORT = 6;
-  WEAKEN = 7;
-  IMPAIR = 8;
-  RESTORE = 9;
-  TAUNT = 10;
-  DEFENSE = 11;
-  DAMAGE = 12;
-  ENHANCE = 13;
-  TRANSFORM = 14;
-  PASSIVE = 15;
-  MAZE_ATTACK = 16;
 }
 
 enum DamageFormula {
@@ -209,8 +195,24 @@ enum HealFormula {
   BY_TARGET_LOST_HP = 5;
 }
 
+enum ShieldFormula {
+  INVALID_SHIELD_FORMULA = 0;
+  SHIELD_BY_SHIELDER_ATK = 1;
+  SHIELD_BY_SHIELDER_DEF = 2;
+  SHIELD_BY_SHIELDER_MAX_HP = 3;
+  SHIELD_BY_TARGET_MAX_HP = 4;
+  SHIELD_BY_SHIELDER_TOTAL_SHIELD = 5;
+}
+
 enum ModifyHPRatioType {
   INVALID_RATIO_TYPE = 0;
   MAX_HP = 1;
   CURRENT_HP = 2;
+}
+
+enum TargetType {
+  INVALID_TARGET_TYPE = 0;
+  SELF = 1;
+  ALLIES = 2;
+  ENEMIES = 3;
 }

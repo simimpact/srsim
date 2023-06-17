@@ -27,6 +27,7 @@ type ModifierInstance struct {
 	listeners                Listeners
 	statusType               model.StatusType
 	flags                    []model.BehaviorFlag
+	modifySnapshot           bool
 }
 
 func (mgr *Manager) newInstance(owner key.TargetID, mod info.Modifier) *ModifierInstance {
@@ -48,6 +49,7 @@ func (mgr *Manager) newInstance(owner key.TargetID, mod info.Modifier) *Modifier
 		listeners:         config.Listeners,
 		statusType:        config.StatusType,
 		flags:             config.BehaviorFlags,
+		modifySnapshot:    config.CanModifySnapshot,
 	}
 
 	if mi.stats == nil {

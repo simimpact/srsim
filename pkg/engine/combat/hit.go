@@ -6,6 +6,43 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
+func (mgr *Manager) performHit(hit *info.Hit) {
+	mgr.event.HitStart.Emit(event.HitStartEvent{
+		Attacker: hit.Attacker.ID(),
+		Defender: hit.Defender.ID(),
+		Hit:      hit,
+	})
+
+	// ACTUAL DAMAGE STUFF GOES HERE:
+	// 1. Calculate Damage given the hit info (using stats contained within the hit)
+	// 2. Given calc'd damage, call shield.AbsorbDamage(hit.defender, amt) float64
+	// 3. AbsorbDamage returns the remaining damage
+	// 4. ModifyHP of the remaining damage
+	// 5. Emit DamageResultEvent
+
+	// remainingDamage := mgr.shld.AbsorbDamage(hit.Defender.ID(), damage)
+
+	// NOTE:
+	// * BaseDamage multipliers, EnergyGain, and StanceDamage should be scaled by HitRatio
+	// * dots & element damage do not crit (unknown if also ByPureDamage?)
+	// * ByPureDamage = true means a "simplified" damage function (the break damage equation)
+
+	mgr.event.HitEnd.Emit(event.HitEndEvent{
+		Attacker:         hit.Attacker.ID(),
+		Defender:         hit.Defender.ID(),
+		AttackType:       hit.AttackType,
+		DamageType:       hit.DamageType,
+		BaseDamage:       0, // TODO
+		BonusDamage:      0, // TODO
+		TotalDamage:      0, // TODO
+		ShieldDamage:     0, // TODO
+		HPDamage:         0, // TODO
+		HPRatioRemaining: mgr.attr.HPRatio(hit.Defender.ID()),
+		IsCrit:           false, // TODO
+		UseSnapshot:      hit.UseSnapshot,
+	})
+}
+
 func (mgr *Manager) newHit(target key.TargetID, atk info.Attack) *info.Hit {
 	// set HitRatio to 1 if unspecified
 	ratio := atk.HitRatio
@@ -24,59 +61,12 @@ func (mgr *Manager) newHit(target key.TargetID, atk info.Attack) *info.Hit {
 		Defender:     mgr.attr.Stats(target),
 		AttackType:   atk.AttackType,
 		DamageType:   atk.DamageType,
-		AttackEffect: mgr.attackInfo.attackEffect,
 		BaseDamage:   baseDamage,
 		EnergyGain:   atk.EnergyGain,
 		StanceDamage: atk.StanceDamage,
 		HitRatio:     ratio,
 		AsPureDamage: atk.AsPureDamage,
 		DamageValue:  atk.DamageValue,
-	}
-}
-
-func (mgr *Manager) performHit(hit *info.Hit) {
-	// only emit a hit event if we are inside an attack (DoT and pursued dont count as hits)
-	// TODO: need more TC on if this is accurate enough
-	if mgr.isInAttack {
-		mgr.event.BeforeHit.Emit(event.BeforeHitEvent{
-			Attacker: hit.Attacker.ID(),
-			Defender: hit.Defender.ID(),
-			Hit:      hit,
-		})
-	}
-
-	// ACTUAL DAMAGE STUFF GOES HERE:
-	// 1. Calculate Damage given the hit info (using stats contained within the hit)
-	// 2. Given calc'd damage, call shield.AbsorbDamage(hit.defender, amt) float64
-	// 3. AbsorbDamage returns the remaining damage
-	// 4. ModifyHP of the remaining damage
-	// 5. Emit DamageResultEvent
-
-	// NOTE: BaseDamage multipliers, EnergyGain, and StanceDamage should be scaled by HitRatio
-
-	mgr.event.DamageResult.Emit(event.DamageResultEvent{
-		Attacker:         hit.Attacker.ID(),
-		Defender:         hit.Defender.ID(),
-		AttackType:       hit.AttackType,
-		DamageType:       hit.DamageType,
-		AttackEffect:     hit.AttackEffect,
-		BaseDamage:       0, // TODO
-		BonusDamage:      0, // TODO
-		TotalDamage:      0, // TODO
-		ShieldDamage:     0, // TODO
-		HPDamage:         0, // TODO
-		HPRatioRemaining: mgr.attr.HPRatio(hit.Defender.ID()),
-		IsCrit:           false, // TODO
-	})
-
-	if mgr.isInAttack {
-		mgr.event.AfterHit.Emit(event.AfterHitEvent{
-			Attacker:     hit.Attacker.ID(),
-			Defender:     hit.Defender.ID(),
-			AttackType:   hit.AttackType,
-			DamageType:   hit.DamageType,
-			AttackEffect: hit.AttackEffect,
-			IsCrit:       false, // TODO
-		})
+		UseSnapshot:  atk.UseSnapshot,
 	}
 }

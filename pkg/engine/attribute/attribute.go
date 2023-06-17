@@ -21,9 +21,9 @@ type AttributeModifier interface {
 
 	AddTarget(target key.TargetID, base BaseStats) error
 
-	SetHP(target, source key.TargetID, amt float64) error
-	ModifyHPByRatio(target, source key.TargetID, data info.ModifyHPByRatio) error
-	ModifyHPByAmount(target, source key.TargetID, amt float64) error
+	SetHP(target, source key.TargetID, amt float64, isDamage bool) error
+	ModifyHPByRatio(target, source key.TargetID, data info.ModifyHPByRatio, isDamage bool) error
+	ModifyHPByAmount(target, source key.TargetID, amt float64, isDamage bool) error
 
 	SetEnergy(target key.TargetID, amt float64) error
 	ModifyEnergy(target key.TargetID, amt float64) error
@@ -62,6 +62,11 @@ func (s *Service) HPRatio(target key.TargetID) float64 {
 
 func (s *Service) Energy(target key.TargetID) float64 {
 	return s.targets[target].Energy
+}
+
+func (s *Service) FullEnergy(target key.TargetID) bool {
+	attr := s.targets[target]
+	return attr.Energy >= attr.MaxEnergy
 }
 
 func (s *Service) Stance(target key.TargetID) float64 {

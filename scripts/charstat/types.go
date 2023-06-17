@@ -28,6 +28,10 @@ type StatusAdd struct {
 	Value        ValueInfo `json:"Value"`
 }
 
+type TargetInfo struct {
+	TargetType string `json:"TargetType"`
+}
+
 type AvatarInfo struct {
 	AvatarName        HashInfo  `json:"AvatarName"`
 	Rarity            string    `json:"Rarity"`
@@ -35,10 +39,24 @@ type AvatarInfo struct {
 	DamageType        string    `json:"DamageType"`
 	AvatarBaseType    string    `json:"AvatarBaseType"`
 	SPNeed            ValueInfo `json:"SPNeed"`
+	JsonPath          string    `json:"JsonPath"`
 	// ...
 }
 
-type SkillConfig struct {
+type AvatarConfig struct {
+	SkillList []AvatarSkillMetadata `json:"SkillList"`
+	// ...
+}
+
+type AvatarSkillMetadata struct {
+	Name       string     `json:"Name"`
+	SkillType  string     `json:"SkillType"`
+	UseType    string     `json:"UseType"`
+	TargetInfo TargetInfo `json:"TargetInfo"`
+	// ...
+}
+
+type TraceConfig struct {
 	PointID              int             `json:"PointID"`
 	PointType            SkillConfigType `json:"PointType"`
 	AvatarID             int             `json:"AvatarID"`
@@ -64,8 +82,18 @@ type PromotionDataConfig struct {
 	// ...
 }
 
-type SkillTreeConfig map[string]SkillConfig
+type AvatarSkillConfig struct {
+	BPNeed          ValueInfo `json:"BPNeed"`
+	BPAdd           ValueInfo `json:"BPAdd"`
+	SkillEffect     string    `json:"SkillEffect"`
+	AttackType      string    `json:"AttackType"`
+	SkillTriggerKey string    `json:"SkillTriggerKey"`
+	// ...
+}
+
+type SkillTreeConfig map[string]TraceConfig
 type PromotionConfig map[string]PromotionDataConfig
+type SkillConfig map[string]AvatarSkillConfig
 
 var damageTypes = map[string]model.DamageType{
 	"Ice":       model.DamageType_ICE,
@@ -109,4 +137,20 @@ func (s StatusAdd) GetType() prop.Property {
 		return m
 	}
 	return prop.Invalid
+}
+
+var targetTypes = map[string]model.TargetType{
+	"Caster":        model.TargetType_SELF,
+	"FriendSelect":  model.TargetType_ALLIES,
+	"EnemySelect":   model.TargetType_ENEMIES,
+	"AllTeamMember": model.TargetType_ALLIES,
+	"AllEnemy":      model.TargetType_ENEMIES,
+}
+
+func (t TargetInfo) GetType() model.TargetType {
+	m, ok := targetTypes[t.TargetType]
+	if ok {
+		return m
+	}
+	return model.TargetType_INVALID_TARGET_TYPE
 }

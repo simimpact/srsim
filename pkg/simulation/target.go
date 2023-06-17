@@ -1,18 +1,17 @@
 package simulation
 
-import "github.com/simimpact/srsim/pkg/key"
-
-type TargetType int
-
-const (
-	TargetInvalid TargetType = iota
-	TargetCharacter
-	TargetEnemy
-	TargetNeutral
+import (
+	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/key"
 )
 
 // TODO: AddTarget
-func (sim *simulation) AddTarget() key.TargetID {
+func (sim *simulation) AddNeutralTarget() key.TargetID {
+	panic("not implemented") // TODO: Implement
+}
+
+// TODO: AddTarget
+func (sim *simulation) RemoveNeutralTarget(id key.TargetID) {
 	panic("not implemented") // TODO: Implement
 }
 
@@ -25,21 +24,21 @@ func (sim *simulation) IsValid(target key.TargetID) bool {
 
 func (sim *simulation) IsCharacter(target key.TargetID) bool {
 	if targetType, ok := sim.targets[target]; ok {
-		return targetType == TargetCharacter
+		return targetType == info.ClassCharacter
 	}
 	return false
 }
 
 func (sim *simulation) IsEnemy(target key.TargetID) bool {
 	if targetType, ok := sim.targets[target]; ok {
-		return targetType == TargetEnemy
+		return targetType == info.ClassEnemy
 	}
 	return false
 }
 
 func (sim *simulation) IsNeutral(target key.TargetID) bool {
 	if targetType, ok := sim.targets[target]; ok {
-		return targetType == TargetNeutral
+		return targetType == info.ClassNeutral
 	}
 	return false
 }
@@ -48,11 +47,11 @@ func (sim *simulation) AdjacentTo(target key.TargetID) []key.TargetID {
 	var targets []key.TargetID
 
 	switch sim.targets[target] {
-	case TargetCharacter:
+	case info.ClassCharacter:
 		targets = sim.characters
-	case TargetEnemy:
+	case info.ClassEnemy:
 		targets = sim.enemies
-	case TargetNeutral:
+	case info.ClassNeutral:
 		targets = sim.neutrals
 	default:
 		targets = nil

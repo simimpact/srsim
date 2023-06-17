@@ -42,6 +42,21 @@ func (m DebuffRESMap) Modify(flag model.BehaviorFlag, amt float64) {
 	m[flag] += amt
 }
 
+// adds a new weakness to the WeaknessMap. no-op if WeaknessMap already contains this DamageType
+func (m WeaknessMap) Add(dmg model.DamageType) {
+	m[dmg] = true
+}
+
+// removes a wakness from the WeaknessMap. no-op if WeaknessMap does not contain this type
+func (m WeaknessMap) Remove(dmg model.DamageType) {
+	delete(m, dmg)
+}
+
+// check if the WeaknessMap has this DamageType
+func (m WeaknessMap) Has(dmg model.DamageType) bool {
+	return m[dmg]
+}
+
 // Gets the current Debuff RES given the set of flags (max of res for associated flags)
 func (m DebuffRESMap) GetDebuffRES(flags ...model.BehaviorFlag) float64 {
 	out := 0.0

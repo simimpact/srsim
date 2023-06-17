@@ -1,10 +1,8 @@
 package key
 
-type Enemy string
-
-const (
-	DummyEnemy Enemy = "dummy_enemy"
-)
+type Modifier string
+type Shield string
+type TargetEvaluator string
 
 type ActionType int
 

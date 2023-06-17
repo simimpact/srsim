@@ -9,22 +9,32 @@ type System struct {
 	BattleStart BattleStartEventHandler
 	TurnEnd     TurnEndEventHandler
 	Termination TerminationEventHandler
+	ActionStart ActionStartEventHandler
+	ActionEnd   ActionEndEventHandler
+	UltStart    UltStartEventHandler
+	UltEnd      UltEndEventHandler
+	InsertStart InsertStartEventHandler
+	InsertEnd   InsertEndEventHandler
 
-	AttackStart  AttackStartEventHandler
-	AttackEnd    AttackEndEventHandler
-	BeforeHit    BeforeHitEventHandler
-	DamageResult DamageResultEventHandler
-	AfterHit     AfterHitEventHandler
-	BeforeHeal   BeforeHealEventHandler
-	AfterHeal    AfterHealEventHandler
+	AttackStart AttackStartEventHandler
+	AttackEnd   AttackEndEventHandler
+	HitStart    HitStartEventHandler
+	HitEnd      HitEndEventHandler
+	HealStart   HealStartEventHandler
+	HealEnd     HealEndEventHandler
 
 	CharacterAdded CharacterAddedEventHandler
+	EnemyAdded     EnemyAddedEventHandler
 
 	ModifierAdded            ModifierAddedEventHandler
 	ModifierResisted         ModifierResistedEventHandler
 	ModifierRemoved          ModifierRemovedEventHandler
 	ModifierExtendedDuration ModifierExtendedDurationEventHandler
 	ModifierExtendedCount    ModifierExtendedCountEventHandler
+
+	ShieldAdded   ShieldAddedEventHandler
+	ShieldRemoved ShieldRemovedEventHandler
+	ShieldChange  ShieldChangeEventHandler
 
 	HPChange       HPChangeEventHandler
 	LimboWaitHeal  LimboWaitHealEventHandler
@@ -33,6 +43,7 @@ type System struct {
 	StanceChange   StanceChangeEventHandler
 	StanceBreak    StanceBreakEventHandler
 	StanceBreakEnd StanceBreakEndEventHandler
+	SPChange       SPChangeEventHandler
 
 	TurnTargetsAdded       TurnTargetsAddedEventHandler
 	TurnStart              TurnStartEventHandler

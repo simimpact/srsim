@@ -9,7 +9,7 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-func (s *Service) SetHP(target, source key.TargetID, amt float64) error {
+func (s *Service) SetHP(target, source key.TargetID, amt float64, isDamage bool) error {
 	attr, ok := s.targets[target]
 	if !ok {
 		return fmt.Errorf("unknown target: %v", target)
@@ -26,10 +26,10 @@ func (s *Service) SetHP(target, source key.TargetID, amt float64) error {
 		attr.HPRatio = 0
 	}
 
-	return s.emitHPChangeEvents(target, source, oldRatio, attr.HPRatio, stats.MaxHP())
+	return s.emitHPChangeEvents(target, source, oldRatio, attr.HPRatio, stats.MaxHP(), isDamage)
 }
 
-func (s *Service) ModifyHPByAmount(target, source key.TargetID, amt float64) error {
+func (s *Service) ModifyHPByAmount(target, source key.TargetID, amt float64, isDamage bool) error {
 	attr, ok := s.targets[target]
 	if !ok {
 		return fmt.Errorf("unknown target: %v", target)
@@ -48,10 +48,10 @@ func (s *Service) ModifyHPByAmount(target, source key.TargetID, amt float64) err
 		attr.HPRatio = 0
 	}
 
-	return s.emitHPChangeEvents(target, source, oldRatio, attr.HPRatio, stats.MaxHP())
+	return s.emitHPChangeEvents(target, source, oldRatio, attr.HPRatio, stats.MaxHP(), isDamage)
 }
 
-func (s *Service) ModifyHPByRatio(target, source key.TargetID, data info.ModifyHPByRatio) error {
+func (s *Service) ModifyHPByRatio(target, source key.TargetID, data info.ModifyHPByRatio, isDamage bool) error {
 	attr, ok := s.targets[target]
 	if !ok {
 		return fmt.Errorf("unknown target: %v", target)
@@ -70,7 +70,7 @@ func (s *Service) ModifyHPByRatio(target, source key.TargetID, data info.ModifyH
 
 	stats := s.Stats(target)
 	if stats.CurrentHP() < data.Floor {
-		return s.SetHP(target, source, data.Floor)
+		return s.SetHP(target, source, data.Floor, isDamage)
 	}
 
 	// TODO: unsure if there are limits on min and max
@@ -78,7 +78,7 @@ func (s *Service) ModifyHPByRatio(target, source key.TargetID, data info.ModifyH
 		attr.HPRatio = 1.0
 	}
 
-	return s.emitHPChangeEvents(target, source, oldRatio, attr.HPRatio, stats.MaxHP())
+	return s.emitHPChangeEvents(target, source, oldRatio, attr.HPRatio, stats.MaxHP(), isDamage)
 }
 
 func (s *Service) SetStance(target, source key.TargetID, amt float64) error {
