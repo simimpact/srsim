@@ -4,7 +4,7 @@ import { AppRoutes } from "./routes";
 const App = () => (
   <div className="h-screen flex flex-col">
     <Navigation />
-    <div className="w-full h-full flex items-center flex-grow pb-4">
+    <div className="w-full h-full flex items-center flex-grow py-4">
       <AppRoutes />
     </div>
     <Footer />
