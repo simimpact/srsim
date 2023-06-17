@@ -1,14 +1,34 @@
-import { Button } from "@/components/Primitives/Button";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarTrigger,
+} from "@/components/Primitives/Menubar";
 
 const SimActionBar = () => {
   return (
-    <div className="flex flex-col justify-evenly self-center h-3/5 ml-8">
-      <Button variant="success">Run</Button>
-      <Button variant="destructive">Reset</Button>
-      <Button>APL</Button>
-      <Button>Debug</Button>
-      <Button>Im/export/Share group(radix grp)</Button>
-    </div>
+    <Menubar orientation="vertical" className="gap-4">
+      <MenubarMenu>
+        <MenubarTrigger className="bg-green-500 hover:bg-green-500/90">Run</MenubarTrigger>
+      </MenubarMenu>
+      <MenubarMenu>
+        <MenubarTrigger className="bg-red-500 hover:bg-red-500/90">Debug</MenubarTrigger>
+      </MenubarMenu>
+      <MenubarMenu>
+        <MenubarTrigger>APL</MenubarTrigger>
+      </MenubarMenu>
+      <MenubarMenu>
+        <MenubarTrigger>click me</MenubarTrigger>
+        <MenubarContent side="right">
+          <MenubarItem>Import</MenubarItem>
+          <MenubarItem>Export</MenubarItem>
+          <MenubarSeparator />
+          <MenubarItem>Share</MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+    </Menubar>
   );
 };
 export { SimActionBar };
