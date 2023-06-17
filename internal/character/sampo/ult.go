@@ -27,12 +27,10 @@ var ultHits = []float64{0.25, 0.25, 0.25, 0.25}
 
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
 
-	targets := c.engine.Enemies()
-
 	for _, hitRatio := range ultHits {
 		c.engine.Attack(info.Attack{
 			Source:     c.id,
-			Targets:    targets,
+			Targets:    c.engine.Enemies(),
 			DamageType: model.DamageType_WIND,
 			AttackType: model.AttackType_ULT,
 			BaseDamage: info.DamageMap{
@@ -47,7 +45,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	state.EndAttack()
 	c.a4()
 
-	for _, trg := range targets {
+	for _, trg := range c.engine.Enemies() {
 		c.engine.AddModifier(trg, info.Modifier{
 			Name:            SampoDOTTaken,
 			Source:          c.id,

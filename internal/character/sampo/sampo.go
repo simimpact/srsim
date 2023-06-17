@@ -52,7 +52,7 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 
 	c.initTraces()
 	c.initTalent()
-	engine.Events().TargetDeath.Subscribe(c.E1TargetDeathListener)
+	engine.Events().TargetDeath.Subscribe(c.E2TargetDeathListener)
 
 	return c
 }
