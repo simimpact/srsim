@@ -46,36 +46,48 @@ func (c *char) getAttack() attackFunc {
 	return c.basicAttack
 }
 func (c *char) basicAttack(target key.TargetID, isInsert bool) {
+	aType := model.AttackType_NORMAL
+	energy := 20.0
+	if isInsert {
+		aType = model.AttackType_INSERT
+		energy = 0.0
+	}
 	c.engine.Attack(info.Attack{
 		Source:     c.id,
 		Targets:    []key.TargetID{target},
 		DamageType: model.DamageType_QUANTUM,
-		AttackType: model.AttackType_NORMAL,
+		AttackType: aType,
 		BaseDamage: info.DamageMap{
 			model.DamageFormula_BY_ATK: atk[c.info.AttackLevelIndex()],
 		},
 		StanceDamage: 30.0,
-		EnergyGain:   20.0,
+		EnergyGain:   energy,
 	})
 }
 
 func (c *char) enhancedAttack(target key.TargetID, isInsert bool) {
+	aType := model.AttackType_NORMAL
+	energy := 20.0
+	if isInsert {
+		aType = model.AttackType_INSERT
+		energy = 0.0
+	}
 	c.engine.Attack(info.Attack{
 		Source:     c.id,
 		Targets:    []key.TargetID{target},
 		DamageType: model.DamageType_QUANTUM,
-		AttackType: model.AttackType_NORMAL,
+		AttackType: aType,
 		BaseDamage: info.DamageMap{
 			model.DamageFormula_BY_ATK: 2.4 * atk[c.info.AttackLevelIndex()],
 		},
 		StanceDamage: 60.0,
-		EnergyGain:   20.0,
+		EnergyGain:   energy,
 	})
 	c.engine.Attack(info.Attack{
 		Source:     c.id,
 		Targets:    c.engine.AdjacentTo(target),
 		DamageType: model.DamageType_QUANTUM,
-		AttackType: model.AttackType_NORMAL,
+		AttackType: aType,
 		BaseDamage: info.DamageMap{
 			model.DamageFormula_BY_ATK: atk[c.info.AttackLevelIndex()],
 		},
