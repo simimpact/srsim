@@ -1,4 +1,11 @@
 import { ReactNode } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTrigger,
+} from "@/components/Primitives/Dialog";
 import { cn } from "@/utils/classname";
 
 interface Props {
@@ -14,15 +21,31 @@ const CharacterLineup = ({ isEnemy = false, header }: Props) => {
   ];
 
   return (
-    <div className={cn("flex flex-col rounded-md p-2", isEnemy ? "bg-red-500" : "bg-blue-500")}>
-      {/* NOTE: CharacterCard is based for now, not yet implemented */}
-      <div className="flex justify-center">{header}</div>
-      <div className="flex">
-        {charCodes.map(({ name, code }) => (
-          <TempCharCard key={code} name={name} code={code} />
-        ))}
-      </div>
-    </div>
+    <Dialog>
+      <DialogTrigger>
+        <div
+          className={cn("flex flex-col rounded-md p-2", isEnemy ? "bg-destructive" : "bg-accent")}
+        >
+          {/* NOTE: CharacterCard is based for now, not yet implemented */}
+          <div className="flex justify-center">{header}</div>
+          <div className="flex">
+            {charCodes.map(({ name, code }) => (
+              <TempCharCard key={code} name={name} code={code} />
+            ))}
+          </div>
+        </div>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>Team name 123128</DialogHeader>
+        <DialogDescription>
+          <ul>
+            {charCodes.map(({ name, code }) => (
+              <li key={code}>{name}</li>
+            ))}
+          </ul>
+        </DialogDescription>
+      </DialogContent>
+    </Dialog>
   );
 };
 
