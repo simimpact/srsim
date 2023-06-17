@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	WarmthShortensColdNightsHPBuff     key.Modifier = "warmth_shortens_cold_nights_max_hp"
+	WarmthShortensColdNightsHPBuff     key.Modifier = "warmth_shortens_cold_nights_hp_buff"
 	WarmthShortensColdNightsHealCheck  key.Modifier = "warmth_shortens_cold_nights_heal_check"
 )
 
