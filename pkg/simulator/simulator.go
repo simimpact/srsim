@@ -2,6 +2,8 @@ package simulator
 
 import (
 	"context"
+	"errors"
+	"github.com/simimpact/srsim/pkg/engine/event/handler"
 	"runtime/debug"
 	"strconv"
 
@@ -62,7 +64,7 @@ func Run(ctx context.Context, list *gcs.ActionList, cfg *model.SimConfig) (*mode
 	)
 
 	go func() {
-		for i := 0; i < int(cfg.Iterations); i++ {
+		for i := 0; i < int(cfg.Iterations-1); i++ {
 			j := proto.Clone(cfg).(*model.SimConfig)
 			err := pool.QueueJob(workerpool.Job{
 				Script: list,
@@ -76,7 +78,7 @@ func Run(ctx context.Context, list *gcs.ActionList, cfg *model.SimConfig) (*mode
 	}()
 
 	//get results back
-	for i := 0; i < int(cfg.Iterations); i++ {
+	for i := 0; i < int(cfg.Iterations-1); i++ {
 		select {
 		case <-ctx.Done():
 			return nil, ctx.Err()
@@ -87,6 +89,36 @@ func Run(ctx context.Context, list *gcs.ActionList, cfg *model.SimConfig) (*mode
 				a.Add(result)
 			}
 		}
+	}
+
+	// perform our final iteration with logger enabled
+	handler.InitLogger()
+	var err error
+	go func() {
+		select {
+		case <-ctx.Done():
+			err = errors.New("error: ctx is done")
+			return
+		case err = <-errChan:
+			return
+		case result := <-resp:
+			for _, a := range aggregators {
+				a.Add(result)
+			}
+		}
+	}()
+
+	err2 := pool.QueueJob(workerpool.Job{
+		Script: list,
+		Config: proto.Clone(cfg).(*model.SimConfig),
+	})
+	if err != nil {
+		// something went wrong in thread
+		return nil, err
+	}
+	if err2 != nil {
+		//context must have been cancelled
+		return nil, err
 	}
 
 	//stats aggregation should happen here and make us a result?

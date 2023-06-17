@@ -16,9 +16,11 @@ type CancelableEventHandler[E event] struct {
 func (handler *CancelableEventHandler[E]) Emit(event E) bool {
 	for _, listener := range handler.listeners {
 		if listener.listener(event) {
+			Singleton.Log(event)
 			return true
 		}
 	}
+	Singleton.Log(event)
 	return false
 }
 

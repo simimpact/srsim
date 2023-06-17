@@ -1,10 +1,13 @@
 package event
 
 import (
+	"bytes"
+	"fmt"
 	"github.com/simimpact/srsim/pkg/engine/event/handler"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
+	"strconv"
 )
 
 type AttackStartEventHandler = handler.EventHandler[AttackStartEvent]
@@ -13,6 +16,20 @@ type AttackStartEvent struct {
 	Targets    []key.TargetID
 	AttackType model.AttackType
 	DamageType model.DamageType
+}
+
+func (e AttackStartEvent) MarshalJSON() ([]byte, error) {
+	var buf bytes.Buffer
+	buf.WriteString("{\"Event\": \"AttackStartEvent\",")
+	buf.WriteString("\"Attacker\": " + strconv.Itoa(int(e.Attacker)))
+	buf.WriteString(fmt.Sprintf(",\"Targets\": %v", e.Targets))
+	buf.WriteString(",\"AttackType\": \"" + e.AttackType.String())
+	buf.WriteString("\",\"DamageType\": \"" + e.DamageType.String())
+	buf.WriteByte('"')
+	buf.WriteByte('}')
+	fmt.Println("Hello")
+	fmt.Println(buf.String())
+	return buf.Bytes(), nil
 }
 
 type AttackEndEventHandler = handler.EventHandler[AttackEndEvent]

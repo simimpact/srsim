@@ -12,6 +12,7 @@ func (handler *EventHandler[E]) Emit(event E) {
 	for _, listener := range handler.listeners {
 		listener(event)
 	}
+	Singleton.Log(event)
 }
 
 // Subscribe a listener to this event handler to be executed when Emit is called
