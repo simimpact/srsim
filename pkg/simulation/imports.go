@@ -26,6 +26,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/hunt/dartingarrow"
 	_ "github.com/simimpact/srsim/internal/lightcone/hunt/onlysilenceremains"
 	_ "github.com/simimpact/srsim/internal/lightcone/hunt/riverflowsinspring"
+	_ "github.com/simimpact/srsim/internal/lightcone/hunt/subscribeformore"
 	_ "github.com/simimpact/srsim/internal/lightcone/nihility/fermata"
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/momentofvictory"
 	_ "github.com/simimpact/srsim/internal/relic/cavern/musketeer"
