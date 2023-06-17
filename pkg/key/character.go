@@ -9,4 +9,5 @@ const (
 	Pela           Character = "pela"
 	SilverWolf     Character = "silverwolf"
 	DummyCharacter Character = "dummy_character"
+	Sampo          Character = "sampo"
 )
