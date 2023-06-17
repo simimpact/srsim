@@ -47,3 +47,7 @@ const (
 	FineFruit      LightCone = "fine_fruit"
 	Multiplication LightCone = "multiplication"
 )
+
+func (l LightCone) String() string {
+	return string(l)
+}
