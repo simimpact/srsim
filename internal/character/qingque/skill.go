@@ -12,33 +12,48 @@ const (
 	Skill key.Modifier = "qingque-skill"
 )
 
+type skillState struct {
+	damageBoost float64
+}
+
 func init() {
 	modifier.Register(Skill, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
 		Stacking:   modifier.ReplaceBySource,
 		MaxCount:   4,
 		Listeners: modifier.Listeners{
-			OnAdd: skillOnAdd,
+			OnAdd:    skillOnAdd,
+			OnPhase2: skillOnPhase2,
 		},
+		CountAddWhenStack: 1,
 	})
 }
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
-	c.engine.AddModifier(target, info.Modifier{
-		Name:   Skill,
-		Source: c.id,
-	})
-	c.engine.InsertAction(c.id)
-}
-func skillOnAdd(mod *modifier.ModifierInstance) {
 	extraDamage := 0.0
-	instance, err := mod.Engine().CharacterInstance(mod.Owner())
-	if err != nil {
-		// bad stuff idk how to deal with this
-	}
-	c := instance.(*char)
-	mod.Owner()
 	if c.info.Traces["1201102"] {
 		extraDamage = 0.1
 	}
-	mod.AddProperty(prop.ATKPercent, mod.Count()*(extraDamage+skill[c.info.SkillLevelIndex()]))
+	c.engine.AddModifier(target, info.Modifier{
+		Name:   Skill,
+		Source: c.id,
+		State: skillState{
+			damageBoost: extraDamage + skill[c.info.SkillLevelIndex()],
+		},
+	})
+	c.drawTile()
+	c.drawTile()
+	if c.engine.Rand().Float64() < 0.24 {
+		c.engine.AddModifier(target, info.Modifier{
+			Name:   Autarky,
+			Source: c.id,
+		})
+	}
+	c.engine.InsertAction(c.id)
+}
+func skillOnAdd(mod *modifier.ModifierInstance) {
+	state := mod.State().(skillState)
+	mod.AddProperty(prop.ATKPercent, mod.Count()*(state.damageBoost))
+}
+func skillOnPhase2(mod *modifier.ModifierInstance) {
+	mod.RemoveSelf()
 }

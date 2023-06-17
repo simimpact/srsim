@@ -6,6 +6,8 @@ import (
 )
 
 func (c *char) Technique(target key.TargetID, state info.ActionState) {
-	c.drawTile()
-	c.drawTile()
+	if c.tiles[0] == 0 {
+		c.drawTile()
+		c.drawTile()
+	}
 }

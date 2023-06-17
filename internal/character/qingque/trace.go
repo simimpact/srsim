@@ -23,13 +23,13 @@ const (
 
 func init() {
 	modifier.Register(A2, modifier.Config{
-		StatusType: model.StatusType_STATUS_BUFF,
 		Listeners: modifier.Listeners{
 			OnAfterAction: A2ActionEndListener,
 		},
 	})
 	modifier.Register(A6, modifier.Config{
-		StatusType: model.StatusType_STATUS_BUFF,
+		StatusType:    model.StatusType_STATUS_BUFF,
+		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_UP},
 	})
 }
 
@@ -43,12 +43,7 @@ func (c *char) initTraces() {
 }
 
 func A2ActionEndListener(mod *modifier.ModifierInstance, e event.ActionEvent) {
-	instance, err := mod.Engine().CharacterInstance(mod.Owner())
-	if err != nil {
-		// bad stuff idk how to deal with this
-	}
-	c := instance.(*char)
-	if c.id == e.Owner && e.Targets[c.id] {
+	if mod.Owner() == e.Owner && e.Targets[mod.Owner()] {
 		mod.Engine().ModifySP(1)
 		mod.RemoveSelf()
 	}
@@ -57,9 +52,10 @@ func A2ActionEndListener(mod *modifier.ModifierInstance, e event.ActionEvent) {
 func (c *char) a6() {
 	if c.info.Traces["1201103"] {
 		c.engine.AddModifier(c.id, info.Modifier{
-			Name:   A6,
-			Source: c.id,
-			Stats:  info.PropMap{prop.SPDPercent: 0.1},
+			Name:     A6,
+			Source:   c.id,
+			Stats:    info.PropMap{prop.SPDPercent: 0.1},
+			Duration: 1,
 		})
 	}
 }

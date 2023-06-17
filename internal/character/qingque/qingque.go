@@ -27,10 +27,7 @@ func init() {
 				TargetType: model.TargetType_SELF,
 				CanUse: func(engine engine.Engine, instance info.CharInstance) bool {
 					c := instance.(*char)
-					if c.tiles[0] == 4 {
-						return false
-					}
-					return true
+					return (c.tiles[0] != 4)
 				},
 			},
 			Ult: character.Ult{
@@ -63,6 +60,7 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 		unusedSuits: []string{"Wan", "Tong", "Tiao"},
 	}
 	engine.Events().TurnStart.Subscribe(c.talentTurnStartListener)
-
+	c.initTraces()
+	c.initEidolons()
 	return c
 }
