@@ -57,7 +57,11 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	}
 
 	state.EndAttack()
-	// TODO: E1 buff
+
+	if isBroken && c.info.Eidolon >= 1 {
+		c.engine.ModifySP(1)
+	}
+
 	c.a6()
 }
 
@@ -93,5 +97,5 @@ func ssHit(c *char, target key.TargetID, isExtra bool) {
 		c.a4AddStack()
 	}
 
-	// TODO: E2 buff
+	c.e2()
 }

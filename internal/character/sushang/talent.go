@@ -14,6 +14,7 @@ const (
 )
 
 func init() {
+	// Only for E0-E5
 	modifier.Register(TalentBuff, modifier.Config{
 		Stacking:      modifier.ReplaceBySource,
 		StatusType:    model.StatusType_STATUS_BUFF,
@@ -23,12 +24,21 @@ func init() {
 
 func (c *char) initTalent() {
 	c.engine.Events().StanceBreak.Subscribe(func(e event.StanceBreakEvent) {
+		c.addTalentBuff()
+	})
+}
+
+func (c *char) addTalentBuff() {
+	if c.info.Eidolon >= 6 {
+		c.addE6Stack()
+	} else {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:   TalentBuff,
 			Source: c.id,
 			Stats: info.PropMap{
 				prop.SPDPercent: talent[c.info.TalentLevelIndex()],
 			},
+			Duration: 2,
 		})
-	})
+	}
 }
