@@ -1,3 +1,4 @@
+import { VariantProps } from "class-variance-authority";
 import { ReactNode } from "react";
 import {
   Dialog,
@@ -6,18 +7,25 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "@/components/Primitives/Dialog";
+import { CharacterPortrait } from "@/components/Sim/CharacterPortrait";
 import { cn } from "@/utils/classname";
+import { elementVariants } from "@/utils/variants";
 
 interface Props {
   isEnemy?: boolean;
   header?: ReactNode;
 }
 const CharacterLineup = ({ isEnemy = false, header }: Props) => {
-  const charCodes = [
-    { name: "Trailblaze (Fire)", code: 8004 },
-    { name: "Natasha", code: 1105 },
-    { name: "Bronya", code: 1101 },
-    { name: "Kafka", code: 1005 },
+  const charCodes: {
+    name: string;
+    code: number;
+    rarity: number;
+    element: VariantProps<typeof elementVariants>["element"];
+  }[] = [
+    { name: "Trailblaze (Fire)", code: 8004, rarity: 5, element: "fire" },
+    { name: "Natasha", code: 1105, rarity: 4, element: "physical" },
+    { name: "Bronya", code: 1101, rarity: 5, element: "wind" },
+    { name: "Kafka", code: 1005, rarity: 5, element: "lightning" },
   ];
 
   return (
@@ -29,8 +37,15 @@ const CharacterLineup = ({ isEnemy = false, header }: Props) => {
           {/* NOTE: CharacterCard is based for now, not yet implemented */}
           <div className="flex justify-center">{header}</div>
           <div className="flex">
-            {charCodes.map(({ name, code }) => (
-              <TempCharCard key={code} name={name} code={code} />
+            {charCodes.map(({ name, code, rarity, element }) => (
+              // <TempCharCard key={code} name={name} code={code} />
+              <CharacterPortrait
+                key={code}
+                name={name}
+                code={code}
+                rarity={rarity}
+                element={element}
+              />
             ))}
           </div>
         </div>
@@ -49,17 +64,4 @@ const CharacterLineup = ({ isEnemy = false, header }: Props) => {
   );
 };
 
-interface CardProps {
-  name: string;
-  code: number; // for img pathname
-}
-const TempCharCard = ({ name, code }: CardProps) => {
-  const url = (code: number) =>
-    `https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/character/${code}.png`;
-  return (
-    <div>
-      <img src={url(code)} alt={name} className="max-h-32" />
-    </div>
-  );
-};
 export { CharacterLineup };
