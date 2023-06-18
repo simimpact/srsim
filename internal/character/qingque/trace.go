@@ -43,7 +43,7 @@ func (c *char) initTraces() {
 }
 
 func A2ActionEndListener(mod *modifier.ModifierInstance, e event.ActionEvent) {
-	if mod.Owner() == e.Owner && e.Targets[mod.Owner()] {
+	if e.AttackType == model.AttackType_SKILL {
 		mod.Engine().ModifySP(1)
 		mod.RemoveSelf()
 	}

@@ -42,10 +42,17 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	})
 	c.drawTile()
 	c.drawTile()
-	if c.engine.Rand().Float64() < 0.24 {
+	if c.info.Eidolon >= 4 && c.engine.Rand().Float64() < 0.24 {
 		c.engine.AddModifier(target, info.Modifier{
 			Name:   Autarky,
 			Source: c.id,
+		})
+	}
+	if c.tiles[0] == 4 {
+		c.engine.AddModifier(c.id, info.Modifier{
+			Name:   Talent,
+			Source: c.id,
+			Stats:  info.PropMap{prop.ATKPercent: talent[c.info.TalentLevelIndex()]},
 		})
 	}
 	c.engine.InsertAction(c.id)

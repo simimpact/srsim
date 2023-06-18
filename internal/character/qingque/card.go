@@ -8,34 +8,34 @@ func (c *char) swap(pos1, pos2 int) {
 // Functions if distinct suits aren't needed to save time and memory, for documentation read the comments on the functions including distinct suits
 func (c *char) drawTile() string {
 	c.e2()
-	if c.tiles[0] != 4 {
-		s1, s2, s3 := c.tiles[0], c.tiles[1], c.tiles[2]
-		startingTiles := s1 + s2 + s3
-		drawn := c.engine.Rand().Intn(3)
-		c.tiles[drawn] += 1
-		if c.tiles[0] >= c.tiles[1] && c.tiles[1] >= c.tiles[2] {
-		} else if c.tiles[1] > c.tiles[0] {
-			c.swap(0, 1)
-		} else if c.tiles[2] > c.tiles[0] {
-			c.swap(0, 2)
-		} else {
-			c.swap(1, 2)
-		}
-		if startingTiles == 4 {
-			c.discardTile()
-		}
+	if c.tiles[0] == 4 {
+		return "DISTINCT SUITS DISABLED"
+	}
+	s1, s2, s3 := c.tiles[0], c.tiles[1], c.tiles[2]
+	startingTiles := s1 + s2 + s3
+	drawn := c.engine.Rand().Intn(3)
+	c.tiles[drawn] += 1
+	switch {
+	case c.tiles[1] > c.tiles[0]:
+		c.swap(0, 1)
+	case c.tiles[2] > c.tiles[0]:
+		c.swap(0, 2)
+	case c.tiles[2] > c.tiles[1]:
+		c.swap(1, 2)
+	}
+	if startingTiles == 4 {
+		c.discardTile()
 	}
 	return "DISTINCT SUITS DISABLED"
 }
 func (c *char) discardTile() string {
-	if c.tiles[2] != 0 {
+	switch {
+	case c.tiles[2] != 0:
 		c.tiles[2] -= 1
-	} else if c.tiles[1] != 0 {
+	case c.tiles[1] != 0:
 		c.tiles[1] -= 1
-	} else if c.tiles[0] != 0 {
+	default:
 		c.tiles[0] -= 1
-	} else {
-		// This should really never happen
 	}
 	return "DISTINCT SUITS DISABLED"
 }
@@ -72,13 +72,12 @@ func (c *char) drawTile() string {
 	// Adds the tile then sorts the array in descending order (with some simplifications based on cases)
 	// Only cases where stuff needs to be sorted are (0/0/1, 0/1/0, 1/0/1, 2/0/1, 2/3/0, 2/1/2). This sorts all of them properly
 	c.tiles[drawn] += 1
-	if c.tiles[0] >= c.tiles[1] && c.tiles[1] >= c.tiles[2] {
-
-	} else if c.tiles[1] > c.tiles[0] {
+	switch {
+	case c.tiles[1] > c.tiles[0]:
 		c.swap(0, 1)
-	} else if c.tiles[2] > c.tiles[0] {
+	case c.tiles[2] > c.tiles[0]:
 		c.swap(0, 2)
-	} else {
+	case c.tiles[2] > c.tiles[1]:
 		c.swap(1, 2)
 	}
 	if startingTiles == 4 {
@@ -86,7 +85,7 @@ func (c *char) drawTile() string {
 	}
 	return suit
 }
-func (c *char) discardTile() string{
+func (c *char) discardTile() string {
 	// Pretty self explanatory, because our thing is in decreasing order just drop a tile from the last nonempty box
 	// You should never be discarding with no tiles because you're only ever discarding at 5 tiles when gaining a tile from any source
 	// or at 1-4 tiles due to QQ's basic (she always has at least 1 because she gains a tile at her own turn start)
@@ -97,7 +96,8 @@ func (c *char) discardTile() string{
 	// Returns the suit that was discarded for the animations of skill and basic(iirc)
 
 	suit := "Bug"
-	if c.tiles[2] != 0 {
+	switch {
+	case c.tiles[2] != 0:
 		if c.tiles[1] == c.tiles[2] {
 			if c.tiles[2] == c.tiles[0] {
 				switch c.engine.Rand().Intn(3) {
@@ -117,7 +117,7 @@ func (c *char) discardTile() string{
 			c.unusedSuits[len(c.unusedSuits)-1] = c.suits[2]
 			c.suits[2] = ""
 		}
-	} else if c.tiles[1] != 0 {
+	case c.tiles[1] != 0:
 		if c.tiles[0] == c.tiles[1] && c.engine.Rand().Intn(2) == 0 {
 			c.suits[0] = c.suits[1]
 		}
@@ -128,7 +128,7 @@ func (c *char) discardTile() string{
 			c.unusedSuits[len(c.unusedSuits)-1] = c.suits[1]
 			c.suits[1] = ""
 		}
-	} else if c.tiles[0] != 0 {
+	default:
 		c.tiles[0] -= 1
 		suit = c.suits[0]
 		if c.tiles[0] == 0 {
@@ -136,8 +136,6 @@ func (c *char) discardTile() string{
 			c.unusedSuits[len(c.unusedSuits)-1] = c.suits[0]
 			c.suits[0] = ""
 		}
-	} else {
-		// This should really never happen
 	}
 	return suit
 }
