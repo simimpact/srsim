@@ -12,8 +12,33 @@ export const elementVariants = cva("", {
       quantum: "bg-quantum text-quantum-foreground hover:bg-quantum/90",
       imaginary: "bg-imaginary text-imaginary-foreground hover:bg-imaginary/90",
     },
+    border: {
+      none: "",
+      fire: "border-fire",
+      ice: "border-ice",
+      wind: "border-wind",
+      physical: "border-physical",
+      lightning: "border-lightning",
+      quantum: "border-quantum",
+      imaginary: "border-imaginary",
+    },
   },
   defaultVariants: {
     element: "none",
+    border: "none",
   },
+});
+
+// TODO: update colors
+export const rarityVariants = cva("", {
+  variants: {
+    rarity: {
+      silver: "bg-physical text-physical-foreground hover:bg-physical/90",
+      green: "bg-wind text-wind-foreground hover:bg-wind/90",
+      blue: "bg-ice text-ice-foreground hover:bg-ice/90",
+      purple: "bg-quantum text-quantum-foreground hover:bg-quantum/90",
+      gold: "bg-imaginary text-imaginary-foreground hover:bg-imaginary/90",
+    },
+  },
+  defaultVariants: { rarity: "silver" },
 });
