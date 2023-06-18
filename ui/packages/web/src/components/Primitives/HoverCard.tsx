@@ -21,7 +21,7 @@ const HoverCardContent = React.forwardRef<
     ref={ref}
     align={align}
     sideOffset={sideOffset}
-    className={cn(hoverCardVariants(), className)}
+    className={cn(hoverCardVariants({ className }))}
     {...props}
   />
 ));
