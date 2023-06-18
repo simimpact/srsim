@@ -12,8 +12,7 @@ import (
 )
 
 const (
-	WarmthShortensColdNightsHPBuff     key.Modifier = "warmth_shortens_cold_nights_hp_buff"
-	WarmthShortensColdNightsHealCheck  key.Modifier = "warmth_shortens_cold_nights_heal_check"
+	CheckNBuff   key.Modifier = "warmth_shortens_cold_nights"
 )
 
 func init() {
@@ -24,12 +23,8 @@ func init() {
 		Promotions:    promotions,
 	})
 
-	//hp buff goes here
-	modifier.Register(WarmthShortensColdNightsHPBuff, modifier.Config{
-		StatusType: model.StatusType_STATUS_BUFF,
-	})
 	//Check if action is basic atk / skill
-	modifier.Register(WarmthShortensColdNightsHealCheck, modifier.Config{
+	modifier.Register(CheckNBuff, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAfterAction: healTeamOnBasicOrSkill,
 		},
@@ -38,18 +33,12 @@ func init() {
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	amt := 0.12 + 0.04*float64(lc.Imposition)
-	//OnStart :
+	//OnStart : (Simplified to 1 call)
 	engine.AddModifier(owner, info.Modifier{
-		Name:   WarmthShortensColdNightsHPBuff,
+		Name:   CheckNBuff,
 		Source: owner,
-		Stats:  info.PropMap{prop.HPPercent: amt},
-		State:  amt,
-	})
-	
-	engine.AddModifier(owner, info.Modifier{ 
-		Name:   WarmthShortensColdNightsHealCheck,
-		Source: owner,
-		State:  0.02 + 0.005 * float64(lc.Imposition),
+		Stats:  info.PropMap{prop.HPPercent: amt}, //static "buff"
+		State:  0.015 + 0.005 * float64(lc.Imposition), //state to pass into check logic
 	})
 }
 //if basic atk/skill, heal the whole team by x%
