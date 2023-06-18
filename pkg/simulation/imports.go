@@ -5,6 +5,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/character/bronya"
 	_ "github.com/simimpact/srsim/internal/character/danheng"
 	_ "github.com/simimpact/srsim/internal/character/pela"
+	_ "github.com/simimpact/srsim/internal/character/qingque"
 	_ "github.com/simimpact/srsim/internal/character/sampo"
 	_ "github.com/simimpact/srsim/internal/character/silverwolf"
 	_ "github.com/simimpact/srsim/internal/global"
