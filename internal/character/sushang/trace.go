@@ -12,10 +12,10 @@ import (
 // A2:
 //  When current HP percentage is 50% or lower, reduces the chance of being attacked by enemies.
 // A4:
-//	For every Sword Stance triggered, the DMG dealt by Sword Stance increases by 2.5%. Stacks up to
+//  For every Sword Stance triggered, the DMG dealt by Sword Stance increases by 2.5%. Stacks up to
 //  10 time(s).
 // A6:
-//	After using Basic ATK or Skill, if there are enemies on the field with Weakness Break,
+//  After using Basic ATK or Skill, if there are enemies on the field with Weakness Break,
 //  Sushang's action is Advanced Forward by 15%.
 
 const (
