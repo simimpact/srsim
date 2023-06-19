@@ -40,4 +40,5 @@ import (
 	_ "github.com/simimpact/srsim/internal/relic/cavern/musketeer"
 	_ "github.com/simimpact/srsim/internal/relic/planar/salsotto"
 	_ "github.com/simimpact/srsim/internal/relic/planar/space"
+	_ "github.com/simimpact/srsim/internal/relic/planar/talia"
 )
