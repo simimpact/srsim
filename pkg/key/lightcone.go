@@ -20,6 +20,9 @@ const (
 	RiverFlowsinSpring      LightCone = "river_flows_in_spring"
 	SubscribeforMore        LightCone = "subscribe_for_more"
 	Swordplay               LightCone = "swordplay"
+	ReturntoDarkness        LightCone = "return_to_darkness"
+	SleepLiketheDead        LightCone = "sleep_like_the_dead"
+	IntheNight              LightCone = "in_the_night"
 )
 
 // Nihility
