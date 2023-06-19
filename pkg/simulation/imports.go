@@ -38,5 +38,6 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/momentofvictory"
 	_ "github.com/simimpact/srsim/internal/relic/cavern/hunterofglacialforest"
 	_ "github.com/simimpact/srsim/internal/relic/cavern/musketeer"
+	_ "github.com/simimpact/srsim/internal/relic/planar/salsotto"
 	_ "github.com/simimpact/srsim/internal/relic/planar/space"
 )

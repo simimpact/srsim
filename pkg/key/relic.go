@@ -11,4 +11,5 @@ const (
 // Planar
 const (
 	SpaceSealingStation Relic = "space_sealing_station"
+	InertSalsotto       Relic = "inert_salsotto"
 )
