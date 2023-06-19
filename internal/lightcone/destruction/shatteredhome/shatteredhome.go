@@ -31,6 +31,7 @@ func init() {
 	})
 }
 
+// The wear deals 20%/25%/30%/35%/40% more DMG to enemy targets whose HP percentage is greater than 50%.
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	engine.AddModifier(owner, info.Modifier{
 		Name:   ShatteredHomeCheck,
