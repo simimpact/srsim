@@ -21,6 +21,7 @@ const (
 	SubscribeforMore        LightCone = "subscribe_for_more"
 	Swordplay               LightCone = "swordplay"
 	ReturntoDarkness        LightCone = "return_to_darkness"
+	SleepLiketheDead        LightCone = "sleep_like_the_dead"
 )
 
 // Nihility
