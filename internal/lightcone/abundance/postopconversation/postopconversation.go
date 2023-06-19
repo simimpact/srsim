@@ -11,9 +11,11 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
+//Increases the wearer's Energy Regeneration Rate by 8% and
+//increases Outgoing Healing when they use their Ultimate by 12%.
 const (
 	PostOpErrNCheck key.Modifier = "post-op-conversation-err-and-check"
-	PostOpHeal 		key.Modifier = "post-op-conversation-heal-buff"
+	PostOpHealBuff 	key.Modifier = "post-op-conversation-heal-buff"
 )
 
 func init() {
@@ -33,9 +35,7 @@ func init() {
 		},
 	})
 	//The actual buff modifier goes here
-	modifier.Register(PostOpHeal, modifier.Config{
-		StatusType: model.StatusType_STATUS_BUFF,
-	})
+	modifier.Register(PostOpHealBuff, modifier.Config{})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
@@ -45,7 +45,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		Name:   PostOpErrNCheck,
 		Source: owner,
 		Stats:  info.PropMap{prop.EnergyRegen: errAmt},
-		State:  0.09 + 0.03 * float64(lc.Imposition), //heal amt passed as state
+		State:  0.09 + 0.03 * float64(lc.Imposition), //heal buff amt passed as state
 	})
 }
 
@@ -55,7 +55,7 @@ func buffHealsOnUlt(mod *modifier.ModifierInstance, e event.ActionEvent) {
 	//Once OnBeforeDealHeal has AttackType prop, need to change this.
 	if (e.AttackType == model.AttackType_ULT) {
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-			Name:     PostOpHeal,
+			Name:     PostOpHealBuff,
 			Source:   mod.Owner(),
 			Stats:    info.PropMap{prop.HealBoost: amt},
 		})
@@ -63,5 +63,5 @@ func buffHealsOnUlt(mod *modifier.ModifierInstance, e event.ActionEvent) {
 }
 //remove buff after each "action"
 func removeHealBuff(mod *modifier.ModifierInstance, e event.ActionEvent)  {
-	mod.Engine().RemoveModifier(mod.Owner(), PostOpHeal)
+	mod.Engine().RemoveModifier(mod.Owner(), PostOpHealBuff)
 }
