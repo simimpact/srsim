@@ -44,7 +44,7 @@ func init() {
 		},
 	})
 
-	modifier.Register(mod, modifier.Config{
+	modifier.Register(buff, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_BUFF,
 	})
