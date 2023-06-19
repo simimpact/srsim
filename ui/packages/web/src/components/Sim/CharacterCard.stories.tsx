@@ -13,6 +13,5 @@ export const Default = {
   args: {
     name: "Seele",
     rarity: 5,
-    variant: "quantum",
   },
 } satisfies Story;

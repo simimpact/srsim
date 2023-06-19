@@ -64,6 +64,11 @@ func (s *Service) Energy(target key.TargetID) float64 {
 	return s.targets[target].Energy
 }
 
+func (s *Service) FullEnergy(target key.TargetID) bool {
+	attr := s.targets[target]
+	return attr.Energy >= attr.MaxEnergy
+}
+
 func (s *Service) Stance(target key.TargetID) float64 {
 	return s.targets[target].Stance
 }
