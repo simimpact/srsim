@@ -43,12 +43,11 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 func giveTeamEnergy(mod *modifier.ModifierInstance, e event.ActionEvent) {
-	team := mod.Engine().Characters()
 	amt := mod.State().(float64)
 	if(e.AttackType == model.AttackType_SKILL) {
-		//apply team energy top up. NOTE : need a better implementation.
-		for i := range team {
-			mod.Engine().ModifyEnergy(team[i], amt)
-		}
+		//apply team energy top up.
+		for _, char := range mod.Engine().Characters() {
+			mod.Engine().ModifyEnergy(char, amt)
+		  }
 	}
 }
