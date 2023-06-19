@@ -10,6 +10,7 @@ const (
 
 // Planar
 const (
-	SpaceSealingStation Relic = "space_sealing_station"
-	InertSalsotto       Relic = "inert_salsotto"
+	SpaceSealingStation    Relic = "space_sealing_station"
+	InertSalsotto          Relic = "inert_salsotto"
+	TaliaKingdomOfBanditry Relic = "talia_kingdom_of_banditry"
 )
