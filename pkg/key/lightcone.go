@@ -8,6 +8,7 @@ const (
 	NowheretoRun       LightCone = "nowhere_to_run"
 	MutualDemise       LightCone = "mutual_demise"
 	ASecretVow         LightCone = "a_secret_vow"
+	ShatteredHome      LightCone = "shattered_home"
 )
 
 // Hunt

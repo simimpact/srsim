@@ -17,6 +17,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/asecretvow"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/mutualdemise"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/nowheretorun"
+	_ "github.com/simimpact/srsim/internal/lightcone/destruction/shatteredhome"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/themoleswelcomeyou"
 	_ "github.com/simimpact/srsim/internal/lightcone/erudition/beforedawn"
 	_ "github.com/simimpact/srsim/internal/lightcone/erudition/databank"
