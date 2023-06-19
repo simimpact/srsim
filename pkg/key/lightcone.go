@@ -55,4 +55,5 @@ const (
 	Multiplication           LightCone = "multiplication"
 	Cornucopia               LightCone = "cornucopia"
 	WarmthShortensColdNights LightCone = "warmth_shortens_cold_nights"
+	PostOpConversation       LightCone = "post_op_conversation"
 )
