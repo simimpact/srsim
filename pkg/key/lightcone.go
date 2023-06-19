@@ -57,4 +57,5 @@ const (
 	Cornucopia               LightCone = "cornucopia"
 	WarmthShortensColdNights LightCone = "warmth_shortens_cold_nights"
 	PostOpConversation       LightCone = "post_op_conversation"
+	SharedFeeling            LightCone = "shared_feeling"
 )
