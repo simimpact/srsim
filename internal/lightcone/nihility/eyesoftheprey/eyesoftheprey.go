@@ -11,12 +11,12 @@ import (
 )
 
 const (
-	EyesofthePrey key.Modifier = "eyes_of_the_prey"
+	mod key.Modifier = "eyes_of_the_prey"
 )
 
 // Increases the wearer's Effect Hit Rate by 20%/25%/30%/35%/40% and increases DoT by 24%/30%/36%/42%/48%.
 func init() {
-	lightcone.Register(key.EyesofthePrey, lightcone.Config{
+	lightcone.Register(mod, lightcone.Config{
 		CreatePassive: Create,
 		Rarity:        4,
 		Path:          model.Path_NIHILITY,
