@@ -6,7 +6,7 @@ type Relic string
 const (
 	MusketeerOfWildWheat     Relic = "musketeer_of_wild_wheat"
 	HunterOfGlacialForest    Relic = "hunter_of_glacial_forest"
-	PasserbyOfWanderingCloud Relic = "passerby-of-wandering-cloud"
+	PasserbyOfWanderingCloud Relic = "passerby_of_wandering_cloud"
 )
 
 // Planar
