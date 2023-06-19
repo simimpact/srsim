@@ -16,7 +16,7 @@ const (
 
 // Increases the wearer's Effect Hit Rate by 20%/25%/30%/35%/40% and increases DoT by 24%/30%/36%/42%/48%.
 func init() {
-	lightcone.Register(key.EyesofthePrey, lightcone.Config{
+	lightcone.Register(key.mod, lightcone.Config{
 		CreatePassive: Create,
 		Rarity:        4,
 		Path:          model.Path_NIHILITY,
@@ -25,9 +25,8 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	ehr_amt := 0.2 + 0.05*float64(lc.Imposition)
-	dot_amt := 0.24 + 0.06*float64(lc.Imposition)
-
+	ehr_amt := 0.15 + 0.05*float64(lc.Imposition)
+	dot_amt := 0.18 + 0.06*float64(lc.Imposition)
 	engine.AddModifier(owner, info.Modifier{
 		Name: EyesofthePrey,
 		Source: owner,
