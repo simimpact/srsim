@@ -43,12 +43,6 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 
 func onBeforeHitAll(mod *modifier.ModifierInstance, e event.HitStartEvent) {
 	if e.Hit.Defender.CurrentHPRatio() > 0.5 {
-		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-			Name:   ShatteredHomeBuff,
-			Source: mod.Owner(),
-			Stats:  info.PropMap{prop.AllDamagePercent: mod.State().(float64)},
-		})
-	} else {
-		mod.Engine().RemoveModifier(mod.Owner(), ShatteredHomeBuff)
+		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, mod.State().(float64))
 	}
 }
