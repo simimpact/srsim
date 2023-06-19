@@ -4,8 +4,9 @@ type Relic string
 
 // Cavern
 const (
-	MusketeerOfWildWheat  Relic = "musketeer_of_wild_wheat"
-	HunterOfGlacialForest Relic = "hunter_of_glacial_forest"
+	MusketeerOfWildWheat     Relic = "musketeer_of_wild_wheat"
+	HunterOfGlacialForest    Relic = "hunter_of_glacial_forest"
+	PasserbyOfWanderingCloud Relic = "passerby_of_wandering_cloud"
 )
 
 // Planar
