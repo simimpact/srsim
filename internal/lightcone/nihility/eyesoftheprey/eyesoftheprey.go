@@ -31,6 +31,5 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		Name: EyesofthePrey,
 		Source: owner,
 		Stats: info.PropMap{prop.EffectHitRate: ehr_amt, prop.DOTDamagePercent: dot_amt},
-		State: Amts{ehr: ehr_amt, dot: dot_amt},
 	})
 }
