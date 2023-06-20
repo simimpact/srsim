@@ -11,9 +11,6 @@ import (
 )
 
 const actions = `
-let null_fn = fn () {};
-let null = null_fn(); // fix soon..
-
 register_skill_cb(0, fn () { return skill("LowestHP"); });
 
 let skill_pressed = true;

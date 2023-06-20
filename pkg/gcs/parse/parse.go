@@ -653,6 +653,11 @@ func (p *Parser) parseString() (ast.Expr, error) {
 	return &ast.StringLit{Pos: n.Pos, Value: n.Val}, nil
 }
 
+func (p *Parser) parseNull() (ast.Expr, error) {
+	n := p.next()
+	return &ast.NullLit{Pos: n.Pos}, nil
+}
+
 func (p *Parser) parseFnLit() (ast.Expr, error) {
 	n := p.peek()
 	stmt, err := p.parseFn(false)

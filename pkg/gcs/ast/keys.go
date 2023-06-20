@@ -1,7 +1,5 @@
 package ast
 
-import "github.com/simimpact/srsim/pkg/key"
-
 var Keys = map[string]TokenType{
 	".":           ItemDot,
 	"let":         KeywordLet,
@@ -17,10 +15,4 @@ var Keys = map[string]TokenType{
 	"fallthrough": KeywordFallthrough,
 	"return":      KeywordReturn,
 	"for":         KeywordFor,
-}
-
-var ActionKeys = map[string]key.ActionType{
-	"attack": key.ActionAttack,
-	"skill":  key.ActionSkill,
-	"burst":  key.ActionBurst,
 }

@@ -31,6 +31,10 @@ type (
 		Value bool
 	}
 
+	NullLit struct {
+		Pos
+	}
+
 	// A FuncLit node represents a function literal.
 	FuncLit struct {
 		Pos
@@ -75,6 +79,7 @@ type (
 func (*NumberLit) exprNode()  {}
 func (*StringLit) exprNode()  {}
 func (*BoolLit) exprNode()    {}
+func (*NullLit) exprNode()    {}
 func (*FuncLit) exprNode()    {}
 func (*Ident) exprNode()      {}
 func (*CallExpr) exprNode()   {}
@@ -166,6 +171,29 @@ func (b *BoolLit) writeTo(sb *strings.Builder) {
 	} else {
 		sb.WriteString("false")
 	}
+}
+
+// BoolLit.
+
+func (n *NullLit) CopyExpr() Expr {
+	if n == nil {
+		return nil
+	}
+	return &NullLit{Pos: n.Pos}
+}
+
+func (n *NullLit) Copy() Node {
+	return n.CopyExpr()
+}
+
+func (n *NullLit) String() string {
+	var sb strings.Builder
+	n.writeTo(&sb)
+	return sb.String()
+}
+
+func (n *NullLit) writeTo(sb *strings.Builder) {
+	sb.WriteString("null")
 }
 
 // FuncLit.
