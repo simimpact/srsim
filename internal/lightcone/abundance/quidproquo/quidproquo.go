@@ -44,12 +44,13 @@ func randomlyAddEnergy(mod *modifier.ModifierInstance) {
 	var validAllyList []key.TargetID
 	
 	for _, char := range allyList{
-		//check if energy is <50%.
-		if (mod.Engine().Energy(char) < mod.Engine().Stats(char).MaxEnergy() / 2) {
+		//check if energy is <50% and current char isn't LC's holder.
+		if (mod.Engine().Energy(char) < mod.Engine().Stats(char).MaxEnergy() / 2 && 
+		char != mod.Owner()) {
 			validAllyList = append(validAllyList, char)
 		}
 	}
 	//randomly choose 1 char to add energy to from validAllyList.
 	chosenOne := validAllyList[mod.Engine().Rand().Intn(len(validAllyList))]
-	mod.Engine().ModifyEnergy(chosenOne, amt) 
+	mod.Engine().ModifyEnergy(chosenOne, amt)
 }
