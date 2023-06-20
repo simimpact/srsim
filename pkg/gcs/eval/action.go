@@ -18,7 +18,10 @@ func (e *Eval) NextAction(target key.TargetID) (*action.Action, error) {
 		return nil, err
 	}
 	if act == nil {
-		return nil, errors.New("empty action")
+		act, ok = e.defaultActions[target]
+		if !ok {
+			return nil, errors.New("not found default action")
+		}
 	}
 
 	act.Target = target

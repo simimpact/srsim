@@ -15,12 +15,13 @@ const actions = `
 register_skill_cb(0, fn () { return skill(LowestHP); });
 
 let skill_pressed = true;
+set_default_action(1, attack(LowestHP));
 register_skill_cb(1, fn () {
     skill_pressed = !skill_pressed;
     if skill_pressed {
         return skill(First);
     }
-    return attack(LowestHP);
+	return null;
 });
 
 let use = false;

@@ -25,8 +25,9 @@ type Eval struct {
 	ctx    context.Context
 	Engine engine.Engine
 
-	targetNode map[key.TargetID]TargetNode
-	burstNodes []TargetNode
+	targetNode     map[key.TargetID]TargetNode
+	burstNodes     []TargetNode
+	defaultActions map[key.TargetID]*action.Action
 }
 
 type Env struct {
@@ -64,6 +65,7 @@ func (e *Eval) Init(ctx context.Context) error {
 	e.global = NewEnv(nil)
 	e.targetNode = make(map[key.TargetID]TargetNode)
 	e.burstNodes = make([]TargetNode, 0)
+	e.defaultActions = make(map[key.TargetID]*action.Action)
 	e.initSysFuncs(e.global)
 
 	_, err := e.evalNode(e.AST, e.global)

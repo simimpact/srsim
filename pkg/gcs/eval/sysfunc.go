@@ -18,6 +18,7 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addSysFunc("type", e.typeval, env)
 	e.addSysFunc("register_skill_cb", e.registerSkillCB, env)
 	e.addSysFunc("register_burst_cb", e.registerBurstCB, env)
+	e.addSysFunc("set_default_action", e.setDefaultAction, env)
 
 	// actions
 	e.addAction(key.ActionAttack, env)
@@ -193,6 +194,36 @@ func (e *Eval) registerBurstCB(c *ast.CallExpr, env *Env) (Obj, error) {
 		node.env.varMap[v.Value] = &param
 	}
 	e.burstNodes = append(e.burstNodes, node)
+	return &null{}, nil
+}
+
+func (e *Eval) setDefaultAction(c *ast.CallExpr, env *Env) (Obj, error) {
+	//set_default_action(char, action)
+	if len(c.Args) != 2 {
+		return nil, fmt.Errorf("invalid number of params for set_default_action, expected 2 got %v", len(c.Args))
+	}
+
+	//should eval to a function
+	tarobj, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+	if tarobj.Typ() != typNum {
+		return nil, fmt.Errorf("set_default_action argument char should evaluate to a number, got %v", tarobj.Inspect())
+	}
+	target := tarobj.(*number).ival
+
+	//should eval to an action
+	actobj, err := e.evalExpr(c.Args[1], env)
+	if err != nil {
+		return nil, err
+	}
+	if actobj.Typ() != typAct {
+		return nil, fmt.Errorf("set_default_action argument func should evaluate to an action, got %v", actobj.Inspect())
+	}
+	act := *actobj.(*actionval)
+	act.val.Target = key.TargetID(target)
+	e.defaultActions[act.val.Target] = &act.val
 	return &null{}, nil
 }
 
