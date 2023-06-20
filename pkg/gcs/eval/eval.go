@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/simimpact/srsim/pkg/engine/action"
 	"github.com/simimpact/srsim/pkg/gcs/ast"
 	"github.com/simimpact/srsim/pkg/key"
 )
@@ -20,7 +21,6 @@ type Eval struct {
 	AST    ast.Node
 	global *Env
 	ctx    context.Context
-	Err    chan error
 
 	targetNode map[key.TargetID]TargetNode
 	burstNodes []TargetNode
@@ -56,7 +56,7 @@ func New(ast *ast.BlockStmt, ctx context.Context) *Eval {
 }
 
 // Run will execute the provided AST.
-func (e *Eval) Init(ctx context.Context) bool {
+func (e *Eval) Init(ctx context.Context) error {
 	e.ctx = ctx
 	e.global = NewEnv(nil)
 	e.targetNode = make(map[key.TargetID]TargetNode)
@@ -65,10 +65,9 @@ func (e *Eval) Init(ctx context.Context) bool {
 
 	_, err := e.evalNode(e.AST, e.global)
 	if err != nil {
-		e.Err <- err
-		return false
+		return err
 	}
-	return true
+	return nil
 }
 
 var ErrTerminated = errors.New("eval terminated")
@@ -86,6 +85,7 @@ const (
 	typStr
 	typFun
 	typBif // built-in function
+	typAct
 	typMap
 	typRet
 	typCtr
@@ -112,6 +112,10 @@ type (
 
 	bfuncval struct {
 		Body func(c *ast.CallExpr, env *Env) (Obj, error)
+	}
+
+	actionval struct {
+		val action.Action
 	}
 
 	mapval struct {
@@ -162,6 +166,12 @@ func (r *retval) Inspect() string {
 	return r.res.Inspect()
 }
 func (n *retval) Typ() ObjTyp { return typRet }
+
+// actionval.
+func (a *actionval) Inspect() string {
+	return string(a.val.Type) + "(" + string(a.val.TargetEvaluator) + ")"
+}
+func (a *actionval) Typ() ObjTyp { return typAct }
 
 // mapval.
 func (m *mapval) Inspect() string {

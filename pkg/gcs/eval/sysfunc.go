@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"strings"
 
+	"github.com/simimpact/srsim/pkg/engine/action"
 	"github.com/simimpact/srsim/pkg/gcs/ast"
 	"github.com/simimpact/srsim/pkg/key"
 )
@@ -18,7 +19,9 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addSysFunc("register_skill_cb", e.registerSkillCB, env)
 	e.addSysFunc("register_burst_cb", e.registerBurstCB, env)
 
-	// char should be key.TargetID (e.g. dummy_character = 0)
+	e.addAction(key.ActionAttack, env)
+	e.addAction(key.ActionSkill, env)
+	e.addAction(key.ActionBurst, env)
 }
 
 func (e *Eval) addSysFunc(name string, f func(c *ast.CallExpr, env *Env) (Obj, error), env *Env) {
@@ -77,6 +80,8 @@ func (e *Eval) typeval(c *ast.CallExpr, env *Env) (Obj, error) {
 		str = "string"
 	case typMap:
 		str = "map"
+	case typAct:
+		str = "action"
 	case typFun:
 		fallthrough
 	case typBif:
@@ -168,4 +173,31 @@ func (e *Eval) registerBurstCB(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 	e.burstNodes = append(e.burstNodes, node)
 	return &null{}, nil
+}
+
+func (e *Eval) addAction(at key.ActionType, env *Env) {
+	f := func(c *ast.CallExpr, env *Env) (Obj, error) {
+		//attack/skill/burst(evaltarget)
+		if len(c.Args) != 1 {
+			return nil, fmt.Errorf("invalid number of params for action, expected 1 got %v", len(c.Args))
+		}
+
+		etval, err := e.evalExpr(c.Args[0], env)
+		if err != nil {
+			return nil, err
+		}
+		if etval.Typ() != typStr {
+			return nil, fmt.Errorf("action argument char should evaluate to a string, got %v", etval.Inspect())
+		}
+		evaltarget := etval.(*strval).str
+
+		return &actionval{
+			val: action.Action{
+				Type:            at,
+				TargetEvaluator: key.TargetEvaluator(evaltarget), // TODO: check is valid
+			},
+		}, nil
+	}
+
+	e.addSysFunc(string(at), f, env)
 }

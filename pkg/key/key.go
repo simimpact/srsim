@@ -4,12 +4,12 @@ type Modifier string
 type Shield string
 type TargetEvaluator string
 
-type ActionType int
+type ActionType string
 
 const (
-	InvalidAction ActionType = iota
-	ActionAttack
-	ActionSkill
-	ActionBurst
-	EndActionType
+	InvalidAction ActionType = "invalid"
+	ActionAttack  ActionType = "attack"
+	ActionSkill   ActionType = "skill"
+	ActionBurst   ActionType = "burst"
+	EndActionType ActionType = "end"
 )
