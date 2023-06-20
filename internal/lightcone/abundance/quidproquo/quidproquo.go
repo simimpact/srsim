@@ -10,7 +10,7 @@ import (
 )
  
 const (
-	QPQCheck key.Modifier = "quid-pro-quo-check"
+	QPQCheck key.Modifier = "quid-pro-quo"
 )
 
 //At the start of the wearer's turn, regenerates 8 Energy for a randomly chosen ally
@@ -22,7 +22,7 @@ func init() {
 		Path:          model.Path_ABUNDANCE,
 		Promotions:    promotions,
 	})
-	//OnPhase1. checker. refill 1 char's energy randomly. (condition : <50%)
+	//OnPhase1. checker. refill 1 char's energy randomly. (condition : <50% + not LC holder)
 	modifier.Register(QPQCheck, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnPhase1: randomlyAddEnergy,
@@ -45,12 +45,17 @@ func randomlyAddEnergy(mod *modifier.ModifierInstance) {
 	
 	for _, char := range allyList{
 		//check if energy is <50% and current char isn't LC's holder.
+		//NOTE : Engine().CharacterInfo() don't have .MaxEnergy(). 
+		//currently using .Stats which is not efficient.
 		if (mod.Engine().Energy(char) < mod.Engine().Stats(char).MaxEnergy() / 2 && 
 		char != mod.Owner()) {
 			validAllyList = append(validAllyList, char)
 		}
 	}
-	//randomly choose 1 char to add energy to from validAllyList.
-	chosenOne := validAllyList[mod.Engine().Rand().Intn(len(validAllyList))]
-	mod.Engine().ModifyEnergy(chosenOne, amt)
+	//add in checker to add energy only if validAllyList isn't empty
+	if validAllyList != nil {
+		//randomly choose 1 char to add energy to from validAllyList.
+		chosenOne := validAllyList[mod.Engine().Rand().Intn(len(validAllyList))]
+		mod.Engine().ModifyEnergy(chosenOne, amt)
+	}
 }
