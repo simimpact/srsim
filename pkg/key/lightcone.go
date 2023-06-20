@@ -60,3 +60,7 @@ const (
 	SharedFeeling            LightCone = "shared_feeling"
 	QuidProQuo               LightCone = "quid_pro_quo"
 )
+
+func (l LightCone) String() string {
+	return string(l)
+}
