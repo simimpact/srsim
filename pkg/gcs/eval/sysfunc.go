@@ -2,7 +2,6 @@ package eval
 
 import (
 	"fmt"
-	"math/rand"
 	"strings"
 
 	"github.com/simimpact/srsim/pkg/engine/action"
@@ -31,7 +30,15 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addConstant("LowestHPRatio", &number{ival: int64(evaltarget.LowestHPRatio)}, env)
 
 	// chars
-	// ...
+	if e.Engine != nil {
+		for _, k := range e.Engine.Characters() {
+			char, err := e.Engine.CharacterInfo(k)
+			if err != nil { // ???
+				return
+			}
+			e.addConstant(string(char.Key), &number{ival: int64(k)}, env)
+		}
+	}
 }
 
 func (e *Eval) addSysFunc(name string, f func(c *ast.CallExpr, env *Env) (Obj, error), env *Env) {
@@ -58,7 +65,7 @@ func (e *Eval) print(c *ast.CallExpr, env *Env) (Obj, error) {
 }
 
 func (e *Eval) rand(c *ast.CallExpr, env *Env) (Obj, error) {
-	x := rand.Float64() // TODO: rand with a specific seed
+	x := e.Engine.Rand().Float64()
 	return &number{
 		fval:    x,
 		isFloat: true,
@@ -66,7 +73,7 @@ func (e *Eval) rand(c *ast.CallExpr, env *Env) (Obj, error) {
 }
 
 func (e *Eval) randnorm(c *ast.CallExpr, env *Env) (Obj, error) {
-	x := rand.NormFloat64() // TODO: rand with a specific seed
+	x := e.Engine.Rand().NormFloat64()
 	return &number{
 		fval:    x,
 		isFloat: true,

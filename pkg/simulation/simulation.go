@@ -72,6 +72,7 @@ func Run(cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationRes
 		neutrals:      make([]key.TargetID, 0, 5),
 		actionTargets: make(map[key.TargetID]bool, 10),
 	}
+	s.eval.Engine = s
 
 	// init services
 

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/action"
 	"github.com/simimpact/srsim/pkg/engine/target/evaltarget"
 	"github.com/simimpact/srsim/pkg/gcs/ast"
@@ -22,6 +23,7 @@ type Eval struct {
 	AST    ast.Node
 	global *Env
 	ctx    context.Context
+	Engine engine.Engine
 
 	targetNode map[key.TargetID]TargetNode
 	burstNodes []TargetNode
