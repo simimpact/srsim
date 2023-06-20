@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-type defaultLogger struct {
+type DefaultLogger struct {
 	entries []string
 }
 
@@ -15,12 +15,12 @@ type logEventWrapper struct {
 	Data      interface{}
 }
 
-func InitDefaultLogger() {
-	Singleton = &defaultLogger{entries: make([]string, 0, 10)}
+func NewDefaultLogger() *DefaultLogger {
+	return &DefaultLogger{entries: make([]string, 0, 10)}
 }
 
-// Log registers an event to the defaultLogger entry
-func (l *defaultLogger) Log(e interface{}) {
+// Log registers an event to the DefaultLogger entry
+func (l *DefaultLogger) Log(e interface{}) {
 	wrappedEv := &logEventWrapper{
 		EventName: strings.TrimPrefix(fmt.Sprintf("%T", e), "event."),
 		Data:      e,
@@ -32,7 +32,7 @@ func (l *defaultLogger) Log(e interface{}) {
 	l.entries = append(l.entries, string(res))
 }
 
-func (l *defaultLogger) Flush() string {
+func (l *DefaultLogger) Flush() string {
 	var sb strings.Builder
 	for i := range l.entries {
 		sb.WriteString(l.entries[i])

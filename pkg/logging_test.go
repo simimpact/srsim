@@ -10,8 +10,13 @@ import (
 )
 
 func Test_Logging(t *testing.T) {
-	_, err := simulation.RunWithLog(testcfg.TestConfigTwoElites(), testcfg.StandardTestEval(), 0)
+	log := logging.NewDefaultLogger()
+	_, err := simulation.RunWithLog(log, testcfg.TestConfigTwoElites(), testcfg.StandardTestEval(), 0)
 	assert.Nil(t, err)
 	assert.NotNil(t, logging.Singleton)
-	fmt.Println(string(logging.Flush()))
+	res := log.Flush()
+	assert.NotEqual(t, 0, len(res))
+	assert.Equal(t, 0, len(log.Flush()))
+
+	fmt.Println(res)
 }

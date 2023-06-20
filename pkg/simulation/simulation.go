@@ -54,11 +54,8 @@ type simulation struct {
 	actionTargets map[key.TargetID]bool
 }
 
-func RunWithLog(cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationResult, error) {
-	cfg.Iterations = 1
-	if logging.IsNil() {
-		logging.InitDefaultLogger()
-	}
+func RunWithLog(logger logging.Logger, cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationResult, error) {
+	logging.InitLogger(logger)
 	return Run(cfg, eval, seed)
 }
 
