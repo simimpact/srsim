@@ -6,27 +6,28 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/simimpact/srsim/pkg/engine/action"
+	"github.com/simimpact/srsim/pkg/engine/target/evaltarget"
 	"github.com/simimpact/srsim/pkg/gcs/parse"
 	"github.com/simimpact/srsim/pkg/key"
 )
 
 const actions = `
-register_skill_cb(0, fn () { return skill("LowestHP"); });
+register_skill_cb(0, fn () { return skill(LowestHP); });
 
 let skill_pressed = true;
 register_skill_cb(1, fn () {
     skill_pressed = !skill_pressed;
     if skill_pressed {
-        return skill("First");
+        return skill(First);
     }
-    return attack("LowestHP");
+    return attack(LowestHP);
 });
 
 let use = false;
 register_burst_cb(0, fn () {
 	if use {
 		use = false;
-		return burst("First");
+		return burst(First);
 	}
 	use = true;
 	return null;
@@ -36,7 +37,7 @@ register_burst_cb(0, fn () {
 register_burst_cb(1, fn () {
     if skill_pressed {
 		skill_pressed = false;
-        return burst("LowestHP");
+        return burst(LowestHP);
     }
 	return null;
 });
@@ -63,19 +64,19 @@ func TestCharAdd(t *testing.T) {
 	assertValidSkill(t, act, err, action.Action{
 		Type:            key.ActionSkill,
 		Target:          0,
-		TargetEvaluator: "LowestHP",
+		TargetEvaluator: evaltarget.LowestHP,
 	})
 	act, err = eval.NextAction(1)
 	assertValidSkill(t, act, err, action.Action{
 		Type:            key.ActionAttack,
 		Target:          1,
-		TargetEvaluator: "LowestHP",
+		TargetEvaluator: evaltarget.LowestHP,
 	})
 	act, err = eval.NextAction(1)
 	assertValidSkill(t, act, err, action.Action{
 		Type:            key.ActionSkill,
 		Target:          1,
-		TargetEvaluator: "First",
+		TargetEvaluator: evaltarget.First,
 	})
 
 	// burst
@@ -84,7 +85,7 @@ func TestCharAdd(t *testing.T) {
 		{
 			Type:            key.ActionBurst,
 			Target:          1,
-			TargetEvaluator: "LowestHP",
+			TargetEvaluator: evaltarget.LowestHP,
 		},
 	})
 	acts, err = eval.BurstCheck()
@@ -92,7 +93,7 @@ func TestCharAdd(t *testing.T) {
 		{
 			Type:            key.ActionBurst,
 			Target:          0,
-			TargetEvaluator: "First",
+			TargetEvaluator: evaltarget.First,
 		},
 	})
 	acts, err = eval.BurstCheck()
@@ -104,7 +105,6 @@ func assertValidSkill(t *testing.T, act *action.Action, err error, validact acti
 		t.Error(err)
 		t.FailNow()
 	}
-
 	if act.Target != validact.Target || act.TargetEvaluator != validact.TargetEvaluator || act.Type != validact.Type {
 		t.Errorf("incorrect action %s. should be: %s", spew.Sprint(*act), spew.Sprint(validact))
 		t.FailNow()
@@ -116,7 +116,6 @@ func assertValidBurst(t *testing.T, acts []*action.Action, err error, validacts 
 		t.Error(err)
 		t.FailNow()
 	}
-
 	if len(acts) != len(validacts) {
 		t.Errorf("incorrect number of action (%d). should be %d", len(acts), len(validacts))
 		t.FailNow()

@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/simimpact/srsim/pkg/engine/action"
+	"github.com/simimpact/srsim/pkg/engine/target/evaltarget"
 	"github.com/simimpact/srsim/pkg/gcs/ast"
 	"github.com/simimpact/srsim/pkg/key"
 )
@@ -19,14 +20,27 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addSysFunc("register_skill_cb", e.registerSkillCB, env)
 	e.addSysFunc("register_burst_cb", e.registerBurstCB, env)
 
+	// actions
 	e.addAction(key.ActionAttack, env)
 	e.addAction(key.ActionSkill, env)
 	e.addAction(key.ActionBurst, env)
+
+	// target evaluators
+	e.addConstant("First", &number{ival: int64(evaltarget.First)}, env)
+	e.addConstant("LowestHP", &number{ival: int64(evaltarget.LowestHP)}, env)
+	e.addConstant("LowestHPRatio", &number{ival: int64(evaltarget.LowestHPRatio)}, env)
+
+	// chars
+	// ...
 }
 
 func (e *Eval) addSysFunc(name string, f func(c *ast.CallExpr, env *Env) (Obj, error), env *Env) {
 	var obj Obj = &bfuncval{Body: f}
 	env.varMap[name] = &obj
+}
+
+func (e *Eval) addConstant(name string, value Obj, env *Env) {
+	env.varMap[name] = &value
 }
 
 func (e *Eval) print(c *ast.CallExpr, env *Env) (Obj, error) {
@@ -186,10 +200,10 @@ func (e *Eval) addAction(at key.ActionType, env *Env) {
 		if err != nil {
 			return nil, err
 		}
-		if etval.Typ() != typStr {
-			return nil, fmt.Errorf("action argument char should evaluate to a string, got %v", etval.Inspect())
+		if etval.Typ() != typNum {
+			return nil, fmt.Errorf("action argument char should evaluate to a number, got %v", etval.Inspect())
 		}
-		evaltarget := etval.(*strval).str
+		evaltarget := etval.(*number).ival
 
 		return &actionval{
 			val: action.Action{

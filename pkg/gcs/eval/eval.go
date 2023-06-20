@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/simimpact/srsim/pkg/engine/action"
+	"github.com/simimpact/srsim/pkg/engine/target/evaltarget"
 	"github.com/simimpact/srsim/pkg/gcs/ast"
 	"github.com/simimpact/srsim/pkg/key"
 )
@@ -169,7 +170,18 @@ func (n *retval) Typ() ObjTyp { return typRet }
 
 // actionval.
 func (a *actionval) Inspect() string {
-	return string(a.val.Type) + "(" + string(a.val.TargetEvaluator) + ")"
+	targeteval := ""
+	switch a.val.TargetEvaluator {
+	case evaltarget.First:
+		targeteval = "First"
+	case evaltarget.LowestHP:
+		targeteval = "LowestHP"
+	case evaltarget.LowestHPRatio:
+		targeteval = "LowestHPRatio"
+	default:
+		targeteval = strconv.Itoa(int(a.val.TargetEvaluator))
+	}
+	return string(a.val.Type) + "(" + targeteval + ")"
 }
 func (a *actionval) Typ() ObjTyp { return typAct }
 

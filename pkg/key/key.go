@@ -2,7 +2,7 @@ package key
 
 type Modifier string
 type Shield string
-type TargetEvaluator string
+type TargetEvaluator TargetID
 
 type ActionType string
 
