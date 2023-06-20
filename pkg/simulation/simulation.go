@@ -81,7 +81,7 @@ func Run(cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationRes
 	s.attr = attribute.New(s.event, s.modifier)
 
 	// target management
-	s.char = character.New(s, s.attr)
+	s.char = character.New(s, s.attr, s.eval)
 	s.enemy = enemy.New(s, s.attr)
 
 	// game logic
