@@ -28,7 +28,7 @@ const (
 
 // Nihility
 const (
-	Fermata 	  LightCone = "fermata"
+	Fermata       LightCone = "fermata"
 	EyesofthePrey LightCone = "eyes_of_the_prey"
 )
 
@@ -58,4 +58,5 @@ const (
 	WarmthShortensColdNights LightCone = "warmth_shortens_cold_nights"
 	PostOpConversation       LightCone = "post_op_conversation"
 	SharedFeeling            LightCone = "shared_feeling"
+	QuidProQuo               LightCone = "quid_pro_quo"
 )
