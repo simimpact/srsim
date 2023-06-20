@@ -23,10 +23,6 @@ register_burst_cb(0, fn () {
 	}
 	return false;
 });
-register_burst_cb(1, fn () {
-	use = true;
-	return true;
-});
 `
 
 func StandardTestEval() *eval.Eval {

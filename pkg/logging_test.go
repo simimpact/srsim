@@ -1,6 +1,7 @@
 package pkg
 
 import (
+	"fmt"
 	"github.com/simimpact/srsim/pkg/engine/logging"
 	"github.com/simimpact/srsim/pkg/internal/testcfg"
 	"github.com/simimpact/srsim/pkg/simulation"
@@ -12,5 +13,5 @@ func Test_Logging(t *testing.T) {
 	_, err := simulation.RunWithLog(testcfg.TestConfigTwoElites(), testcfg.StandardTestEval(), 0)
 	assert.Nil(t, err)
 	assert.NotNil(t, logging.Singleton)
-	logging.PrintToConsole()
+	fmt.Println(string(logging.Flush()))
 }

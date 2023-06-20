@@ -4,7 +4,7 @@ var Singleton Logger
 
 type Logger interface {
 	Log(e interface{})
-	Flush() []byte
+	Flush() string
 }
 
 func init() {
@@ -15,14 +15,8 @@ func Log(e interface{}) {
 	Singleton.Log(e)
 }
 
-func Flush() []byte {
+func Flush() string {
 	return Singleton.Flush()
-}
-
-func PrintToConsole() {
-	if l, ok := Singleton.(*defaultLogger); ok {
-		l.PrintToConsole()
-	}
 }
 
 func IsNil() bool {
