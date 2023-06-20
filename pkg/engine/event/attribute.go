@@ -17,7 +17,12 @@ type HPChangeEvent struct {
 
 type LimboWaitHealEventHandler = handler.CancelableEventHandler[LimboWaitHealEvent]
 type LimboWaitHealEvent struct {
-	Target key.TargetID
+	Target      key.TargetID
+	IsCancelled bool
+}
+
+func (e LimboWaitHealEvent) Cancelled() {
+	e.IsCancelled = true
 }
 
 type TargetDeathEventHandler = handler.EventHandler[TargetDeathEvent]

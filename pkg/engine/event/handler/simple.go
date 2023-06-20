@@ -1,5 +1,7 @@
 package handler
 
+import "github.com/simimpact/srsim/pkg/engine/logging"
+
 type Listener[E event] func(event E)
 
 // Simple EventHandler that on Emit will run all listeners in the order of their subscription
@@ -12,7 +14,7 @@ func (handler *EventHandler[E]) Emit(event E) {
 	for _, listener := range handler.listeners {
 		listener(event)
 	}
-	Singleton.Log(event)
+	logging.Log(event)
 }
 
 // Subscribe a listener to this event handler to be executed when Emit is called

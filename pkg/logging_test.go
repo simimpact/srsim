@@ -1,7 +1,7 @@
 package pkg
 
 import (
-	"github.com/simimpact/srsim/pkg/engine/event/handler"
+	"github.com/simimpact/srsim/pkg/engine/logging"
 	"github.com/simimpact/srsim/pkg/internal/testcfg"
 	"github.com/simimpact/srsim/pkg/simulation"
 	"github.com/stretchr/testify/assert"
@@ -9,9 +9,8 @@ import (
 )
 
 func Test_Logging(t *testing.T) {
-	handler.InitLogger()
-	_, err := simulation.Run(testcfg.TestConfigTwoElites(), testcfg.StandardTestEval(), 0)
+	_, err := simulation.RunWithLog(testcfg.TestConfigTwoElites(), testcfg.StandardTestEval(), 0)
 	assert.Nil(t, err)
-	assert.NotNil(t, handler.Singleton)
-	handler.Singleton.PrintToConsole()
+	assert.NotNil(t, logging.Singleton)
+	logging.PrintToConsole()
 }

@@ -1,6 +1,9 @@
 package handler
 
-import "sort"
+import (
+	"github.com/simimpact/srsim/pkg/engine/logging"
+	"sort"
+)
 
 type MutableListener[E event] func(event *E)
 
@@ -15,7 +18,7 @@ func (handler *MutableEventHandler[E]) Emit(event *E) {
 	for _, listener := range handler.listeners {
 		listener.listener(event)
 	}
-	Singleton.Log(event)
+	logging.Log(event)
 }
 
 // Subscribe a listener to this event handler with the given priority. Listeners are executed

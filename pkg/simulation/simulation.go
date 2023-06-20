@@ -2,6 +2,7 @@ package simulation
 
 import (
 	"encoding/binary"
+	"github.com/simimpact/srsim/pkg/engine/logging"
 	"math/rand"
 
 	"github.com/simimpact/srsim/pkg/engine/attribute"
@@ -51,6 +52,14 @@ type simulation struct {
 	totalAV       float64
 	active        key.TargetID
 	actionTargets map[key.TargetID]bool
+}
+
+func RunWithLog(cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationResult, error) {
+	cfg.Iterations = 1
+	if logging.IsNil() {
+		logging.InitDefaultLogger()
+	}
+	return Run(cfg, eval, seed)
 }
 
 func Run(cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationResult, error) {

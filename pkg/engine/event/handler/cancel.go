@@ -1,12 +1,15 @@
 package handler
 
-import "sort"
+import (
+	"github.com/simimpact/srsim/pkg/engine/logging"
+	"sort"
+)
 
 type CancelableListener[E event] func(event E) bool
 
 // Cancelable EventHandler that allows listeners to cancel the event (preventing other listeners
 // from being called). Like the PriorityEventHandler, will execute listeners in order of priority
-type CancelableEventHandler[E event] struct {
+type CancelableEventHandler[E cancellableEvent] struct {
 	listeners cancelableListeners[E]
 }
 
@@ -16,11 +19,12 @@ type CancelableEventHandler[E event] struct {
 func (handler *CancelableEventHandler[E]) Emit(event E) bool {
 	for _, listener := range handler.listeners {
 		if listener.listener(event) {
-			Singleton.Log(event)
+			event.Cancelled()
+			logging.Log(event)
 			return true
 		}
 	}
-	Singleton.Log(event)
+	logging.Log(event)
 	return false
 }
 
