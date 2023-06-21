@@ -92,13 +92,12 @@ func a2HPCheck(mod *modifier.ModifierInstance) {
 	}
 }
 
-// attempt to apply A4 for 2 turns w/ 50% chance
+// attempt to apply A4 for 2 turns w/ 50% fixed chance
 func (c *char) a4() {
-	if c.info.Traces["1002102"] {
+	if c.info.Traces["1002102"] && c.engine.Rand().Float64() < 0.5 {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:     A4,
 			Source:   c.id,
-			Chance:   0.5,
 			Duration: 2,
 			Stats:    info.PropMap{prop.SPDPercent: 0.2},
 		})

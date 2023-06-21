@@ -2,9 +2,10 @@ package eval
 
 import (
 	"fmt"
-	"math/rand"
 	"strings"
 
+	"github.com/simimpact/srsim/pkg/engine/action"
+	"github.com/simimpact/srsim/pkg/engine/target/evaltarget"
 	"github.com/simimpact/srsim/pkg/gcs/ast"
 	"github.com/simimpact/srsim/pkg/key"
 )
@@ -16,14 +17,40 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addSysFunc("print", e.print, env)
 	e.addSysFunc("type", e.typeval, env)
 	e.addSysFunc("register_skill_cb", e.registerSkillCB, env)
-	e.addSysFunc("register_burst_cb", e.registerBurstCB, env)
+	e.addSysFunc("register_ult_cb", e.registerUltCB, env)
+	e.addSysFunc("set_default_action", e.setDefaultAction, env)
 
-	// char should be key.TargetID (e.g. dummy_character = 0)
+	// actions
+	e.addAction(key.ActionAttack, env)
+	e.addAction(key.ActionSkill, env)
+	e.addAction(key.ActionUlt, env)
+	e.addAction(key.ActionUltAttack, env)
+	e.addAction(key.ActionUltSkill, env)
+
+	// target evaluators
+	e.addConstant("First", &number{ival: int64(evaltarget.First)}, env)
+	e.addConstant("LowestHP", &number{ival: int64(evaltarget.LowestHP)}, env)
+	e.addConstant("LowestHPRatio", &number{ival: int64(evaltarget.LowestHPRatio)}, env)
+
+	// chars
+	if e.Engine != nil {
+		for _, k := range e.Engine.Characters() {
+			char, err := e.Engine.CharacterInfo(k)
+			if err != nil { // ???
+				return
+			}
+			e.addConstant(string(char.Key), &number{ival: int64(k)}, env)
+		}
+	}
 }
 
 func (e *Eval) addSysFunc(name string, f func(c *ast.CallExpr, env *Env) (Obj, error), env *Env) {
 	var obj Obj = &bfuncval{Body: f}
 	env.varMap[name] = &obj
+}
+
+func (e *Eval) addConstant(name string, value Obj, env *Env) {
+	env.varMap[name] = &value
 }
 
 func (e *Eval) print(c *ast.CallExpr, env *Env) (Obj, error) {
@@ -41,7 +68,7 @@ func (e *Eval) print(c *ast.CallExpr, env *Env) (Obj, error) {
 }
 
 func (e *Eval) rand(c *ast.CallExpr, env *Env) (Obj, error) {
-	x := rand.Float64() // TODO: rand with a specific seed
+	x := e.Engine.Rand().Float64()
 	return &number{
 		fval:    x,
 		isFloat: true,
@@ -49,7 +76,7 @@ func (e *Eval) rand(c *ast.CallExpr, env *Env) (Obj, error) {
 }
 
 func (e *Eval) randnorm(c *ast.CallExpr, env *Env) (Obj, error) {
-	x := rand.NormFloat64() // TODO: rand with a specific seed
+	x := e.Engine.Rand().NormFloat64()
 	return &number{
 		fval:    x,
 		isFloat: true,
@@ -77,6 +104,8 @@ func (e *Eval) typeval(c *ast.CallExpr, env *Env) (Obj, error) {
 		str = "string"
 	case typMap:
 		str = "map"
+	case typAct:
+		str = "action"
 	case typFun:
 		fallthrough
 	case typBif:
@@ -128,10 +157,10 @@ func (e *Eval) registerSkillCB(c *ast.CallExpr, env *Env) (Obj, error) {
 	return &null{}, nil
 }
 
-func (e *Eval) registerBurstCB(c *ast.CallExpr, env *Env) (Obj, error) {
-	//register_burst_cb(char, func)
+func (e *Eval) registerUltCB(c *ast.CallExpr, env *Env) (Obj, error) {
+	//register_ult_cb(char, func)
 	if len(c.Args) != 2 {
-		return nil, fmt.Errorf("invalid number of params for register_burst_cb, expected 2 got %v", len(c.Args))
+		return nil, fmt.Errorf("invalid number of params for register_ult_cb, expected 2 got %v", len(c.Args))
 	}
 
 	//should eval to a function
@@ -140,7 +169,7 @@ func (e *Eval) registerBurstCB(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, err
 	}
 	if tarobj.Typ() != typNum {
-		return nil, fmt.Errorf("register_burst_cb argument char should evaluate to a number, got %v", tarobj.Inspect())
+		return nil, fmt.Errorf("register_ult_cb argument char should evaluate to a number, got %v", tarobj.Inspect())
 	}
 	target := tarobj.(*number).ival
 
@@ -150,7 +179,7 @@ func (e *Eval) registerBurstCB(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, err
 	}
 	if funcobj.Typ() != typFun {
-		return nil, fmt.Errorf("register_burst_cb argument func should evaluate to a function, got %v", funcobj.Inspect())
+		return nil, fmt.Errorf("register_ult_cb argument func should evaluate to a function, got %v", funcobj.Inspect())
 	}
 	fn := funcobj.(*funcval)
 
@@ -166,6 +195,67 @@ func (e *Eval) registerBurstCB(c *ast.CallExpr, env *Env) (Obj, error) {
 		}
 		node.env.varMap[v.Value] = &param
 	}
-	e.burstNodes = append(e.burstNodes, node)
+	e.ultNodes = append(e.ultNodes, node)
 	return &null{}, nil
+}
+
+func (e *Eval) setDefaultAction(c *ast.CallExpr, env *Env) (Obj, error) {
+	//set_default_action(char, action)
+	if len(c.Args) != 2 {
+		return nil, fmt.Errorf("invalid number of params for set_default_action, expected 2 got %v", len(c.Args))
+	}
+
+	//should eval to a function
+	tarobj, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+	if tarobj.Typ() != typNum {
+		return nil, fmt.Errorf("set_default_action argument char should evaluate to a number, got %v", tarobj.Inspect())
+	}
+	target := tarobj.(*number).ival
+
+	//should eval to an action
+	actobj, err := e.evalExpr(c.Args[1], env)
+	if err != nil {
+		return nil, err
+	}
+	if actobj.Typ() != typAct {
+		return nil, fmt.Errorf("set_default_action argument func should evaluate to an action, got %v", actobj.Inspect())
+	}
+
+	act := *actobj.(*actionval)
+	if act.val.Type != key.ActionAttack {
+		return nil, fmt.Errorf("action should be an attack, got %v", actobj.Inspect())
+	}
+	act.val.Target = key.TargetID(target)
+	e.defaultActions[act.val.Target] = act.val
+	return &null{}, nil
+}
+
+func (e *Eval) addAction(at key.ActionType, env *Env) {
+	f := func(c *ast.CallExpr, env *Env) (Obj, error) {
+		//attack/skill/ult(evaltarget)
+		if len(c.Args) != 1 {
+			return nil, fmt.Errorf("invalid number of params for action, expected 1 got %v", len(c.Args))
+		}
+
+		etval, err := e.evalExpr(c.Args[0], env)
+		if err != nil {
+			return nil, err
+		}
+		if etval.Typ() != typNum {
+			return nil, fmt.Errorf("action argument char should evaluate to a number, got %v", etval.Inspect())
+		}
+		evaltarget := etval.(*number).ival
+
+		return &actionval{
+			val: action.Action{
+				Type:            at,
+				TargetEvaluator: key.TargetEvaluator(evaltarget), // TODO: check is valid
+			},
+		}, nil
+	}
+
+	e.addSysFunc(string(at), f, env)
 }

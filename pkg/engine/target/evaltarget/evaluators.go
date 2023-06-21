@@ -8,9 +8,9 @@ import (
 type evaluator func(engine engine.Engine, candidates []key.TargetID) (key.TargetID, error)
 
 const (
-	First         key.TargetEvaluator = "First"
-	LowestHP      key.TargetEvaluator = "LowestHP"
-	LowestHPRatio key.TargetEvaluator = "LowestHPRatio"
+	First         key.TargetEvaluator = 100 // i hope no one spawns 100+ targets
+	LowestHP      key.TargetEvaluator = 101
+	LowestHPRatio key.TargetEvaluator = 102
 )
 
 var evaluators = map[key.TargetEvaluator]evaluator{

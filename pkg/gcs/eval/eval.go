@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/simimpact/srsim/pkg/engine"
+	"github.com/simimpact/srsim/pkg/engine/action"
+	"github.com/simimpact/srsim/pkg/engine/target/evaltarget"
 	"github.com/simimpact/srsim/pkg/gcs/ast"
 	"github.com/simimpact/srsim/pkg/key"
 )
@@ -20,10 +23,11 @@ type Eval struct {
 	AST    ast.Node
 	global *Env
 	ctx    context.Context
-	Err    chan error
+	Engine engine.Engine
 
-	targetNode map[key.TargetID]TargetNode
-	burstNodes []TargetNode
+	targetNode     map[key.TargetID]TargetNode
+	ultNodes       []TargetNode
+	defaultActions map[key.TargetID]action.Action
 }
 
 type Env struct {
@@ -51,24 +55,23 @@ func (e *Env) v(s string) (*Obj, error) {
 
 func New(ast *ast.BlockStmt, ctx context.Context) *Eval {
 	e := &Eval{AST: ast}
-	e.Init(ctx)
+	e.ctx = ctx
 	return e
 }
 
 // Run will execute the provided AST.
-func (e *Eval) Init(ctx context.Context) bool {
-	e.ctx = ctx
+func (e *Eval) Init() error {
 	e.global = NewEnv(nil)
 	e.targetNode = make(map[key.TargetID]TargetNode)
-	e.burstNodes = make([]TargetNode, 0)
+	e.ultNodes = make([]TargetNode, 0)
+	e.defaultActions = make(map[key.TargetID]action.Action)
 	e.initSysFuncs(e.global)
 
 	_, err := e.evalNode(e.AST, e.global)
 	if err != nil {
-		e.Err <- err
-		return false
+		return err
 	}
-	return true
+	return nil
 }
 
 var ErrTerminated = errors.New("eval terminated")
@@ -86,6 +89,7 @@ const (
 	typStr
 	typFun
 	typBif // built-in function
+	typAct
 	typMap
 	typRet
 	typCtr
@@ -112,6 +116,10 @@ type (
 
 	bfuncval struct {
 		Body func(c *ast.CallExpr, env *Env) (Obj, error)
+	}
+
+	actionval struct {
+		val action.Action
 	}
 
 	mapval struct {
@@ -162,6 +170,23 @@ func (r *retval) Inspect() string {
 	return r.res.Inspect()
 }
 func (n *retval) Typ() ObjTyp { return typRet }
+
+// actionval.
+func (a *actionval) Inspect() string {
+	targeteval := ""
+	switch a.val.TargetEvaluator {
+	case evaltarget.First:
+		targeteval = "First"
+	case evaltarget.LowestHP:
+		targeteval = "LowestHP"
+	case evaltarget.LowestHPRatio:
+		targeteval = "LowestHPRatio"
+	default:
+		targeteval = strconv.Itoa(int(a.val.TargetEvaluator))
+	}
+	return string(a.val.Type) + "(" + targeteval + ")"
+}
+func (a *actionval) Typ() ObjTyp { return typAct }
 
 // mapval.
 func (m *mapval) Inspect() string {

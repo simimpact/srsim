@@ -344,6 +344,8 @@ Loop:
 				l.emit(ast.Keys[word])
 			case word == "true", word == "false":
 				l.emit(ast.ItemBool)
+			case word == "null":
+				l.emit(ast.ItemNull)
 			default:
 				l.emit(checkIdentifier(word))
 			}
