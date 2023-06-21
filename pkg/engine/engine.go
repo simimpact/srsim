@@ -85,6 +85,9 @@ type Attribute interface {
 	// Gets the current energy amount of the target.
 	Energy(target key.TargetID) float64
 
+	//Gets the max energy amount of the target.
+	MaxEnergy(target key.TargetID) float64
+
 	// Gets the current HP ratio of the target (value between 0 and 1)
 	HPRatio(target key.TargetID) float64
 
