@@ -11,7 +11,6 @@ import (
 const (
 	E2 key.Modifier = "sushang-e2"
 	E4 key.Modifier = "sushang-e4"
-	E6 key.Modifier = "sushang-e6"
 )
 
 func init() {
@@ -21,17 +20,6 @@ func init() {
 	})
 
 	modifier.Register(E4, modifier.Config{})
-
-	modifier.Register(E6, modifier.Config{
-		Stacking:          modifier.ReplaceBySource,
-		StatusType:        model.StatusType_STATUS_BUFF,
-		BehaviorFlags:     []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_UP},
-		MaxCount:          2,
-		CountAddWhenStack: 1,
-		Listeners: modifier.Listeners{
-			OnAdd: e6OnAdd,
-		},
-	})
 }
 
 func (c *char) initEidolons() {
@@ -46,7 +34,7 @@ func (c *char) initEidolons() {
 	}
 
 	if c.info.Eidolon >= 6 {
-		c.addE6Stack()
+		c.addTalentBuff()
 	}
 }
 
@@ -63,17 +51,4 @@ func (c *char) e2() {
 			})
 		}
 	}
-}
-
-func (c *char) addE6Stack() {
-	c.engine.AddModifier(c.id, info.Modifier{
-		Name:     E6,
-		Source:   c.id,
-		Duration: 2,
-		State:    talent[c.info.TalentLevelIndex()],
-	})
-}
-
-func e6OnAdd(mod *modifier.ModifierInstance) {
-	mod.AddProperty(prop.SPDPercent, mod.Count()*mod.State().(float64))
 }

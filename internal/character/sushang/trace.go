@@ -80,10 +80,8 @@ func a2HPCheck(mod *modifier.ModifierInstance) {
 }
 
 func a4OnBeforeHitAll(mod *modifier.ModifierInstance, e event.HitStartEvent) {
-	if mod.Engine().HasModifier(mod.Owner(), A4Buff) {
-		stacks := mod.Engine().GetModifiers(mod.Owner(), A4Buff)[0].Count
-		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, stacks*0.025)
-	}
+	stacks := mod.State().(float64)
+	e.Hit.Attacker.AddProperty(prop.AllDamagePercent, stacks*0.025)
 }
 
 func (c *char) a4AddStack() {

@@ -10,10 +10,7 @@ var skillHits = []float64{0.3, 0.7}
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	// check if target is broken
-	isBroken := false
-	if c.engine.Stats(target).Stance() == 0 {
-		isBroken = true
-	}
+	isBroken := c.engine.Stats(target).Stance() == 0
 
 	// 2 hits
 	for _, hitRatio := range skillHits {
@@ -31,28 +28,26 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		})
 	}
 
-	// sword stance hits
+	// sword stance hits (yes, this uses her own effect RES)
 	chances := [3]bool{}
+	stats := c.engine.Stats(c.id)
+	hitChance := 0.33 * (1 + stats.EffectHitRate()) * (1 - stats.EffectRES())
 
 	if c.engine.HasModifier(c.id, UltBuff) {
-		for i := 1; i <= 2; i++ {
-			if isBroken || c.engine.Rand().Float64() < 0.33 {
+		for i := 0; i <= 1; i++ {
+			if isBroken || c.engine.Rand().Float64() < hitChance {
 				chances[i] = true
 			}
 		}
 	}
 
-	if isBroken || c.engine.Rand().Float64() < 0.33 {
-		chances[0] = true
+	if isBroken || c.engine.Rand().Float64() < hitChance {
+		chances[2] = true
 	}
 
 	for i, chance := range chances {
 		if chance {
-			isExtra := false
-			if i != 0 {
-				isExtra = true
-			}
-			ssHit(c, target, isExtra)
+			ssHit(c, target, i != 2)
 		}
 	}
 
@@ -68,9 +63,15 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 func ssHit(c *char, target key.TargetID, isExtra bool) {
 	// handle a4 buff
 	if c.info.Traces["1206102"] {
+		stacks := 0.0
+		if c.engine.HasModifier(c.id, A4Buff) {
+			stacks = c.engine.GetModifiers(c.id, A4Buff)[0].Count
+		}
+
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:   A4Mod,
 			Source: c.id,
+			State:  stacks,
 		})
 	}
 
@@ -92,10 +93,10 @@ func ssHit(c *char, target key.TargetID, isExtra bool) {
 		HitRatio:     hitRatio,
 	})
 
+	c.e2()
+
 	if c.info.Traces["1206102"] {
 		c.engine.RemoveModifier(c.id, A4Mod)
 		c.a4AddStack()
 	}
-
-	c.e2()
 }

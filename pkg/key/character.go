@@ -11,5 +11,5 @@ const (
 	SilverWolf     Character = "silverwolf"
 	DummyCharacter Character = "dummy_character"
 	Sampo          Character = "sampo"
-	Sushang        Character = "Sushang"
+	Sushang        Character = "sushang"
 )

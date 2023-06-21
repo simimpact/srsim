@@ -19,5 +19,6 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 		EnergyGain:   20.0,
 		HitRatio:     1.0,
 	})
+	state.EndAttack()
 	c.a6()
 }

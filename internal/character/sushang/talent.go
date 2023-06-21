@@ -14,11 +14,13 @@ const (
 )
 
 func init() {
-	// Only for E0-E5
 	modifier.Register(TalentBuff, modifier.Config{
 		Stacking:      modifier.ReplaceBySource,
 		StatusType:    model.StatusType_STATUS_BUFF,
 		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_UP},
+		Listeners: modifier.Listeners{
+			OnAdd: talentOnAdd,
+		},
 	})
 }
 
@@ -29,16 +31,23 @@ func (c *char) initTalent() {
 }
 
 func (c *char) addTalentBuff() {
+	maxCount := 1.0
+	countAddWhenStack := 0.0
 	if c.info.Eidolon >= 6 {
-		c.addE6Stack()
-	} else {
-		c.engine.AddModifier(c.id, info.Modifier{
-			Name:   TalentBuff,
-			Source: c.id,
-			Stats: info.PropMap{
-				prop.SPDPercent: talent[c.info.TalentLevelIndex()],
-			},
-			Duration: 2,
-		})
+		maxCount = 2.0
+		countAddWhenStack = 1.0
 	}
+
+	c.engine.AddModifier(c.id, info.Modifier{
+		Name:              TalentBuff,
+		Source:            c.id,
+		Duration:          2,
+		State:             talent[c.info.TalentLevelIndex()],
+		MaxCount:          maxCount,
+		CountAddWhenStack: countAddWhenStack,
+	})
+}
+
+func talentOnAdd(mod *modifier.ModifierInstance) {
+	mod.AddProperty(prop.SPDPercent, mod.Count()*mod.State().(float64))
 }
