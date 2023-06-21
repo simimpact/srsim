@@ -60,7 +60,10 @@ func initialize(s *simulation) (stateFn, error) {
 	}
 
 	// run the script to register callbacks
-	s.eval.Init()
+	err := s.eval.Init()
+	if err != nil {
+		return nil, err
+	}
 
 	return startBattle, nil
 }
