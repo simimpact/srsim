@@ -11,6 +11,7 @@ const (
 	SilverWolf     Character = "silverwolf"
 	DummyCharacter Character = "dummy_character"
 	Sampo          Character = "sampo"
+	Sushang        Character = "sushang"
 )
 
 func (c Character) String() string {
