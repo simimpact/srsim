@@ -21,6 +21,7 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnAdd: talentOnAdd,
 		},
+		CountAddWhenStack: 1,
 	})
 }
 
@@ -32,19 +33,16 @@ func (c *char) initTalent() {
 
 func (c *char) addTalentBuff() {
 	maxCount := 1.0
-	countAddWhenStack := 0.0
 	if c.info.Eidolon >= 6 {
 		maxCount = 2.0
-		countAddWhenStack = 1.0
 	}
 
 	c.engine.AddModifier(c.id, info.Modifier{
-		Name:              TalentBuff,
-		Source:            c.id,
-		Duration:          2,
-		State:             talent[c.info.TalentLevelIndex()],
-		MaxCount:          maxCount,
-		CountAddWhenStack: countAddWhenStack,
+		Name:     TalentBuff,
+		Source:   c.id,
+		Duration: 2,
+		State:    talent[c.info.TalentLevelIndex()],
+		MaxCount: maxCount,
 	})
 }
 
