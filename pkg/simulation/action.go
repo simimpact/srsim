@@ -3,6 +3,7 @@ package simulation
 import (
 	"fmt"
 
+	actionPkg "github.com/simimpact/srsim/pkg/engine/action"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/queue"
@@ -45,23 +46,26 @@ func (sim *simulation) InsertAbility(i info.Insert) {
 	})
 }
 
-func (sim *simulation) ultCheck() {
-	for _, char := range sim.characters {
-		if sim.attr.FullEnergy(char) {
-			// TODO: need a "burst type" for cases like MC (passed to executeUlt)
-			// TODO: need a target evaluator key to be passed to executeUlt
-
+func (sim *simulation) ultCheck() error {
+	ults, err := sim.eval.UltCheck()
+	if err != nil {
+		return err
+	}
+	for _, act := range ults {
+		if sim.attr.FullEnergy(act.Target) {
 			sim.queue.Insert(queue.Task{
-				Source:   char,
+				Source:   act.Target,
 				Priority: info.CharInsertUlt,
 				AbortFlags: []model.BehaviorFlag{
 					model.BehaviorFlag_STAT_CTRL,
 					model.BehaviorFlag_DISABLE_ACTION,
 				},
-				Execute: func() { sim.executeUlt(char) },
+				Execute: func() { sim.executeUlt(act) }, // TODO: error handling
 			})
+
 		}
 	}
+	return nil
 }
 
 // execute everything on the queue. After queue execution is complete, return the next stateFn
@@ -69,7 +73,9 @@ func (sim *simulation) ultCheck() {
 // condition is met, will return that state instead
 func (s *simulation) executeQueue(phase info.BattlePhase, next stateFn) (stateFn, error) {
 	// always ult check when calling executeQueue
-	s.ultCheck()
+	if err := s.ultCheck(); err != nil {
+		return next, err
+	}
 
 	// if active is not a character, cannot prform any queue execution until after ActionEnd
 	if phase < info.ActionEnd && !s.IsCharacter(s.active) {
@@ -95,7 +101,9 @@ func (s *simulation) executeQueue(phase info.BattlePhase, next stateFn) (stateFn
 		if next, err := s.exitCheck(next); next == nil || err != nil {
 			return next, err
 		}
-		s.ultCheck()
+		if err := s.ultCheck(); err != nil {
+			return next, err
+		}
 	}
 	return next, nil
 }
@@ -144,13 +152,14 @@ func (sim *simulation) executeAction(id key.TargetID, isInsert bool) error {
 	return nil
 }
 
-func (sim *simulation) executeUlt(id key.TargetID) error {
+func (sim *simulation) executeUlt(act actionPkg.Action) error {
 	var executable target.ExecutableUlt
 	var err error
 
+	id := act.Target
 	switch sim.targets[id] {
 	case info.ClassCharacter:
-		executable, err = sim.char.ExecuteUlt(id)
+		executable, err = sim.char.ExecuteUlt(act)
 		if err != nil {
 			return fmt.Errorf("error building char executable ult %w", err)
 		}

@@ -13,6 +13,8 @@ func (e *Eval) evalExpr(ex ast.Expr, env *Env) (Obj, error) {
 		return e.evalNumberLit(v, env), nil
 	case *ast.StringLit:
 		return e.evalStringLit(v, env), nil
+	case *ast.NullLit:
+		return e.evalNullLit(v, env), nil
 	case *ast.FuncLit:
 		return e.evalFuncLit(v, env), nil
 	case *ast.Ident:
@@ -43,6 +45,10 @@ func (e *Eval) evalStringLit(n *ast.StringLit, env *Env) Obj {
 	return &strval{
 		str: strings.Trim(n.Value, "\""),
 	}
+}
+
+func (e *Eval) evalNullLit(n *ast.NullLit, env *Env) Obj {
+	return &null{}
 }
 
 func (e *Eval) evalFuncLit(n *ast.FuncLit, env *Env) Obj {

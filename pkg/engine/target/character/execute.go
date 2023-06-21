@@ -3,6 +3,7 @@ package character
 import (
 	"fmt"
 
+	"github.com/simimpact/srsim/pkg/engine/action"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/target"
 	"github.com/simimpact/srsim/pkg/engine/target/evaltarget"
@@ -27,19 +28,17 @@ func (mgr *Manager) ExecuteAction(id key.TargetID, isInsert bool) (target.Execut
 	}
 	char := mgr.instances[id]
 
-	// TODO: this is hardcoded action behavior logic. This should be doing logic eval instead
-	// of something hardcoded
-	// TODO: eval.NextAction?
-	// TODO: determine attackType from eval
-	//
-	// current hardcoded logic: use skill if possible, otherwise attack
-	check := skillInfo.Skill.CanUse
-	if mgr.engine.SP() >= skillInfo.Skill.SPNeed && (check == nil || check(mgr.engine, char)) {
+	act, err := mgr.eval.NextAction(id)
+	if err != nil {
+		return target.ExecutableAction{}, err
+	}
 
-		// TODO: this is placeholder evaltarget. Need to get what evaluator to use from AST
+	check := skillInfo.Skill.CanUse
+	useSkill := act.Type == key.ActionSkill
+	if useSkill && mgr.engine.SP() >= skillInfo.Skill.SPNeed && (check == nil || check(mgr.engine, char)) {
 		primaryTarget, err := evaltarget.Evaluate(mgr.engine, evaltarget.Info{
 			Source:      id,
-			Evaluator:   evaltarget.LowestHP,
+			Evaluator:   act.TargetEvaluator,
 			TargetType:  skillInfo.Skill.TargetType,
 			SourceClass: info.ClassCharacter,
 		})
@@ -61,10 +60,9 @@ func (mgr *Manager) ExecuteAction(id key.TargetID, isInsert bool) (target.Execut
 		}, nil
 	}
 
-	// TODO: this is placeholder evaltarget. Need to get what evaluator to use from AST
 	primaryTarget, err := evaltarget.Evaluate(mgr.engine, evaltarget.Info{
 		Source:      id,
-		Evaluator:   evaltarget.LowestHP,
+		Evaluator:   act.TargetEvaluator,
 		TargetType:  skillInfo.Attack.TargetType,
 		SourceClass: info.ClassCharacter,
 	})
@@ -95,19 +93,23 @@ func (mgr *Manager) ExecuteAction(id key.TargetID, isInsert bool) (target.Execut
 //  1. find the method to execute in the character instance based on UltType
 //  2. call TargetEvaluator to determine the primary target
 //  3. return ExecutableUlt w/ this information bundled
-func (mgr *Manager) ExecuteUlt(id key.TargetID) (target.ExecutableUlt, error) {
+func (mgr *Manager) ExecuteUlt(act action.Action) (target.ExecutableUlt, error) {
+	id := act.Target
 	skillInfo, err := mgr.SkillInfo(id)
 	if err != nil {
 		return target.ExecutableUlt{}, err
 	}
 	char := mgr.instances[id]
 
-	// TODO: This is hardcoded ult behavior.
 	if singleUlt, ok := char.(info.SingleUlt); ok {
+		if act.Type != key.ActionUlt { // if key.ActionUltAttack or key.ActionUltSkill is used
+			return target.ExecutableUlt{}, fmt.Errorf("wrong action key; expected ult, got %s", string(act.Type))
+		}
+
 		primaryTarget, err := evaltarget.Evaluate(mgr.engine, evaltarget.Info{
 			Source:      id,
-			Evaluator:   evaltarget.LowestHP,
-			TargetType:  skillInfo.Attack.TargetType,
+			Evaluator:   act.TargetEvaluator,
+			TargetType:  skillInfo.Ult.TargetType,
 			SourceClass: info.ClassCharacter,
 		})
 		if err != nil {
@@ -124,10 +126,14 @@ func (mgr *Manager) ExecuteUlt(id key.TargetID) (target.ExecutableUlt, error) {
 			},
 		}, nil
 	} else if multiUlt, ok := char.(info.MultiUlt); ok {
+		if act.Type != key.ActionUltAttack && act.Type != key.ActionUltSkill { // if key.ActionUlt is used
+			return target.ExecutableUlt{}, fmt.Errorf("wrong action key; expected ult_attack or ult_skill, got %s", string(act.Type))
+		}
+
 		primaryTarget, err := evaltarget.Evaluate(mgr.engine, evaltarget.Info{
 			Source:      id,
 			Evaluator:   evaltarget.LowestHP,
-			TargetType:  skillInfo.Attack.TargetType,
+			TargetType:  skillInfo.Ult.TargetType,
 			SourceClass: info.ClassCharacter,
 		})
 		if err != nil {

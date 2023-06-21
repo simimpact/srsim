@@ -59,6 +59,12 @@ func initialize(s *simulation) (stateFn, error) {
 		s.characters = append(s.characters, id)
 	}
 
+	// run the script to register callbacks
+	err := s.eval.Init()
+	if err != nil {
+		return nil, err
+	}
+
 	return startBattle, nil
 }
 

@@ -8,53 +8,73 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-func (e *Eval) NextAction(target key.TargetID) action.Action {
+func (e *Eval) NextAction(target key.TargetID) (action.Action, error) {
 	t, ok := e.targetNode[target]
 	if !ok {
-		return action.Action{Target: target, Type: key.ActionAttack}
+		return action.Action{}, errors.New("not found action callback")
 	}
-	useSkill, err := e.evalTargetNode(t)
+	act, err := e.evalTargetNode(t, key.ActionAttack, key.ActionSkill)
 	if err != nil {
-		e.Err <- err
-		return action.Action{Target: target, Type: key.ActionAttack}
+		return action.Action{}, err
+	}
+	if act.Type == key.InvalidAction {
+		act, ok = e.defaultActions[target]
+		if !ok {
+			return action.Action{}, errors.New("not found default action")
+		}
 	}
 
-	actionType := key.ActionAttack
-	if useSkill {
-		actionType = key.ActionSkill
-	}
-	return action.Action{Target: target, Type: actionType}
+	act.Target = target
+	return act, nil
 }
 
-func (e *Eval) BurstCheck() []action.Action {
+func (e *Eval) UltCheck() ([]action.Action, error) {
 	result := make([]action.Action, 0)
-	for _, t := range e.burstNodes {
-		useBurst, err := e.evalTargetNode(t)
+	for _, t := range e.ultNodes {
+		act, err := e.evalTargetNode(t, key.ActionUlt)
 		if err != nil {
-			e.Err <- err
-			break
+			return nil, err
 		}
-		if useBurst {
-			result = append(result, action.Action{
-				Target: t.target,
-				Type:   key.ActionBurst,
-			})
+		if act.Type != key.InvalidAction {
+			act.Target = t.target
+			result = append(result, act)
 		}
 	}
-	return result
+	return result, nil
 }
 
-func (e *Eval) evalTargetNode(t TargetNode) (bool, error) {
+func (e *Eval) evalTargetNode(t TargetNode, checkType ...key.ActionType) (action.Action, error) {
 	obj, err := e.evalNode(t.node, t.env)
 	if err != nil {
-		return false, err
+		return action.Action{}, err
 	}
 	if obj.Typ() != typRet {
-		return false, errors.New("the function must return the value")
+		return action.Action{}, errors.New("the function must return the value")
 	}
 	res := obj.(*retval).res
-	if res.Typ() != typNum {
-		return false, fmt.Errorf("the return value must be number, got %v", obj.Typ())
+	if res.Typ() != typAct && res.Typ() != typNull {
+		return action.Action{}, fmt.Errorf("the return value must be action or null, got %v", obj.Typ())
 	}
-	return ntob(res.(*number)), nil
+
+	var act action.Action
+	if res.Typ() == typAct {
+		act = (res).(*actionval).val
+	}
+
+	// check required types
+	if act.Type != key.InvalidAction && len(checkType) > 0 {
+		found := false
+		for _, v := range checkType {
+			if act.Type == v {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			return action.Action{}, fmt.Errorf("wrong action type, got %v", obj.Typ())
+		}
+	}
+
+	return act, nil
 }

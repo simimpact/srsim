@@ -69,6 +69,7 @@ const (
 	ItemNumber     // simple number
 	ItemBool       // boolean
 	ItemString     // string, including quotes
+	ItemNull       // null
 	// Keywords appear after all the rest.
 	ItemKeyword        // used only to delimit the keywords
 	KeywordLet         // let
