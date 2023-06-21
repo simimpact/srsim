@@ -8,3 +8,7 @@ type event interface {
 	// Ex: String()
 	// ToProto()
 }
+
+type cancellableEvent interface {
+	Cancelled()
+}
