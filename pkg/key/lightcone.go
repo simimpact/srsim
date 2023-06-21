@@ -8,6 +8,7 @@ const (
 	NowheretoRun       LightCone = "nowhere_to_run"
 	MutualDemise       LightCone = "mutual_demise"
 	ASecretVow         LightCone = "a_secret_vow"
+	ShatteredHome      LightCone = "shattered_home"
 )
 
 // Hunt
@@ -27,7 +28,8 @@ const (
 
 // Nihility
 const (
-	Fermata LightCone = "fermata"
+	Fermata       LightCone = "fermata"
+	EyesofthePrey LightCone = "eyes_of_the_prey"
 )
 
 // Erudition
@@ -54,4 +56,11 @@ const (
 	Multiplication           LightCone = "multiplication"
 	Cornucopia               LightCone = "cornucopia"
 	WarmthShortensColdNights LightCone = "warmth_shortens_cold_nights"
+	PostOpConversation       LightCone = "post_op_conversation"
+	SharedFeeling            LightCone = "shared_feeling"
+	QuidProQuo               LightCone = "quid_pro_quo"
 )
+
+func (l LightCone) String() string {
+	return string(l)
+}

@@ -13,3 +13,7 @@ const (
 	Sampo          Character = "sampo"
 	Sushang        Character = "sushang"
 )
+
+func (c Character) String() string {
+	return string(c)
+}

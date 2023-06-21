@@ -1,6 +1,9 @@
 package handler
 
-import "sort"
+import (
+	"github.com/simimpact/srsim/pkg/engine/logging"
+	"sort"
+)
 
 // Priority EventHandler that will execute listeners in order of priority (ascending)
 type PriorityEventHandler[E event] struct {
@@ -12,6 +15,7 @@ func (handler *PriorityEventHandler[E]) Emit(event E) {
 	for _, listener := range handler.listeners {
 		listener.listener(event)
 	}
+	logging.Log(event)
 }
 
 // Subscribe a listener to this event handler with the given priority. Listeners are executed
