@@ -55,13 +55,12 @@ func (e *Env) v(s string) (*Obj, error) {
 
 func New(ast *ast.BlockStmt, ctx context.Context) *Eval {
 	e := &Eval{AST: ast}
-	e.Init(ctx)
+	e.ctx = ctx
 	return e
 }
 
 // Run will execute the provided AST.
-func (e *Eval) Init(ctx context.Context) error {
-	e.ctx = ctx
+func (e *Eval) Init() error {
 	e.global = NewEnv(nil)
 	e.targetNode = make(map[key.TargetID]TargetNode)
 	e.ultNodes = make([]TargetNode, 0)
