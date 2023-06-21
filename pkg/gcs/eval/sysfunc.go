@@ -221,7 +221,11 @@ func (e *Eval) setDefaultAction(c *ast.CallExpr, env *Env) (Obj, error) {
 	if actobj.Typ() != typAct {
 		return nil, fmt.Errorf("set_default_action argument func should evaluate to an action, got %v", actobj.Inspect())
 	}
+
 	act := *actobj.(*actionval)
+	if act.val.Type != key.ActionAttack {
+		return nil, fmt.Errorf("action should be an attack, got %v", actobj.Inspect())
+	}
 	act.val.Target = key.TargetID(target)
 	e.defaultActions[act.val.Target] = &act.val
 	return &null{}, nil
