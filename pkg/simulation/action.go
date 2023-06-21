@@ -73,7 +73,9 @@ func (sim *simulation) ultCheck() error {
 // condition is met, will return that state instead
 func (s *simulation) executeQueue(phase info.BattlePhase, next stateFn) (stateFn, error) {
 	// always ult check when calling executeQueue
-	s.ultCheck()
+	if err := s.ultCheck(); err != nil {
+		return next, err
+	}
 
 	// if active is not a character, cannot prform any queue execution until after ActionEnd
 	if phase < info.ActionEnd && !s.IsCharacter(s.active) {
@@ -99,7 +101,9 @@ func (s *simulation) executeQueue(phase info.BattlePhase, next stateFn) (stateFn
 		if next, err := s.exitCheck(next); next == nil || err != nil {
 			return next, err
 		}
-		s.ultCheck()
+		if err := s.ultCheck(); err != nil {
+			return next, err
+		}
 	}
 	return next, nil
 }
