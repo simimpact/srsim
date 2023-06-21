@@ -7,7 +7,7 @@ type TargetEvaluator TargetID
 type ActionType string
 
 const (
-	InvalidAction ActionType = "invalid"
+	InvalidAction ActionType = ""
 	ActionAttack  ActionType = "attack"
 	ActionSkill   ActionType = "skill"
 	ActionUlt     ActionType = "ult"

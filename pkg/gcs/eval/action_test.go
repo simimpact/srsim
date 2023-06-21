@@ -101,18 +101,18 @@ func TestCharAdd(t *testing.T) {
 	assertValidUlt(t, acts, err, []action.Action{})
 }
 
-func assertValidSkill(t *testing.T, act *action.Action, err error, validact action.Action) {
+func assertValidSkill(t *testing.T, act action.Action, err error, validact action.Action) {
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 	}
 	if act.Target != validact.Target || act.TargetEvaluator != validact.TargetEvaluator || act.Type != validact.Type {
-		t.Errorf("incorrect action %s. should be: %s", spew.Sprint(*act), spew.Sprint(validact))
+		t.Errorf("incorrect action %s. should be: %s", spew.Sprint(act), spew.Sprint(validact))
 		t.FailNow()
 	}
 }
 
-func assertValidUlt(t *testing.T, acts []*action.Action, err error, validacts []action.Action) {
+func assertValidUlt(t *testing.T, acts []action.Action, err error, validacts []action.Action) {
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
@@ -124,7 +124,7 @@ func assertValidUlt(t *testing.T, acts []*action.Action, err error, validacts []
 
 	for i, k := range acts {
 		if k.Target != validacts[i].Target || k.TargetEvaluator != validacts[i].TargetEvaluator || k.Type != validacts[i].Type {
-			t.Errorf("incorrect action %s. should be: %s", spew.Sprint(*k), spew.Sprint(validacts[i]))
+			t.Errorf("incorrect action %s. should be: %s", spew.Sprint(k), spew.Sprint(validacts[i]))
 			t.FailNow()
 		}
 	}

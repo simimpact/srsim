@@ -227,7 +227,7 @@ func (e *Eval) setDefaultAction(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("action should be an attack, got %v", actobj.Inspect())
 	}
 	act.val.Target = key.TargetID(target)
-	e.defaultActions[act.val.Target] = &act.val
+	e.defaultActions[act.val.Target] = act.val
 	return &null{}, nil
 }
 

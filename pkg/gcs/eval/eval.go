@@ -27,7 +27,7 @@ type Eval struct {
 
 	targetNode     map[key.TargetID]TargetNode
 	ultNodes       []TargetNode
-	defaultActions map[key.TargetID]*action.Action
+	defaultActions map[key.TargetID]action.Action
 }
 
 type Env struct {
@@ -65,7 +65,7 @@ func (e *Eval) Init(ctx context.Context) error {
 	e.global = NewEnv(nil)
 	e.targetNode = make(map[key.TargetID]TargetNode)
 	e.ultNodes = make([]TargetNode, 0)
-	e.defaultActions = make(map[key.TargetID]*action.Action)
+	e.defaultActions = make(map[key.TargetID]action.Action)
 	e.initSysFuncs(e.global)
 
 	_, err := e.evalNode(e.AST, e.global)
