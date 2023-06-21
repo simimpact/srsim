@@ -11,5 +11,8 @@ const (
 	ActionAttack  ActionType = "attack"
 	ActionSkill   ActionType = "skill"
 	ActionUlt     ActionType = "ult"
-	EndActionType ActionType = "end"
+	// ActionUltAttack / ActionUltSkill is used to support case of MC
+	ActionUltAttack ActionType = "ult_attack"
+	ActionUltSkill  ActionType = "ult_skill"
+	EndActionType   ActionType = "end"
 )

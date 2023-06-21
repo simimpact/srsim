@@ -24,6 +24,8 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addAction(key.ActionAttack, env)
 	e.addAction(key.ActionSkill, env)
 	e.addAction(key.ActionUlt, env)
+	e.addAction(key.ActionUltAttack, env)
+	e.addAction(key.ActionUltSkill, env)
 
 	// target evaluators
 	e.addConstant("First", &number{ival: int64(evaltarget.First)}, env)

@@ -3,6 +3,7 @@ package simulation
 import (
 	"fmt"
 
+	actionPkg "github.com/simimpact/srsim/pkg/engine/action"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/queue"
@@ -59,7 +60,7 @@ func (sim *simulation) ultCheck() error {
 					model.BehaviorFlag_STAT_CTRL,
 					model.BehaviorFlag_DISABLE_ACTION,
 				},
-				Execute: func() { sim.executeUlt(act.Target) },
+				Execute: func() { sim.executeUlt(act) }, // TODO: error handling
 			})
 
 		}
@@ -147,13 +148,14 @@ func (sim *simulation) executeAction(id key.TargetID, isInsert bool) error {
 	return nil
 }
 
-func (sim *simulation) executeUlt(id key.TargetID) error {
+func (sim *simulation) executeUlt(act actionPkg.Action) error {
 	var executable target.ExecutableUlt
 	var err error
 
+	id := act.Target
 	switch sim.targets[id] {
 	case info.ClassCharacter:
-		executable, err = sim.char.ExecuteUlt(id)
+		executable, err = sim.char.ExecuteUlt(act)
 		if err != nil {
 			return fmt.Errorf("error building char executable ult %w", err)
 		}
