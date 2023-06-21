@@ -27,19 +27,17 @@ func (mgr *Manager) ExecuteAction(id key.TargetID, isInsert bool) (target.Execut
 	}
 	char := mgr.instances[id]
 
-	// TODO: this is hardcoded action behavior logic. This should be doing logic eval instead
-	// of something hardcoded
-	// TODO: eval.NextAction?
-	// TODO: determine attackType from eval
-	//
-	// current hardcoded logic: use skill if possible, otherwise attack
-	check := skillInfo.Skill.CanUse
-	if mgr.engine.SP() >= skillInfo.Skill.SPNeed && (check == nil || check(mgr.engine, char)) {
+	act, err := mgr.eval.NextAction(id)
+	if err != nil {
+		return target.ExecutableAction{}, err
+	}
 
-		// TODO: this is placeholder evaltarget. Need to get what evaluator to use from AST
+	check := skillInfo.Skill.CanUse
+	useSkill := act.Type == key.ActionSkill
+	if useSkill && mgr.engine.SP() >= skillInfo.Skill.SPNeed && (check == nil || check(mgr.engine, char)) {
 		primaryTarget, err := evaltarget.Evaluate(mgr.engine, evaltarget.Info{
 			Source:      id,
-			Evaluator:   evaltarget.LowestHP,
+			Evaluator:   act.TargetEvaluator,
 			TargetType:  skillInfo.Skill.TargetType,
 			SourceClass: info.ClassCharacter,
 		})
@@ -61,10 +59,9 @@ func (mgr *Manager) ExecuteAction(id key.TargetID, isInsert bool) (target.Execut
 		}, nil
 	}
 
-	// TODO: this is placeholder evaltarget. Need to get what evaluator to use from AST
 	primaryTarget, err := evaltarget.Evaluate(mgr.engine, evaltarget.Info{
 		Source:      id,
-		Evaluator:   evaltarget.LowestHP,
+		Evaluator:   act.TargetEvaluator,
 		TargetType:  skillInfo.Attack.TargetType,
 		SourceClass: info.ClassCharacter,
 	})

@@ -17,13 +17,13 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addSysFunc("print", e.print, env)
 	e.addSysFunc("type", e.typeval, env)
 	e.addSysFunc("register_skill_cb", e.registerSkillCB, env)
-	e.addSysFunc("register_burst_cb", e.registerBurstCB, env)
+	e.addSysFunc("register_ult_cb", e.registerUltCB, env)
 	e.addSysFunc("set_default_action", e.setDefaultAction, env)
 
 	// actions
 	e.addAction(key.ActionAttack, env)
 	e.addAction(key.ActionSkill, env)
-	e.addAction(key.ActionBurst, env)
+	e.addAction(key.ActionUlt, env)
 
 	// target evaluators
 	e.addConstant("First", &number{ival: int64(evaltarget.First)}, env)
@@ -155,10 +155,10 @@ func (e *Eval) registerSkillCB(c *ast.CallExpr, env *Env) (Obj, error) {
 	return &null{}, nil
 }
 
-func (e *Eval) registerBurstCB(c *ast.CallExpr, env *Env) (Obj, error) {
-	//register_burst_cb(char, func)
+func (e *Eval) registerUltCB(c *ast.CallExpr, env *Env) (Obj, error) {
+	//register_ult_cb(char, func)
 	if len(c.Args) != 2 {
-		return nil, fmt.Errorf("invalid number of params for register_burst_cb, expected 2 got %v", len(c.Args))
+		return nil, fmt.Errorf("invalid number of params for register_ult_cb, expected 2 got %v", len(c.Args))
 	}
 
 	//should eval to a function
@@ -167,7 +167,7 @@ func (e *Eval) registerBurstCB(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, err
 	}
 	if tarobj.Typ() != typNum {
-		return nil, fmt.Errorf("register_burst_cb argument char should evaluate to a number, got %v", tarobj.Inspect())
+		return nil, fmt.Errorf("register_ult_cb argument char should evaluate to a number, got %v", tarobj.Inspect())
 	}
 	target := tarobj.(*number).ival
 
@@ -177,7 +177,7 @@ func (e *Eval) registerBurstCB(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, err
 	}
 	if funcobj.Typ() != typFun {
-		return nil, fmt.Errorf("register_burst_cb argument func should evaluate to a function, got %v", funcobj.Inspect())
+		return nil, fmt.Errorf("register_ult_cb argument func should evaluate to a function, got %v", funcobj.Inspect())
 	}
 	fn := funcobj.(*funcval)
 
@@ -193,7 +193,7 @@ func (e *Eval) registerBurstCB(c *ast.CallExpr, env *Env) (Obj, error) {
 		}
 		node.env.varMap[v.Value] = &param
 	}
-	e.burstNodes = append(e.burstNodes, node)
+	e.ultNodes = append(e.ultNodes, node)
 	return &null{}, nil
 }
 
@@ -233,7 +233,7 @@ func (e *Eval) setDefaultAction(c *ast.CallExpr, env *Env) (Obj, error) {
 
 func (e *Eval) addAction(at key.ActionType, env *Env) {
 	f := func(c *ast.CallExpr, env *Env) (Obj, error) {
-		//attack/skill/burst(evaltarget)
+		//attack/skill/ult(evaltarget)
 		if len(c.Args) != 1 {
 			return nil, fmt.Errorf("invalid number of params for action, expected 1 got %v", len(c.Args))
 		}

@@ -10,6 +10,6 @@ const (
 	InvalidAction ActionType = "invalid"
 	ActionAttack  ActionType = "attack"
 	ActionSkill   ActionType = "skill"
-	ActionBurst   ActionType = "burst"
+	ActionUlt     ActionType = "ult"
 	EndActionType ActionType = "end"
 )

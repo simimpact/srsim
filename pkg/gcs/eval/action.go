@@ -28,10 +28,10 @@ func (e *Eval) NextAction(target key.TargetID) (*action.Action, error) {
 	return act, nil
 }
 
-func (e *Eval) BurstCheck() ([]*action.Action, error) {
+func (e *Eval) UltCheck() ([]*action.Action, error) {
 	result := make([]*action.Action, 0)
-	for _, t := range e.burstNodes {
-		act, err := e.evalTargetNode(t, key.ActionBurst)
+	for _, t := range e.ultNodes {
+		act, err := e.evalTargetNode(t, key.ActionUlt)
 		if err != nil {
 			return nil, err
 		}

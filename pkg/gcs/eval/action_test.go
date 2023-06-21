@@ -25,20 +25,20 @@ register_skill_cb(1, fn () {
 });
 
 let use = false;
-register_burst_cb(0, fn () {
+register_ult_cb(0, fn () {
 	if use {
 		use = false;
-		return burst(First);
+		return ult(First);
 	}
 	use = true;
 	return null;
 });
 
 // use after skill
-register_burst_cb(1, fn () {
+register_ult_cb(1, fn () {
     if skill_pressed {
 		skill_pressed = false;
-        return burst(LowestHP);
+        return ult(LowestHP);
     }
 	return null;
 });
@@ -80,25 +80,25 @@ func TestCharAdd(t *testing.T) {
 		TargetEvaluator: evaltarget.First,
 	})
 
-	// burst
-	acts, err := eval.BurstCheck()
-	assertValidBurst(t, acts, err, []action.Action{
+	// ult
+	acts, err := eval.UltCheck()
+	assertValidUlt(t, acts, err, []action.Action{
 		{
-			Type:            key.ActionBurst,
+			Type:            key.ActionUlt,
 			Target:          1,
 			TargetEvaluator: evaltarget.LowestHP,
 		},
 	})
-	acts, err = eval.BurstCheck()
-	assertValidBurst(t, acts, err, []action.Action{
+	acts, err = eval.UltCheck()
+	assertValidUlt(t, acts, err, []action.Action{
 		{
-			Type:            key.ActionBurst,
+			Type:            key.ActionUlt,
 			Target:          0,
 			TargetEvaluator: evaltarget.First,
 		},
 	})
-	acts, err = eval.BurstCheck()
-	assertValidBurst(t, acts, err, []action.Action{})
+	acts, err = eval.UltCheck()
+	assertValidUlt(t, acts, err, []action.Action{})
 }
 
 func assertValidSkill(t *testing.T, act *action.Action, err error, validact action.Action) {
@@ -112,7 +112,7 @@ func assertValidSkill(t *testing.T, act *action.Action, err error, validact acti
 	}
 }
 
-func assertValidBurst(t *testing.T, acts []*action.Action, err error, validacts []action.Action) {
+func assertValidUlt(t *testing.T, acts []*action.Action, err error, validacts []action.Action) {
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

@@ -26,7 +26,7 @@ type Eval struct {
 	Engine engine.Engine
 
 	targetNode     map[key.TargetID]TargetNode
-	burstNodes     []TargetNode
+	ultNodes       []TargetNode
 	defaultActions map[key.TargetID]*action.Action
 }
 
@@ -64,7 +64,7 @@ func (e *Eval) Init(ctx context.Context) error {
 	e.ctx = ctx
 	e.global = NewEnv(nil)
 	e.targetNode = make(map[key.TargetID]TargetNode)
-	e.burstNodes = make([]TargetNode, 0)
+	e.ultNodes = make([]TargetNode, 0)
 	e.defaultActions = make(map[key.TargetID]*action.Action)
 	e.initSysFuncs(e.global)
 
