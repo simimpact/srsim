@@ -12,3 +12,7 @@ const (
 	DummyCharacter Character = "dummy_character"
 	Sampo          Character = "sampo"
 )
+
+func (c Character) String() string {
+	return string(c)
+}
