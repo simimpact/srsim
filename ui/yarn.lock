@@ -4030,6 +4030,73 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-spring/animated@npm:~9.7.2":
+  version: 9.7.2
+  resolution: "@react-spring/animated@npm:9.7.2"
+  dependencies:
+    "@react-spring/shared": ~9.7.2
+    "@react-spring/types": ~9.7.2
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: 08f2f1e54468776b2abf76e3c3504129b8d965875781bc1cfd40adddff8f310869ecfb6d18e937df8ed63a01b3d0cb2335fb531be03ddf25f6f58583a91e08e7
+  languageName: node
+  linkType: hard
+
+"@react-spring/core@npm:~9.7.2":
+  version: 9.7.2
+  resolution: "@react-spring/core@npm:9.7.2"
+  dependencies:
+    "@react-spring/animated": ~9.7.2
+    "@react-spring/rafz": ~9.7.2
+    "@react-spring/shared": ~9.7.2
+    "@react-spring/types": ~9.7.2
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: 7d14369d6bc3cb4f51bce946a0499484bd03a06b2602edd1f0478806759fd2a5f0800892cdf8d38a3bd4ef949f3c61de65933c46784683ea757f16db710a04fd
+  languageName: node
+  linkType: hard
+
+"@react-spring/rafz@npm:~9.7.2":
+  version: 9.7.2
+  resolution: "@react-spring/rafz@npm:9.7.2"
+  checksum: 88ad6275ed172745c7cd309e6a06bb52b76b6f391510afcf8ad12d1fc50950e74f902f96bcaae0895ab75e47a1d809d36fe843ce8d3d0d2ea2d6700ff9e03d81
+  languageName: node
+  linkType: hard
+
+"@react-spring/shared@npm:~9.7.2":
+  version: 9.7.2
+  resolution: "@react-spring/shared@npm:9.7.2"
+  dependencies:
+    "@react-spring/rafz": ~9.7.2
+    "@react-spring/types": ~9.7.2
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: f3041a537dddad63c64e68890f3276b72c4e2d5828621a09dbd722edb7a12edc0026555118f8305b969253f44e409ddd411dd5b99ec4e04edea32bee5e5f57fd
+  languageName: node
+  linkType: hard
+
+"@react-spring/types@npm:~9.7.2":
+  version: 9.7.2
+  resolution: "@react-spring/types@npm:9.7.2"
+  checksum: 145a79d2f40dfc9f0a4b54db17890c6471b4e50563c01951ca13022977b0d8009865c1839cf07a762fd33ae0b83f2d6972e2d0fe50bd3105942b9cea5253612e
+  languageName: node
+  linkType: hard
+
+"@react-spring/web@npm:^9.7.2":
+  version: 9.7.2
+  resolution: "@react-spring/web@npm:9.7.2"
+  dependencies:
+    "@react-spring/animated": ~9.7.2
+    "@react-spring/core": ~9.7.2
+    "@react-spring/shared": ~9.7.2
+    "@react-spring/types": ~9.7.2
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: f872dfd9bbbfc27f32e4406076729a36169e2da3785709fbf981b7d3a77a1a430d7f295b300a9acc8cb4805d0965e6d9a54914a4263abfd96806b7ae53ba69cd
+  languageName: node
+  linkType: hard
+
 "@remix-run/router@npm:1.6.2":
   version: 1.6.2
   resolution: "@remix-run/router@npm:1.6.2"
@@ -4091,6 +4158,7 @@ __metadata:
     "@visx/stats": ^3.0.0
     "@visx/text": ^3.0.0
     "@visx/tooltip": ^3.1.2
+    "@visx/xychart": ^3.1.2
     "@vitejs/plugin-react": ^4.0.0
     axios: ^1.4.0
     i18next: ^22.4.15
@@ -5291,6 +5359,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/d3-voronoi@npm:^1.1.9":
+  version: 1.1.9
+  resolution: "@types/d3-voronoi@npm:1.1.9"
+  checksum: 604e8c4fb4d65f9fc6a549fc3a32a8e9bc7e54e566a2ca6a834f5ff91e41728b3289cfc5c85dd96283fac772c7b9184e023702ec7230e2646a97b78907ddbecb
+  languageName: node
+  linkType: hard
+
 "@types/detect-port@npm:^1.3.0":
   version: 1.3.3
   resolution: "@types/detect-port@npm:1.3.3"
@@ -5829,7 +5904,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@visx/annotation@npm:^3.0.1":
+"@visx/annotation@npm:3.0.1, @visx/annotation@npm:^3.0.1":
   version: 3.0.1
   resolution: "@visx/annotation@npm:3.0.1"
   dependencies:
@@ -5846,7 +5921,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@visx/axis@npm:^3.1.0":
+"@visx/axis@npm:3.1.0, @visx/axis@npm:^3.1.0":
   version: 3.1.0
   resolution: "@visx/axis@npm:3.1.0"
   dependencies:
@@ -5912,7 +5987,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@visx/grid@npm:^3.0.1":
+"@visx/glyph@npm:3.0.0":
+  version: 3.0.0
+  resolution: "@visx/glyph@npm:3.0.0"
+  dependencies:
+    "@types/d3-shape": ^1.3.1
+    "@types/react": "*"
+    "@visx/group": 3.0.0
+    classnames: ^2.3.1
+    d3-shape: ^1.2.0
+    prop-types: ^15.6.2
+  peerDependencies:
+    react: ^16.3.0-0 || ^17.0.0-0 || ^18.0.0-0
+  checksum: 0a944f2594c519e66e66dbc806e9ff2e53bbc64bfd8c2106420d97f0c47824d22b6e733f7bed3591dd94fb00b32ead68c34fd3d342fc42968182d511ac9996c5
+  languageName: node
+  linkType: hard
+
+"@visx/grid@npm:3.0.1, @visx/grid@npm:^3.0.1":
   version: 3.0.1
   resolution: "@visx/grid@npm:3.0.1"
   dependencies:
@@ -5965,7 +6056,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@visx/responsive@npm:^3.0.0":
+"@visx/react-spring@npm:3.1.0":
+  version: 3.1.0
+  resolution: "@visx/react-spring@npm:3.1.0"
+  dependencies:
+    "@types/react": "*"
+    "@visx/axis": 3.1.0
+    "@visx/grid": 3.0.1
+    "@visx/scale": 3.0.0
+    "@visx/text": 3.0.0
+    classnames: ^2.3.1
+    prop-types: ^15.6.2
+  peerDependencies:
+    "@react-spring/web": ^9.4.5
+    react: ^16.3.0-0 || ^17.0.0 || ^18.0.0
+  checksum: 5d727dd8053c101d6473580feba5b8c05d70fa6311a0dc2f9c1d420c6fce4ce497f7f191b89bb10c53eedd986aa3006cd7a7f389035c02a2a847f8c3c38fcafb
+  languageName: node
+  linkType: hard
+
+"@visx/responsive@npm:3.0.0, @visx/responsive@npm:^3.0.0":
   version: 3.0.0
   resolution: "@visx/responsive@npm:3.0.0"
   dependencies:
@@ -6048,7 +6157,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@visx/tooltip@npm:^3.1.2":
+"@visx/tooltip@npm:3.1.2, @visx/tooltip@npm:^3.1.2":
   version: 3.1.2
   resolution: "@visx/tooltip@npm:3.1.2"
   dependencies:
@@ -6061,6 +6170,53 @@ __metadata:
     react: ^16.8.0-0 || ^17.0.0-0 || ^18.0.0-0
     react-dom: ^16.8.0-0 || ^17.0.0-0 || ^18.0.0-0
   checksum: 4c2127068f22766e984ed3ed1452dcece919bacb0297b17ba862a6815bb7f04c4fc462a100d3934e0cb56a9c7962b82f7c4184748ef4b2dbef3b4b0d5b717fdd
+  languageName: node
+  linkType: hard
+
+"@visx/voronoi@npm:3.0.0":
+  version: 3.0.0
+  resolution: "@visx/voronoi@npm:3.0.0"
+  dependencies:
+    "@types/d3-voronoi": ^1.1.9
+    "@types/react": "*"
+    classnames: ^2.3.1
+    d3-voronoi: ^1.1.2
+    prop-types: ^15.6.1
+  peerDependencies:
+    react: ^16.3.0-0 || ^17.0.0-0 || ^18.0.0-0
+  checksum: 7c0f4ff846401bae337bf3e961e3807a1ae7b6e50da3817dd7bfba0c8b40017079ef81baa6145bab61b29368d27d2852b5fcf17ee52b372ab17ff2d81a087b9a
+  languageName: node
+  linkType: hard
+
+"@visx/xychart@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "@visx/xychart@npm:3.1.2"
+  dependencies:
+    "@types/lodash": ^4.14.172
+    "@types/react": "*"
+    "@visx/annotation": 3.0.1
+    "@visx/axis": 3.1.0
+    "@visx/event": 3.0.1
+    "@visx/glyph": 3.0.0
+    "@visx/grid": 3.0.1
+    "@visx/react-spring": 3.1.0
+    "@visx/responsive": 3.0.0
+    "@visx/scale": 3.0.0
+    "@visx/shape": 3.0.0
+    "@visx/text": 3.0.0
+    "@visx/tooltip": 3.1.2
+    "@visx/voronoi": 3.0.0
+    classnames: ^2.3.1
+    d3-array: ^2.6.0
+    d3-interpolate-path: 2.2.1
+    d3-shape: ^2.0.0
+    lodash: ^4.17.21
+    mitt: ^2.1.0
+    prop-types: ^15.6.2
+  peerDependencies:
+    "@react-spring/web": ^9.4.5
+    react: ^16.8.0 || ^17.0.0 || ^ 18.0.0
+  checksum: f6776a4da8000811c7f71e2285610dfe26b159f43904ba8e124225219a6791a89b9ded2f71c4f04f38da03f10b59e5f0d63a6b2b7f8c688aebc9107be4ec2e57
   languageName: node
   linkType: hard
 
@@ -7977,21 +8133,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"d3-array@npm:2":
-  version: 2.12.1
-  resolution: "d3-array@npm:2.12.1"
-  dependencies:
-    internmap: ^1.0.0
-  checksum: 97853b7b523aded17078f37c67742f45d81e88dda2107ae9994c31b9e36c5fa5556c4c4cf39650436f247813602dfe31bf7ad067ff80f127a16903827f10c6eb
-  languageName: node
-  linkType: hard
-
 "d3-array@npm:2 - 3, d3-array@npm:2.10.0 - 3":
   version: 3.2.4
   resolution: "d3-array@npm:3.2.4"
   dependencies:
     internmap: 1 - 2
   checksum: a5976a6d6205f69208478bb44920dd7ce3e788c9dceb86b304dbe401a4bfb42ecc8b04c20facde486e9adcb488b5d1800d49393a3f81a23902b68158e12cddd0
+  languageName: node
+  linkType: hard
+
+"d3-array@npm:2, d3-array@npm:^2.6.0":
+  version: 2.12.1
+  resolution: "d3-array@npm:2.12.1"
+  dependencies:
+    internmap: ^1.0.0
+  checksum: 97853b7b523aded17078f37c67742f45d81e88dda2107ae9994c31b9e36c5fa5556c4c4cf39650436f247813602dfe31bf7ad067ff80f127a16903827f10c6eb
   languageName: node
   linkType: hard
 
@@ -8009,12 +8165,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"d3-interpolate-path@npm:2.2.1":
+  version: 2.2.1
+  resolution: "d3-interpolate-path@npm:2.2.1"
+  checksum: 2b3c2267cea4813d4e79d8399c17ebc1023a0b41f72caa5a20ba5e12161702f9a0873b4fdc3b87d9882feb7486cb018bb426233f7de865b018eac0c3ac20932f
+  languageName: node
+  linkType: hard
+
 "d3-interpolate@npm:1.2.0 - 3, d3-interpolate@npm:^3.0.1":
   version: 3.0.1
   resolution: "d3-interpolate@npm:3.0.1"
   dependencies:
     d3-color: 1 - 3
   checksum: a42ba314e295e95e5365eff0f604834e67e4a3b3c7102458781c477bd67e9b24b6bb9d8e41ff5521050a3f2c7c0c4bbbb6e187fd586daa3980943095b267e78b
+  languageName: node
+  linkType: hard
+
+"d3-path@npm:1 - 2":
+  version: 2.0.0
+  resolution: "d3-path@npm:2.0.0"
+  checksum: e39e91dfb9abf9637962caede1f4ea4877f4b9e1c914868bdfc355688e9a637ba51bed0fb6180934eb596e50a4d0d1f001b5f2e98a4a3d23cc42558acfbd1f2c
   languageName: node
   linkType: hard
 
@@ -8047,6 +8217,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"d3-shape@npm:^2.0.0":
+  version: 2.1.0
+  resolution: "d3-shape@npm:2.1.0"
+  dependencies:
+    d3-path: 1 - 2
+  checksum: 4a82a83fbb15aadee3eb6661226a34bcd793cdbcd7aa5bf980a4724efc93eb94acc6c499f0ebedc9c3144c57c0f033867d137f41e86459acbd5d7181cb27b49c
+  languageName: node
+  linkType: hard
+
 "d3-time-format@npm:2 - 4":
   version: 4.1.0
   resolution: "d3-time-format@npm:4.1.0"
@@ -8071,6 +8250,13 @@ __metadata:
   dependencies:
     d3-array: 2
   checksum: d1c7b9658c20646e46c3dd19e11c38e02dec098e8baa7d2cd868af8eb01953668f5da499fa33dc63541cf74a26e788786f8828c4381dbbf475a76b95972979a6
+  languageName: node
+  linkType: hard
+
+"d3-voronoi@npm:^1.1.2":
+  version: 1.1.4
+  resolution: "d3-voronoi@npm:1.1.4"
+  checksum: d28a74bc62f2b936b0d3b51d5be8d2366afca4fd7026d7ee8f655600650bf0c985da38a8c3ae46bfa315b5f524f3ca1c5211437cf1c8c737cc1da681e015baee
   languageName: node
   linkType: hard
 
@@ -12925,6 +13111,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mitt@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "mitt@npm:2.1.0"
+  checksum: 5b0f698cbff2e47cc3b81b991f1230fadd429bdf4a2d9051d936059ad8090e36932694f299dd52434365463e6c52075026fb2161adcfd52b234b6f5392a514d2
+  languageName: node
+  linkType: hard
+
 "mkdirp-classic@npm:^0.5.2":
   version: 0.5.3
   resolution: "mkdirp-classic@npm:0.5.3"
@@ -16358,6 +16551,7 @@ __metadata:
     "@radix-ui/react-tabs": ^1.0.4
     "@radix-ui/react-toast": ^1.1.4
     "@radix-ui/react-tooltip": ^1.0.6
+    "@react-spring/web": ^9.7.2
     "@tanstack/eslint-plugin-query": ^4.29.9
     "@tanstack/react-query": ^4.29.15
     "@types/eslint": ^8
