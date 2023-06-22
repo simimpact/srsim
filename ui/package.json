@@ -7,6 +7,7 @@
   ],
   "scripts": {
     "clean": "yarn cache clean && rimraf node_modules",
+    "codegen": "npx tsx packages/web/scripts/codegen.ts",
     "lint": "eslint --fix",
     "lint-ci": "eslint .",
     "circular": "yarn madge --circular --extensions ts ./",
@@ -56,6 +57,7 @@
     "eslint-plugin-workspaces": "^0.8.0",
     "framer-motion": "^10.12.16",
     "husky": "^8.0.0",
+    "json-schema-to-typescript": "^13.0.2",
     "lerna": "^6.6.1",
     "lint-staged": "^13.2.2",
     "lucide-react": "^0.244.0",
