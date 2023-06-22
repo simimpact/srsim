@@ -6,20 +6,23 @@ import (
 	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/gcs/eval"
 	"github.com/simimpact/srsim/pkg/key"
 )
 
 type Manager struct {
 	engine    engine.Engine
 	attr      attribute.AttributeModifier
+	eval      *eval.Eval
 	instances map[key.TargetID]info.CharInstance
 	info      map[key.TargetID]info.Character
 }
 
-func New(engine engine.Engine, attr attribute.AttributeModifier) *Manager {
+func New(engine engine.Engine, attr attribute.AttributeModifier, eval *eval.Eval) *Manager {
 	return &Manager{
 		engine:    engine,
 		attr:      attr,
+		eval:      eval,
 		instances: make(map[key.TargetID]info.CharInstance, 4),
 		info:      make(map[key.TargetID]info.Character, 4),
 	}
