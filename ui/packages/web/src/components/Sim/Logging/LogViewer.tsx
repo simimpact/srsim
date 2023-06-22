@@ -1,7 +1,30 @@
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Primitives/Tabs";
+import { LogTab } from "./LogTab";
+import { MvpTab } from "./MvpTab";
+
 interface Props {
-  logdata: Log<{ title: string } & Logable>;
+  placeholder: string;
 }
-const LogViewer = ({ logdata }: Props) => {
-  return null;
+const LogViewer = ({ placeholder }: Props) => {
+  return (
+    <div className="w-[70vw] h-[70vh]">
+      <Tabs defaultValue="log">
+        <TabsList className="w-full h-full">
+          <TabsTrigger value="mvp" className="w-full">
+            MVP tab
+          </TabsTrigger>
+          <TabsTrigger value="log" className="w-full">
+            Logging/Debugging
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="mvp" className="bg-fire">
+          <MvpTab name="test" />
+        </TabsContent>
+        <TabsContent value="log">
+          <LogTab />
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
 };
 export { LogViewer };
