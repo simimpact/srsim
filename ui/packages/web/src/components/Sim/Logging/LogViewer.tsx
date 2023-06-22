@@ -8,7 +8,7 @@ interface Props {
 const LogViewer = ({ placeholder }: Props) => {
   return (
     <div className="w-[95vw] h-[95vh]">
-      <Tabs defaultValue="log">
+      <Tabs defaultValue="mvp">
         <TabsList className="w-full h-full">
           <TabsTrigger value="mvp" className="w-full">
             MVP tab

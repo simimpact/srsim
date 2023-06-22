@@ -20,15 +20,19 @@ const MvpTab = ({ name }: Props) => {
     <>
       <Button onClick={() => statMock.mutate()}>Generate</Button>
       <div className="w-[95vw] h-[95vh] flex gap-2">
-        <div id="left-container" className="flex flex-col gap-2 grow">
+        <div id="left-container" className="flex flex-col gap-2 grow  max-w-[45vw]">
           <div id="portrait" className="bg-background rounded-md p-4 h-64">
             portrait
           </div>
           <div id="summary-distribution" className="bg-background rounded-md p-4 grow">
             {statMock.data && (
               <>
-                <p>self distribution</p>
-                <p>team distribution</p>
+                <h3 className="text-lg font-semibold leading-none tracking-tight">
+                  self distribution
+                </h3>
+                <h3 className="text-lg font-semibold leading-none tracking-tight">
+                  team distribution
+                </h3>
                 <TeamXY data={statMock.data.team_distribution} />
               </>
             )}
