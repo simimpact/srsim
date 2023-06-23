@@ -42,6 +42,7 @@
     "@react-spring/web": "^9.7.2",
     "@tanstack/eslint-plugin-query": "^4.29.9",
     "@tanstack/react-query": "^4.29.15",
+    "@tanstack/react-table": "^8.9.2",
     "@types/eslint": "^8",
     "@types/prettier": "^2",
     "@types/watch": "^1",
