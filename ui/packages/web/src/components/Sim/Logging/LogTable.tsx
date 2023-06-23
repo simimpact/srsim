@@ -28,6 +28,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     data,
     columns,
     state: { expanded },
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     getSubRows: row => row.children,
     onExpandedChange: setExpanded,
     getExpandedRowModel: getExpandedRowModel(),
