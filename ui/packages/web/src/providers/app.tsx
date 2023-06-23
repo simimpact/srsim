@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactNode } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { HelmetProvider } from "react-helmet-async";
@@ -13,11 +14,14 @@ const ErrorFallback = () => (
     <button className="rounded bg-blue-500 font-blod px-4 py-2 text-white">Refresh</button>
   </div>
 );
+const queryClient = new QueryClient();
 
 export const AppProvider = ({ children }: Props) => (
   <ErrorBoundary FallbackComponent={ErrorFallback}>
     <HelmetProvider>
-      <BrowserRouter>{children}</BrowserRouter>
+      <BrowserRouter>
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      </BrowserRouter>
     </HelmetProvider>
   </ErrorBoundary>
 );
