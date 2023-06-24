@@ -49,7 +49,6 @@ func randomlyAddEnergy(mod *modifier.ModifierInstance) {
 		char != mod.Owner()) {
 			validAllyList = append(validAllyList, char)
 		}
-		mod.Engine().MaxEnergy()
 	}
 	//add in checker to add energy only if validAllyList isn't empty
 	if validAllyList != nil {
