@@ -1,6 +1,7 @@
 package combat
 
 import (
+	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/shield"
@@ -9,9 +10,10 @@ import (
 )
 
 type Manager struct {
-	event *event.System
-	attr  attribute.AttributeModifier
-	shld  shield.ShieldAbsorb
+	event  *event.System
+	attr   attribute.AttributeModifier
+	shld   shield.ShieldAbsorb
+	target engine.Target
 
 	isInAttack bool
 	attackInfo attackInfo
@@ -24,10 +26,11 @@ type attackInfo struct {
 	damageType model.DamageType
 }
 
-func New(event *event.System, attr attribute.AttributeModifier, shld shield.ShieldAbsorb) *Manager {
+func New(event *event.System, attr attribute.AttributeModifier, shld shield.ShieldAbsorb, target engine.Target) *Manager {
 	return &Manager{
-		event: event,
-		attr:  attr,
-		shld:  shld,
+		event:  event,
+		attr:   attr,
+		shld:   shld,
+		target: target,
 	}
 }

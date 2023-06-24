@@ -32,20 +32,19 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 		Defender:         hit.Defender.ID(),
 		AttackType:       hit.AttackType,
 		DamageType:       hit.DamageType,
-		HPDamage:         0, // TODO
-		BaseDamage:       hit.baseDamage(), // TODO
-		BonusDamage:      0,                // TODO
-		TotalDamage:      0,                // TODO
-		ShieldDamage:     0,                // TODO
-		HPDamage:         0,                // TODO
+		HPDamage:         0,                              // TODO
+		BaseDamage:       mgr.baseDamage(hit.BaseDamage), // TODO
+		BonusDamage:      0,                              // TODO
+		TotalDamage:      0,                              // TODO
+		ShieldDamage:     0,                              // TODO
 		HPRatioRemaining: mgr.attr.HPRatio(hit.Defender.ID()),
 		IsCrit:           false, // TODO
 		UseSnapshot:      hit.UseSnapshot,
 	})
 }
 
-func (mgr *Manager) baseDamage() float64 {
-
+func (mgr *Manager) baseDamage(dmgMap info.DamageMap) float64 {
+	return 0
 }
 
 func (mgr *Manager) newHit(target key.TargetID, atk info.Attack) *info.Hit {
