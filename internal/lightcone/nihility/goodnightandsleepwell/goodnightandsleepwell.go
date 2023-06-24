@@ -34,7 +34,7 @@ func init() {
 // For every debuff the target enemy has, the DMG dealt by the wearer increases by 12%/15%/18%/21%/24%,
 // stacking up to 3 time(s). This effect also applies to DoT.
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	amt := 0.09
+	amt := 0.09 + 0.03*float64(lc.Imposition)
 	engine.AddModifier(owner, info.Modifier{
 		Name:   Check,
 		Source: owner,
@@ -48,9 +48,6 @@ func onBeforeHitAll(mod *modifier.ModifierInstance, e event.HitStartEvent) {
 	if debuffCount > 3 {
 		debuffCount = 3
 	}
-	amt := mod.State().(float64) + 0.03*debuffCount
-
-	if amt > 0.09 {
-		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, amt)
-	}
+	amt := mod.State().(float64) * debuffCount
+	e.Hit.Attacker.AddProperty(prop.AllDamagePercent, amt)
 }
