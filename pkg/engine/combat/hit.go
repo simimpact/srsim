@@ -29,16 +29,21 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 	// * dots & element damage do not crit (unknown if also ByPureDamage?)
 	// * ByPureDamage = true means a "simplified" damage function (the break damage equation)
 
+	base := mgr.baseDamage(hit) * hit.HitRatio
+	bonus := mgr.bonusDamage(hit)
+	total := mgr.totalDamage(hit, base, bonus)
+	hpUpdate := [2]float64{mgr.shld.AbsorbDamage(hit.Defender.ID(), total), total}
+
 	mgr.event.HitEnd.Emit(event.HitEndEvent{
 		Attacker:         hit.Attacker.ID(),
 		Defender:         hit.Defender.ID(),
 		AttackType:       hit.AttackType,
 		DamageType:       hit.DamageType,
-		HPDamage:         0, // TODO
-		BaseDamage:       mgr.baseDamage(hit) * hit.HitRatio,
-		BonusDamage:      mgr.bonusDamage(hit),
-		TotalDamage:      mgr.totalDamage(hit, mgr.baseDamage(hit)*hit.HitRatio, mgr.bonusDamage(hit)),
-		ShieldDamage:     0, // TODO
+		HPDamage:         hpUpdate[0],
+		BaseDamage:       base,
+		BonusDamage:      bonus,
+		TotalDamage:      total,
+		ShieldDamage:     hpUpdate[1], // TODO: Do we need this? AbsorbDamage already emits a shield modifying event
 		HPRatioRemaining: mgr.attr.HPRatio(hit.Defender.ID()),
 		IsCrit:           mgr.crit(hit),
 		UseSnapshot:      hit.UseSnapshot,
