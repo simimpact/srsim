@@ -165,7 +165,25 @@ func (mgr *Manager) totalDamage(h *info.Hit, base float64, dmg float64) float64 
 		vul = 1.35
 	}
 
-	return base * dmg * def_mult * res * vul
+	// ByPureDamage equation does not scale on DMG%, and break effect applies.
+	breakDmg := 1.0
+	if h.AttackType == model.AttackType_ELEMENT_DAMAGE {
+		breakDmg += float64(attacker.BreakEffect())
+		dmg = 1.0
+	}
+
+	// universal multiplier
+	universal := 0.9
+	if defender.Stance() == 0 {
+		universal = 1
+	}
+
+	// TODO: weaken
+
+	// TODO: Monster Taken% when we implement Doomsday Beast
+
+	total := base * dmg * def_mult * res * vul * breakDmg * universal
+	return total
 }
 
 func (mgr *Manager) newHit(target key.TargetID, atk info.Attack) *info.Hit {
