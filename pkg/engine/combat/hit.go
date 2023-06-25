@@ -4,6 +4,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/model"
 )
 
 func (mgr *Manager) performHit(hit *info.Hit) {
@@ -32,19 +33,38 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 		Defender:         hit.Defender.ID(),
 		AttackType:       hit.AttackType,
 		DamageType:       hit.DamageType,
-		HPDamage:         0,                              // TODO
-		BaseDamage:       mgr.baseDamage(hit.BaseDamage), // TODO
-		BonusDamage:      0,                              // TODO
-		TotalDamage:      0,                              // TODO
-		ShieldDamage:     0,                              // TODO
+		HPDamage:         0, // TODO
+		BaseDamage:       mgr.baseDamage(hit) * hit.HitRatio,
+		BonusDamage:      0, // TODO
+		TotalDamage:      0, // TODO
+		ShieldDamage:     0, // TODO
 		HPRatioRemaining: mgr.attr.HPRatio(hit.Defender.ID()),
 		IsCrit:           false, // TODO
 		UseSnapshot:      hit.UseSnapshot,
 	})
 }
 
-func (mgr *Manager) baseDamage(dmgMap info.DamageMap) float64 {
-	return 0
+// Base DMG = (MV + Extra MV) * Scaling Attribute + Extra DMG
+// k = scaling attribute
+// v = (MV + Extra MV)
+// TODO: how to handle 'Extra DMG'?
+func (mgr *Manager) baseDamage(h *info.Hit) float64 {
+	var dmgMap info.DamageMap = h.BaseDamage
+	var damage float64
+	for k, v := range dmgMap {
+		switch k {
+		case model.DamageFormula_BY_ATK:
+			damage = v * mgr.attr.Stats(h.Attacker.ID()).ATK()
+		case model.DamageFormula_BY_DEF:
+			damage = v * mgr.attr.Stats(h.Attacker.ID()).DEF()
+		case model.DamageFormula_BY_MAX_HP:
+			damage = v * mgr.attr.Stats(h.Attacker.ID()).MaxHP()
+			// TODO: Figure out how to handle scale on break
+			// case model.DamageFormula_BY_BREAK_DAMAGE:
+		}
+	}
+	return damage
+
 }
 
 func (mgr *Manager) newHit(target key.TargetID, atk info.Attack) *info.Hit {

@@ -93,7 +93,7 @@ func Run(cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationRes
 	// game logic
 	s.turn = turn.New(s.event, s.attr)
 	s.shield = shield.New(s.event, s.attr)
-	s.combat = combat.New(s.event, s.attr, s.shield)
+	s.combat = combat.New(s.event, s.attr, s.shield, s)
 
 	return s.run()
 }
