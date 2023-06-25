@@ -103,14 +103,9 @@ func (mgr *Manager) bonusDamage(h *info.Hit) float64 {
 	return dmg
 }
 
-// STANCE/TOUGHNESS
+// TODO: STANCE/TOUGHNESS
 
 // TOTAL DAMAGE
-// Total Damage = Base DMG * DMG% Multiplier * DEF Multiplier * RES Multiplier *
-//
-//	DMG Taken Multiplier * Universal DMG Reduction Multiplier *
-//	Weaken Multiplier * Monster Taken%
-//
 // TODO: It appears that there is only one RES type for the entire sim. Change this when we get enemies.
 func (mgr *Manager) totalDamage(h *info.Hit, base float64, dmg float64) float64 {
 	// TODO: Check if DEF shred is applied already
@@ -164,12 +159,7 @@ func (mgr *Manager) totalDamage(h *info.Hit, base float64, dmg float64) float64 
 	if vul > 1.35 {
 		vul = 1.35
 	}
-	// debug prints
-	/*print("base: ", base, "\n")
-	print("dmg: ", dmg, "\n")
-	print("def_mult: ", def_mult, "\n")
-	print("res: ", res, "\n")
-	print("vul: ", vul, "\n")*/
+
 	return base * dmg * def_mult * res * vul
 }
 
