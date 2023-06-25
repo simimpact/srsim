@@ -35,7 +35,7 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 		DamageType:       hit.DamageType,
 		HPDamage:         0, // TODO
 		BaseDamage:       mgr.baseDamage(hit) * hit.HitRatio,
-		BonusDamage:      0, // TODO
+		BonusDamage:      mgr.bonusDamage(hit),
 		TotalDamage:      0, // TODO
 		ShieldDamage:     0, // TODO
 		HPRatioRemaining: mgr.attr.HPRatio(hit.Defender.ID()),
@@ -68,10 +68,38 @@ func (mgr *Manager) baseDamage(h *info.Hit) float64 {
 }
 
 func (mgr *Manager) crit(h *info.Hit) bool {
+	if h.AttackType == model.AttackType_DOT || h.AttackType == model.AttackType_ELEMENT_DAMAGE {
+		return false
+	}
 	return mgr.rdm.Float64() > mgr.attr.Stats(h.Attacker.ID()).CritChance()
 }
 
-// BONUS DAMAGE MULT
+func (mgr *Manager) bonusDamage(h *info.Hit) float64 {
+	dmg := 1 + float64(model.Property_ALL_DMG_PERCENT)
+	switch h.DamageType {
+	case model.DamageType_PHYSICAL:
+		dmg += float64(model.Property_PHYSICAL_DMG_PERCENT)
+	case model.DamageType_FIRE:
+		dmg += float64(model.Property_FIRE_DMG_PERCENT)
+	case model.DamageType_ICE:
+		dmg += float64(model.Property_ICE_DMG_PERCENT)
+	case model.DamageType_WIND:
+		dmg += float64(model.Property_WIND_DMG_PERCENT)
+	case model.DamageType_THUNDER:
+		dmg += float64(model.Property_THUNDER_DMG_PERCENT)
+	case model.DamageType_QUANTUM:
+		dmg += float64(model.Property_QUANTUM_DMG_PERCENT)
+	case model.DamageType_IMAGINARY:
+		dmg += float64(model.Property_IMAGINARY_DMG_PERCENT)
+	}
+
+	// By my understanding, all other dmg% should be handled in AllDMGPercent
+	if h.AttackType == model.AttackType_DOT {
+		dmg += float64(model.Property_DOT_DMG_PERCENT)
+	}
+
+	return dmg
+}
 
 // RES
 
@@ -79,7 +107,7 @@ func (mgr *Manager) crit(h *info.Hit) bool {
 
 // STANCE/TOUGHNESS
 
-// Total
+// Total Damage
 
 func (mgr *Manager) newHit(target key.TargetID, atk info.Attack) *info.Hit {
 	// set HitRatio to 1 if unspecified
