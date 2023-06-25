@@ -17,6 +17,16 @@ type Info struct {
 }
 
 func Evaluate(engine engine.Engine, i Info) (key.TargetID, error) {
+	eval, ok := evaluators[i.Evaluator]
+	if !ok {
+		// so it's target id
+		target := key.TargetID(i.Evaluator)
+		if !engine.IsValid(target) {
+			return -1, fmt.Errorf("invalid target id: %d", target)
+		}
+		return target, nil
+	}
+
 	targets, err := candidates(engine, i)
 	if err != nil || len(targets) == 0 {
 		return -1, fmt.Errorf("unknown error trying to get targets %w, %v", err, targets)
@@ -25,7 +35,7 @@ func Evaluate(engine engine.Engine, i Info) (key.TargetID, error) {
 	if len(targets) == 1 {
 		return targets[0], nil
 	}
-	return evaluators[i.Evaluator](engine, targets)
+	return eval(engine, targets)
 }
 
 // Note: neutral is treated like characters (IE lightning-lord)

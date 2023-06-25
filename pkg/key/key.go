@@ -2,14 +2,17 @@ package key
 
 type Modifier string
 type Shield string
-type TargetEvaluator string
+type TargetEvaluator TargetID
 
-type ActionType int
+type ActionType string
 
 const (
-	InvalidAction ActionType = iota
-	ActionAttack
-	ActionSkill
-	ActionBurst
-	EndActionType
+	InvalidAction ActionType = ""
+	ActionAttack  ActionType = "attack"
+	ActionSkill   ActionType = "skill"
+	ActionUlt     ActionType = "ult"
+	// ActionUltAttack / ActionUltSkill is used to support case of MC
+	ActionUltAttack ActionType = "ult_attack"
+	ActionUltSkill  ActionType = "ult_skill"
+	EndActionType   ActionType = "end"
 )

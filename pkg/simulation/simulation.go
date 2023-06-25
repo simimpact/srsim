@@ -2,6 +2,7 @@ package simulation
 
 import (
 	"encoding/binary"
+	"github.com/simimpact/srsim/pkg/engine/logging"
 	"math/rand"
 
 	"github.com/simimpact/srsim/pkg/engine/attribute"
@@ -53,6 +54,11 @@ type simulation struct {
 	actionTargets map[key.TargetID]bool
 }
 
+func RunWithLog(logger logging.Logger, cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationResult, error) {
+	logging.InitLogger(logger)
+	return Run(cfg, eval, seed)
+}
+
 func Run(cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationResult, error) {
 	s := &simulation{
 		cfg:  cfg,
@@ -72,6 +78,7 @@ func Run(cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationRes
 		neutrals:      make([]key.TargetID, 0, 5),
 		actionTargets: make(map[key.TargetID]bool, 10),
 	}
+	s.eval.Engine = s
 
 	// init services
 
@@ -80,7 +87,7 @@ func Run(cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationRes
 	s.attr = attribute.New(s.event, s.modifier)
 
 	// target management
-	s.char = character.New(s, s.attr)
+	s.char = character.New(s, s.attr, s.eval)
 	s.enemy = enemy.New(s, s.attr)
 
 	// game logic
