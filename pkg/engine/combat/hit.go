@@ -39,11 +39,12 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 		TotalDamage:      0, // TODO
 		ShieldDamage:     0, // TODO
 		HPRatioRemaining: mgr.attr.HPRatio(hit.Defender.ID()),
-		IsCrit:           false, // TODO
+		IsCrit:           mgr.crit(hit),
 		UseSnapshot:      hit.UseSnapshot,
 	})
 }
 
+// BASE DAMAGE:
 // Base DMG = (MV + Extra MV) * Scaling Attribute + Extra DMG
 // k = scaling attribute
 // v = (MV + Extra MV)
@@ -59,13 +60,26 @@ func (mgr *Manager) baseDamage(h *info.Hit) float64 {
 			damage = v * mgr.attr.Stats(h.Attacker.ID()).DEF()
 		case model.DamageFormula_BY_MAX_HP:
 			damage = v * mgr.attr.Stats(h.Attacker.ID()).MaxHP()
-			// TODO: Figure out how to handle scale on break
-			// case model.DamageFormula_BY_BREAK_DAMAGE:
+		case model.DamageFormula_BY_BREAK_DAMAGE:
+			damage = v // TODO: Fact check this
 		}
 	}
 	return damage
-
 }
+
+func (mgr *Manager) crit(h *info.Hit) bool {
+	return mgr.rdm.Float64() > mgr.attr.Stats(h.Attacker.ID()).CritChance()
+}
+
+// BONUS DAMAGE MULT
+
+// RES
+
+// Vul
+
+// STANCE/TOUGHNESS
+
+// Total
 
 func (mgr *Manager) newHit(target key.TargetID, atk info.Attack) *info.Hit {
 	// set HitRatio to 1 if unspecified

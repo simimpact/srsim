@@ -2,8 +2,9 @@ package simulation
 
 import (
 	"encoding/binary"
-	"github.com/simimpact/srsim/pkg/engine/logging"
 	"math/rand"
+
+	"github.com/simimpact/srsim/pkg/engine/logging"
 
 	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/combat"
@@ -93,7 +94,7 @@ func Run(cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationRes
 	// game logic
 	s.turn = turn.New(s.event, s.attr)
 	s.shield = shield.New(s.event, s.attr)
-	s.combat = combat.New(s.event, s.attr, s.shield, s)
+	s.combat = combat.New(s.event, s.attr, s.shield, s, s.rand)
 
 	return s.run()
 }
