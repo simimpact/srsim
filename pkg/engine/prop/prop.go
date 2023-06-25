@@ -135,6 +135,66 @@ func (p Property) MarshalJSON() ([]byte, error) {
 	return json.Marshal(model.Property_name[int32(p)])
 }
 
+// For converting damage type to damage percent
+var damageTypeToDMGPercent = map[model.DamageType]Property{
+	model.DamageType_PHYSICAL:  PhysicalDamagePercent,
+	model.DamageType_FIRE:      FireDamagePercent,
+	model.DamageType_ICE:       IceDamagePercent,
+	model.DamageType_WIND:      WindDamagePercent,
+	model.DamageType_THUNDER:   ThunderDamagePercent,
+	model.DamageType_QUANTUM:   QuantumDamagePercent,
+	model.DamageType_IMAGINARY: ImaginaryDamagePercent,
+}
+
+func DamagePercent(dmgType model.DamageType) Property {
+	return damageTypeToDMGPercent[dmgType]
+}
+
+// For converting damage type to damage RES
+var damageTypeToDMGRES = map[model.DamageType]Property{
+	model.DamageType_PHYSICAL:  PhysicalDamageRES,
+	model.DamageType_FIRE:      FireDamageRES,
+	model.DamageType_ICE:       IceDamageRES,
+	model.DamageType_WIND:      WindDamageRES,
+	model.DamageType_THUNDER:   ThunderDamageRES,
+	model.DamageType_QUANTUM:   QuantumDamageRES,
+	model.DamageType_IMAGINARY: ImaginaryDamageRES,
+}
+
+func DamageRES(dmgType model.DamageType) Property {
+	return damageTypeToDMGRES[dmgType]
+}
+
+// For converting damage type to damage PEN
+var damageTypeToDMGPEN = map[model.DamageType]Property{
+	model.DamageType_PHYSICAL:  PhysicalPEN,
+	model.DamageType_FIRE:      FirePEN,
+	model.DamageType_ICE:       IcePEN,
+	model.DamageType_WIND:      WindPEN,
+	model.DamageType_THUNDER:   ThunderPEN,
+	model.DamageType_QUANTUM:   QuantumPEN,
+	model.DamageType_IMAGINARY: ImaginaryPEN,
+}
+
+func DamagePEN(dmgType model.DamageType) Property {
+	return damageTypeToDMGPEN[dmgType]
+}
+
+// For converting damage type to damage taken
+var damageTypeToDMGTaken = map[model.DamageType]Property{
+	model.DamageType_PHYSICAL:  PhysicalDamageTaken,
+	model.DamageType_FIRE:      FireDamageTaken,
+	model.DamageType_ICE:       IceDamageTaken,
+	model.DamageType_WIND:      WindDamageTaken,
+	model.DamageType_THUNDER:   ThunderDamageTaken,
+	model.DamageType_QUANTUM:   QuantumDamageTaken,
+	model.DamageType_IMAGINARY: ImaginaryDamageTaken,
+}
+
+func DamageTaken(dmgType model.DamageType) Property {
+	return damageTypeToDMGTaken[dmgType]
+}
+
 // Use for scripts and reference when implementing
 var GameToProp = map[string]Property{
 	"Unknow":                    Invalid,

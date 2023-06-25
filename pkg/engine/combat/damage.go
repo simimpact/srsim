@@ -6,7 +6,7 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-func (mgr *Manager) totalDamage(h *info.Hit, base float64, dmg float64) float64 {
+func (mgr *Manager) totalDamage(h *info.Hit, base float64, dmg float64, crit bool) float64 {
 	def := h.Defender.DEF()
 	def_mult := 1 - (def / (def + 200 + 10*float64(h.Attacker.Level())))
 
@@ -26,31 +26,27 @@ func (mgr *Manager) totalDamage(h *info.Hit, base float64, dmg float64) float64 
 		toughness_multiplier = 1
 	}
 
-	// TODO: weaken
+	fatigue := 1 - h.Attacker.GetProperty(prop.Fatigue)
+	AllDamageReduce := h.Defender.GetProperty(prop.AllDamageReduce)
+	if AllDamageReduce < 0.01 {
+		AllDamageReduce = 0.01
+	}
 
-	total := base * dmg * def_mult * res * vul * breakDmg * toughness_multiplier
+	crit_dmg := 1.0
+	if crit {
+		crit_dmg += h.Attacker.CritDamage()
+	}
+
+	total := base * dmg * def_mult * res * vul * breakDmg * toughness_multiplier * fatigue * AllDamageReduce * crit_dmg
 	return total
 }
 
 func (mgr *Manager) res(h *info.Hit) float64 {
-	// We don't currently have normal dmg pen/res, dot pen/res, etc. If we do, we need to add it in here.
-	res := float64(model.Property_ALL_DMG_RES)
-	switch h.DamageType {
-	case model.DamageType_PHYSICAL:
-		res -= float64(h.Defender.GetProperty(prop.PhysicalDamageRES) - h.Attacker.GetProperty(prop.PhysicalPEN))
-	case model.DamageType_FIRE:
-		res -= float64(h.Defender.GetProperty(prop.FireDamageRES) - h.Attacker.GetProperty(prop.FirePEN))
-	case model.DamageType_ICE:
-		res -= float64(h.Defender.GetProperty(prop.IceDamageRES) - h.Attacker.GetProperty(prop.IcePEN))
-	case model.DamageType_WIND:
-		res -= float64(h.Defender.GetProperty(prop.WindDamageRES) - h.Attacker.GetProperty(prop.WindPEN))
-	case model.DamageType_THUNDER:
-		res -= float64(h.Defender.GetProperty(prop.ThunderDamageRES) - h.Attacker.GetProperty(prop.ThunderPEN))
-	case model.DamageType_QUANTUM:
-		res -= float64(h.Defender.GetProperty(prop.QuantumDamageRES) - h.Attacker.GetProperty(prop.QuantumPEN))
-	case model.DamageType_IMAGINARY:
-		res -= float64(h.Defender.GetProperty(prop.ImaginaryDamageRES) - h.Attacker.GetProperty(prop.ImaginaryPEN))
-	}
+	// We don't currently have basic/ult dmg pen/res, dot pen/res, etc. If we do, we need to add it in here.
+	res := float64(h.Defender.GetProperty(prop.AllDamageRES))
+	res += h.Defender.GetProperty(prop.DamageRES(h.DamageType)) - h.Attacker.GetProperty(prop.DamagePEN(h.DamageType))
+	res = 1 - res
+
 	if res < -1 {
 		res = -1
 	} else if res > .9 {
@@ -61,22 +57,7 @@ func (mgr *Manager) res(h *info.Hit) float64 {
 
 func (mgr *Manager) vul(h *info.Hit) float64 {
 	vul := 1.0 + float64(h.Defender.GetProperty(prop.AllDamageTaken))
-	switch h.DamageType {
-	case model.DamageType_PHYSICAL:
-		vul += float64(h.Defender.GetProperty(prop.PhysicalDamageTaken))
-	case model.DamageType_FIRE:
-		vul += float64(h.Defender.GetProperty(prop.FireDamageTaken))
-	case model.DamageType_ICE:
-		vul += float64(h.Defender.GetProperty(prop.IceDamageTaken))
-	case model.DamageType_WIND:
-		vul += float64(h.Defender.GetProperty(prop.WindDamageTaken))
-	case model.DamageType_THUNDER:
-		vul += float64(h.Defender.GetProperty(prop.ThunderDamageTaken))
-	case model.DamageType_QUANTUM:
-		vul += float64(h.Defender.GetProperty(prop.QuantumDamageTaken))
-	case model.DamageType_IMAGINARY:
-		vul += float64(h.Defender.GetProperty(prop.ImaginaryDamageTaken))
-	}
+	vul += h.Attacker.GetProperty(prop.DamageTaken(h.DamageType))
 	if vul > 1.35 {
 		vul = 1.35
 	}

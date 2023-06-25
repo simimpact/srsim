@@ -31,8 +31,9 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 
 	base := mgr.baseDamage(hit)*hit.HitRatio + hit.DamageValue
 	bonus := mgr.bonusDamage(hit)
-	total := mgr.totalDamage(hit, base, bonus)
-	hpUpdate := [2]float64{mgr.shld.AbsorbDamage(hit.Defender.ID(), total), total}
+	crit := mgr.crit(hit)
+	total := mgr.totalDamage(hit, base, bonus, crit)
+	hpUpdate := mgr.shld.AbsorbDamage(hit.Defender.ID(), total)
 
 	mgr.attr.ModifyHPByAmount(hit.Defender.ID(), hit.Attacker.ID(), total, true)
 	mgr.attr.ModifyStance(hit.Defender.ID(), hit.Attacker.ID(), hit.StanceDamage)
@@ -47,13 +48,13 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 		Defender:         hit.Defender.ID(),
 		AttackType:       hit.AttackType,
 		DamageType:       hit.DamageType,
-		HPDamage:         hpUpdate[0],
+		HPDamage:         hpUpdate,
 		BaseDamage:       base,
 		BonusDamage:      bonus,
 		TotalDamage:      total,
-		ShieldDamage:     hpUpdate[1], // TODO: Do we need this? AbsorbDamage already emits a shield modifying event
+		ShieldDamage:     total,
 		HPRatioRemaining: mgr.attr.HPRatio(hit.Defender.ID()),
-		IsCrit:           mgr.crit(hit),
+		IsCrit:           crit,
 		UseSnapshot:      hit.UseSnapshot,
 	})
 }
@@ -89,24 +90,8 @@ func (mgr *Manager) crit(h *info.Hit) bool {
 
 func (mgr *Manager) bonusDamage(h *info.Hit) float64 {
 	dmg := 1 + float64(h.Attacker.GetProperty(prop.AllDamagePercent))
-	switch h.DamageType {
-	case model.DamageType_PHYSICAL:
-		dmg += float64(h.Attacker.GetProperty(prop.PhysicalDamagePercent))
-	case model.DamageType_FIRE:
-		dmg += float64(h.Attacker.GetProperty(prop.FireDamagePercent))
-	case model.DamageType_ICE:
-		dmg += float64(h.Attacker.GetProperty(prop.IceDamagePercent))
-	case model.DamageType_WIND:
-		dmg += float64(h.Attacker.GetProperty(prop.WindDamagePercent))
-	case model.DamageType_THUNDER:
-		dmg += float64(h.Attacker.GetProperty(prop.ThunderDamagePercent))
-	case model.DamageType_QUANTUM:
-		dmg += float64(h.Attacker.GetProperty(prop.QuantumDamagePercent))
-	case model.DamageType_IMAGINARY:
-		dmg += float64(h.Attacker.GetProperty(prop.ImaginaryDamagePercent))
-	}
+	dmg += h.Attacker.GetProperty(prop.DamagePercent(h.DamageType))
 
-	// By my understanding, all other dmg% should be handled in AllDMGPercent
 	if h.AttackType == model.AttackType_DOT {
 		dmg += float64(h.Attacker.GetProperty(prop.DOTDamagePercent))
 	}
