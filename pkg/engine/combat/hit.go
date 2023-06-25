@@ -3,6 +3,7 @@ package combat
 import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -36,7 +37,7 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 		HPDamage:         0, // TODO
 		BaseDamage:       mgr.baseDamage(hit) * hit.HitRatio,
 		BonusDamage:      mgr.bonusDamage(hit),
-		TotalDamage:      0, // TODO
+		TotalDamage:      mgr.totalDamage(hit, mgr.baseDamage(hit)*hit.HitRatio, mgr.bonusDamage(hit)),
 		ShieldDamage:     0, // TODO
 		HPRatioRemaining: mgr.attr.HPRatio(hit.Defender.ID()),
 		IsCrit:           mgr.crit(hit),
@@ -75,39 +76,102 @@ func (mgr *Manager) crit(h *info.Hit) bool {
 }
 
 func (mgr *Manager) bonusDamage(h *info.Hit) float64 {
-	dmg := 1 + float64(model.Property_ALL_DMG_PERCENT)
+	attacker := mgr.attr.Stats(h.Attacker.ID())
+	dmg := 1 + float64(attacker.GetProperty(prop.AllDamagePercent))
 	switch h.DamageType {
 	case model.DamageType_PHYSICAL:
-		dmg += float64(model.Property_PHYSICAL_DMG_PERCENT)
+		dmg += float64(attacker.GetProperty(prop.PhysicalDamagePercent))
 	case model.DamageType_FIRE:
-		dmg += float64(model.Property_FIRE_DMG_PERCENT)
+		dmg += float64(attacker.GetProperty(prop.FireDamagePercent))
 	case model.DamageType_ICE:
-		dmg += float64(model.Property_ICE_DMG_PERCENT)
+		dmg += float64(attacker.GetProperty(prop.IceDamagePercent))
 	case model.DamageType_WIND:
-		dmg += float64(model.Property_WIND_DMG_PERCENT)
+		dmg += float64(attacker.GetProperty(prop.WindDamagePercent))
 	case model.DamageType_THUNDER:
-		dmg += float64(model.Property_THUNDER_DMG_PERCENT)
+		dmg += float64(attacker.GetProperty(prop.ThunderDamagePercent))
 	case model.DamageType_QUANTUM:
-		dmg += float64(model.Property_QUANTUM_DMG_PERCENT)
+		dmg += float64(attacker.GetProperty(prop.QuantumDamagePercent))
 	case model.DamageType_IMAGINARY:
-		dmg += float64(model.Property_IMAGINARY_DMG_PERCENT)
+		dmg += float64(attacker.GetProperty(prop.ImaginaryDamagePercent))
 	}
 
 	// By my understanding, all other dmg% should be handled in AllDMGPercent
 	if h.AttackType == model.AttackType_DOT {
-		dmg += float64(model.Property_DOT_DMG_PERCENT)
+		dmg += float64(attacker.GetProperty(prop.DOTDamagePercent))
 	}
 
 	return dmg
 }
 
-// RES
-
-// Vul
-
 // STANCE/TOUGHNESS
 
-// Total Damage
+// TOTAL DAMAGE
+// Total Damage = Base DMG * DMG% Multiplier * DEF Multiplier * RES Multiplier *
+//
+//	DMG Taken Multiplier * Universal DMG Reduction Multiplier *
+//	Weaken Multiplier * Monster Taken%
+//
+// TODO: It appears that there is only one RES type for the entire sim. Change this when we get enemies.
+func (mgr *Manager) totalDamage(h *info.Hit, base float64, dmg float64) float64 {
+	// TODO: Check if DEF shred is applied already
+	attacker := mgr.attr.Stats(h.Attacker.ID())
+	defender := mgr.attr.Stats(h.Defender.ID())
+
+	def := defender.DEF()
+	def_mult := 1 - (def / (def + 200 + 10*float64(defender.Level())))
+
+	// We don't currently have normal dmg pen/res, dot pen/res, etc. If we do, we need to add it in here.
+	res := float64(model.Property_ALL_DMG_RES)
+	switch h.DamageType {
+	case model.DamageType_PHYSICAL:
+		res -= float64(defender.GetProperty(prop.PhysicalDamageRES) - attacker.GetProperty(prop.PhysicalPEN))
+	case model.DamageType_FIRE:
+		res -= float64(defender.GetProperty(prop.FireDamageRES) - attacker.GetProperty(prop.FirePEN))
+	case model.DamageType_ICE:
+		res -= float64(defender.GetProperty(prop.IceDamageRES) - attacker.GetProperty(prop.IcePEN))
+	case model.DamageType_WIND:
+		res -= float64(defender.GetProperty(prop.WindDamageRES) - attacker.GetProperty(prop.WindPEN))
+	case model.DamageType_THUNDER:
+		res -= float64(defender.GetProperty(prop.ThunderDamageRES) - attacker.GetProperty(prop.ThunderPEN))
+	case model.DamageType_QUANTUM:
+		res -= float64(defender.GetProperty(prop.QuantumDamageRES) - attacker.GetProperty(prop.QuantumPEN))
+	case model.DamageType_IMAGINARY:
+		res -= float64(defender.GetProperty(prop.ImaginaryDamageRES) - attacker.GetProperty(prop.ImaginaryPEN))
+	}
+	if res < -1 {
+		res = -1
+	} else if res > .9 {
+		res = .9
+	}
+
+	vul := 1.0 + float64(defender.GetProperty(prop.AllDamageTaken))
+	switch h.DamageType {
+	case model.DamageType_PHYSICAL:
+		vul += float64(defender.GetProperty(prop.PhysicalDamageTaken))
+	case model.DamageType_FIRE:
+		vul += float64(defender.GetProperty(prop.FireDamageTaken))
+	case model.DamageType_ICE:
+		vul += float64(defender.GetProperty(prop.IceDamageTaken))
+	case model.DamageType_WIND:
+		vul += float64(defender.GetProperty(prop.WindDamageTaken))
+	case model.DamageType_THUNDER:
+		vul += float64(defender.GetProperty(prop.ThunderDamageTaken))
+	case model.DamageType_QUANTUM:
+		vul += float64(defender.GetProperty(prop.QuantumDamageTaken))
+	case model.DamageType_IMAGINARY:
+		vul += float64(defender.GetProperty(prop.ImaginaryDamageTaken))
+	}
+	if vul > 1.35 {
+		vul = 1.35
+	}
+	// debug prints
+	/*print("base: ", base, "\n")
+	print("dmg: ", dmg, "\n")
+	print("def_mult: ", def_mult, "\n")
+	print("res: ", res, "\n")
+	print("vul: ", vul, "\n")*/
+	return base * dmg * def_mult * res * vul
+}
 
 func (mgr *Manager) newHit(target key.TargetID, atk info.Attack) *info.Hit {
 	// set HitRatio to 1 if unspecified
