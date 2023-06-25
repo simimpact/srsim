@@ -29,10 +29,18 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 	// * dots & element damage do not crit (unknown if also ByPureDamage?)
 	// * ByPureDamage = true means a "simplified" damage function (the break damage equation)
 
-	base := mgr.baseDamage(hit) * hit.HitRatio
+	base := mgr.baseDamage(hit)*hit.HitRatio + hit.DamageValue
 	bonus := mgr.bonusDamage(hit)
 	total := mgr.totalDamage(hit, base, bonus)
 	hpUpdate := [2]float64{mgr.shld.AbsorbDamage(hit.Defender.ID(), total), total}
+
+	mgr.attr.ModifyHPByAmount(hit.Defender.ID(), hit.Attacker.ID(), total, true)
+	mgr.attr.ModifyStance(hit.Defender.ID(), hit.Attacker.ID(), hit.StanceDamage)
+	if mgr.target.IsCharacter(hit.Attacker.ID()) {
+		mgr.attr.ModifyEnergy(hit.Attacker.ID(), hit.EnergyGain)
+	} else {
+		mgr.attr.ModifyEnergy(hit.Defender.ID(), hit.EnergyGain)
+	}
 
 	mgr.event.HitEnd.Emit(event.HitEndEvent{
 		Attacker:         hit.Attacker.ID(),
@@ -54,136 +62,56 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 // Base DMG = (MV + Extra MV) * Scaling Attribute + Extra DMG
 // k = scaling attribute
 // v = (MV + Extra MV)
-// TODO: how to handle 'Extra DMG'?
 func (mgr *Manager) baseDamage(h *info.Hit) float64 {
 	var dmgMap info.DamageMap = h.BaseDamage
-	var damage float64
+	damage := 0.0
 	for k, v := range dmgMap {
 		switch k {
 		case model.DamageFormula_BY_ATK:
-			damage = v * mgr.attr.Stats(h.Attacker.ID()).ATK()
+			damage += v * h.Attacker.ATK()
 		case model.DamageFormula_BY_DEF:
-			damage = v * mgr.attr.Stats(h.Attacker.ID()).DEF()
+			damage += v * h.Attacker.DEF()
 		case model.DamageFormula_BY_MAX_HP:
-			damage = v * mgr.attr.Stats(h.Attacker.ID()).MaxHP()
+			damage += v * h.Attacker.MaxHP()
 		case model.DamageFormula_BY_BREAK_DAMAGE:
-			damage = v // TODO: Fact check this
+			damage += v // TODO: Fact check this
 		}
 	}
 	return damage
 }
 
 func (mgr *Manager) crit(h *info.Hit) bool {
-	if h.AttackType == model.AttackType_DOT || h.AttackType == model.AttackType_ELEMENT_DAMAGE {
+	if h.AttackType == model.AttackType_DOT || h.AttackType == model.AttackType_ELEMENT_DAMAGE || h.AsPureDamage {
 		return false
 	}
-	return mgr.rdm.Float64() > mgr.attr.Stats(h.Attacker.ID()).CritChance()
+	return mgr.rdm.Float64() < h.Attacker.CritChance()
 }
 
 func (mgr *Manager) bonusDamage(h *info.Hit) float64 {
-	attacker := mgr.attr.Stats(h.Attacker.ID())
-	dmg := 1 + float64(attacker.GetProperty(prop.AllDamagePercent))
+	dmg := 1 + float64(h.Attacker.GetProperty(prop.AllDamagePercent))
 	switch h.DamageType {
 	case model.DamageType_PHYSICAL:
-		dmg += float64(attacker.GetProperty(prop.PhysicalDamagePercent))
+		dmg += float64(h.Attacker.GetProperty(prop.PhysicalDamagePercent))
 	case model.DamageType_FIRE:
-		dmg += float64(attacker.GetProperty(prop.FireDamagePercent))
+		dmg += float64(h.Attacker.GetProperty(prop.FireDamagePercent))
 	case model.DamageType_ICE:
-		dmg += float64(attacker.GetProperty(prop.IceDamagePercent))
+		dmg += float64(h.Attacker.GetProperty(prop.IceDamagePercent))
 	case model.DamageType_WIND:
-		dmg += float64(attacker.GetProperty(prop.WindDamagePercent))
+		dmg += float64(h.Attacker.GetProperty(prop.WindDamagePercent))
 	case model.DamageType_THUNDER:
-		dmg += float64(attacker.GetProperty(prop.ThunderDamagePercent))
+		dmg += float64(h.Attacker.GetProperty(prop.ThunderDamagePercent))
 	case model.DamageType_QUANTUM:
-		dmg += float64(attacker.GetProperty(prop.QuantumDamagePercent))
+		dmg += float64(h.Attacker.GetProperty(prop.QuantumDamagePercent))
 	case model.DamageType_IMAGINARY:
-		dmg += float64(attacker.GetProperty(prop.ImaginaryDamagePercent))
+		dmg += float64(h.Attacker.GetProperty(prop.ImaginaryDamagePercent))
 	}
 
 	// By my understanding, all other dmg% should be handled in AllDMGPercent
 	if h.AttackType == model.AttackType_DOT {
-		dmg += float64(attacker.GetProperty(prop.DOTDamagePercent))
+		dmg += float64(h.Attacker.GetProperty(prop.DOTDamagePercent))
 	}
 
 	return dmg
-}
-
-// TODO: STANCE/TOUGHNESS
-
-// TOTAL DAMAGE
-// TODO: It appears that there is only one RES type for the entire sim. Change this when we get enemies.
-func (mgr *Manager) totalDamage(h *info.Hit, base float64, dmg float64) float64 {
-	// TODO: Check if DEF shred is applied already
-	attacker := mgr.attr.Stats(h.Attacker.ID())
-	defender := mgr.attr.Stats(h.Defender.ID())
-
-	def := defender.DEF()
-	def_mult := 1 - (def / (def + 200 + 10*float64(defender.Level())))
-
-	// We don't currently have normal dmg pen/res, dot pen/res, etc. If we do, we need to add it in here.
-	res := float64(model.Property_ALL_DMG_RES)
-	switch h.DamageType {
-	case model.DamageType_PHYSICAL:
-		res -= float64(defender.GetProperty(prop.PhysicalDamageRES) - attacker.GetProperty(prop.PhysicalPEN))
-	case model.DamageType_FIRE:
-		res -= float64(defender.GetProperty(prop.FireDamageRES) - attacker.GetProperty(prop.FirePEN))
-	case model.DamageType_ICE:
-		res -= float64(defender.GetProperty(prop.IceDamageRES) - attacker.GetProperty(prop.IcePEN))
-	case model.DamageType_WIND:
-		res -= float64(defender.GetProperty(prop.WindDamageRES) - attacker.GetProperty(prop.WindPEN))
-	case model.DamageType_THUNDER:
-		res -= float64(defender.GetProperty(prop.ThunderDamageRES) - attacker.GetProperty(prop.ThunderPEN))
-	case model.DamageType_QUANTUM:
-		res -= float64(defender.GetProperty(prop.QuantumDamageRES) - attacker.GetProperty(prop.QuantumPEN))
-	case model.DamageType_IMAGINARY:
-		res -= float64(defender.GetProperty(prop.ImaginaryDamageRES) - attacker.GetProperty(prop.ImaginaryPEN))
-	}
-	if res < -1 {
-		res = -1
-	} else if res > .9 {
-		res = .9
-	}
-
-	vul := 1.0 + float64(defender.GetProperty(prop.AllDamageTaken))
-	switch h.DamageType {
-	case model.DamageType_PHYSICAL:
-		vul += float64(defender.GetProperty(prop.PhysicalDamageTaken))
-	case model.DamageType_FIRE:
-		vul += float64(defender.GetProperty(prop.FireDamageTaken))
-	case model.DamageType_ICE:
-		vul += float64(defender.GetProperty(prop.IceDamageTaken))
-	case model.DamageType_WIND:
-		vul += float64(defender.GetProperty(prop.WindDamageTaken))
-	case model.DamageType_THUNDER:
-		vul += float64(defender.GetProperty(prop.ThunderDamageTaken))
-	case model.DamageType_QUANTUM:
-		vul += float64(defender.GetProperty(prop.QuantumDamageTaken))
-	case model.DamageType_IMAGINARY:
-		vul += float64(defender.GetProperty(prop.ImaginaryDamageTaken))
-	}
-	if vul > 1.35 {
-		vul = 1.35
-	}
-
-	// ByPureDamage equation does not scale on DMG%, and break effect applies.
-	breakDmg := 1.0
-	if h.AttackType == model.AttackType_ELEMENT_DAMAGE {
-		breakDmg += float64(attacker.BreakEffect())
-		dmg = 1.0
-	}
-
-	// universal multiplier
-	universal := 0.9
-	if defender.Stance() == 0 {
-		universal = 1
-	}
-
-	// TODO: weaken
-
-	// TODO: Monster Taken% when we implement Doomsday Beast
-
-	total := base * dmg * def_mult * res * vul * breakDmg * universal
-	return total
 }
 
 func (mgr *Manager) newHit(target key.TargetID, atk info.Attack) *info.Hit {
