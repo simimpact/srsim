@@ -13,10 +13,10 @@ const LogTab = () => {
   });
 
   return (
-    <div className="bg-background">
+    <>
       <Button onClick={() => logger.mutate()}>Generate Log</Button>
       <DataTable columns={columns} data={logger.data?.list ?? []} />
-    </div>
+    </>
   );
 };
 

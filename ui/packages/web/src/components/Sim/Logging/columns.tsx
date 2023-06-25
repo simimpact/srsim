@@ -17,7 +17,7 @@ export const columns: ColumnDef<Log>[] = [
     cell: ({ row }) => (
       <div style={{ paddingLeft: `${row.depth * 2}rem` }}>
         {row.getCanExpand() && (
-          <Button {...{ onClick: row.getToggleExpandedHandler() }} variant={"outline"}>
+          <Button {...{ onClick: row.getToggleExpandedHandler() }} variant={"outline"} size={"sm"}>
             {row.getIsExpanded() ? "v" : ">"}
           </Button>
         )}
