@@ -39,16 +39,16 @@ func (sim *Simulation) Energy(target key.TargetID) float64 {
 	return sim.Attr.Energy(target)
 }
 
-func (sim *simulation) MaxEnergy(target key.TargetID) float64 {
-	return sim.attr.MaxEnergy(target)
+func (sim *Simulation) MaxEnergy(target key.TargetID) float64 {
+	return sim.Attr.MaxEnergy(target)
 }
 
-func (sim *simulation) EnergyRatio(target key.TargetID) float64 {
-	return sim.attr.EnergyRatio(target)
+func (sim *Simulation) EnergyRatio(target key.TargetID) float64 {
+	return sim.Attr.EnergyRatio(target)
 }
 
-func (sim *simulation) HPRatio(target key.TargetID) float64 {
-	return sim.attr.HPRatio(target)
+func (sim *Simulation) HPRatio(target key.TargetID) float64 {
+	return sim.Attr.HPRatio(target)
 }
 
 func (sim *Simulation) SetHP(target, source key.TargetID, amt float64) error {
