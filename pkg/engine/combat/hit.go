@@ -37,11 +37,11 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 
 	mgr.attr.ModifyHPByAmount(hit.Defender.ID(), hit.Attacker.ID(), total, true)
 	mgr.attr.ModifyStance(hit.Defender.ID(), hit.Attacker.ID(), hit.StanceDamage)
-	if mgr.target.IsCharacter(hit.Attacker.ID()) {
+	/*if mgr.target.IsCharacter(hit.Attacker.ID()) {
 		mgr.attr.ModifyEnergy(hit.Attacker.ID(), hit.EnergyGain)
 	} else {
 		mgr.attr.ModifyEnergy(hit.Defender.ID(), hit.EnergyGain)
-	}
+	}*/
 
 	mgr.event.HitEnd.Emit(event.HitEndEvent{
 		Attacker:         hit.Attacker.ID(),
@@ -75,7 +75,7 @@ func (mgr *Manager) baseDamage(h *info.Hit) float64 {
 		case model.DamageFormula_BY_MAX_HP:
 			damage += v * h.Attacker.MaxHP()
 		case model.DamageFormula_BY_BREAK_DAMAGE:
-			damage += v // TODO: Fact check this
+			damage += v * h.Attacker.level // TODO: evaluate if this is the best way
 		}
 	}
 	return damage
