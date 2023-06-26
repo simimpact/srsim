@@ -14,6 +14,7 @@ type AttributeGetter interface {
 	Stance(target key.TargetID) float64
 	Energy(target key.TargetID) float64
 	MaxEnergy(target key.TargetID) float64
+	EnergyRatio(target key.TargetID) float64
 	HPRatio(target key.TargetID) float64
 }
 
@@ -69,8 +70,13 @@ func (s *Service) FullEnergy(target key.TargetID) bool {
 	attr := s.targets[target]
 	return attr.Energy >= attr.MaxEnergy
 }
+
 func (s *Service) MaxEnergy(target key.TargetID) float64 {
 	return s.targets[target].MaxEnergy
+}
+
+func (s *Service) EnergyRatio(target key.TargetID) float64 {
+	return s.targets[target].Energy / s.targets[target].MaxEnergy
 }
 
 func (s *Service) Stance(target key.TargetID) float64 {

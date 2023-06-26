@@ -216,6 +216,20 @@ func (mr *MockEngineMockRecorder) Energy(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Energy", reflect.TypeOf((*MockEngine)(nil).Energy), arg0)
 }
 
+// EnergyRatio mocks base method.
+func (m *MockEngine) EnergyRatio(arg0 key.TargetID) float64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EnergyRatio", arg0)
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// EnergyRatio indicates an expected call of EnergyRatio.
+func (mr *MockEngineMockRecorder) EnergyRatio(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnergyRatio", reflect.TypeOf((*MockEngine)(nil).EnergyRatio), arg0)
+}
+
 // Events mocks base method.
 func (m *MockEngine) Events() *event.System {
 	m.ctrl.T.Helper()
