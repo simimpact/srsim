@@ -42,7 +42,6 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	engine.AddModifier(owner, info.Modifier{
 		Name:   mod,
 		Source: owner,
-		Stats:  info.PropMap{prop.AllDamagePercent: amount * maxenergy},
 		State:  amount * maxenergy,
 	})
 }
