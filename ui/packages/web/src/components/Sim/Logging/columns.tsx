@@ -1,6 +1,7 @@
+import { ChevronDownIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 import { Log } from "@/bindings/Log";
-import { Button } from "@/components/Primitives/Button";
+import { Toggle } from "@/components/Primitives/Toggle";
 import { cn } from "@/utils/classname";
 
 // NOTE: halt, needs backend data before cooking,
@@ -13,14 +14,17 @@ import { cn } from "@/utils/classname";
 export const columns: ColumnDef<Log>[] = [
   {
     accessorKey: "eventIndex",
-    header: "eventIndex",
+    header: "Event Index",
     cell: ({ row }) => (
-      <div style={{ paddingLeft: `${row.depth * 2}rem` }}>
-        {row.getCanExpand() && (
-          <Button {...{ onClick: row.getToggleExpandedHandler() }} variant={"outline"} size={"sm"}>
-            {row.getIsExpanded() ? "v" : ">"}
-          </Button>
-        )}
+      <div style={{ paddingLeft: `${row.depth * 2}rem` }} className="flex items-center gap-2">
+        <Toggle
+          {...{ onClick: row.getToggleExpandedHandler() }}
+          variant={"outline"}
+          size={"sm"}
+          disabled={!row.getCanExpand()}
+        >
+          {row.getIsExpanded() ? <ChevronDownIcon /> : <ChevronRightIcon />}
+        </Toggle>
         {row.getValue("eventIndex")}
       </div>
     ),
@@ -30,7 +34,7 @@ export const columns: ColumnDef<Log>[] = [
   },
   {
     accessorKey: "eventName",
-    header: "eventName",
+    header: "Event Name",
     cell: ({ row }) => (
       <div className={cn(row.getValue("eventName") == "SPChange" ? "bg-red-400" : "bg-green-400")}>
         {row.getValue("eventName")}

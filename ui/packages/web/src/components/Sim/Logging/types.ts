@@ -16,12 +16,6 @@ interface Logable {
 
 interface GearConfig {}
 
-interface Log<T extends Logable> {
-  eventName: string;
-  logType: LogType;
-  chunks: T[];
-}
-
 const LOG_TYPE = {
   CONFIG: "CONFIG",
   EVENT: "EVENT",
