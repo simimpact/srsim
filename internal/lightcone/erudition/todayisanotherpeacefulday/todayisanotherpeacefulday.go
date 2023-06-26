@@ -25,7 +25,7 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	maxenergy := engine.Stats(owner).MaxEnergy()
+	maxenergy := engine.MaxEnergy(owner)
 	if maxenergy > 160 {
 		maxenergy = 160
 	}
