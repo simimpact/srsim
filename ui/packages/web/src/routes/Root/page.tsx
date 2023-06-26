@@ -14,6 +14,7 @@ import {
   ContextMenuTrigger,
 } from "@/components/Primitives/ContextMenu";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/Primitives/HoverCard";
+import { LogViewer } from "@/components/Sim/Logging/LogViewer";
 import { CharacterLineup } from "./CharacterLineup";
 import { SimActionBar } from "./SimActionBar";
 
@@ -41,12 +42,7 @@ const Root = () => {
         </div>
         <ContextMenu>
           <ContextMenuTrigger className="bg-accent text-accent-foreground flex h-full mx-8 rounded-md p-10">
-            <p>
-              above list: <br />
-              left is players team, right is enemy team. <br />
-              clicking on enemy side brings up enemy wave list <br />
-              right clicking inside this gray container opens up our special context menu
-            </p>
+            <LogViewer placeholder="test" />
           </ContextMenuTrigger>
           <ContextMenuContent>
             <ContextMenuItem inset>

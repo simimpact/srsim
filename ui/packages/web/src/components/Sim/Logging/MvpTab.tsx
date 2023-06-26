@@ -54,7 +54,7 @@ const MvpTab = ({ name }: Props) => {
   return (
     <>
       <Button onClick={() => statMock.mutate()}>Generate</Button>
-      <div className="w-[95vw] h-[95vh] flex gap-2">
+      <div className="flex gap-2">
         <div id="left-container" className="flex flex-col gap-2 grow  max-w-[45vw]">
           <div id="portrait" className="bg-background rounded-md p-4 h-64">
             portrait
