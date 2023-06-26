@@ -39,6 +39,10 @@ func (sim *simulation) Energy(target key.TargetID) float64 {
 	return sim.attr.Energy(target)
 }
 
+func (sim *simulation) MaxEnergy(target key.TargetID) float64 {
+	return sim.attr.MaxEnergy(target)
+}
+
 func (sim *simulation) HPRatio(target key.TargetID) float64 {
 	return sim.attr.HPRatio(target)
 }

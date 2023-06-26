@@ -421,6 +421,20 @@ func (mr *MockEngineMockRecorder) IsValid(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsValid", reflect.TypeOf((*MockEngine)(nil).IsValid), arg0)
 }
 
+// MaxEnergy mocks base method.
+func (m *MockEngine) MaxEnergy(arg0 key.TargetID) float64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MaxEnergy", arg0)
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// MaxEnergy indicates an expected call of MaxEnergy.
+func (mr *MockEngineMockRecorder) MaxEnergy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MaxEnergy", reflect.TypeOf((*MockEngine)(nil).MaxEnergy), arg0)
+}
+
 // ModifierCount mocks base method.
 func (m *MockEngine) ModifierCount(arg0 key.TargetID, arg1 model.StatusType) int {
 	m.ctrl.T.Helper()
