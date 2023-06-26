@@ -24,6 +24,9 @@ export const columns: ColumnDef<Log>[] = [
         {row.getValue("eventIndex")}
       </div>
     ),
+    filterFn: (row, id, value: number) => {
+      return String(row.getValue(id)).includes(String(value));
+    },
   },
   {
     accessorKey: "eventName",
@@ -33,6 +36,9 @@ export const columns: ColumnDef<Log>[] = [
         {row.getValue("eventName")}
       </div>
     ),
+    filterFn: (row, columnId, filterValue: string) => {
+      return filterValue.includes(row.getValue(columnId));
+    },
   },
   { accessorKey: "bar", header: "Bar" },
   { accessorKey: "bazz", header: "Bazz" },
