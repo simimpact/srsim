@@ -38,7 +38,6 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	engine.AddModifier(owner, info.Modifier{
 		Name:   Check,
 		Source: owner,
-		Stats:  info.PropMap{prop.AllDamagePercent: amt},
 		State:  amt,
 	})
 }
