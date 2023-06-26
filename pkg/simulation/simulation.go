@@ -24,34 +24,34 @@ type Target interface {
 	Exec(key.ActionType)
 }
 
-type simulation struct {
+type Simulation struct {
 	cfg  *model.SimConfig
 	eval *eval.Eval
 	seed int64
 
 	// services
-	idGen    *key.TargetIDGenerator
-	rand     *rand.Rand
-	event    *event.System
-	queue    *queue.Handler
-	modifier *modifier.Manager
-	attr     *attribute.Service
-	char     *character.Manager
-	enemy    *enemy.Manager
-	turn     *turn.Manager
-	combat   *combat.Manager
-	shield   *shield.Manager
+	IdGen    *key.TargetIDGenerator
+	Random   *rand.Rand
+	Event    *event.System
+	Queue    *queue.Handler
+	Modifier *modifier.Manager
+	Attr     *attribute.Service
+	Char     *character.Manager
+	Enemy    *enemy.Manager
+	Turn     *turn.Manager
+	Combat   *combat.Manager
+	Shield   *shield.Manager
 
 	// state
-	sp            int
-	tp            int
-	targets       map[key.TargetID]info.TargetClass
+	Sp            int
+	Tp            int
+	Targets       map[key.TargetID]info.TargetClass
 	characters    []key.TargetID
 	enemies       []key.TargetID
 	neutrals      []key.TargetID
-	totalAV       float64
-	active        key.TargetID
-	actionTargets map[key.TargetID]bool
+	TotalAV       float64
+	Active        key.TargetID
+	ActionTargets map[key.TargetID]bool
 }
 
 func RunWithLog(logger logging.Logger, cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationResult, error) {
@@ -60,42 +60,46 @@ func RunWithLog(logger logging.Logger, cfg *model.SimConfig, eval *eval.Eval, se
 }
 
 func Run(cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationResult, error) {
-	s := &simulation{
+	s := NewSimulation(cfg, eval, seed)
+	return s.Run()
+}
+
+func NewSimulation(cfg *model.SimConfig, eval *eval.Eval, seed int64) *Simulation {
+	s := &Simulation{
 		cfg:  cfg,
 		eval: eval,
 		seed: seed,
 
-		event: &event.System{},
-		queue: queue.New(),
-		rand:  rand.New(rand.NewSource(seed)),
-		idGen: key.NewTargetIDGenerator(),
+		Event:  &event.System{},
+		Queue:  queue.New(),
+		Random: rand.New(rand.NewSource(seed)),
+		IdGen:  key.NewTargetIDGenerator(),
 
-		sp:            3,
-		tp:            4, // TODO: define starting amount in config?
-		targets:       make(map[key.TargetID]info.TargetClass, 15),
+		Sp:            3,
+		Tp:            4, // TODO: define starting amount in config?
+		Targets:       make(map[key.TargetID]info.TargetClass, 15),
 		characters:    make([]key.TargetID, 0, 4),
 		enemies:       make([]key.TargetID, 0, 5),
 		neutrals:      make([]key.TargetID, 0, 5),
-		actionTargets: make(map[key.TargetID]bool, 10),
+		ActionTargets: make(map[key.TargetID]bool, 10),
 	}
 	s.eval.Engine = s
 
 	// init services
 
 	// core stats
-	s.modifier = modifier.NewManager(s)
-	s.attr = attribute.New(s.event, s.modifier)
+	s.Modifier = modifier.NewManager(s)
+	s.Attr = attribute.New(s.Event, s.Modifier)
 
 	// target management
-	s.char = character.New(s, s.attr, s.eval)
-	s.enemy = enemy.New(s, s.attr)
+	s.Char = character.New(s, s.Attr, s.eval)
+	s.Enemy = enemy.New(s, s.Attr)
 
 	// game logic
-	s.turn = turn.New(s.event, s.attr)
-	s.shield = shield.New(s.event, s.attr)
-	s.combat = combat.New(s.event, s.attr, s.shield)
-
-	return s.run()
+	s.Turn = turn.New(s.Event, s.Attr)
+	s.Shield = shield.New(s.Event, s.Attr)
+	s.Combat = combat.New(s.Event, s.Attr, s.Shield)
+	return s
 }
 
 // TODO: RunWithDebug
@@ -109,10 +113,10 @@ func RandSeed() (int64, error) {
 	return int64(binary.LittleEndian.Uint64(b[:])), nil
 }
 
-func (sim *simulation) Events() *event.System {
-	return sim.event
+func (sim *Simulation) Events() *event.System {
+	return sim.Event
 }
 
-func (sim *simulation) Rand() *rand.Rand {
-	return sim.rand
+func (sim *Simulation) Rand() *rand.Rand {
+	return sim.Random
 }
