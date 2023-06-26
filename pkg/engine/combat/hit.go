@@ -75,7 +75,7 @@ func (mgr *Manager) baseDamage(h *info.Hit) float64 {
 		case model.DamageFormula_BY_MAX_HP:
 			damage += v * h.Attacker.MaxHP()
 		case model.DamageFormula_BY_BREAK_DAMAGE:
-			damage += v * h.Attacker.level // TODO: evaluate if this is the best way
+			damage += v * float64(h.Attacker.Level()) // TODO: evaluate if this is the best way
 		}
 	}
 	return damage
@@ -89,11 +89,11 @@ func (mgr *Manager) crit(h *info.Hit) bool {
 }
 
 func (mgr *Manager) bonusDamage(h *info.Hit) float64 {
-	dmg := 1 + float64(h.Attacker.GetProperty(prop.AllDamagePercent))
+	dmg := 1.0 + h.Attacker.GetProperty(prop.AllDamagePercent)
 	dmg += h.Attacker.GetProperty(prop.DamagePercent(h.DamageType))
 
 	if h.AttackType == model.AttackType_DOT {
-		dmg += float64(h.Attacker.GetProperty(prop.DOTDamagePercent))
+		dmg += h.Attacker.GetProperty(prop.DOTDamagePercent)
 	}
 
 	return dmg

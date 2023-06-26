@@ -16,7 +16,7 @@ func (mgr *Manager) totalDamage(h *info.Hit, base float64, dmg float64, crit boo
 	// ByPureDamage equation does not scale on DMG%, and break effect applies.
 	breakDmg := 1.0
 	if h.AttackType == model.AttackType_ELEMENT_DAMAGE {
-		breakDmg += float64(h.Attacker.BreakEffect())
+		breakDmg += h.Attacker.BreakEffect()
 		dmg = 1.0
 	}
 
@@ -43,7 +43,7 @@ func (mgr *Manager) totalDamage(h *info.Hit, base float64, dmg float64, crit boo
 
 func (mgr *Manager) res(h *info.Hit) float64 {
 	// We don't currently have basic/ult dmg pen/res, dot pen/res, etc. If we do, we need to add it in here.
-	res := float64(h.Defender.GetProperty(prop.AllDamageRES))
+	res := h.Defender.GetProperty(prop.AllDamageRES)
 	res += h.Defender.GetProperty(prop.DamageRES(h.DamageType)) - h.Attacker.GetProperty(prop.DamagePEN(h.DamageType))
 	res = 1 - res
 
@@ -56,7 +56,7 @@ func (mgr *Manager) res(h *info.Hit) float64 {
 }
 
 func (mgr *Manager) vul(h *info.Hit) float64 {
-	vul := 1.0 + float64(h.Defender.GetProperty(prop.AllDamageTaken))
+	vul := 1.0 + h.Defender.GetProperty(prop.AllDamageTaken)
 	vul += h.Attacker.GetProperty(prop.DamageTaken(h.DamageType))
 	if vul > 1.35 {
 		vul = 1.35
