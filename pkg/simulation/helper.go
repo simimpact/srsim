@@ -12,18 +12,18 @@ type snapshot struct {
 	neutrals   []*info.Stats
 }
 
-func (s *simulation) createSnapshot() snapshot {
+func (s *Simulation) createSnapshot() snapshot {
 	charStats := make([]*info.Stats, len(s.characters))
 	for i, t := range s.characters {
-		charStats[i] = s.attr.Stats(t)
+		charStats[i] = s.Attr.Stats(t)
 	}
 	enemyStats := make([]*info.Stats, len(s.enemies))
 	for i, t := range s.enemies {
-		enemyStats[i] = s.attr.Stats(t)
+		enemyStats[i] = s.Attr.Stats(t)
 	}
 	neutralStats := make([]*info.Stats, len(s.neutrals))
 	for i, t := range s.neutrals {
-		neutralStats[i] = s.attr.Stats(t)
+		neutralStats[i] = s.Attr.Stats(t)
 	}
 	return snapshot{
 		characters: charStats,
@@ -38,10 +38,10 @@ func (s *simulation) createSnapshot() snapshot {
 //
 // Due to the current sim control flow, the information about who killed this target has been lost.
 // Emitting event that this death was a suicide, which is not the ideal behavior
-func (s *simulation) deathCheck(targets []key.TargetID) {
+func (s *Simulation) deathCheck(targets []key.TargetID) {
 	for _, target := range targets {
-		if s.attr.HPRatio(target) <= 0 {
-			s.event.TargetDeath.Emit(event.TargetDeathEvent{
+		if s.Attr.HPRatio(target) <= 0 {
+			s.Event.TargetDeath.Emit(event.TargetDeathEvent{
 				Target: target,
 				Killer: target,
 			})

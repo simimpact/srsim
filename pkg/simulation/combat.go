@@ -2,20 +2,20 @@ package simulation
 
 import "github.com/simimpact/srsim/pkg/engine/info"
 
-func (sim *simulation) Attack(atk info.Attack) {
+func (sim *Simulation) Attack(atk info.Attack) {
 	for _, t := range atk.Targets {
-		sim.actionTargets[t] = true
+		sim.ActionTargets[t] = true
 	}
-	sim.combat.Attack(atk)
+	sim.Combat.Attack(atk)
 }
 
-func (sim *simulation) Heal(heal info.Heal) {
+func (sim *Simulation) Heal(heal info.Heal) {
 	for _, t := range heal.Targets {
-		sim.actionTargets[t] = true
+		sim.ActionTargets[t] = true
 	}
-	sim.combat.Heal(heal)
+	sim.Combat.Heal(heal)
 }
 
-func (sim *simulation) EndAttack() {
-	sim.combat.EndAttack()
+func (sim *Simulation) EndAttack() {
+	sim.Combat.EndAttack()
 }
