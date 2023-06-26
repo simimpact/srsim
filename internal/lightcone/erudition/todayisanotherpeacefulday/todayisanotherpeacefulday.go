@@ -3,9 +3,7 @@ package todayisanotherpeacefulday
 import (
 	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/equip/lightcone"
-	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
-	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
@@ -24,12 +22,6 @@ func init() {
 		Path:          model.Path_ERUDITION,
 		Promotions:    promotions,
 	})
-
-	modifier.Register(mod, modifier.Config{
-		Listeners: modifier.Listeners{
-			OnBeforeHit: onBeforeHit,
-		},
-	})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
@@ -42,11 +34,6 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	engine.AddModifier(owner, info.Modifier{
 		Name:   mod,
 		Source: owner,
-		State:  amount * maxenergy,
+		Stats:  info.PropMap{prop.AllDamagePercent: amount * maxenergy},
 	})
-}
-
-func onBeforeHit(mod *modifier.ModifierInstance, e event.HitStartEvent) {
-	amount := mod.State().(float64)
-	e.Hit.Attacker.AddProperty(prop.AllDamagePercent, amount)
 }
