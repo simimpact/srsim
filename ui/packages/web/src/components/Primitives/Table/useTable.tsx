@@ -5,6 +5,7 @@ import {
   getCoreRowModel,
   getExpandedRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import { useState } from "react";
@@ -38,6 +39,8 @@ function useTable<TData>({ columns, data, childKey }: Props<TData>) {
     getFilteredRowModel: getFilteredRowModel(),
 
     getCoreRowModel: getCoreRowModel(),
+
+    getPaginationRowModel: getPaginationRowModel(),
 
     state: { expanded, columnFilters },
   });

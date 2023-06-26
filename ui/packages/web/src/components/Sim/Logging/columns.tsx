@@ -1,8 +1,8 @@
 import { ChevronDownIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 import { Log } from "@/bindings/Log";
+import { Badge } from "@/components/Primitives/Badge";
 import { Toggle } from "@/components/Primitives/Toggle";
-import { cn } from "@/utils/classname";
 
 // NOTE: halt, needs backend data before cooking,
 // table might still not be the best for skimming through logs
@@ -36,9 +36,9 @@ export const columns: ColumnDef<Log>[] = [
     accessorKey: "eventName",
     header: "Event Name",
     cell: ({ row }) => (
-      <div className={cn(row.getValue("eventName") == "SPChange" ? "bg-red-400" : "bg-green-400")}>
+      <Badge variant={row.getValue("eventName") === "SPChange" ? "destructive" : "default"}>
         {row.getValue("eventName")}
-      </div>
+      </Badge>
     ),
     filterFn: (row, columnId, filterValue: string) => {
       return filterValue.includes(row.getValue(columnId));

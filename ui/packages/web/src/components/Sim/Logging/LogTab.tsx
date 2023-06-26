@@ -7,6 +7,7 @@ import {
   ColumnSelectFilter,
   ColumnToggle,
   DataTable,
+  DataTablePagination,
   useTable,
 } from "@/components/Primitives/Table/index";
 import { ENDPOINT, typedFetch } from "@/utils/constants";
@@ -38,24 +39,29 @@ const LogTab = () => {
   return (
     <>
       <Button onClick={() => logger.mutate()}>Generate Log</Button>
-      <div className="flex items-center">
-        <div className="flex items-center py-4 gap-4">
-          <ColumnFieldFilter column={table.getColumn("eventIndex")} />
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center">
+          <div className="flex items-center gap-4">
+            <ColumnFieldFilter column={table.getColumn("eventIndex")} />
 
-          <ColumnSelectFilter
-            placeholder={"Select state"}
-            options={options}
-            column={table.getColumn("eventName")}
-            buttonPlaceholder="Event Name"
-          />
+            <ColumnSelectFilter
+              placeholder={"Select state"}
+              options={options}
+              column={table.getColumn("eventName")}
+              buttonPlaceholder="Event Name"
+            />
 
-          <div className="grow" />
+            <div className="grow" />
+          </div>
+          <div className="ml-auto">
+            <ColumnToggle table={table} />
+          </div>
         </div>
-        <div className="ml-auto">
-          <ColumnToggle table={table} />
-        </div>
+
+        <DataTable table={table} className="bg-background" />
+
+        <DataTablePagination table={table} />
       </div>
-      <DataTable table={table} />
     </>
   );
 };

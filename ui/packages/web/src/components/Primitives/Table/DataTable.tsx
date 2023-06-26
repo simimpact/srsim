@@ -1,4 +1,5 @@
 import { Table as TableType, flexRender } from "@tanstack/react-table";
+import { ForwardedRef, HTMLAttributes, forwardRef } from "react";
 import {
   Table,
   TableBody,
@@ -7,14 +8,26 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/Primitives/Table";
+import { cn } from "@/utils/classname";
 
-interface Props<TData> {
+// Redecalare forwardRef to accept generic types
+// INFO: https://fettblog.eu/typescript-react-generic-forward-refs/
+declare module "react" {
+  function forwardRef<T, P = NonNullable<unknown>>(
+    render: (props: P, ref: React.Ref<T>) => React.ReactElement | null
+  ): (props: P & React.RefAttributes<T>) => React.ReactElement | null;
+}
+
+interface Props<TData> extends HTMLAttributes<HTMLDivElement> {
   table: TableType<TData>;
 }
 
-export function DataTable<TData>({ table }: Props<TData>) {
+function DataTableInner<TData>(
+  { table, className, ...props }: Props<TData>,
+  ref: ForwardedRef<HTMLDivElement>
+) {
   return (
-    <div className="rounded-md border bg-background">
+    <div ref={ref} className={cn("rounded-md border", className)} {...props}>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map(headerGroup => (
@@ -54,3 +67,4 @@ export function DataTable<TData>({ table }: Props<TData>) {
     </div>
   );
 }
+export const DataTable = forwardRef(DataTableInner);
