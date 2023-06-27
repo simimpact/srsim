@@ -42,6 +42,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/nihility/eyesoftheprey"
 	_ "github.com/simimpact/srsim/internal/lightcone/nihility/fermata"
 	_ "github.com/simimpact/srsim/internal/lightcone/nihility/goodnightandsleepwell"
+	_ "github.com/simimpact/srsim/internal/lightcone/preservation/amber"
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/momentofvictory"
 	_ "github.com/simimpact/srsim/internal/relic/cavern/hunterofglacialforest"
 	_ "github.com/simimpact/srsim/internal/relic/cavern/musketeer"
