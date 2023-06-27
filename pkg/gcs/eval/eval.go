@@ -53,6 +53,15 @@ func (e *Env) v(s string) (*Obj, error) {
 	return nil, fmt.Errorf("variable %v does not exist", s)
 }
 
+func (e *Eval) addFunction(name string, f func(c *ast.CallExpr, env *Env) (Obj, error), env *Env) {
+	var obj Obj = &bfuncval{Body: f}
+	env.varMap[name] = &obj
+}
+
+func (e *Eval) addConstant(name string, value Obj, env *Env) {
+	env.varMap[name] = &value
+}
+
 func New(ast *ast.BlockStmt, ctx context.Context) *Eval {
 	e := &Eval{AST: ast}
 	e.ctx = ctx
