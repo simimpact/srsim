@@ -21,6 +21,9 @@ func (e *Eval) initConditionalFuncs(env *Env) {
 	e.addFunction("max_energy", e.maxEnergy, env)
 	e.addFunction("hp_ratio", e.hpRatio, env)
 
+	// shield
+	e.addFunction("has_shield", e.hasShield, env)
+
 	// turn
 	// TODO: whos_next()?
 
@@ -198,6 +201,40 @@ func (e *Eval) hpRatio(c *ast.CallExpr, env *Env) (Obj, error) {
 		fval:    e.Engine.HPRatio(target),
 		isFloat: true,
 	}, nil
+}
+
+// shield
+
+func (e *Eval) hasShield(c *ast.CallExpr, env *Env) (Obj, error) {
+	// has_shield(char, key)
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for has_shield, expected 1 got %v", len(c.Args))
+	}
+
+	// should eval to a number
+	tarobj, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+	if tarobj.Typ() != typNum {
+		return nil, fmt.Errorf("has_shield argument char should evaluate to a number, got %v", tarobj.Inspect())
+	}
+	target := key.TargetID(tarobj.(*number).ival)
+
+	// should eval to a string
+	keyobj, err := e.evalExpr(c.Args[1], env)
+	if err != nil {
+		return nil, err
+	}
+	if keyobj.Typ() != typStr {
+		return nil, fmt.Errorf("has_shield argument key should evaluate to a string, got %v", keyobj.Inspect())
+	}
+	key := key.Shield(keyobj.(*strval).str)
+
+	if !e.Engine.IsValid(target) {
+		return nil, fmt.Errorf("target %d is invalid", target)
+	}
+	return bton(e.Engine.HasShield(target, key)), nil
 }
 
 // info
