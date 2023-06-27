@@ -19,6 +19,7 @@ func (e *Eval) initConditionalFuncs(env *Env) {
 	e.addFunction("skill_points", e.skillPoints, env)
 	e.addFunction("energy", e.energy, env)
 	e.addFunction("max_energy", e.maxEnergy, env)
+	e.addFunction("hp_ratio", e.hpRatio, env)
 
 	// turn
 	// TODO: whos_next()?
@@ -172,6 +173,31 @@ func (e *Eval) maxEnergy(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("target %d is invalid", target)
 	}
 	return &number{ival: int64(e.Engine.MaxEnergy(target))}, nil
+}
+
+func (e *Eval) hpRatio(c *ast.CallExpr, env *Env) (Obj, error) {
+	// hp_ratio(char)
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for hp_ratio, expected 1 got %v", len(c.Args))
+	}
+
+	// should eval to a number
+	tarobj, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+	if tarobj.Typ() != typNum {
+		return nil, fmt.Errorf("hp_ratio argument char should evaluate to a number, got %v", tarobj.Inspect())
+	}
+	target := key.TargetID(tarobj.(*number).ival)
+
+	if !e.Engine.IsValid(target) {
+		return nil, fmt.Errorf("target %d is invalid", target)
+	}
+	return &number{
+		fval:    e.Engine.HPRatio(target),
+		isFloat: true,
+	}, nil
 }
 
 // info
