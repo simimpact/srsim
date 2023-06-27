@@ -31,6 +31,11 @@ func (e *Eval) initConditionalFuncs(env *Env) {
 	// info
 	e.addFunction("skill_ready", e.skillReady, env)
 
+	// target
+	e.addFunction("is_valid", e.isValid, env)
+	e.addFunction("is_character", e.isCharacter, env)
+	e.addFunction("is_enemy", e.isEnemy, env)
+
 	// StatusType
 	e.addConstant("StatusBuff", &number{ival: int64(model.StatusType_STATUS_BUFF)}, env)
 	e.addConstant("StatusDebuff", &number{ival: int64(model.StatusType_STATUS_DEBUFF)}, env)
@@ -283,4 +288,63 @@ func (e *Eval) skillReady(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, err
 	}
 	return bton(result), nil
+}
+
+// target
+
+func (e *Eval) isValid(c *ast.CallExpr, env *Env) (Obj, error) {
+	// is_valid(char)
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for is_valid, expected 1 got %v", len(c.Args))
+	}
+
+	// should eval to a number
+	tarobj, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+	if tarobj.Typ() != typNum {
+		return nil, fmt.Errorf("is_valid argument char should evaluate to a number, got %v", tarobj.Inspect())
+	}
+	target := key.TargetID(tarobj.(*number).ival)
+
+	return bton(e.Engine.IsValid(target)), nil
+}
+
+func (e *Eval) isCharacter(c *ast.CallExpr, env *Env) (Obj, error) {
+	// is_character(char)
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for is_character, expected 1 got %v", len(c.Args))
+	}
+
+	// should eval to a number
+	tarobj, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+	if tarobj.Typ() != typNum {
+		return nil, fmt.Errorf("is_character argument char should evaluate to a number, got %v", tarobj.Inspect())
+	}
+	target := key.TargetID(tarobj.(*number).ival)
+
+	return bton(e.Engine.IsCharacter(target)), nil
+}
+
+func (e *Eval) isEnemy(c *ast.CallExpr, env *Env) (Obj, error) {
+	// is_enemy(char)
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for is_enemy, expected 1 got %v", len(c.Args))
+	}
+
+	// should eval to a number
+	tarobj, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+	if tarobj.Typ() != typNum {
+		return nil, fmt.Errorf("is_enemy argument char should evaluate to a number, got %v", tarobj.Inspect())
+	}
+	target := key.TargetID(tarobj.(*number).ival)
+
+	return bton(e.Engine.IsEnemy(target)), nil
 }
