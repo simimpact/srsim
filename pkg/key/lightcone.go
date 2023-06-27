@@ -52,6 +52,7 @@ const (
 	MomentOfVictory           LightCone = "moment_of_victory"
 	Amber                     LightCone = "amber"
 	DayOneofMyNewLife         LightCone = "day_one_of_my_new_life"
+	TextureofMemories         LightCone = "texture_of_memories"
 	ThisIsMe                  LightCone = "this_is_me"
 	TrendoftheUniversalMarket LightCone = "trend_of_the_universal_market"
 	WeAreWildfire             LightCone = "we_are_wildfire"
