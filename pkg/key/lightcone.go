@@ -4,11 +4,12 @@ type LightCone string
 
 // Destruction
 const (
-	TheMolesWelcomeYou LightCone = "the_moles_welcome_you"
-	NowheretoRun       LightCone = "nowhere_to_run"
-	MutualDemise       LightCone = "mutual_demise"
-	ASecretVow         LightCone = "a_secret_vow"
-	ShatteredHome      LightCone = "shattered_home"
+	TheMolesWelcomeYou     LightCone = "the_moles_welcome_you"
+	NowheretoRun           LightCone = "nowhere_to_run"
+	MutualDemise           LightCone = "mutual_demise"
+	ASecretVow             LightCone = "a_secret_vow"
+	ShatteredHome          LightCone = "shattered_home"
+	SomethingIrreplaceable LightCone = "something_irreplaceable"
 )
 
 // Hunt
