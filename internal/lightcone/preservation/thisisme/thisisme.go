@@ -18,6 +18,7 @@ const (
 
 type State struct {
 	ultBonus float64
+	idMap    map[key.TargetID]bool
 }
 
 // Increases the wearer's DEF by 16%/20%/24%/28%/32%. Increases the DMG of the
@@ -34,8 +35,8 @@ func init() {
 
 	modifier.Register(modUlt, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHit: onBeforeHit,
-			OnAfterHit:  onAfterHit,
+			OnBeforeHit:   onBeforeHit,
+			OnAfterAction: onAfterAction,
 		},
 	})
 }
@@ -48,23 +49,24 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		Name:   mod,
 		Source: owner,
 		Stats:  info.PropMap{prop.DEFPercent: amt},
-		State:  State{ultDmg},
+		State:  State{ultBonus: ultDmg, idMap: make(map[key.TargetID]bool)},
 	})
 }
 
 // increase ult damage
 func onBeforeHit(mod *modifier.ModifierInstance, e event.HitStartEvent) {
 	state := mod.State().(State)
-	if e.Hit.AttackType == model.AttackType_ULT {
-		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-			Name:   modUlt,
-			Source: mod.Owner(),
-			Stats:  info.PropMap{prop.DEFPercent: state.ultBonus},
-		})
+	_, hasId := state.idMap[e.Hit.Defender.ID()]
+
+	if e.Hit.AttackType == model.AttackType_ULT && !hasId {
+		state.idMap[e.Hit.Defender.ID()] = true
+		e.Hit.DamageValue += state.ultBonus * e.Hit.Attacker.DEF()
 	}
 }
 
 // remove modifier so next ult deals ult dmg + only 1x bonus from this lc
-func onAfterHit(mod *modifier.ModifierInstance, e event.HitEndEvent) {
+func onAfterAction(mod *modifier.ModifierInstance, e event.ActionEvent) {
 	mod.RemoveSelf()
+	state := mod.State().(State)
+	state.idMap = make(map[key.TargetID]bool)
 }
