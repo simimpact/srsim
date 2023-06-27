@@ -50,6 +50,7 @@ const (
 // Preservation
 const (
 	MomentOfVictory LightCone = "moment_of_victory"
+	Amber           LightCone = "amber"
 )
 
 // Abundance
