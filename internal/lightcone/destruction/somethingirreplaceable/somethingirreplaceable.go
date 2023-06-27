@@ -69,12 +69,11 @@ func onAfterBeingAttacked(mod *modifier.ModifierInstance, e event.AttackEndEvent
 }
 
 func conditions(mod *modifier.ModifierInstance) {
-	heal := mod.State().(*state).Heal
-	dmgBonus := mod.State().(*state).DmgBonus
+	heal := mod.State().(state).Heal
+	dmgBonus := mod.State().(state).DmgBonus
 
-	if mod.Engine().HasModifier(mod.Owner(), Buff) {
+	if !mod.Engine().HasModifier(mod.Owner(), Buff) {
 
-	} else {
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 			Name:     Buff,
 			Source:   mod.Owner(),
@@ -87,5 +86,6 @@ func conditions(mod *modifier.ModifierInstance) {
 			Source:   mod.Owner(),
 			BaseHeal: info.HealMap{model.HealFormula_BY_HEALER_ATK: heal},
 		})
+
 	}
 }
