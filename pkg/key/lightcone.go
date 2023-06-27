@@ -49,9 +49,10 @@ const (
 
 // Preservation
 const (
-	MomentOfVictory   LightCone = "moment_of_victory"
-	Amber             LightCone = "amber"
-	DayOneofMyNewLife LightCone = "day_one_of_my_new_life"
+	MomentOfVictory           LightCone = "moment_of_victory"
+	Amber                     LightCone = "amber"
+	DayOneofMyNewLife         LightCone = "day_one_of_my_new_life"
+	TrendoftheUniversalMarket LightCone = "trend_of_the_universal_market"
 )
 
 // Abundance
