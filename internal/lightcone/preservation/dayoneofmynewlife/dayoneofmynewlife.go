@@ -28,7 +28,7 @@ func init() {
 	})
 
 	modifier.Register(modaura, modifier.Config{
-		Stacking: modifier.Replace,
+		Stacking: modifier.ReplaceBySource,
 	})
 }
 
@@ -39,7 +39,6 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		Name:   mod,
 		Source: owner,
 		Stats:  info.PropMap{prop.DEFPercent: amt},
-		State:  amt,
 	})
 
 	// allies AllType RES
@@ -50,9 +49,21 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		Stats:  info.PropMap{prop.AllDamageRES: amtAura},
 	}
 
+	// NOTE: fine to leave this as-is, but this may have to change in the
+	// future when adding support for multiple waves. `BattleStart` happens
+	// at the beginning of each wave
 	engine.Events().BattleStart.Subscribe(func(event event.BattleStartEvent) {
 		for char := range event.CharInfo {
 			engine.AddModifier(char, mod)
+		}
+	})
+
+	// removes aura on wearer's death
+	engine.Events().TargetDeath.Subscribe(func(event event.TargetDeathEvent) {
+		if event.Target == owner {
+			for _, char := range engine.Characters() {
+				engine.RemoveModifier(char, modaura)
+			}
 		}
 	})
 }
