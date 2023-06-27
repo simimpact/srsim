@@ -5,6 +5,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/equip/lightcone"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
@@ -26,6 +27,12 @@ func init() {
 		Path:          model.Path_PRESERVATION,
 		Promotions:    promotions,
 	})
+
+	modifier.Register(mod, modifier.Config{
+		Stacking:   modifier.ReplaceBySource,
+		TickMoment: modifier.ModifierPhase1End,
+		StatusType: model.StatusType_STATUS_BUFF,
+	})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
@@ -40,19 +47,18 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		Duration: 5,
 	}
 
-	heal := info.Heal{
-		Targets: engine.Characters(),
-		Source:  owner,
-		BaseHeal: info.HealMap{
-			model.HealFormula_BY_TARGET_LOST_HP: amtHeal,
-		},
-	}
-
+    // TODO: recheck when multiple waves support is added
 	engine.Events().BattleStart.Subscribe(func(event event.BattleStartEvent) {
 		for char := range event.CharInfo {
 			engine.AddModifier(char, dmgmod)
 		}
 
-		engine.Heal(heal)
+		engine.Heal(info.Heal{
+			Targets: engine.Characters(),
+			Source:  owner,
+			BaseHeal: info.HealMap{
+				model.HealFormula_BY_TARGET_LOST_HP: amtHeal,
+			},
+		})
 	})
 }
