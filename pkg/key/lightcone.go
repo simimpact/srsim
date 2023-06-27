@@ -53,6 +53,7 @@ const (
 	Amber                     LightCone = "amber"
 	DayOneofMyNewLife         LightCone = "day_one_of_my_new_life"
 	TrendoftheUniversalMarket LightCone = "trend_of_the_universal_market"
+	WeAreWildfire             LightCone = "we_are_wildfire"
 )
 
 // Abundance
