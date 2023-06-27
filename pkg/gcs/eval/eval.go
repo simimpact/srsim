@@ -75,6 +75,7 @@ func (e *Eval) Init() error {
 	e.ultNodes = make([]TargetNode, 0)
 	e.defaultActions = make(map[key.TargetID]action.Action)
 	e.initSysFuncs(e.global)
+	e.initConditionalFuncs(e.global)
 
 	_, err := e.evalNode(e.AST, e.global)
 	if err != nil {
