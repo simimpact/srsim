@@ -12,8 +12,7 @@ import (
 )
 
 const (
-	mod    key.Modifier = "this-is-me"
-	modUlt key.Modifier = "this-is-me-ult"
+	mod key.Modifier = "this-is-me"
 )
 
 type State struct {
@@ -33,7 +32,7 @@ func init() {
 		Promotions:    promotions,
 	})
 
-	modifier.Register(modUlt, modifier.Config{
+	modifier.Register(mod, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeHit:   onBeforeHit,
 			OnAfterAction: onAfterAction,
@@ -66,7 +65,6 @@ func onBeforeHit(mod *modifier.ModifierInstance, e event.HitStartEvent) {
 
 // remove modifier so next ult deals ult dmg + only 1x bonus from this lc
 func onAfterAction(mod *modifier.ModifierInstance, e event.ActionEvent) {
-	mod.RemoveSelf()
 	state := mod.State().(State)
 	state.idMap = make(map[key.TargetID]bool)
 }
