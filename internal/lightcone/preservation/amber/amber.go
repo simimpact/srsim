@@ -50,8 +50,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 
 // DEF increases by another 16%/20%/24%/28%/32%
 func onLowerHalfHp(mod *modifier.ModifierInstance) {
-	// NOTE: in-game equality check needed
-	if mod.Engine().HPRatio(mod.Owner()) <= 0.5 {
+	if mod.Engine().HPRatio(mod.Owner()) < 0.5 {
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 			Name:   amberbuff,
 			Source: mod.Owner(),
