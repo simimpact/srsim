@@ -12,13 +12,13 @@ import (
 
 func (e *Eval) initSysFuncs(env *Env) {
 	// std funcs
-	e.addSysFunc("rand", e.rand, env)
-	e.addSysFunc("randnorm", e.randnorm, env)
-	e.addSysFunc("print", e.print, env)
-	e.addSysFunc("type", e.typeval, env)
-	e.addSysFunc("register_skill_cb", e.registerSkillCB, env)
-	e.addSysFunc("register_ult_cb", e.registerUltCB, env)
-	e.addSysFunc("set_default_action", e.setDefaultAction, env)
+	e.addFunction("rand", e.rand, env)
+	e.addFunction("randnorm", e.randnorm, env)
+	e.addFunction("print", e.print, env)
+	e.addFunction("type", e.typeval, env)
+	e.addFunction("register_skill_cb", e.registerSkillCB, env)
+	e.addFunction("register_ult_cb", e.registerUltCB, env)
+	e.addFunction("set_default_action", e.setDefaultAction, env)
 
 	// actions
 	e.addAction(key.ActionAttack, env)
@@ -42,15 +42,6 @@ func (e *Eval) initSysFuncs(env *Env) {
 			e.addConstant(string(char.Key), &number{ival: int64(k)}, env)
 		}
 	}
-}
-
-func (e *Eval) addSysFunc(name string, f func(c *ast.CallExpr, env *Env) (Obj, error), env *Env) {
-	var obj Obj = &bfuncval{Body: f}
-	env.varMap[name] = &obj
-}
-
-func (e *Eval) addConstant(name string, value Obj, env *Env) {
-	env.varMap[name] = &value
 }
 
 func (e *Eval) print(c *ast.CallExpr, env *Env) (Obj, error) {
@@ -121,7 +112,7 @@ func (e *Eval) registerSkillCB(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("invalid number of params for register_skill_cb, expected 2 got %v", len(c.Args))
 	}
 
-	//should eval to a function
+	//should eval to a number
 	tarobj, err := e.evalExpr(c.Args[0], env)
 	if err != nil {
 		return nil, err
@@ -257,5 +248,5 @@ func (e *Eval) addAction(at key.ActionType, env *Env) {
 		}, nil
 	}
 
-	e.addSysFunc(string(at), f, env)
+	e.addFunction(string(at), f, env)
 }
