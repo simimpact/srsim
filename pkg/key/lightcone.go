@@ -35,9 +35,10 @@ const (
 
 // Erudition
 const (
-	Passkey    LightCone = "passkey"
-	DataBank   LightCone = "data_bank"
-	BeforeDawn LightCone = "before_dawn"
+	Passkey                   LightCone = "passkey"
+	DataBank                  LightCone = "data_bank"
+	BeforeDawn                LightCone = "before_dawn"
+	TodayIsAnotherPeacefulDay LightCone = "today_is_another_peaceful_day"
 )
 
 // Harmony
@@ -49,6 +50,7 @@ const (
 // Preservation
 const (
 	MomentOfVictory LightCone = "moment_of_victory"
+	Amber           LightCone = "amber"
 )
 
 // Abundance
