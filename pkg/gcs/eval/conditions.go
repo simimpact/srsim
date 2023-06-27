@@ -5,6 +5,7 @@ import (
 
 	"github.com/simimpact/srsim/pkg/gcs/ast"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/model"
 )
 
 // Functions for writing more flexible scripts.
@@ -14,6 +15,11 @@ func (e *Eval) initConditionalFuncs(env *Env) {
 	e.addFunction("skill_points", e.skillPoints, env)
 	// TODO: whos_next()?
 	e.addFunction("has_modifier", e.hasModifier, env)
+	e.addFunction("modifier_count", e.modifierCount, env)
+
+	// StatusType
+	e.addConstant("StatusBuff", &number{ival: int64(model.StatusType_STATUS_BUFF)}, env)
+	e.addConstant("StatusDebuff", &number{ival: int64(model.StatusType_STATUS_DEBUFF)}, env)
 }
 
 func (e *Eval) skillReady(c *ast.CallExpr, env *Env) (Obj, error) {
@@ -92,7 +98,7 @@ func (e *Eval) hasModifier(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, err
 	}
 	if modobj.Typ() != typStr {
-		return nil, fmt.Errorf("has_modifier argument mod should evaluate to a string, got %v", tarobj.Inspect())
+		return nil, fmt.Errorf("has_modifier argument mod should evaluate to a string, got %v", modobj.Inspect())
 	}
 	modifier := key.Modifier(tarobj.(*strval).str)
 
@@ -100,4 +106,36 @@ func (e *Eval) hasModifier(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("target %d is invalid", target)
 	}
 	return bton(e.Engine.HasModifier(target, modifier)), nil
+}
+
+func (e *Eval) modifierCount(c *ast.CallExpr, env *Env) (Obj, error) {
+	// modifier_count(char, type)
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for modifier_count, expected 2 got %v", len(c.Args))
+	}
+
+	// should eval to a number
+	tarobj, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+	if tarobj.Typ() != typNum {
+		return nil, fmt.Errorf("modifier_count argument char should evaluate to a number, got %v", tarobj.Inspect())
+	}
+	target := key.TargetID(tarobj.(*number).ival)
+
+	// should eval to a number
+	typobj, err := e.evalExpr(c.Args[1], env)
+	if err != nil {
+		return nil, err
+	}
+	if typobj.Typ() != typNum {
+		return nil, fmt.Errorf("modifier_count argument type should evaluate to a number, got %v", typobj.Inspect())
+	}
+	status := model.StatusType(typobj.(*number).ival)
+
+	if !e.Engine.IsValid(target) {
+		return nil, fmt.Errorf("target %d is invalid", target)
+	}
+	return &number{ival: int64(e.Engine.ModifierCount(target, status))}, nil
 }
