@@ -13,6 +13,7 @@ import (
 
 const (
 	Check key.Modifier = "something-irreplaceable"
+	Buff  key.Modifier = "kinship"
 )
 
 type state struct {
@@ -39,6 +40,10 @@ func init() {
 			OnTriggerDeath:       onTriggerDeath,
 		},
 	})
+
+	modifier.Register(Buff, modifier.Config{
+		StatusType: model.StatusType_STATUS_BUFF,
+	})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
@@ -48,7 +53,10 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		Name:   Check,
 		Source: owner,
 		Stats:  info.PropMap{prop.ATKPercent: atkBuff},
-		State:  state{Heal: 0.07 + 0.01*float64(lc.Imposition), DmgBonus: 0.2 + 0.04*float64(lc.Imposition)},
+		State: state{
+			Heal:     0.07 + 0.01*float64(lc.Imposition),
+			DmgBonus: 0.2 + 0.04*float64(lc.Imposition),
+		},
 	})
 }
 
@@ -64,15 +72,20 @@ func conditions(mod *modifier.ModifierInstance) {
 	heal := mod.State().(*state).Heal
 	dmgBonus := mod.State().(*state).DmgBonus
 
-	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-		Source:   mod.Owner(),
-		Duration: 1,
-		Stats:    info.PropMap{prop.AllDamagePercent: dmgBonus},
-	})
+	if mod.Engine().HasModifier(mod.Owner(), Buff) {
 
-	mod.Engine().Heal(info.Heal{
-		Targets:  []key.TargetID{mod.Owner()},
-		Source:   mod.Owner(),
-		BaseHeal: info.HealMap{model.HealFormula_BY_HEALER_ATK: heal},
-	})
+	} else {
+		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
+			Name:     Buff,
+			Source:   mod.Owner(),
+			Duration: 1,
+			Stats:    info.PropMap{prop.AllDamagePercent: dmgBonus},
+		})
+
+		mod.Engine().Heal(info.Heal{
+			Targets:  []key.TargetID{mod.Owner()},
+			Source:   mod.Owner(),
+			BaseHeal: info.HealMap{model.HealFormula_BY_HEALER_ATK: heal},
+		})
+	}
 }
