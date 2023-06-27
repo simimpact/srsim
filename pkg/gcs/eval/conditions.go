@@ -10,71 +10,28 @@ import (
 
 // Functions for writing more flexible scripts.
 func (e *Eval) initConditionalFuncs(env *Env) {
-	e.addFunction("skill_ready", e.skillReady, env)
-	e.addFunction("ult_ready", e.ultReady, env)
-	e.addFunction("skill_points", e.skillPoints, env)
-	// TODO: whos_next()?
+	// modifier
 	e.addFunction("has_modifier", e.hasModifier, env)
 	e.addFunction("modifier_count", e.modifierCount, env)
+
+	// attribute
+	e.addFunction("ult_ready", e.ultReady, env)
+	e.addFunction("skill_points", e.skillPoints, env)
+	e.addFunction("energy", e.energy, env)
+	e.addFunction("max_energy", e.maxEnergy, env)
+
+	// turn
+	// TODO: whos_next()?
+
+	// info
+	e.addFunction("skill_ready", e.skillReady, env)
 
 	// StatusType
 	e.addConstant("StatusBuff", &number{ival: int64(model.StatusType_STATUS_BUFF)}, env)
 	e.addConstant("StatusDebuff", &number{ival: int64(model.StatusType_STATUS_DEBUFF)}, env)
 }
 
-func (e *Eval) skillReady(c *ast.CallExpr, env *Env) (Obj, error) {
-	// skill_ready(char)
-	if len(c.Args) != 1 {
-		return nil, fmt.Errorf("invalid number of params for skill_ready, expected 1 got %v", len(c.Args))
-	}
-
-	// should eval to a number
-	tarobj, err := e.evalExpr(c.Args[0], env)
-	if err != nil {
-		return nil, err
-	}
-	if tarobj.Typ() != typNum {
-		return nil, fmt.Errorf("skill_ready argument char should evaluate to a number, got %v", tarobj.Inspect())
-	}
-	target := key.TargetID(tarobj.(*number).ival)
-
-	result, err := e.Engine.CanUseSkill(target)
-	if err != nil {
-		return nil, err
-	}
-	return bton(result), nil
-}
-
-func (e *Eval) ultReady(c *ast.CallExpr, env *Env) (Obj, error) {
-	// ult_ready(char)
-	if len(c.Args) != 1 {
-		return nil, fmt.Errorf("invalid number of params for ult_ready, expected 1 got %v", len(c.Args))
-	}
-
-	// should eval to a number
-	tarobj, err := e.evalExpr(c.Args[0], env)
-	if err != nil {
-		return nil, err
-	}
-	if tarobj.Typ() != typNum {
-		return nil, fmt.Errorf("ult_ready argument char should evaluate to a number, got %v", tarobj.Inspect())
-	}
-	target := key.TargetID(tarobj.(*number).ival)
-
-	if !e.Engine.IsCharacter(target) {
-		return nil, fmt.Errorf("target %d is not a character", target)
-	}
-	return bton(e.Engine.EnergyRatio(target) >= 1), nil
-}
-
-func (e *Eval) skillPoints(c *ast.CallExpr, env *Env) (Obj, error) {
-	// skill_points()
-	if len(c.Args) != 0 {
-		return nil, fmt.Errorf("invalid number of params for skill_points, expected 0 got %v", len(c.Args))
-	}
-
-	return &number{ival: int64(e.Engine.SP())}, nil
-}
+// modifier
 
 func (e *Eval) hasModifier(c *ast.CallExpr, env *Env) (Obj, error) {
 	// has_modifier(char, mod)
@@ -138,4 +95,106 @@ func (e *Eval) modifierCount(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("target %d is invalid", target)
 	}
 	return &number{ival: int64(e.Engine.ModifierCount(target, status))}, nil
+}
+
+// attribute
+
+func (e *Eval) ultReady(c *ast.CallExpr, env *Env) (Obj, error) {
+	// ult_ready(char)
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for ult_ready, expected 1 got %v", len(c.Args))
+	}
+
+	// should eval to a number
+	tarobj, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+	if tarobj.Typ() != typNum {
+		return nil, fmt.Errorf("ult_ready argument char should evaluate to a number, got %v", tarobj.Inspect())
+	}
+	target := key.TargetID(tarobj.(*number).ival)
+
+	if !e.Engine.IsCharacter(target) {
+		return nil, fmt.Errorf("target %d is not a character", target)
+	}
+	return bton(e.Engine.EnergyRatio(target) >= 1), nil
+}
+
+func (e *Eval) skillPoints(c *ast.CallExpr, env *Env) (Obj, error) {
+	// skill_points()
+	if len(c.Args) != 0 {
+		return nil, fmt.Errorf("invalid number of params for skill_points, expected 0 got %v", len(c.Args))
+	}
+
+	return &number{ival: int64(e.Engine.SP())}, nil
+}
+
+func (e *Eval) energy(c *ast.CallExpr, env *Env) (Obj, error) {
+	// energy(char)
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for energy, expected 1 got %v", len(c.Args))
+	}
+
+	// should eval to a number
+	tarobj, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+	if tarobj.Typ() != typNum {
+		return nil, fmt.Errorf("energy argument char should evaluate to a number, got %v", tarobj.Inspect())
+	}
+	target := key.TargetID(tarobj.(*number).ival)
+
+	if !e.Engine.IsValid(target) {
+		return nil, fmt.Errorf("target %d is invalid", target)
+	}
+	return &number{ival: int64(e.Engine.Energy(target))}, nil
+}
+
+func (e *Eval) maxEnergy(c *ast.CallExpr, env *Env) (Obj, error) {
+	// max_energy(char)
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for max_energy, expected 1 got %v", len(c.Args))
+	}
+
+	// should eval to a number
+	tarobj, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+	if tarobj.Typ() != typNum {
+		return nil, fmt.Errorf("max_energy argument char should evaluate to a number, got %v", tarobj.Inspect())
+	}
+	target := key.TargetID(tarobj.(*number).ival)
+
+	if !e.Engine.IsValid(target) {
+		return nil, fmt.Errorf("target %d is invalid", target)
+	}
+	return &number{ival: int64(e.Engine.MaxEnergy(target))}, nil
+}
+
+// info
+
+func (e *Eval) skillReady(c *ast.CallExpr, env *Env) (Obj, error) {
+	// skill_ready(char)
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for skill_ready, expected 1 got %v", len(c.Args))
+	}
+
+	// should eval to a number
+	tarobj, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+	if tarobj.Typ() != typNum {
+		return nil, fmt.Errorf("skill_ready argument char should evaluate to a number, got %v", tarobj.Inspect())
+	}
+	target := key.TargetID(tarobj.(*number).ival)
+
+	result, err := e.Engine.CanUseSkill(target)
+	if err != nil {
+		return nil, err
+	}
+	return bton(result), nil
 }
