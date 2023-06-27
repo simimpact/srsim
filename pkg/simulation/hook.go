@@ -6,13 +6,13 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-func (s *simulation) subscribe() {
-	s.event.TargetDeath.Subscribe(s.onDeath)
+func (s *Simulation) subscribe() {
+	s.Event.TargetDeath.Subscribe(s.onDeath)
 }
 
-func (s *simulation) onDeath(e event.TargetDeathEvent) {
+func (s *Simulation) onDeath(e event.TargetDeathEvent) {
 	// remove this target from active arrays (these arrays represent order in battle map)
-	switch s.targets[e.Target] {
+	switch s.Targets[e.Target] {
 	case info.ClassCharacter:
 		s.characters = remove(s.characters, e.Target)
 	case info.ClassEnemy:
@@ -22,7 +22,7 @@ func (s *simulation) onDeath(e event.TargetDeathEvent) {
 	}
 
 	// remove this target from the turn order
-	s.turn.RemoveTarget(e.Target)
+	s.Turn.RemoveTarget(e.Target)
 }
 
 func remove(arr []key.TargetID, id key.TargetID) []key.TargetID {

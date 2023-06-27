@@ -45,10 +45,7 @@ func randomlyAddEnergy(mod *modifier.ModifierInstance) {
 	
 	for _, char := range allyList{
 		//check if energy is <50% and current char isn't LC's holder.
-		//NOTE : Engine().CharacterInfo() don't have .MaxEnergy(). 
-		//currently using .Stats which is not efficient.
-		if (mod.Engine().Energy(char) < mod.Engine().Stats(char).MaxEnergy() / 2 && 
-		char != mod.Owner()) {
+		if (mod.Engine().EnergyRatio(char) < 0.5 && char != mod.Owner()) {
 			validAllyList = append(validAllyList, char)
 		}
 	}

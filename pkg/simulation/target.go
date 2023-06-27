@@ -6,47 +6,47 @@ import (
 )
 
 // TODO: AddTarget
-func (sim *simulation) AddNeutralTarget() key.TargetID {
+func (sim *Simulation) AddNeutralTarget() key.TargetID {
 	panic("not implemented") // TODO: Implement
 }
 
 // TODO: AddTarget
-func (sim *simulation) RemoveNeutralTarget(id key.TargetID) {
+func (sim *Simulation) RemoveNeutralTarget(id key.TargetID) {
 	panic("not implemented") // TODO: Implement
 }
 
-func (sim *simulation) IsValid(target key.TargetID) bool {
-	if _, ok := sim.targets[target]; ok {
+func (sim *Simulation) IsValid(target key.TargetID) bool {
+	if _, ok := sim.Targets[target]; ok {
 		return true
 	}
 	return false
 }
 
-func (sim *simulation) IsCharacter(target key.TargetID) bool {
-	if targetType, ok := sim.targets[target]; ok {
+func (sim *Simulation) IsCharacter(target key.TargetID) bool {
+	if targetType, ok := sim.Targets[target]; ok {
 		return targetType == info.ClassCharacter
 	}
 	return false
 }
 
-func (sim *simulation) IsEnemy(target key.TargetID) bool {
-	if targetType, ok := sim.targets[target]; ok {
+func (sim *Simulation) IsEnemy(target key.TargetID) bool {
+	if targetType, ok := sim.Targets[target]; ok {
 		return targetType == info.ClassEnemy
 	}
 	return false
 }
 
-func (sim *simulation) IsNeutral(target key.TargetID) bool {
-	if targetType, ok := sim.targets[target]; ok {
+func (sim *Simulation) IsNeutral(target key.TargetID) bool {
+	if targetType, ok := sim.Targets[target]; ok {
 		return targetType == info.ClassNeutral
 	}
 	return false
 }
 
-func (sim *simulation) AdjacentTo(target key.TargetID) []key.TargetID {
+func (sim *Simulation) AdjacentTo(target key.TargetID) []key.TargetID {
 	var targets []key.TargetID
 
-	switch sim.targets[target] {
+	switch sim.Targets[target] {
 	case info.ClassCharacter:
 		targets = sim.characters
 	case info.ClassEnemy:
@@ -75,14 +75,14 @@ func (sim *simulation) AdjacentTo(target key.TargetID) []key.TargetID {
 	return nil
 }
 
-func (sim *simulation) Characters() []key.TargetID {
+func (sim *Simulation) Characters() []key.TargetID {
 	return sim.characters
 }
 
-func (sim *simulation) Enemies() []key.TargetID {
+func (sim *Simulation) Enemies() []key.TargetID {
 	return sim.enemies
 }
 
-func (sim *simulation) Neutrals() []key.TargetID {
+func (sim *Simulation) Neutrals() []key.TargetID {
 	return sim.neutrals
 }

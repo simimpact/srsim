@@ -5,20 +5,20 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-func (sim *simulation) AddShield(id key.Shield, shield info.Shield) {
-	sim.actionTargets[shield.Target] = true
-	sim.shield.AddShield(id, shield)
+func (sim *Simulation) AddShield(id key.Shield, shield info.Shield) {
+	sim.ActionTargets[shield.Target] = true
+	sim.Shield.AddShield(id, shield)
 }
 
-func (sim *simulation) RemoveShield(id key.Shield, target key.TargetID) {
-	sim.actionTargets[target] = true
-	sim.shield.RemoveShield(id, target)
+func (sim *Simulation) RemoveShield(id key.Shield, target key.TargetID) {
+	sim.ActionTargets[target] = true
+	sim.Shield.RemoveShield(id, target)
 }
 
-func (sim *simulation) HasShield(target key.TargetID, shield key.Shield) bool {
-	return sim.shield.HasShield(target, shield)
+func (sim *Simulation) HasShield(target key.TargetID, shield key.Shield) bool {
+	return sim.Shield.HasShield(target, shield)
 }
 
-func (sim *simulation) IsShielded(target key.TargetID) bool {
-	return sim.shield.IsShielded(target)
+func (sim *Simulation) IsShielded(target key.TargetID) bool {
+	return sim.Shield.IsShielded(target)
 }
