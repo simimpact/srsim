@@ -23,6 +23,7 @@ func (e *Eval) initConditionalFuncs(env *Env) {
 
 	// shield
 	e.addFunction("has_shield", e.hasShield, env)
+	e.addFunction("is_shielded", e.isShielded, env)
 
 	// turn
 	// TODO: whos_next()?
@@ -39,7 +40,7 @@ func (e *Eval) initConditionalFuncs(env *Env) {
 
 func (e *Eval) hasModifier(c *ast.CallExpr, env *Env) (Obj, error) {
 	// has_modifier(char, mod)
-	if len(c.Args) != 1 {
+	if len(c.Args) != 2 {
 		return nil, fmt.Errorf("invalid number of params for has_modifier, expected 2 got %v", len(c.Args))
 	}
 
@@ -71,7 +72,7 @@ func (e *Eval) hasModifier(c *ast.CallExpr, env *Env) (Obj, error) {
 
 func (e *Eval) modifierCount(c *ast.CallExpr, env *Env) (Obj, error) {
 	// modifier_count(char, type)
-	if len(c.Args) != 1 {
+	if len(c.Args) != 2 {
 		return nil, fmt.Errorf("invalid number of params for modifier_count, expected 2 got %v", len(c.Args))
 	}
 
@@ -207,7 +208,7 @@ func (e *Eval) hpRatio(c *ast.CallExpr, env *Env) (Obj, error) {
 
 func (e *Eval) hasShield(c *ast.CallExpr, env *Env) (Obj, error) {
 	// has_shield(char, key)
-	if len(c.Args) != 1 {
+	if len(c.Args) != 2 {
 		return nil, fmt.Errorf("invalid number of params for has_shield, expected 1 got %v", len(c.Args))
 	}
 
@@ -235,6 +236,28 @@ func (e *Eval) hasShield(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("target %d is invalid", target)
 	}
 	return bton(e.Engine.HasShield(target, key)), nil
+}
+
+func (e *Eval) isShielded(c *ast.CallExpr, env *Env) (Obj, error) {
+	// is_shielded(char)
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for is_shielded, expected 1 got %v", len(c.Args))
+	}
+
+	// should eval to a number
+	tarobj, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+	if tarobj.Typ() != typNum {
+		return nil, fmt.Errorf("is_shielded argument char should evaluate to a number, got %v", tarobj.Inspect())
+	}
+	target := key.TargetID(tarobj.(*number).ival)
+
+	if !e.Engine.IsValid(target) {
+		return nil, fmt.Errorf("target %d is invalid", target)
+	}
+	return bton(e.Engine.IsShielded(target)), nil
 }
 
 // info
