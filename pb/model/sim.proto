@@ -19,7 +19,7 @@ message SimulatorSettings {
 
 message Relic {
     string key = 1 [ json_name = "key" ];
-    RelicStat main_stat = 2 [json_name = "sub_stats" ];
+    RelicStat main_stat = 2 [json_name = "main_stat" ];
     repeated RelicStat sub_stats = 3 [ json_name = "sub_stats"];
 }
 
