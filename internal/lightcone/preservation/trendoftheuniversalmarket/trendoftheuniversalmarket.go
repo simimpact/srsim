@@ -13,8 +13,7 @@ import (
 )
 
 const (
-	mod    key.Modifier = "trend"
-	moddot key.Modifier = "trend-burn"
+	mod key.Modifier = "trend-of-the-universal-market"
 )
 
 type State struct {
@@ -52,17 +51,17 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		Name:   mod,
 		Source: owner,
 		Stats:  info.PropMap{prop.DEFPercent: amt},
-		State:  &State{dotChance, dotDmg},
+		State:  State{dotChance, dotDmg},
 	})
 
 }
 
 // chance to DoT the attacker
 func onAfterBeingAttacked(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
-	state := mod.State().(*State)
+	state := mod.State().(State)
 
 	mod.Engine().AddModifier(e.Attacker, info.Modifier{
-		Name:   moddot,
+		Name:   common.Burn,
 		Source: mod.Owner(),
 		State: common.BurnState{
 			DEFDamagePercentage: state.dotDmg,
