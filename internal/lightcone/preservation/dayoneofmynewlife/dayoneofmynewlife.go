@@ -28,6 +28,9 @@ func init() {
 	})
 
 	modifier.Register(modaura, modifier.Config{
+		Listeners: modifier.Listeners{
+			OnBeforeDying: onWearerDeath,
+		},
 		Stacking: modifier.ReplaceBySource,
 	})
 }
@@ -57,13 +60,11 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 			engine.AddModifier(char, mod)
 		}
 	})
+}
 
-	// removes aura on wearer's death
-	engine.Events().TargetDeath.Subscribe(func(event event.TargetDeathEvent) {
-		if event.Target == owner {
-			for _, char := range engine.Characters() {
-				engine.RemoveModifier(char, modaura)
-			}
-		}
-	})
+// removes team aura on wearer's death
+func onWearerDeath(mod *modifier.ModifierInstance) {
+	for _, char := range mod.Engine().Characters() {
+		mod.Engine().RemoveModifier(char, modaura)
+	}
 }
