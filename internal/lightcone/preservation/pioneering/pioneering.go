@@ -25,14 +25,7 @@ func init() {
 
 	modifier.Register(mod, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnTriggerBreak: func(mod *modifier.ModifierInstance, target key.TargetID) {
-				healAmt := mod.State().(float64)
-				mod.Engine().Heal(info.Heal{
-					Targets:  []key.TargetID{mod.Owner()},
-					Source:   mod.Owner(),
-					BaseHeal: info.HealMap{model.HealFormula_BY_TARGET_MAX_HP: healAmt},
-				})
-			},
+			OnTriggerBreak: onTriggerBreak,
 		},
 	})
 }
@@ -44,5 +37,14 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		Name:   mod,
 		Source: owner,
 		State:  healAmt,
+	})
+}
+
+func onTriggerBreak(mod *modifier.ModifierInstance, target key.TargetID) {
+	healAmt := mod.State().(float64)
+	mod.Engine().Heal(info.Heal{
+		Targets:  []key.TargetID{mod.Owner()},
+		Source:   mod.Owner(),
+		BaseHeal: info.HealMap{model.HealFormula_BY_TARGET_MAX_HP: healAmt},
 	})
 }
