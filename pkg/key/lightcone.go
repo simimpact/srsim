@@ -40,6 +40,7 @@ const (
 	DataBank                  LightCone = "data_bank"
 	BeforeDawn                LightCone = "before_dawn"
 	TodayIsAnotherPeacefulDay LightCone = "today_is_another_peaceful_day"
+	TheSeriousnessofBreakfast LightCone = "the_seriousness_of_breakfast"
 )
 
 // Harmony
