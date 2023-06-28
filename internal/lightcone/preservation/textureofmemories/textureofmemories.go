@@ -12,9 +12,10 @@ import (
 )
 
 const (
-	mod       key.Modifier = "texture"
-	modshield key.Shield   = "texture-shield"
-	modcd     key.Modifier = "texture-cooldown"
+	mod           key.Modifier = "texture"
+	modshield     key.Shield   = "texture-shield"
+	modcd         key.Modifier = "texture-cooldown"
+	modshieldbuff key.Modifier = "texture-shield-buff"
 )
 
 type State struct {
@@ -42,6 +43,14 @@ func init() {
 		},
 	})
 
+	modifier.Register(modshieldbuff, modifier.Config{
+		Listeners: modifier.Listeners{
+			OnAdd:    shieldBuffOnAdd,
+			OnRemove: shieldBuffOnRemove,
+		},
+		StatusType: model.StatusType_STATUS_BUFF,
+	})
+
 	modifier.Register(modcd, modifier.Config{})
 }
 
@@ -63,7 +72,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 func onBeforeBeingHitAll(mod *modifier.ModifierInstance, e event.HitStartEvent) {
 	if mod.Engine().IsShielded(mod.Owner()) {
 		state := mod.State().(State)
-		mod.SetProperty(prop.AllDamageReduce, state.dmgRes)
+		e.Hit.Defender.AddProperty(prop.AllDamageReduce, state.dmgRes)
 	}
 }
 
@@ -74,19 +83,32 @@ func onAfterBeingAttacked(mod *modifier.ModifierInstance, e event.AttackEndEvent
 
 	// no shield + lc effect is off-cd
 	if !isShielded && !isOnCd {
-		state := mod.State().(State)
-		// apply shield
-		mod.Engine().AddShield(modshield, info.Shield{
-			Source:     mod.Owner(),
-			Target:     mod.Owner(),
-			BaseShield: info.ShieldMap{model.ShieldFormula_SHIELD_BY_SHIELDER_MAX_HP: state.shieldAmt},
+		// apply shield as buff with 2t duration
+		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
+			Name:     modshieldbuff,
+			Source:   mod.Owner(),
+			Duration: 2,
 		})
 
 		// apply cd modifier
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 			Name:     modcd,
 			Source:   mod.Owner(),
-			Duration: 2,
+			Duration: 3,
 		})
 	}
+}
+
+func shieldBuffOnAdd(mod *modifier.ModifierInstance) {
+	state := mod.State().(State)
+	// apply shield
+	mod.Engine().AddShield(modshield, info.Shield{
+		Source:     mod.Owner(),
+		Target:     mod.Owner(),
+		BaseShield: info.ShieldMap{model.ShieldFormula_SHIELD_BY_SHIELDER_MAX_HP: state.shieldAmt},
+	})
+}
+
+func shieldBuffOnRemove(mod *modifier.ModifierInstance) {
+	mod.Engine().RemoveShield(modshield, mod.Owner())
 }
