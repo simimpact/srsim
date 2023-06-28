@@ -48,6 +48,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/momentofvictory"
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/thisisme"
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/trendoftheuniversalmarket"
+	_ "github.com/simimpact/srsim/internal/lightcone/preservation/pioneering"
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/wearewildfire"
 	_ "github.com/simimpact/srsim/internal/relic/cavern/hunterofglacialforest"
 	_ "github.com/simimpact/srsim/internal/relic/cavern/musketeer"
