@@ -12,7 +12,7 @@ import (
 
 const (
 	Check key.Modifier = "the-seriousness-of-breakfast"
-	Buff  key.Modifier = "get-ready"
+	Buff  key.Modifier = "the-seriousness-of-breakfast-buff"
 )
 
 //Increases the wearer's DMG by 12/15/18/21/24%.
@@ -61,6 +61,5 @@ func onTriggerDeath(mod *modifier.ModifierInstance, target key.TargetID) {
 }
 
 func onAdd(mod *modifier.ModifierInstance) {
-	stacks := mod.Engine().GetModifiers(mod.Owner(), Buff)[0].Count
-	mod.AddProperty(prop.ATKPercent, mod.State().(float64)*stacks)
+	mod.AddProperty(prop.ATKPercent, mod.Count()*mod.State().(float64))
 }
