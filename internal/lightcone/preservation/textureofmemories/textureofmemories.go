@@ -87,6 +87,7 @@ func onAfterBeingAttacked(mod *modifier.ModifierInstance, e event.AttackEndEvent
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 			Name:     modshieldbuff,
 			Source:   mod.Owner(),
+			State:    mod.State().(State),
 			Duration: 2,
 		})
 
