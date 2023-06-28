@@ -57,6 +57,7 @@ const (
 	TextureofMemories         LightCone = "texture_of_memories"
 	ThisIsMe                  LightCone = "this_is_me"
 	TrendoftheUniversalMarket LightCone = "trend_of_the_universal_market"
+	Pioneering                LightCone = "pioneering"
 	WeAreWildfire             LightCone = "we_are_wildfire"
 )
 
