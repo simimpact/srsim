@@ -7,6 +7,10 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
+const (
+	E2Tracker key.Modifier = "gepard-e2-tracker"
+)
+
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	c.engine.Attack(info.Attack{
 		Source:     c.id,
@@ -20,13 +24,26 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		EnergyGain:   30.0,
 	})
 
-	c.engine.AddModifier(target, info.Modifier{
+	freezeChance := 0.65
+
+	if c.info.Eidolon >= 1 {
+		freezeChance += 0.35
+	}
+
+	freezeSucessful, _ := c.engine.AddModifier(target, info.Modifier{
 		Name:   common.Freeze,
 		Source: c.id,
 		State: common.FreezeState{
 			DamagePercentage: skillFreezeDMG[c.info.SkillLevelIndex()],
 		},
-		Chance:   0.65,
+		Chance:   freezeChance,
 		Duration: 1,
 	})
+
+	if c.info.Eidolon >= 2 && freezeSucessful {
+		c.engine.AddModifier(target, info.Modifier{
+			Name:   E2Tracker,
+			Source: c.id,
+		})
+	}
 }

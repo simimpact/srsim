@@ -53,5 +53,8 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 	c.talent()
 	c.initTraces()
 
+	c.e2()
+	c.e4()
+
 	return c
 }

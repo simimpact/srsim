@@ -14,6 +14,7 @@ const (
 type talentState struct {
 	revivePerc float64
 	a4Active   bool
+	e6Active   bool
 }
 
 func init() {
@@ -42,6 +43,11 @@ func init() {
 					mod.Engine().ModifyEnergyFixed(mod.Owner(), 100)
 				}
 
+				// If E6, action forward
+				if mod.State().(talentState).e6Active {
+					mod.Engine().SetGauge(mod.Owner(), 0)
+				}
+
 				mod.RemoveSelf()
 				return true
 			},
@@ -50,12 +56,19 @@ func init() {
 }
 
 func (c *char) talent() {
+	revivePerc := talent[c.info.TalentLevelIndex()]
+
+	if c.info.Eidolon >= 6 {
+		revivePerc += 0.5
+	}
+
 	c.engine.AddModifier(c.id, info.Modifier{
 		Name:   Talent,
 		Source: c.id,
 		State: talentState{
-			revivePerc: talent[c.info.TalentLevelIndex()],
+			revivePerc: revivePerc,
 			a4Active:   c.info.Traces["1104102"],
+			e6Active:   c.info.Eidolon >= 6,
 		},
 	})
 }
