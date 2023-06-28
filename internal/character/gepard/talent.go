@@ -13,6 +13,7 @@ const (
 
 type talentState struct {
 	revivePerc float64
+	a4Active   bool
 }
 
 func init() {
@@ -36,6 +37,11 @@ func init() {
 					Priority: info.CharReviveSelf,
 				})
 
+				// If A4, restore Energy to 100% (Energy Cost is 100)
+				if mod.State().(talentState).a4Active {
+					mod.Engine().ModifyEnergyFixed(mod.Owner(), 100)
+				}
+
 				mod.RemoveSelf()
 				return true
 			},
@@ -49,6 +55,7 @@ func (c *char) talent() {
 		Source: c.id,
 		State: talentState{
 			revivePerc: talent[c.info.TalentLevelIndex()],
+			a4Active:   c.info.Traces["1104102"],
 		},
 	})
 }
