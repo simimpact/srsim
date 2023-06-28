@@ -25,6 +25,9 @@ func init() {
 					ShieldValue: 150,
 				})
 			},
+			OnRemove: func(mod *modifier.ModifierInstance) {
+				mod.Engine().RemoveShield(TechniqueShield, mod.Owner())
+			},
 		},
 	})
 }
