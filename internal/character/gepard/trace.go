@@ -13,7 +13,7 @@ const (
 )
 
 func init() {
-	modifier.Register(Talent, modifier.Config{
+	modifier.Register(A6, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnPhase1: func(mod *modifier.ModifierInstance) {
 				mod.SetProperty(prop.ATKFlat, mod.Engine().Stats(mod.Owner()).DEF()*0.35)
