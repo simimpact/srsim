@@ -99,9 +99,9 @@ func onAfterBeingAttacked(mod *modifier.ModifierInstance, e event.AttackEndEvent
 	}
 }
 
+// what the shield buff does on add (in this case just providing shield)
 func shieldBuffOnAdd(mod *modifier.ModifierInstance) {
 	state := mod.State().(State)
-	// apply shield
 	mod.Engine().AddShield(modshield, info.Shield{
 		Source:     mod.Owner(),
 		Target:     mod.Owner(),
@@ -109,6 +109,7 @@ func shieldBuffOnAdd(mod *modifier.ModifierInstance) {
 	})
 }
 
+// what the shield buff on remove (in this case leftover shield is removed)
 func shieldBuffOnRemove(mod *modifier.ModifierInstance) {
 	mod.Engine().RemoveShield(modshield, mod.Owner())
 }
