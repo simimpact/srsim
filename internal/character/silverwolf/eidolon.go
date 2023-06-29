@@ -24,15 +24,6 @@ func init() {
 			OnAdd: func(mod *modifier.ModifierInstance) {
 				mod.SetProperty(prop.EffectRES, -0.2)
 			},
-			OnBeforeDying: func(mod *modifier.ModifierInstance) {
-				if mod.Owner() == mod.Source() {
-					targets := mod.Engine().Characters()
-
-					for _, trg := range targets {
-						mod.Engine().RemoveModifier(trg, E2)
-					}
-				}
-			},
 		},
 	})
 
@@ -97,6 +88,16 @@ func (c *char) initEidolons() {
 				Name:   E2,
 				Source: c.id,
 			})
+		})
+
+		c.engine.Events().TargetDeath.Subscribe(func(event event.TargetDeathEvent) {
+			if event.Target == c.id {
+				targets := c.engine.Enemies()
+
+				for _, trg := range targets {
+					c.engine.RemoveModifier(trg, E2)
+				}
+			}
 		})
 	}
 
