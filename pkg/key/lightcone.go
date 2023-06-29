@@ -10,6 +10,7 @@ const (
 	ASecretVow             LightCone = "a_secret_vow"
 	ShatteredHome          LightCone = "shattered_home"
 	SomethingIrreplaceable LightCone = "something_irreplaceable"
+	UndertheBlueSky        LightCone = "under_the_blue_sky"
 )
 
 // Hunt
