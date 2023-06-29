@@ -20,39 +20,44 @@ type talentState struct {
 func init() {
 	modifier.Register(Talent, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnLimboWaitHeal: func(mod *modifier.ModifierInstance) bool {
-
-				// Dispel all debuffs
-				mod.Engine().DispelStatus(mod.Owner(), info.Dispel{
-					Status: model.StatusType_STATUS_DEBUFF,
-					Order:  model.DispelOrder_LAST_ADDED,
-				})
-
-				// Queue Heal
-				mod.Engine().InsertAbility(info.Insert{
-					Execute: func() {
-						mod.Engine().SetHP(
-							mod.Owner(), mod.Owner(), mod.OwnerStats().MaxHP()*mod.State().(talentState).revivePerc)
-					},
-					Source:   mod.Owner(),
-					Priority: info.CharReviveSelf,
-				})
-
-				// If A4, restore Energy to 100% (Energy Cost is 100)
-				if mod.State().(talentState).a4Active {
-					mod.Engine().ModifyEnergyFixed(mod.Owner(), 100)
-				}
-
-				// If E6, action forward
-				if mod.State().(talentState).e6Active {
-					mod.Engine().SetGauge(mod.Owner(), 0)
-				}
-
-				mod.RemoveSelf()
-				return true
-			},
+			OnLimboWaitHeal: talentRevive,
 		},
 	})
+}
+
+func talentRevive(mod *modifier.ModifierInstance) bool {
+
+	// Dispel all debuffs
+	mod.Engine().DispelStatus(mod.Owner(), info.Dispel{
+		Status: model.StatusType_STATUS_DEBUFF,
+		Order:  model.DispelOrder_LAST_ADDED,
+	})
+
+	// Queue Heal
+	mod.Engine().InsertAbility(info.Insert{
+		Execute: func() {
+
+			// Set HP to specified Percentage
+			mod.Engine().SetHP(
+				mod.Owner(), mod.Owner(), mod.OwnerStats().MaxHP()*mod.State().(talentState).revivePerc)
+
+			// If A4, restore Energy to 100% (Energy Cost is 100)
+			if mod.State().(talentState).a4Active {
+				mod.Engine().ModifyEnergyFixed(mod.Owner(), 100)
+			}
+
+		},
+		Source:   mod.Owner(),
+		Priority: info.CharReviveSelf,
+	})
+
+	// If E6, action forward
+	if mod.State().(talentState).e6Active {
+		mod.Engine().SetGauge(mod.Owner(), 0)
+	}
+
+	mod.RemoveSelf()
+	return true
 }
 
 func (c *char) talent() {
