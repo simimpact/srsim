@@ -7,6 +7,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
@@ -16,6 +17,13 @@ const (
 )
 
 func init() {
+	modifier.Register(E2, modifier.Config{
+		Stacking:      modifier.Replace,
+		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_DOWN},
+		StatusType:    model.StatusType_STATUS_DEBUFF,
+		Duration:      1,
+	})
+
 	modifier.Register(E4, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.ModifierInstance) {
@@ -59,10 +67,9 @@ func (c *char) e2() {
 		c.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemovedEvent) {
 			if event.Modifier.Name == common.Freeze && c.engine.HasModifier(event.Target, E2Tracker) {
 				c.engine.AddModifier(event.Target, info.Modifier{
-					Name:     E2,
-					Source:   c.id,
-					Stats:    info.PropMap{prop.SPDPercent: -0.2},
-					Duration: 1,
+					Name:   E2,
+					Source: c.id,
+					Stats:  info.PropMap{prop.SPDPercent: -0.2},
 				})
 
 				c.engine.RemoveModifier(event.Target, E2Tracker)
