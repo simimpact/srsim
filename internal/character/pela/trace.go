@@ -38,6 +38,15 @@ func init() {
 			OnAdd: func(mod *modifier.ModifierInstance) {
 				mod.SetProperty(prop.EffectHitRate, 0.1)
 			},
+			OnBeforeDying: func(mod *modifier.ModifierInstance) {
+				if mod.Owner() == mod.Source() {
+					targets := mod.Engine().Characters()
+
+					for _, trg := range targets {
+						mod.Engine().RemoveModifier(trg, A4)
+					}
+				}
+			},
 		},
 	})
 
