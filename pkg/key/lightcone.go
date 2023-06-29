@@ -4,11 +4,12 @@ type LightCone string
 
 // Destruction
 const (
-	TheMolesWelcomeYou LightCone = "the_moles_welcome_you"
-	NowheretoRun       LightCone = "nowhere_to_run"
-	MutualDemise       LightCone = "mutual_demise"
-	ASecretVow         LightCone = "a_secret_vow"
-	ShatteredHome      LightCone = "shattered_home"
+	TheMolesWelcomeYou     LightCone = "the_moles_welcome_you"
+	NowheretoRun           LightCone = "nowhere_to_run"
+	MutualDemise           LightCone = "mutual_demise"
+	ASecretVow             LightCone = "a_secret_vow"
+	ShatteredHome          LightCone = "shattered_home"
+	SomethingIrreplaceable LightCone = "something_irreplaceable"
 )
 
 // Hunt
@@ -39,6 +40,7 @@ const (
 	DataBank                  LightCone = "data_bank"
 	BeforeDawn                LightCone = "before_dawn"
 	TodayIsAnotherPeacefulDay LightCone = "today_is_another_peaceful_day"
+	TheSeriousnessofBreakfast LightCone = "the_seriousness_of_breakfast"
 )
 
 // Harmony
@@ -52,8 +54,11 @@ const (
 	MomentOfVictory           LightCone = "moment_of_victory"
 	Amber                     LightCone = "amber"
 	DayOneofMyNewLife         LightCone = "day_one_of_my_new_life"
+	Defense                   LightCone = "defense"
+	TextureofMemories         LightCone = "texture_of_memories"
 	ThisIsMe                  LightCone = "this_is_me"
 	TrendoftheUniversalMarket LightCone = "trend_of_the_universal_market"
+	Pioneering                LightCone = "pioneering"
 	WeAreWildfire             LightCone = "we_are_wildfire"
 )
 

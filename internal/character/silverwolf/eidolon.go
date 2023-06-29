@@ -89,6 +89,16 @@ func (c *char) initEidolons() {
 				Source: c.id,
 			})
 		})
+
+		c.engine.Events().TargetDeath.Subscribe(func(event event.TargetDeathEvent) {
+			if event.Target == c.id {
+				targets := c.engine.Enemies()
+
+				for _, trg := range targets {
+					c.engine.RemoveModifier(trg, E2)
+				}
+			}
+		})
 	}
 
 	if c.info.Eidolon >= 6 {
