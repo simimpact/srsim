@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	Check key.Modifier = "the-moles-welcome-you"
-	Buff  key.Modifier = "mischievous"
+	Check key.Modifier = "under-the-blue-sky"
+	Buff  key.Modifier = "under-the-blue-sky-buff"
 )
 
 func init() {
