@@ -1,10 +1,8 @@
 package puritypalace
 
 import (
-	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/equip/relic"
 	"github.com/simimpact/srsim/pkg/engine/info"
-	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 )
@@ -24,17 +22,8 @@ func init() {
 			},
 			{
 				MinCount: 4,
-				CreateEffect: func(engine engine.Engine, owner key.TargetID) {
-					engine.AddModifier(owner, info.Modifier{
-						Name:   mod,
-						Source: owner,
-					})
-				},
+				Stats:    info.PropMap{prop.ShieldBoost: 0.20},
 			},
 		},
-	})
-
-	modifier.Register(mod, modifier.Config{
-		Listeners: modifier.Listeners{},
 	})
 }
