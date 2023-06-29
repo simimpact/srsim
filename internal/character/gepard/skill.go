@@ -11,18 +11,25 @@ const (
 	E2Tracker key.Modifier = "gepard-e2-tracker"
 )
 
+var skillHits = []float64{0.15, 0.35, 0.5}
+
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
-	c.engine.Attack(info.Attack{
-		Source:     c.id,
-		Targets:    []key.TargetID{target},
-		DamageType: model.DamageType_ICE,
-		AttackType: model.AttackType_NORMAL,
-		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_ATK: skillDMG[c.info.SkillLevelIndex()],
-		},
-		StanceDamage: 60.0,
-		EnergyGain:   30.0,
-	})
+	for _, hitRatio := range skillHits {
+		c.engine.Attack(info.Attack{
+			Source:     c.id,
+			Targets:    []key.TargetID{target},
+			DamageType: model.DamageType_ICE,
+			AttackType: model.AttackType_SKILL,
+			BaseDamage: info.DamageMap{
+				model.DamageFormula_BY_ATK: skillDMG[c.info.SkillLevelIndex()],
+			},
+			StanceDamage: 60.0,
+			EnergyGain:   30.0,
+			HitRatio:     hitRatio,
+		})
+	}
+
+	c.engine.EndAttack()
 
 	freezeChance := 0.65
 
