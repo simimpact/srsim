@@ -37,8 +37,9 @@ func (c *char) Technique(target key.TargetID, state info.ActionState) {
 
 	for _, trg := range targets {
 		c.engine.AddModifier(trg, info.Modifier{
-			Name:   Technique,
-			Source: c.id,
+			Name:            Technique,
+			Source:          c.id,
+			TickImmediately: true,
 		})
 	}
 }

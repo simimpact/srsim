@@ -48,6 +48,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 				shieldPerc: ultShieldPerc[c.info.UltLevelIndex()],
 				shieldFlat: ultShieldFlat[c.info.UltLevelIndex()],
 			},
+			TickImmediately: true,
 		})
 	}
 
