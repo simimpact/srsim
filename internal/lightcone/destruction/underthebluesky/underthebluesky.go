@@ -31,12 +31,12 @@ func init() {
 
 	modifier.Register(Buff, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
+		Stacking:   modifier.Replace,
 		Duration:   3,
 	})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-
 	atkPercent := 0.12 + 0.04*float64(lc.Imposition)
 
 	engine.AddModifier(owner, info.Modifier{
@@ -48,7 +48,6 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 func onTriggerDeath(mod *modifier.ModifierInstance, target key.TargetID) {
-
 	critChance := mod.State().(float64)
 
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
