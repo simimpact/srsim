@@ -1,8 +1,8 @@
 package testcfg
 
 import (
-	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
+	"github.com/simimpact/srsim/testframe/testcfg/testchar"
 )
 
 func TestConfigTwoElites() *model.SimConfig {
@@ -13,32 +13,9 @@ func TestConfigTwoElites() *model.SimConfig {
 			CycleLimit: 10,
 			TtkMode:    false,
 		},
-		Characters: []*model.Character{DanHung()},
+		Characters: []*model.Character{testchar.DummyChar()},
 		Enemies:    []*model.Enemy{StandardEnemy(), StandardEnemy()},
 	}
-}
-
-func DanHung() *model.Character {
-	return &model.Character{
-		Key:      key.DanHeng.String(),
-		Level:    80,
-		MaxLevel: 80,
-		Eidols:   0,
-		Traces:   nil,
-		Talents:  []uint32{1, 1, 1, 1},
-		Cone: &model.LightCone{
-			Key:        key.OnlySilenceRemains.String(),
-			Level:      80,
-			MaxLevel:   80,
-			Imposition: 1,
-		},
-		Relics:      MusketeerSet(),
-		StartEnergy: 50,
-	}
-}
-
-func MusketeerSet() []*model.Relic {
-	return nil
 }
 
 func StandardEnemy() *model.Enemy {

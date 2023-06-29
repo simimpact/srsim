@@ -1,4 +1,4 @@
-package termination
+package turnend
 
 import (
 	"github.com/simimpact/srsim/pkg/engine/event"
@@ -8,7 +8,7 @@ import (
 
 func ExpectFor() eventchecker.EventChecker {
 	return func(e handler.Event) (bool, error) {
-		_, ok := e.(event.Termination)
+		_, ok := e.(event.TurnEndEvent)
 		if !ok {
 			return false, nil
 		}

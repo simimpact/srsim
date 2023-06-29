@@ -36,7 +36,7 @@ type Simulation struct {
 	Attr     *attribute.Service
 	Char     *character.Manager
 	Enemy    *enemy.Manager
-	Turn     *turn.Manager
+	Turn     turn.Manager
 	Combat   *combat.Manager
 	Shield   *shield.Manager
 
