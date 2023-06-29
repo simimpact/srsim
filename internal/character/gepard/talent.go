@@ -46,17 +46,17 @@ func talentRevive(mod *modifier.ModifierInstance) bool {
 				mod.Engine().ModifyEnergyFixed(mod.Owner(), 100)
 			}
 
+			// If E6, action forward
+			if mod.State().(talentState).e6Active {
+				mod.Engine().SetGauge(mod.Owner(), 0)
+			}
+
+			mod.RemoveSelf()
 		},
 		Source:   mod.Owner(),
 		Priority: info.CharReviveSelf,
 	})
 
-	// If E6, action forward
-	if mod.State().(talentState).e6Active {
-		mod.Engine().SetGauge(mod.Owner(), 0)
-	}
-
-	mod.RemoveSelf()
 	return true
 }
 
