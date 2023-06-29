@@ -27,6 +27,17 @@ func init() {
 
 	modifier.Register(Chorus, modifier.Config{
 		Stacking: modifier.Replace,
+		Listeners: modifier.Listeners{
+			OnBeforeDying: func(mod *modifier.ModifierInstance) {
+				if mod.Owner() == mod.Source() {
+					targets := mod.Engine().Characters()
+
+					for _, trg := range targets {
+						mod.Engine().RemoveModifier(trg, Chorus)
+					}
+				}
+			},
+		},
 	})
 }
 
