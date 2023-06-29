@@ -11,9 +11,8 @@ import (
 )
 
 const (
-	E2    key.Modifier = "gepard-e2"
-	E4    key.Modifier = "gepard-e4"
-	E4Res key.Modifier = "gepard-e4-res"
+	E2 key.Modifier = "gepard-e2"
+	E4 key.Modifier = "gepard-e4"
 )
 
 func init() {
@@ -25,38 +24,19 @@ func init() {
 	})
 
 	modifier.Register(E4, modifier.Config{
-		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
-				targets := mod.Engine().Characters()
-
-				for _, trg := range targets {
-					mod.Engine().AddModifier(trg, info.Modifier{
-						Name:   E4Res,
-						Source: mod.Owner(),
-					})
-				}
-
-				mod.Engine().Events().CharacterAdded.Subscribe(func(e event.CharacterAddedEvent) {
-					mod.Engine().AddModifier(e.Id, info.Modifier{
-						Name:   E4Res,
-						Source: mod.Owner(),
-					})
-				})
-			},
-			OnBeforeDying: func(mod *modifier.ModifierInstance) {
-				targets := mod.Engine().Characters()
-
-				for _, trg := range targets {
-					mod.Engine().RemoveModifier(trg, E4Res)
-				}
-			},
-		},
-	})
-
-	modifier.Register(E4Res, modifier.Config{
+		StatusType: model.StatusType_STATUS_BUFF,
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.ModifierInstance) {
 				mod.SetProperty(prop.EffectRES, 0.2)
+			},
+			OnBeforeDying: func(mod *modifier.ModifierInstance) {
+				if mod.Owner() == mod.Source() {
+					targets := mod.Engine().Characters()
+
+					for _, trg := range targets {
+						mod.Engine().RemoveModifier(trg, E4)
+					}
+				}
 			},
 		},
 	})
@@ -80,9 +60,20 @@ func (c *char) e2() {
 
 func (c *char) e4() {
 	if c.info.Eidolon >= 4 {
-		c.engine.AddModifier(c.id, info.Modifier{
-			Name:   E4,
-			Source: c.id,
+		targets := c.engine.Characters()
+
+		for _, trg := range targets {
+			c.engine.AddModifier(trg, info.Modifier{
+				Name:   E4,
+				Source: c.id,
+			})
+		}
+
+		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAddedEvent) {
+			c.engine.AddModifier(e.Id, info.Modifier{
+				Name:   E4,
+				Source: c.id,
+			})
 		})
 	}
 }
