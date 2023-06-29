@@ -55,18 +55,20 @@ func init() {
 }
 
 func (c *char) e2() {
-	c.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemovedEvent) {
-		if event.Modifier.Name == common.Freeze && c.engine.HasModifier(event.Target, E2Tracker) {
-			c.engine.AddModifier(event.Target, info.Modifier{
-				Name:     E2,
-				Source:   c.id,
-				Stats:    info.PropMap{prop.SPDPercent: -0.2},
-				Duration: 1,
-			})
+	if c.info.Eidolon >= 2 {
+		c.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemovedEvent) {
+			if event.Modifier.Name == common.Freeze && c.engine.HasModifier(event.Target, E2Tracker) {
+				c.engine.AddModifier(event.Target, info.Modifier{
+					Name:     E2,
+					Source:   c.id,
+					Stats:    info.PropMap{prop.SPDPercent: -0.2},
+					Duration: 1,
+				})
 
-			c.engine.RemoveModifier(event.Target, E2Tracker)
-		}
-	})
+				c.engine.RemoveModifier(event.Target, E2Tracker)
+			}
+		})
+	}
 }
 
 func (c *char) e4() {
