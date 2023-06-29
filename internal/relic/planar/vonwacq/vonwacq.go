@@ -24,11 +24,8 @@ func init() {
 	relic.Register(key.SprightlyVonwacq, relic.Config{
 		Effects: []relic.SetEffect{
 			{
-				MinCount: 2,
-				Stats:    info.PropMap{prop.EnergyRegen: 0.05},
-			},
-			{
-				MinCount:     4,
+				MinCount:     2,
+				Stats:        info.PropMap{prop.EnergyRegen: 0.05},
 				CreateEffect: Create,
 			},
 		},
