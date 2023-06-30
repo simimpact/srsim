@@ -24,6 +24,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/shatteredhome"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/somethingirreplaceable"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/themoleswelcomeyou"
+	_ "github.com/simimpact/srsim/internal/lightcone/destruction/underthebluesky"
 	_ "github.com/simimpact/srsim/internal/lightcone/erudition/beforedawn"
 	_ "github.com/simimpact/srsim/internal/lightcone/erudition/databank"
 	_ "github.com/simimpact/srsim/internal/lightcone/erudition/passkey"
