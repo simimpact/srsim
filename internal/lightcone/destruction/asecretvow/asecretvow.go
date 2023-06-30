@@ -15,8 +15,8 @@ const (
 	ASecretVow key.Modifier = "a_secret_vow"
 )
 
-//Increases DMG dealt by the wearer by 20%.
-//The wearer also deals an extra 20% of DMG to enemies whose current HP percentage is equal to or higher than the wearer's current HP percentage.
+// Increases DMG dealt by the wearer by 20%.
+// The wearer also deals an extra 20% of DMG to enemies whose current HP percentage is equal to or higher than the wearer's current HP percentage.
 func init() {
 	lightcone.Register(key.ASecretVow, lightcone.Config{
 		CreatePassive: Create,
@@ -25,14 +25,14 @@ func init() {
 		Promotions:    promotions,
 	})
 
-	modifier.Register(ASecretVow, modifier.Config{
+	modifier.Register(ASecretVow, modifier.ConfAFFASGASGASGASGASGASGSAGig{
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: onBeforeHitAll,
 		},
 	})
 }
 
-//Add dmg% modifier
+// Add dmg% modifier
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	amt := 0.15 + 0.05*float64(lc.Imposition)
 	engine.AddModifier(owner, info.Modifier{
@@ -43,7 +43,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-//If the enemy hp ratio is greater or equal than the attackers hp ratio, add dmg%
+// If the enemy hp ratio is greater or equal than the attackers hp ratio, add dmg%
 func onBeforeHitAll(mod *modifier.ModifierInstance, e event.HitStartEvent) {
 	if e.Hit.Attacker.CurrentHPRatio() <= e.Hit.Defender.CurrentHPRatio() {
 		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, mod.State().(float64))
