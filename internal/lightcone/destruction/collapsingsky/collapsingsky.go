@@ -13,9 +13,9 @@ import (
 
 const (
 	Check key.Modifier = "collapsing-sky"
-	Buff  key.Modifier = "collapsing-sky-buff"
 )
 
+// Increases the wearer's Basic ATK and Skill DMG by 20%.
 func init() {
 	lightcone.Register(key.CollapsingSky, lightcone.Config{
 		CreatePassive: Create,
@@ -26,13 +26,8 @@ func init() {
 
 	modifier.Register(Check, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeAttack: onBeforeAttack,
-			OnAfterAttack:  onAfterAttack,
+			OnBeforeHit: onBeforeHit,
 		},
-	})
-
-	modifier.Register(Buff, modifier.Config{
-		StatusType: model.StatusType_STATUS_BUFF,
 	})
 }
 
@@ -44,20 +39,10 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func onBeforeAttack(mod *modifier.ModifierInstance, e event.AttackStartEvent) {
+func onBeforeHit(mod *modifier.ModifierInstance, e event.HitStartEvent) {
 	dmgBonus := mod.State().(float64)
 
-	if e.AttackType == 1 || e.AttackType == 2 {
-		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-			Name:   Buff,
-			Source: mod.Owner(),
-			Stats:  info.PropMap{prop.AllDamagePercent: dmgBonus},
-		})
-	}
-}
-
-func onAfterAttack(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
-	if e.AttackType == 1 || e.AttackType == 2 {
-		mod.Engine().RemoveModifier(mod.Owner(), Buff)
+	if e.Hit.AttackType == model.AttackType_NORMAL || e.Hit.AttackType == model.AttackType_SKILL {
+		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, dmgBonus)
 	}
 }
