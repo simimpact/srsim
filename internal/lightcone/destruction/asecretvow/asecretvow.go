@@ -25,7 +25,7 @@ func init() {
 		Promotions:    promotions,
 	})
 
-	modifier.Register(ASecretVow, modifier.ConfAFFASGASGASGASGASGASGSAGig{
+	modifier.Register(ASecretVow, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: onBeforeHitAll,
 		},
