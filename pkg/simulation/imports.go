@@ -19,6 +19,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/abundance/sharedfeeling"
 	_ "github.com/simimpact/srsim/internal/lightcone/abundance/warmthshortenscoldnights"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/asecretvow"
+	_ "github.com/simimpact/srsim/internal/lightcone/destruction/collapsingsky"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/mutualdemise"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/nowheretorun"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/shatteredhome"

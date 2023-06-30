@@ -11,6 +11,7 @@ const (
 	ShatteredHome          LightCone = "shattered_home"
 	SomethingIrreplaceable LightCone = "something_irreplaceable"
 	UndertheBlueSky        LightCone = "under_the_blue_sky"
+	CollapsingSky          LightCone = "collapsing_sky"
 )
 
 // Hunt
