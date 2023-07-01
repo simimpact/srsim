@@ -1,7 +1,7 @@
 linters:
   disable-all: true
   enable:
-  ## golangci defaults
+  ## golangci defaults (core linters)
   # - errcheck # checking for unchecked errors, these unchecked errors can be critical bugs in some cases
   - gosimple # specializes in simplifying a code
   - govet # reports suspicious constructs, such as Printf calls whose arguments do not align with the format string
@@ -15,6 +15,9 @@ linters:
   - stylecheck # style check rules defined by staticcheck (minimum go standard style)
   - gocritic # provides diagnostics that check for bugs, performance and style issues
   - whitespace # detects leading and trailing whitespace
+  - nolintlint # reports ill-formed or insufficient nolint directives
+  - errname # checks that sentinel errors are prefixed with the Err and error types are suffixed with the Error
+  - nonamedreturns # reports all named returns
   # - revive # fast, configurable, extensible, flexible, and beautiful linter for Go, drop-in replacement of golint
 
   ## code complexity detectors
@@ -24,41 +27,39 @@ linters:
   # - lll # reports long lines
   # - gocognit # computes and checks the cognitive complexity of functions
   # - gocyclo # computes and checks the cyclomatic complexity of functions
+  # - nestif # reports deeply nested if statements
 
-  ## additional highly recommended linters to catch codesmell & bugs
-  - unused # checks for unused constants, variables, functions and types
+  ## code smell (can lead to errors/bugs)
   - asasalint # checks for pass []any as any in variadic func(...any)
   - bidichk # checks for dangerous unicode character sequences
+  - unused # checks for unused constants, variables, functions and types
   - dogsled # checks assignments with too many blank identifiers (e.g. x, , , _, := f())
-  # - dupl # tool for code clone detection
-  - errchkjson # checks for unnecessary json marshal error checks
-  - errname # checks that sentinel errors are prefixed with the Err and error types are suffixed with the Error
   - errorlint # finds code that will cause problems with the error wrapping scheme introduced in Go 1.13
+  - errchkjson # checks for unnecessary json marshal error checks
   - exportloopref # checks for pointers to enclosing loop variables
-  - gocheckcompilerdirectives # validates go compiler directive comments (//go:)
-  - goconst # finds repeated strings that could be replaced by a constant
-  - gomodguard # allow and block lists linter for direct Go module dependencies. This is different from depguard where there are different block types for example version constraints and module recommendations
-  - goprintffuncname # checks that printf-like functions are named with f at the end
   - makezero # finds slice declarations with non-zero initial length
-  - mirror # reports wrong mirror patterns of bytes/strings usage
-  # - musttag # enforces field tags in (un)marshaled structs
-  - nakedret # finds naked returns in functions greater than a specified function length
-  # - nestif # reports deeply nested if statements
   - nilerr # finds the code that returns nil even if it checks that the error is not nil
-  # - nilnil # checks that there is no simultaneous return of nil error and an invalid value
-  - nolintlint # reports ill-formed or insufficient nolint directives
-  - nonamedreturns # reports all named returns
+  - nakedret # finds naked returns in functions greater than a specified function length
+  - wastedassign # finds wasted assignment statements
+  - unparam # reports unused function parameters
+  - unconvert # removes unnecessary type conversions
+  - goconst # finds repeated strings that could be replaced by a constant
   - predeclared # finds code that shadows one of Go's predeclared identifiers
   - reassign # checks that package variables are not reassigned
-  - tenv # detects using os.Setenv instead of t.Setenv since Go1.17
-  - testableexamples # checks if examples are testable (have an expected output)
-  - tparallel # detects inappropriate usage of t.Parallel() method in your Go test codes
-  - unconvert # removes unnecessary type conversions
-  - unparam # reports unused function parameters
-  - usestdlibvars # detects the possibility to use variables/constants from the Go standard library
-  - wastedassign # finds wasted assignment statements
+  # - dupl # tool for code clone detection
+  # - nilnil # checks that there is no simultaneous return of nil error and an invalid value
 
-  # - exhaustruct # [highly recommend to enable] checks if all structure fields are initialized
+  ## enforcements which can lead to better code
+  - musttag # enforces field tags in (un)marshaled structs
+  # - exhaustruct # checks if all structure fields are initialized [TODO: need to configure]
+
+  ## misc linters
+  - gocheckcompilerdirectives # validates go compiler directive comments (//go:)
+  - gomodguard # allow and block lists linter for direct Go module dependencies.
+  - mirror # reports wrong mirror patterns of bytes/strings usage
+  - tenv # detects using os.Setenv instead of t.Setenv since Go1.17
+  - tparallel # detects inappropriate usage of t.Parallel() method in your Go test codes
+  - usestdlibvars # detects the possibility to use variables/constants from the Go standard library
 
 linters-settings:
   cyclop:

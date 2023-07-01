@@ -11,6 +11,7 @@ type Stmt interface {
 type (
 
 	// BlockStmt represents a brace statement list
+	///nolint:musttag // marhsalling of BlockStmt is disabled
 	BlockStmt struct {
 		List []Node
 		Pos
