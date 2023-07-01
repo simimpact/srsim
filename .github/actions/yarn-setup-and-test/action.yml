@@ -6,10 +6,12 @@ runs:
     - uses: actions/setup-node@v3
       with:
         node-version: latest
+        cache: yarn
+        cache-dependency-path: ./ui/yarn.lock
     - name: Install
       working-directory: ./ui
       shell: bash
-      run: yarn install
+      run: yarn install --immutable
     - name: Lint
       working-directory: ./ui
       shell: bash
