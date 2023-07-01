@@ -105,8 +105,8 @@ func (s *Service) ModifyStance(target, source key.TargetID, amt float64) error {
 	}
 
 	stats := s.Stats(target)
-	new := attr.Stance + amt*(1+stats.GetProperty(prop.AllStanceDMGPercent))
-	return s.SetStance(target, source, new)
+	newStance := attr.Stance + amt*(1+stats.GetProperty(prop.AllStanceDMGPercent))
+	return s.SetStance(target, source, newStance)
 }
 
 func (s *Service) SetEnergy(target key.TargetID, amt float64) error {

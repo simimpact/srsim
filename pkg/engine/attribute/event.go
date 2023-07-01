@@ -36,23 +36,23 @@ func (s *Service) emitHPChangeEvents(
 	return nil
 }
 
-func (s *Service) emitStanceChange(target, source key.TargetID, prev, new float64) error {
-	if prev == new {
+func (s *Service) emitStanceChange(target, source key.TargetID, prevS, newS float64) error {
+	if prevS == newS {
 		return nil
 	}
 
 	s.event.StanceChange.Emit(event.StanceChangeEvent{
 		Target:    target,
-		OldStance: prev,
-		NewStance: new,
+		OldStance: prevS,
+		NewStance: newS,
 	})
 
-	if new == 0 {
+	if newS == 0 {
 		s.event.StanceBreak.Emit(event.StanceBreakEvent{
 			Target: target,
 			Source: source,
 		})
-	} else if prev == 0 {
+	} else if prevS == 0 {
 		s.event.StanceBreakEnd.Emit(event.StanceBreakEndEvent{
 			Target: target,
 		})
@@ -60,12 +60,12 @@ func (s *Service) emitStanceChange(target, source key.TargetID, prev, new float6
 	return nil
 }
 
-func (s *Service) emitEnergyChange(target key.TargetID, prev, new float64) error {
-	if prev != new {
+func (s *Service) emitEnergyChange(target key.TargetID, prevE, newE float64) error {
+	if prevE != newE {
 		s.event.EnergyChange.Emit(event.EnergyChangeEvent{
 			Target:    target,
-			OldEnergy: prev,
-			NewEnergy: new,
+			OldEnergy: prevE,
+			NewEnergy: newE,
 		})
 	}
 	return nil
