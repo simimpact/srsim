@@ -36,12 +36,12 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 	hpUpdate := mgr.shld.AbsorbDamage(hit.Defender.ID(), total)
 
 	mgr.attr.ModifyHPByAmount(hit.Defender.ID(), hit.Attacker.ID(), total, true)
-	mgr.attr.ModifyStance(hit.Defender.ID(), hit.Attacker.ID(), hit.StanceDamage)
-	/*if mgr.target.IsCharacter(hit.Attacker.ID()) {
-		mgr.attr.ModifyEnergy(hit.Attacker.ID(), hit.EnergyGain)
+	mgr.attr.ModifyStance(hit.Defender.ID(), hit.Attacker.ID(), hit.StanceDamage*hit.HitRatio)
+	if mgr.target.IsCharacter(hit.Attacker.ID()) {
+		mgr.attr.ModifyEnergy(hit.Attacker.ID(), hit.EnergyGain*hit.HitRatio)
 	} else {
-		mgr.attr.ModifyEnergy(hit.Defender.ID(), hit.EnergyGain)
-	}*/
+		mgr.attr.ModifyEnergy(hit.Defender.ID(), hit.EnergyGain*hit.HitRatio)
+	}
 
 	mgr.event.HitEnd.Emit(event.HitEndEvent{
 		Attacker:         hit.Attacker.ID(),
