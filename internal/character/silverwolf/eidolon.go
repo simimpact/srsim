@@ -90,7 +90,7 @@ func (c *char) initEidolons() {
 			})
 		})
 
-		c.engine.Events().TargetDeath.Subscribe(func(event event.TargetDeathEvent) {
+		c.engine.Events().TargetDeath.Subscribe(func(event event.TargetDeath) {
 			if event.Target == c.id {
 				targets := c.engine.Enemies()
 

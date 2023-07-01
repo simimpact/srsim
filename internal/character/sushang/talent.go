@@ -26,7 +26,7 @@ func init() {
 }
 
 func (c *char) initTalent() {
-	c.engine.Events().StanceBreak.Subscribe(func(e event.StanceBreakEvent) {
+	c.engine.Events().StanceBreak.Subscribe(func(e event.StanceBreak) {
 		c.addTalentBuff()
 	})
 }

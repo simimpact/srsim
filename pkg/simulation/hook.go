@@ -10,7 +10,7 @@ func (sim *Simulation) subscribe() {
 	sim.Event.TargetDeath.Subscribe(sim.onDeath)
 }
 
-func (sim *Simulation) onDeath(e event.TargetDeathEvent) {
+func (sim *Simulation) onDeath(e event.TargetDeath) {
 	// remove this target from active arrays (these arrays represent order in battle map)
 	switch sim.Targets[e.Target] {
 	case info.ClassCharacter:

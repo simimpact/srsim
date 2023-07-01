@@ -39,7 +39,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		updateCRBuff(engine, owner, crAmt)
 	})
 
-	engine.Events().TargetDeath.Subscribe(func(e event.TargetDeathEvent) {
+	engine.Events().TargetDeath.Subscribe(func(e event.TargetDeath) {
 		updateCRBuff(engine, owner, crAmt)
 	})
 

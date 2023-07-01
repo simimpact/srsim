@@ -28,7 +28,7 @@ func init() {
 	modifier.Register(A2Check, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAdd: a2HPCheck,
-			OnHPChange: func(mod *modifier.Instance, e event.HPChangeEvent) {
+			OnHPChange: func(mod *modifier.Instance, e event.HPChange) {
 				a2HPCheck(mod)
 			},
 		},

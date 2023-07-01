@@ -36,7 +36,7 @@ type Listeners struct {
 	// ------------ attribute events
 
 	// Called when the current HP of the attached target changes
-	OnHPChange func(mod *Instance, e event.HPChangeEvent)
+	OnHPChange func(mod *Instance, e event.HPChange)
 
 	// Called when attached target's current HP = 0. If returns true, will cancel the event and
 	// prevent the TargetDeathEvent from occuring. Used by revives.
@@ -50,10 +50,10 @@ type Listeners struct {
 	OnTriggerDeath func(mod *Instance, target key.TargetID)
 
 	// Called whe nthe attached start
-	OnEnergyChange func(mod *Instance, e event.EnergyChangeEvent)
+	OnEnergyChange func(mod *Instance, e event.EnergyChange)
 
 	// Called when the attached target stance changes
-	OnStanceChange func(mod *Instance, e event.StanceChangeEvent)
+	OnStanceChange func(mod *Instance, e event.StanceChange)
 
 	// Called when the attached target causes another target to go into a break state (0 stance).
 	OnTriggerBreak func(mod *Instance, target key.TargetID)
@@ -388,7 +388,7 @@ func (mgr *Manager) healEnd(e event.HealEndEvent) {
 	}
 }
 
-func (mgr *Manager) hpChange(e event.HPChangeEvent) {
+func (mgr *Manager) hpChange(e event.HPChange) {
 	for _, mod := range mgr.targets[e.Target] {
 		f := mod.listeners.OnHPChange
 		if f != nil {
@@ -397,7 +397,7 @@ func (mgr *Manager) hpChange(e event.HPChangeEvent) {
 	}
 }
 
-func (mgr *Manager) limboWaitHeal(e event.LimboWaitHealEvent) bool {
+func (mgr *Manager) limboWaitHeal(e event.LimboWaitHeal) bool {
 	for _, mod := range mgr.targets[e.Target] {
 		f := mod.listeners.OnLimboWaitHeal
 		if f != nil {
@@ -410,7 +410,7 @@ func (mgr *Manager) limboWaitHeal(e event.LimboWaitHealEvent) bool {
 	return false
 }
 
-func (mgr *Manager) targetDeath(e event.TargetDeathEvent) {
+func (mgr *Manager) targetDeath(e event.TargetDeath) {
 	for _, mod := range mgr.targets[e.Target] {
 		f := mod.listeners.OnBeforeDying
 		if f != nil {
@@ -426,7 +426,7 @@ func (mgr *Manager) targetDeath(e event.TargetDeathEvent) {
 	}
 }
 
-func (mgr *Manager) energyChange(e event.EnergyChangeEvent) {
+func (mgr *Manager) energyChange(e event.EnergyChange) {
 	for _, mod := range mgr.targets[e.Target] {
 		f := mod.listeners.OnEnergyChange
 		if f != nil {
@@ -435,7 +435,7 @@ func (mgr *Manager) energyChange(e event.EnergyChangeEvent) {
 	}
 }
 
-func (mgr *Manager) stanceChange(e event.StanceChangeEvent) {
+func (mgr *Manager) stanceChange(e event.StanceChange) {
 	for _, mod := range mgr.targets[e.Target] {
 		f := mod.listeners.OnStanceChange
 		if f != nil {
@@ -444,7 +444,7 @@ func (mgr *Manager) stanceChange(e event.StanceChangeEvent) {
 	}
 }
 
-func (mgr *Manager) stanceBreak(e event.StanceBreakEvent) {
+func (mgr *Manager) stanceBreak(e event.StanceBreak) {
 	for _, mod := range mgr.targets[e.Source] {
 		f := mod.listeners.OnTriggerBreak
 		if f != nil {
@@ -459,7 +459,7 @@ func (mgr *Manager) stanceBreak(e event.StanceBreakEvent) {
 	}
 }
 
-func (mgr *Manager) stanceBreakEnd(e event.StanceResetEvent) {
+func (mgr *Manager) stanceBreakEnd(e event.StanceReset) {
 	for _, mod := range mgr.targets[e.Target] {
 		f := mod.listeners.OnEndBreak
 		if f != nil {

@@ -29,7 +29,7 @@ func init() {
 			},
 
 			// update bonus damage based on new HP
-			OnHPChange: func(mod *modifier.Instance, e event.HPChangeEvent) {
+			OnHPChange: func(mod *modifier.Instance, e event.HPChange) {
 				addedBonusDamage := (1 - mod.Engine().HPRatio(mod.Owner())) * mod.State().(talentState).maxBonusDamage
 				mod.SetProperty(prop.AllDamagePercent, addedBonusDamage)
 			},
