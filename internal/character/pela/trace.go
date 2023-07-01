@@ -86,7 +86,7 @@ func (c *char) initTraces() {
 				Source: c.id,
 			})
 		}
-		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAddedEvent) {
+		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAdded) {
 			c.engine.AddModifier(e.ID, info.Modifier{
 				Name:   A4,
 				Source: c.id,

@@ -71,7 +71,7 @@ func (mgr *Manager) AddEnemy(id key.TargetID, enemy *model.Enemy) error {
 	}
 	mgr.info[id] = info
 
-	mgr.engine.Events().EnemyAdded.Emit(event.EnemyAddedEvent{
+	mgr.engine.Events().EnemyAdded.Emit(event.EnemyAdded{
 		ID:   id,
 		Info: info,
 	})
