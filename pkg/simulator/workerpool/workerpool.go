@@ -60,7 +60,7 @@ func (p *Pool) worker() {
 				return
 			}
 
-			res, err := simulation.Run(job.Config, eval.New(job.Script.Program, p.ctx), seed)
+			res, err := simulation.Run(job.Config, eval.New(p.ctx, job.Script.Program), seed)
 			if err != nil {
 				p.errChan <- err
 				return

@@ -10,8 +10,8 @@ import (
 
 type Manager struct {
 	event *event.System
-	attr  attribute.AttributeModifier
-	shld  shield.ShieldAbsorb
+	attr  attribute.Modifier
+	shld  shield.Absorb
 
 	isInAttack bool
 	attackInfo attackInfo
@@ -24,7 +24,7 @@ type attackInfo struct {
 	damageType model.DamageType
 }
 
-func New(event *event.System, attr attribute.AttributeModifier, shld shield.ShieldAbsorb) *Manager {
+func New(event *event.System, attr attribute.Modifier, shld shield.Absorb) *Manager {
 	return &Manager{
 		event: event,
 		attr:  attr,

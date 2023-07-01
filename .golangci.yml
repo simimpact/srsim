@@ -21,7 +21,7 @@ linters:
   - nolintlint # reports ill-formed or insufficient nolint directives
   - errname # checks that sentinel errors are prefixed with the Err and error types are suffixed with the Error
   - nonamedreturns # reports all named returns
-  # - revive # fast, configurable, extensible, flexible, and beautiful linter for Go, drop-in replacement of golint
+  - revive # fast, configurable, extensible, flexible, and beautiful linter for Go, drop-in replacement of golint
 
   ## code complexity detectors
   # - cyclop # checks function and package cyclomatic complexity
@@ -101,13 +101,30 @@ linters-settings:
       underef:
         skipRecvDeref: false
 
-  gomodguard:
-    blocked:
-      modules:
-      - github.com/golang/protobuf:
-          recommendations:
-          - google.golang.org/protobuf
-          reason: "see https://protobuf.dev/reference/go/faq/#modules"
+  revive:
+    # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md
+    rules:
+    - name: context-as-argument
+    - name: context-keys-type
+    - name: dot-imports
+    - name: error-return
+    - name: error-strings
+    - name: error-naming
+    - name: exported
+    - name: if-return
+    - name: var-naming
+    - name: var-declaration
+    - name: package-comments
+    - name: range
+    - name: receiver-naming
+    - name: time-naming
+    - name: unexported-return
+    - name: indent-error-flow
+    - name: errorf
+    - name: empty-block
+    - name: superfluous-else
+    - name: unreachable-code
+    - name: redefines-builtin-id
 
   govet:
     enable-all: true
@@ -115,6 +132,14 @@ linters-settings:
     disable:
     - fieldalignment # great for micro-optimizations, too much work for us to maintain
     - shadow # can help to find hard to find bugs, but annoying to make golang code compatible
+
+  gomodguard:
+    blocked:
+      modules:
+      - github.com/golang/protobuf:
+          recommendations:
+          - google.golang.org/protobuf
+          reason: "see https://protobuf.dev/reference/go/faq/#modules"
 
   nakedret:
     max-func-lines: 0

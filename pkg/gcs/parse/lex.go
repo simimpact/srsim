@@ -189,10 +189,9 @@ func lexText(l *lexer) stateFn {
 		if n == '/' {
 			l.ignore()
 			return lexComment
-		} else {
-			l.backup()
-			l.emit(ast.ItemForwardSlash)
 		}
+		l.backup()
+		l.emit(ast.ItemForwardSlash)
 	case r == '.':
 		n := l.next()
 		if isNumeric(n) {

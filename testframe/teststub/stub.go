@@ -76,13 +76,13 @@ func (s *Stub) Expect(checkers ...EventChecker) {
 			toContinue, err = checkers[i](e)
 			if toContinue {
 				continue
-			} else {
-				if err != nil {
-					s.FailNow("Event Checker err", err)
-					return
-				}
-				break
 			}
+
+			if err != nil {
+				s.FailNow("Event Checker err", err)
+				return
+			}
+			break
 		}
 		if s.autoContinue || !toContinue {
 			s.haltSignaller <- struct{}{}

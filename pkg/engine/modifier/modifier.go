@@ -8,6 +8,7 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
+//nolint:revive // exported: Larger refactor to be done in separate change/PR
 type ModifierInstance struct {
 	name                     key.Modifier
 	owner                    key.TargetID

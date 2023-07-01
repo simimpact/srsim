@@ -63,7 +63,7 @@ func (e *Eval) addConstant(name string, value Obj, env *Env) {
 	env.varMap[name] = &value
 }
 
-func New(ast *ast.BlockStmt, ctx context.Context) *Eval {
+func New(ctx context.Context, ast *ast.BlockStmt) *Eval {
 	e := &Eval{AST: ast}
 	e.ctx = ctx
 	return e
@@ -158,9 +158,8 @@ func (n *null) Typ() ObjTyp     { return typNull }
 func (n *number) Inspect() string {
 	if n.isFloat {
 		return strconv.FormatFloat(n.fval, 'f', -1, 64)
-	} else {
-		return strconv.FormatInt(n.ival, 10)
 	}
+	return strconv.FormatInt(n.ival, 10)
 }
 func (n *number) Typ() ObjTyp { return typNum }
 

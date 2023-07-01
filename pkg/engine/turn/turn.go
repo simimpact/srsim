@@ -18,7 +18,7 @@ type target struct {
 
 type Manager struct {
 	event *event.System
-	attr  attribute.AttributeGetter
+	attr  attribute.Getter
 
 	// TODO: I'd create a custom data type/struct that contains both order & targetIndex. It then
 	// manages all operations on the order array and keeps the index map up to date for easy access
@@ -30,7 +30,7 @@ type Manager struct {
 	totalAV      float64
 }
 
-func New(e *event.System, attr attribute.AttributeGetter) *Manager {
+func New(e *event.System, attr attribute.Getter) *Manager {
 	mgr := &Manager{
 		event:       e,
 		attr:        attr,
