@@ -107,7 +107,7 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 	}
 
 	mgr.engine.Events().CharacterAdded.Emit(event.CharacterAddedEvent{
-		Id:   id,
+		ID:   id,
 		Info: info,
 	})
 	return nil

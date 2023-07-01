@@ -19,17 +19,17 @@ type ActionList struct {
 	ErrorMsgs []string                 `json:"errors"`
 }
 
-func (c *ActionList) Copy() *ActionList {
+func (a *ActionList) Copy() *ActionList {
 	r := new(ActionList)
-	*r = *c
-	r.Program = c.Program.CopyBlock()
+	*r = *a
+	r.Program = a.Program.CopyBlock()
 	return r
 }
 
 func (a *ActionList) PrettyPrint() string {
-	prettyJson, err := json.MarshalIndent(a, "", "  ")
+	prettyJSON, err := json.MarshalIndent(a, "", "  ")
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	return string(prettyJson)
+	return string(prettyJSON)
 }

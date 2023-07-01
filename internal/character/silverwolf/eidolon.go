@@ -84,7 +84,7 @@ func (c *char) e4(target key.TargetID) {
 func (c *char) initEidolons() {
 	if c.info.Eidolon >= 2 {
 		c.engine.Events().EnemyAdded.Subscribe(func(e event.EnemyAddedEvent) {
-			c.engine.AddModifier(e.Id, info.Modifier{
+			c.engine.AddModifier(e.ID, info.Modifier{
 				Name:   E2,
 				Source: c.id,
 			})

@@ -1,13 +1,23 @@
 linters:
   disable-all: true
   enable:
+  ## golangci defaults
+  # - errcheck # checking for unchecked errors, these unchecked errors can be critical bugs in some cases
   - gosimple # specializes in simplifying a code
   - govet # reports suspicious constructs, such as Printf calls whose arguments do not align with the format string
   - ineffassign # detects when assignments to existing variables are not used
   - staticcheck # is a go vet on steroids, applying a ton of static analysis checks
+  - typecheck # like the front-end of a Go compiler, parses and type-checks Go code
+  
+  ## style & formatting
+  - gofmt # go fmt requirement
+  - goimports # in addition to fixing imports, goimports also formats your code in the same style as gofmt
+  - stylecheck # style check rules defined by staticcheck (minimum go standard style)
+  # - revive # fast, configurable, extensible, flexible, and beautiful linter for Go, drop-in replacement of golint
+
+  ## additional highly recommended linters to catch codesmell & bugs
   - unused # checks for unused constants, variables, functions and types
   - asasalint # checks for pass []any as any in variadic func(...any)
-  - typecheck # like the front-end of a Go compiler, parses and type-checks Go code
   - bidichk # checks for dangerous unicode character sequences
   # - cyclop # checks function and package cyclomatic complexity
   - dogsled # checks assignments with too many blank identifiers (e.g. x, , , _, := f())
@@ -15,8 +25,6 @@ linters:
   - errchkjson # checks for unnecessary json marshal error checks
   - errorlint # finds code that will cause problems with the error wrapping scheme introduced in Go 1.13
   # - exhaustive # checks exhaustiveness of enum switch statements
-  - gofmt # go fmt requirement
-  - goimports # in addition to fixing imports, goimports also formats your code in the same style as gofmt
   # - lll # reports long lines
   - makezero # finds slice declarations with non-zero initial length
   # - musttag # enforces field tags in (un)marshaled structs
@@ -28,20 +36,16 @@ linters:
   - nonamedreturns # reports all named returns
   - predeclared # finds code that shadows one of Go's predeclared identifiers
   - reassign # checks that package variables are not reassigned
-  # - revive # fast, configurable, extensible, flexible, and beautiful linter for Go, drop-in replacement of golint
-  # - stylecheck # is a replacement for golint
+
+  # - exhaustruct # [highly recommend to enable] checks if all structure fields are initialized
 
 linters-settings:
-  govet:
-    enable-all: true
-    check-shadowing: false
-    disable:
-    - fieldalignment # great for micro-optimizations, too much work for us to maintain
-    - shadow # can help to find hard to find bugs, but annoying to make golang code compatible
-
   cyclop:
     max-complexity: 30
     package-average: 10.0
+
+  errcheck:
+    check-type-assertions: true
 
   exhaustruct:
     exclude:
@@ -49,7 +53,46 @@ linters-settings:
       - 'modifier\.Listeners'
       - 'ast'
       - 'model\.'
-      - 'generate\.go'
+
+  funlen:
+    lines: 100
+    statements: 50
+
+  gocognit:
+    min-complexity: 20
+
+  gocritic:
+    settings:
+      captLocal:
+        paramsOnly: false
+      underef:
+        skipRecvDeref: false
+
+  gomodguard:
+    blocked:
+      modules:
+      - github.com/golang/protobuf:
+          recommendations:
+          - google.golang.org/protobuf
+          reason: "see https://protobuf.dev/reference/go/faq/#modules"
+
+  govet:
+    enable-all: true
+    check-shadowing: false
+    disable:
+    - fieldalignment # great for micro-optimizations, too much work for us to maintain
+    - shadow # can help to find hard to find bugs, but annoying to make golang code compatible
+
+  nakedret:
+    max-func-lines: 0
+
+  nolintlint:
+    allow-no-explanation: [ funlen, gocognit, lll ]
+    require-explanation: true
+    require-specific: true
+
+  tenv:
+    all: true
 
 issues:
   max-same-issues: 50

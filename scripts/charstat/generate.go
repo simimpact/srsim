@@ -88,7 +88,7 @@ func main() {
 		}
 
 		var avatarConfig AvatarConfig
-		err = OpenConfig(&avatarConfig, dmPath, value.JsonPath)
+		err = OpenConfig(&avatarConfig, dmPath, value.JSONPath)
 		if err != nil {
 			fmt.Println(err)
 			return

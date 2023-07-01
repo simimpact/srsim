@@ -58,7 +58,7 @@ func (mgr *Manager) ModifyGaugeNormalized(target key.TargetID, amt float64) erro
 		return fmt.Errorf("unknown target: %v", target)
 	}
 
-	return mgr.SetGauge(target, mgr.target(target).gauge+amt*BASE_GAUGE)
+	return mgr.SetGauge(target, mgr.target(target).gauge+amt*BaseGauge)
 }
 
 func (mgr *Manager) ModifyGaugeAV(target key.TargetID, amt float64) error {

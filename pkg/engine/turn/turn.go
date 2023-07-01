@@ -9,7 +9,7 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-const BASE_GAUGE float64 = 10000.0
+const BaseGauge float64 = 10000.0
 
 type target struct {
 	id    key.TargetID
@@ -61,7 +61,7 @@ func (mgr *Manager) AddTargets(ids ...key.TargetID) {
 	for _, id := range ids {
 		t := &target{
 			id:    id,
-			gauge: BASE_GAUGE,
+			gauge: BaseGauge,
 		}
 		mgr.order = append(mgr.order, t)
 		mgr.targetIndex[id] = len(mgr.order) - 1
@@ -126,7 +126,7 @@ func (mgr *Manager) ResetTurn() error {
 			"target at top of order must have 0 gauge to call reset (their turn is active) %+v", mgr.order[0])
 	}
 	mgr.activeTurn = false
-	mgr.target(mgr.activeTarget).gauge = BASE_GAUGE * mgr.gaugeCost
+	mgr.target(mgr.activeTarget).gauge = BaseGauge * mgr.gaugeCost
 
 	// Resets the gauge of the target taking their turn (target at top of stack). New gauge is set at
 	// BASE_GAUGE * gaugeCost

@@ -39,7 +39,7 @@ type AvatarInfo struct {
 	DamageType        string    `json:"DamageType"`
 	AvatarBaseType    string    `json:"AvatarBaseType"`
 	SPNeed            ValueInfo `json:"SPNeed"`
-	JsonPath          string    `json:"JsonPath"`
+	JSONPath          string    `json:"JsonPath"`
 	// ...
 }
 

@@ -69,7 +69,7 @@ func (mgr *Manager) AddEnemy(id key.TargetID, enemy *model.Enemy) error {
 	mgr.info[id] = info
 
 	mgr.engine.Events().EnemyAdded.Emit(event.EnemyAddedEvent{
-		Id:   id,
+		ID:   id,
 		Info: info,
 	})
 	return nil

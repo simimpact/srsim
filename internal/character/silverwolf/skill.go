@@ -14,7 +14,7 @@ const (
 	SkillWeakType key.Modifier = "silverwolf-skill-weak-type"
 )
 
-var damageType_ResProperty = map[model.DamageType]prop.Property{
+var damageTypeToResProperty = map[model.DamageType]prop.Property{
 	model.DamageType_PHYSICAL:  prop.PhysicalDamageRES,
 	model.DamageType_FIRE:      prop.FireDamageRES,
 	model.DamageType_ICE:       prop.IceDamageRES,
@@ -43,7 +43,7 @@ func init() {
 					return
 				}
 				mod.AddWeakness(dmgType)
-				mod.SetProperty(damageType_ResProperty[dmgType], -0.2)
+				mod.SetProperty(damageTypeToResProperty[dmgType], -0.2)
 			},
 		},
 	})

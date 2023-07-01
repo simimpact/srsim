@@ -32,7 +32,7 @@ type Simulation struct {
 	seed int64
 
 	// services
-	IdGen    *key.TargetIDGenerator
+	IDGen    *key.TargetIDGenerator
 	Random   *rand.Rand
 	Event    *event.System
 	Queue    *queue.Handler
@@ -75,7 +75,7 @@ func NewSimulation(cfg *model.SimConfig, eval *eval.Eval, seed int64) *Simulatio
 		Event:  &event.System{},
 		Queue:  queue.New(),
 		Random: rand.New(rand.NewSource(seed)),
-		IdGen:  key.NewTargetIDGenerator(),
+		IDGen:  key.NewTargetIDGenerator(),
 
 		Sp:            3,
 		Tp:            4, // TODO: define starting amount in config?

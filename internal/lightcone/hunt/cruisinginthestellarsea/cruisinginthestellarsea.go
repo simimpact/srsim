@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	CruisingintheStellarSea        key.Modifier = "cruising_in_the_stellar_sea"
-	CruisingintheStellarSeaATKBuff key.Modifier = "cruising_in_the_stellar_sea_atk_buff"
+	CruisingintheStellarSea        key.Modifier = "cruising-in-the-stellar-sea"
+	CruisingintheStellarSeaATKBuff key.Modifier = "cruising-in-the-stellar-sea-atk-buff"
 )
 
 type Amts struct {
@@ -46,14 +46,14 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	cr_amt := 0.06 + 0.02*float64(lc.Imposition)
-	atk_amt := 0.15 + 0.05*float64(lc.Imposition)
+	crAmt := 0.06 + 0.02*float64(lc.Imposition)
+	atkAmt := 0.15 + 0.05*float64(lc.Imposition)
 
 	engine.AddModifier(owner, info.Modifier{
 		Name:   CruisingintheStellarSea,
 		Source: owner,
-		Stats:  info.PropMap{prop.CritChance: cr_amt},
-		State:  Amts{cr: cr_amt, atk: atk_amt},
+		Stats:  info.PropMap{prop.CritChance: crAmt},
+		State:  Amts{cr: crAmt, atk: atkAmt},
 	})
 }
 

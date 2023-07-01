@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	RiverFlowsinSpring     key.Modifier = "river_flows_in_spring"
-	RiverFlowsinSpringBuff key.Modifier = "river_flows_in_spring_buff"
+	RiverFlowsinSpring     key.Modifier = "river-flows-in-spring"
+	RiverFlowsinSpringBuff key.Modifier = "river-flows-in-spring-buff"
 )
 
 type Amts struct {
@@ -46,21 +46,21 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	spd_amt := 0.07 + 0.01*float64(lc.Imposition)
-	dmg_amt := 0.09 + 0.03*float64(lc.Imposition)
+	spdAmt := 0.07 + 0.01*float64(lc.Imposition)
+	dmgAmt := 0.09 + 0.03*float64(lc.Imposition)
 
 	engine.AddModifier(owner, info.Modifier{
 		Name:   RiverFlowsinSpring,
 		Source: owner,
-		State:  Amts{spd: spd_amt, dmg: dmg_amt},
+		State:  Amts{spd: spdAmt, dmg: dmgAmt},
 	})
 
 	engine.AddModifier(owner, info.Modifier{
 		Name:   RiverFlowsinSpringBuff,
 		Source: owner,
 		Stats: info.PropMap{
-			prop.SPDPercent:       spd_amt,
-			prop.AllDamagePercent: dmg_amt,
+			prop.SPDPercent:       spdAmt,
+			prop.AllDamagePercent: dmgAmt,
 		},
 	})
 }
