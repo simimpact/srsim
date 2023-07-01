@@ -1,5 +1,4 @@
 import { Moon, Sun } from "lucide-react";
-import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import useLocalStorage from "use-local-storage";
 import { cn } from "@/utils/classname";
@@ -7,7 +6,6 @@ import { Button } from "../Primitives/Button";
 
 export const Navigation = () => {
   // @footer
-  const { t } = useTranslation();
   const defaultDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   const [theme, setTheme] = useLocalStorage("theme", defaultDark ? "dark" : "light");
   function toggleTheme() {
