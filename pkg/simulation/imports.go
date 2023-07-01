@@ -22,6 +22,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/collapsingsky"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/mutualdemise"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/nowheretorun"
+	_ "github.com/simimpact/srsim/internal/lightcone/destruction/onthefallofanaeon"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/shatteredhome"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/somethingirreplaceable"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/themoleswelcomeyou"
