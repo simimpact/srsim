@@ -67,9 +67,10 @@ func onBeforeHit(mod *modifier.ModifierInstance, e event.HitStartEvent) {
 		}
 
 		// modify damage
-		if e.Hit.AttackType == model.AttackType_NORMAL || e.Hit.AttackType == model.AttackType_SKILL {
+		switch e.Hit.AttackType {
+		case model.AttackType_NORMAL, model.AttackType_SKILL:
 			e.Hit.Attacker.AddProperty(prop.AllDamagePercent, float64(stacks)*mod.State().(Amts).dmg)
-		} else if e.Hit.AttackType == model.AttackType_ULT {
+		case model.AttackType_ULT:
 			e.Hit.Attacker.AddProperty(prop.CritDMG, float64(stacks)*mod.State().(Amts).cd)
 		}
 	}
