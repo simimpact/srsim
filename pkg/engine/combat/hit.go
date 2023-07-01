@@ -32,7 +32,30 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 	base := mgr.baseDamage(hit)*hit.HitRatio + hit.DamageValue
 	bonus := mgr.bonusDamage(hit)
 	crit := mgr.crit(hit)
-	total := mgr.totalDamage(hit, base, bonus, crit)
+	def := hit.Defender.DEF()
+	defMult := 1 - (def / (def + 200 + 10*float64(hit.Attacker.Level())))
+
+	res := mgr.res(hit)
+	vul := mgr.vul(hit)
+
+	// toughness multiplier
+	toughnessMultiplier := 0.9
+	if hit.Defender.Stance() == 0 {
+		toughnessMultiplier = 1
+	}
+
+	fatigue := 1 - hit.Attacker.GetProperty(prop.Fatigue)
+	allDamageReduce := 1 - hit.Defender.GetProperty(prop.AllDamageReduce)
+	if allDamageReduce < 0.01 {
+		allDamageReduce = 0.01
+	}
+
+	critDmg := 1.0
+	if crit {
+		critDmg += hit.Attacker.CritDamage()
+	}
+
+	total := base * bonus * defMult * res * vul * toughnessMultiplier * fatigue * allDamageReduce * critDmg
 	hpUpdate := mgr.shld.AbsorbDamage(hit.Defender.ID(), total)
 
 	mgr.attr.ModifyHPByAmount(hit.Defender.ID(), hit.Attacker.ID(), total, true)
@@ -44,18 +67,25 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 	}
 
 	mgr.event.HitEnd.Emit(event.HitEndEvent{
-		Attacker:         hit.Attacker.ID(),
-		Defender:         hit.Defender.ID(),
-		AttackType:       hit.AttackType,
-		DamageType:       hit.DamageType,
-		HPDamage:         hpUpdate,
-		BaseDamage:       base,
-		BonusDamage:      bonus,
-		TotalDamage:      total,
-		ShieldDamage:     total,
-		HPRatioRemaining: mgr.attr.HPRatio(hit.Defender.ID()),
-		IsCrit:           crit,
-		UseSnapshot:      hit.UseSnapshot,
+		Attacker:            hit.Attacker.ID(),
+		Defender:            hit.Defender.ID(),
+		AttackType:          hit.AttackType,
+		DamageType:          hit.DamageType,
+		HPDamage:            hpUpdate,
+		BaseDamage:          base,
+		BonusDamage:         bonus,
+		DefenceMultiplier:   defMult,
+		Resistance:          res,
+		Vulnerability:       vul,
+		ToughnessMultiplier: toughnessMultiplier,
+		Fatigue:             fatigue,
+		AllDamageReduce:     allDamageReduce,
+		CritDamage:          critDmg,
+		TotalDamage:         total,
+		ShieldDamage:        total,
+		HPRatioRemaining:    mgr.attr.HPRatio(hit.Defender.ID()),
+		IsCrit:              crit,
+		UseSnapshot:         hit.UseSnapshot,
 	})
 }
 
@@ -75,7 +105,7 @@ func (mgr *Manager) baseDamage(h *info.Hit) float64 {
 		case model.DamageFormula_BY_MAX_HP:
 			damage += v * h.Attacker.MaxHP()
 		case model.DamageFormula_BY_BREAK_DAMAGE:
-			damage += v * breakBaseDamage[h.Attacker.Level()] // TODO: evaluate if this is the best way
+			damage += v * breakBaseDamage[h.Attacker.Level()]
 		}
 	}
 	return damage
@@ -90,9 +120,9 @@ func (mgr *Manager) crit(h *info.Hit) bool {
 
 func (mgr *Manager) bonusDamage(h *info.Hit) float64 {
 	dmg := 1.0
-	// Checks if hit doesn't use ByPureDamage equation
-	// Adds bEffect if ByPureDamage, and dmg% if not.
-	if h.BaseDamage[model.DamageFormula_BY_BREAK_DAMAGE] < 0 {
+	// If hit doesn't use break damage equation, adds dmg%
+	// Otherwise, adds break effect%
+	if _, ok := h.BaseDamage[model.DamageFormula_BY_BREAK_DAMAGE]; !ok {
 		dmg += h.Attacker.GetProperty(prop.AllDamagePercent)
 		dmg += h.Attacker.GetProperty(prop.DamagePercent(h.DamageType))
 		if h.AttackType == model.AttackType_DOT {
