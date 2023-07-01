@@ -1,5 +1,7 @@
 package modifier
 
+//go:generate mockgen -destination=../../mock/mock_modifier.go -package=mock -mock_names ModifierEval=MockModifier github.com/simimpact/srsim/pkg/engine/modifier ModifierEval
+
 import (
 	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/info"
