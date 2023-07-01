@@ -66,5 +66,7 @@ func onBeforeHit(mod *modifier.ModifierInstance, e event.HitStartEvent) {
 // remove modifier so next ult deals ult dmg + only 1x bonus from this lc
 func onAfterAction(mod *modifier.ModifierInstance, e event.ActionEvent) {
 	state := mod.State().(State)
-	state.idMap = make(map[key.TargetID]bool)
+	for k := range state.idMap {
+		delete(state.idMap, k)
+	}
 }

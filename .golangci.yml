@@ -7,5 +7,13 @@ linters:
   - staticcheck
   - unused
 
+linters-settings:
+  govet:
+    enable-all: true
+    check-shadowing: false
+    disable:
+    - fieldalignment # great for micro-optimizations, too much work for us to maintain
+    - shadow # can help to find hard to find bugs, but annoying to make golang code compatible
+
 issues:
   max-same-issues: 50

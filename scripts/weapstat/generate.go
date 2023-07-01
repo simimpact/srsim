@@ -58,10 +58,6 @@ func main() {
 	}
 
 	for key, value := range cones {
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
 		coneName := GetName(textMap, value.EquipmentName.Hash)
 		if coneName == "" {
 			continue
