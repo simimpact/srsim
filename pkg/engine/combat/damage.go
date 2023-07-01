@@ -45,13 +45,14 @@ func (mgr *Manager) res(h *info.Hit) float64 {
 	// We don't currently have basic/ult dmg pen/res, dot pen/res, etc. If we do, we need to add it in here.
 	res := h.Defender.GetProperty(prop.AllDamageRES)
 	res += h.Defender.GetProperty(prop.DamageRES(h.DamageType)) - h.Attacker.GetProperty(prop.DamagePEN(h.DamageType))
-	res = 1 - res
 
 	if res < -1 {
 		res = -1
 	} else if res > .9 {
 		res = .9
 	}
+	res = 1 - res
+
 	return res
 }
 
