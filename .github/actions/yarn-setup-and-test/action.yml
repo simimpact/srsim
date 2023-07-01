@@ -5,9 +5,9 @@ runs:
   steps:
     - uses: actions/setup-node@v3
       with:
-        node-version: latest
+        node-version: 20
         cache: yarn
-        cache-dependency-path: ./ui/yarn.lock
+        cache-dependency-path: ui/yarn.lock
     - name: Install
       working-directory: ./ui
       shell: bash
