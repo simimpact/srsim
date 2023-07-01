@@ -2,9 +2,6 @@ package parse
 
 import (
 	"errors"
-	"fmt"
-	"runtime"
-	"strconv"
 
 	"github.com/simimpact/srsim/pkg/gcs"
 	"github.com/simimpact/srsim/pkg/gcs/ast"
@@ -100,24 +97,24 @@ func (p *Parser) peek() ast.Token {
 	return n
 }
 
-func (p *Parser) acceptSeqReturnLast(items ...ast.TokenType) (ast.Token, error) {
-	var n ast.Token
-	for _, v := range items {
-		n = p.next()
-		if n.Typ != v {
-			_, file, no, _ := runtime.Caller(1)
-			return n, fmt.Errorf("(%s#%d) expecting %v, got token %v", file, no, v, n)
-		}
-	}
-	return n, nil
-}
+// func (p *Parser) acceptSeqReturnLast(items ...ast.TokenType) (ast.Token, error) {
+// 	var n ast.Token
+// 	for _, v := range items {
+// 		n = p.next()
+// 		if n.Typ != v {
+// 			_, file, no, _ := runtime.Caller(1)
+// 			return n, fmt.Errorf("(%s#%d) expecting %v, got token %v", file, no, v, n)
+// 		}
+// 	}
+// 	return n, nil
+// }
 
-func itemNumberToInt(i ast.Token) (int, error) {
-	r, err := strconv.Atoi(i.Val)
-	return int(r), err
-}
+// func itemNumberToInt(i ast.Token) (int, error) {
+// 	r, err := strconv.Atoi(i.Val)
+// 	return int(r), err
+// }
 
-func itemNumberToFloat64(i ast.Token) (float64, error) {
-	r, err := strconv.ParseFloat(i.Val, 64)
-	return r, err
-}
+// func itemNumberToFloat64(i ast.Token) (float64, error) {
+// 	r, err := strconv.ParseFloat(i.Val, 64)
+// 	return r, err
+// }

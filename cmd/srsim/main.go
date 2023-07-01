@@ -6,7 +6,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 
@@ -16,8 +15,8 @@ import (
 )
 
 var (
-	sha1ver   string // sha1 revision used to build the program
-	buildTime string // when the executable was built
+	sha1ver string // sha1 revision used to build the program
+	// buildTime string // when the executable was built
 )
 
 type opts struct {
@@ -57,7 +56,7 @@ func main() {
 		return
 	}
 
-	script, err := ioutil.ReadFile(opt.script)
+	script, err := os.ReadFile(opt.script)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -77,7 +76,7 @@ func main() {
 }
 
 func ReadConfig(path string) (*model.SimConfig, error) {
-	src, err := ioutil.ReadFile(path)
+	src, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}

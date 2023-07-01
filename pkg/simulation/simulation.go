@@ -1,9 +1,11 @@
 package simulation
 
 import (
+	crypto "crypto/rand"
 	"encoding/binary"
-	"github.com/simimpact/srsim/pkg/engine/logging"
 	"math/rand"
+
+	"github.com/simimpact/srsim/pkg/engine/logging"
 
 	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/combat"
@@ -106,7 +108,7 @@ func NewSimulation(cfg *model.SimConfig, eval *eval.Eval, seed int64) *Simulatio
 
 func RandSeed() (int64, error) {
 	var b [8]byte
-	_, err := rand.Read(b[:])
+	_, err := crypto.Read(b[:])
 	if err != nil {
 		return 0, err
 	}

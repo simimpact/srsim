@@ -113,10 +113,10 @@ func (l *lexer) nextItem() ast.Token {
 
 // drain drains the output so the lexing goroutine will exit.
 // Called by the parser, not in the lexing goroutine.
-func (l *lexer) drain() {
-	for range l.items {
-	}
-}
+// func (l *lexer) drain() {
+// 	for range l.items {
+// 	}
+// }
 
 // lex creates a new scanner for the input string.
 func lex(input string) *lexer {

@@ -8,10 +8,6 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-const (
-	mod key.Modifier = "passerby-of-wandering-cloud"
-)
-
 // 2pc:
 // Increases Outgoing Healing by 10%
 // 4pc:

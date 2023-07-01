@@ -17,11 +17,6 @@ const (
 	BugSPD      key.Modifier = "silverwolf-bug-speed"
 )
 
-type talentState struct {
-	penAmt float64
-	cd     int
-}
-
 func init() {
 	modifier.Register(BugATK, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
