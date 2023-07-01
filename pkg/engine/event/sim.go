@@ -36,7 +36,13 @@ type TerminationEvent struct {
 	Reason  model.TerminationReason
 }
 
-type ActionStartEventHandler = handler.EventHandler[ActionEvent]
+type ActionStartEventHandler = handler.EventHandler[ActionStartEvent]
+type ActionStartEvent struct {
+	Owner      key.TargetID
+	AttackType model.AttackType
+	IsInsert   bool
+}
+
 type ActionEndEventHandler = handler.EventHandler[ActionEvent]
 type ActionEvent struct {
 	Owner      key.TargetID
@@ -44,9 +50,6 @@ type ActionEvent struct {
 	AttackType model.AttackType
 	IsInsert   bool
 }
-
-type UltStartEventHandler = handler.EventHandler[ActionEvent]
-type UltEndEventHandler = handler.EventHandler[ActionEvent]
 
 type InsertStartEventHandler = handler.EventHandler[InsertEvent]
 type InsertEndEventHandler = handler.EventHandler[InsertEvent]

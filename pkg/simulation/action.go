@@ -130,9 +130,8 @@ func (sim *Simulation) executeAction(id key.TargetID, isInsert bool) error {
 
 	sim.ModifySP(executable.SPDelta)
 	sim.clearActionTargets()
-	sim.Event.ActionStart.Emit(event.ActionEvent{
+	sim.Event.ActionStart.Emit(event.ActionStartEvent{
 		Owner:      id,
-		Targets:    nil,
 		AttackType: executable.AttackType,
 		IsInsert:   isInsert,
 	})
@@ -168,9 +167,8 @@ func (sim *Simulation) executeUlt(act actionPkg.Action) error {
 	}
 
 	sim.clearActionTargets()
-	sim.Event.UltStart.Emit(event.ActionEvent{
+	sim.Event.ActionStart.Emit(event.ActionStartEvent{
 		Owner:      id,
-		Targets:    nil,
 		AttackType: model.AttackType_ULT,
 		IsInsert:   true,
 	})
@@ -179,7 +177,7 @@ func (sim *Simulation) executeUlt(act actionPkg.Action) error {
 
 	// end attack if in one. no-op if not in an attack
 	sim.Combat.EndAttack()
-	sim.Event.UltEnd.Emit(event.ActionEvent{
+	sim.Event.ActionEnd.Emit(event.ActionEvent{
 		Owner:      id,
 		Targets:    sim.ActionTargets,
 		AttackType: model.AttackType_ULT,

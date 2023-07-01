@@ -129,7 +129,7 @@ type Listeners struct {
 	// ------------ sim events
 
 	// Called when an action starts being executed (attack, skill, ult)
-	OnBeforeAction func(mod *Instance, e event.ActionEvent)
+	OnBeforeAction func(mod *Instance, e event.ActionStartEvent)
 
 	// Called when an action finishes being executed (attack, skill, ult)
 	OnAfterAction func(mod *Instance, e event.ActionEvent)
@@ -141,8 +141,6 @@ func (mgr *Manager) subscribe() {
 	// sim events
 	events.ActionStart.Subscribe(mgr.actionStart)
 	events.ActionEnd.Subscribe(mgr.actionEnd)
-	events.UltStart.Subscribe(mgr.actionStart)
-	events.UltEnd.Subscribe(mgr.actionEnd)
 
 	// attribute events
 	events.HPChange.Subscribe(mgr.hpChange)
@@ -470,7 +468,7 @@ func (mgr *Manager) stanceBreakEnd(e event.StanceBreakEndEvent) {
 	}
 }
 
-func (mgr *Manager) actionStart(e event.ActionEvent) {
+func (mgr *Manager) actionStart(e event.ActionStartEvent) {
 	for _, mod := range mgr.targets[e.Owner] {
 		f := mod.listeners.OnBeforeAction
 		if f != nil {

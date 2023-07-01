@@ -49,7 +49,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func buffHealsOnUlt(mod *modifier.Instance, e event.ActionEvent) {
+func buffHealsOnUlt(mod *modifier.Instance, e event.ActionStartEvent) {
 	amt := mod.State().(float64)
 	// NOTE : DM said onbeforeheal(unlike cornucopia which uses OnBeforeAction)
 	// Once OnBeforeDealHeal has AttackType prop, need to change this.

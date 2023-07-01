@@ -11,8 +11,6 @@ type System struct {
 	Termination TerminationEventHandler
 	ActionStart ActionStartEventHandler
 	ActionEnd   ActionEndEventHandler
-	UltStart    UltStartEventHandler
-	UltEnd      UltEndEventHandler
 	InsertStart InsertStartEventHandler
 	InsertEnd   InsertEndEventHandler
 
