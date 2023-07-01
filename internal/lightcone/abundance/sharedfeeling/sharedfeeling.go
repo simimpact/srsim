@@ -43,7 +43,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func giveTeamEnergy(mod *modifier.Instance, e event.ActionEvent) {
+func giveTeamEnergy(mod *modifier.Instance, e event.ActionEndEvent) {
 	amt := mod.State().(float64)
 	if e.AttackType == model.AttackType_SKILL {
 		// apply team energy top up.

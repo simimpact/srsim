@@ -132,7 +132,7 @@ type Listeners struct {
 	OnBeforeAction func(mod *Instance, e event.ActionStartEvent)
 
 	// Called when an action finishes being executed (attack, skill, ult)
-	OnAfterAction func(mod *Instance, e event.ActionEvent)
+	OnAfterAction func(mod *Instance, e event.ActionEndEvent)
 }
 
 func (mgr *Manager) subscribe() {
@@ -477,7 +477,7 @@ func (mgr *Manager) actionStart(e event.ActionStartEvent) {
 	}
 }
 
-func (mgr *Manager) actionEnd(e event.ActionEvent) {
+func (mgr *Manager) actionEnd(e event.ActionEndEvent) {
 	for _, mod := range mgr.targets[e.Owner] {
 		f := mod.listeners.OnAfterAction
 		if f != nil {

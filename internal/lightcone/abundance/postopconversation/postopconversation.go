@@ -63,6 +63,6 @@ func buffHealsOnUlt(mod *modifier.Instance, e event.ActionStartEvent) {
 }
 
 // remove buff after each "action"
-func removeHealBuff(mod *modifier.Instance, e event.ActionEvent) {
+func removeHealBuff(mod *modifier.Instance, e event.ActionEndEvent) {
 	mod.Engine().RemoveModifier(mod.Owner(), PostOpHealBuff)
 }

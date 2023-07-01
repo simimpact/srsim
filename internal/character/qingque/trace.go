@@ -42,7 +42,7 @@ func (c *char) initTraces() {
 	}
 }
 
-func A2ActionEndListener(mod *modifier.Instance, e event.ActionEvent) {
+func A2ActionEndListener(mod *modifier.Instance, e event.ActionEndEvent) {
 	if e.AttackType == model.AttackType_SKILL {
 		mod.Engine().ModifySP(1)
 		mod.RemoveSelf()

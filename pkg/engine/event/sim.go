@@ -43,8 +43,8 @@ type ActionStartEvent struct {
 	IsInsert   bool
 }
 
-type ActionEndEventHandler = handler.EventHandler[ActionEvent]
-type ActionEvent struct {
+type ActionEndEventHandler = handler.EventHandler[ActionEndEvent]
+type ActionEndEvent struct {
 	Owner      key.TargetID
 	Targets    map[key.TargetID]bool
 	AttackType model.AttackType

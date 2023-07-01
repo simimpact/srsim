@@ -142,7 +142,7 @@ func (sim *Simulation) executeAction(id key.TargetID, isInsert bool) error {
 	// end attack if in one. no-op if not in an attack
 	// emit end events
 	sim.Combat.EndAttack()
-	sim.Event.ActionEnd.Emit(event.ActionEvent{
+	sim.Event.ActionEnd.Emit(event.ActionEndEvent{
 		Owner:      id,
 		Targets:    sim.ActionTargets,
 		AttackType: executable.AttackType,
@@ -177,7 +177,7 @@ func (sim *Simulation) executeUlt(act actionPkg.Action) error {
 
 	// end attack if in one. no-op if not in an attack
 	sim.Combat.EndAttack()
-	sim.Event.ActionEnd.Emit(event.ActionEvent{
+	sim.Event.ActionEnd.Emit(event.ActionEndEvent{
 		Owner:      id,
 		Targets:    sim.ActionTargets,
 		AttackType: model.AttackType_ULT,
