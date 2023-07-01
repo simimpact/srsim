@@ -21,7 +21,6 @@ func NewDefaultLogger() *DefaultLogger {
 
 // Log registers an event to the DefaultLogger entry
 func (l *DefaultLogger) Log(e interface{}) {
-	//asdasd
 	wrappedEv := &logEventWrapper{
 		EventName: strings.TrimPrefix(fmt.Sprintf("%T", e), "event."),
 		Data:      e,

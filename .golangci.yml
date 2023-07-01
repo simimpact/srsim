@@ -132,4 +132,3 @@ severity:
 
 issues:
   max-same-issues: 50
-  fix: true
