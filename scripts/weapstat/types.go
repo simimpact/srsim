@@ -2,14 +2,17 @@ package main
 
 import "github.com/simimpact/srsim/pkg/model"
 
+//nolint:tagliatelle // need to match datamine
 type HashInfo struct {
 	Hash int `json:"Hash"`
 }
 
+//nolint:tagliatelle // need to match datamine
 type ValueInfo struct {
 	Value float64 `json:"Value"`
 }
 
+//nolint:tagliatelle // need to match datamine
 type EquipmentConfig struct {
 	EquipmentName  HashInfo `json:"EquipmentName"`
 	Rarity         string   `json:"Rarity"`
@@ -17,6 +20,7 @@ type EquipmentConfig struct {
 	// ...
 }
 
+//nolint:tagliatelle // need to match datamine
 type PromotionDataConfig struct {
 	EquipmentID    int       `json:"EquipmentID"`
 	Promotion      int       `json:"Promotion"`

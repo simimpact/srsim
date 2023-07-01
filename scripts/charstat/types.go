@@ -15,23 +15,28 @@ const (
 	SkillTypeBonusAbility
 )
 
+//nolint:tagliatelle // need to match datamine
 type HashInfo struct {
 	Hash int `json:"Hash"`
 }
 
+//nolint:tagliatelle // need to match datamine
 type ValueInfo struct {
 	Value float64 `json:"Value"`
 }
 
+//nolint:tagliatelle // need to match datamine
 type StatusAdd struct {
 	PropertyType string    `json:"PropertyType"`
 	Value        ValueInfo `json:"Value"`
 }
 
+//nolint:tagliatelle // need to match datamine
 type TargetInfo struct {
 	TargetType string `json:"TargetType"`
 }
 
+//nolint:tagliatelle // need to match datamine
 type AvatarInfo struct {
 	AvatarName        HashInfo  `json:"AvatarName"`
 	Rarity            string    `json:"Rarity"`
@@ -43,11 +48,13 @@ type AvatarInfo struct {
 	// ...
 }
 
+//nolint:tagliatelle // need to match datamine
 type AvatarConfig struct {
 	SkillList []AvatarSkillMetadata `json:"SkillList"`
 	// ...
 }
 
+//nolint:tagliatelle // need to match datamine
 type AvatarSkillMetadata struct {
 	Name       string     `json:"Name"`
 	SkillType  string     `json:"SkillType"`
@@ -56,6 +63,7 @@ type AvatarSkillMetadata struct {
 	// ...
 }
 
+//nolint:tagliatelle // need to match datamine
 type TraceConfig struct {
 	PointID              int             `json:"PointID"`
 	PointType            SkillConfigType `json:"PointType"`
@@ -66,6 +74,7 @@ type TraceConfig struct {
 	// ...
 }
 
+//nolint:tagliatelle // need to match datamine
 type PromotionDataConfig struct {
 	AvatarID       int       `json:"AvatarID"`
 	MaxLevel       int       `json:"MaxLevel"`
@@ -82,6 +91,7 @@ type PromotionDataConfig struct {
 	// ...
 }
 
+//nolint:tagliatelle // need to match datamine
 type AvatarSkillConfig struct {
 	BPNeed          ValueInfo `json:"BPNeed"`
 	BPAdd           ValueInfo `json:"BPAdd"`
