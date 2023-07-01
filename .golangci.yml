@@ -70,11 +70,14 @@ linters-settings:
     min-complexity: 20
 
   gocritic:
-    # enabled-tags:
-      # - opinionated
+    enabled-tags:
+    - performance # finds places where we can make performance improvements
+    - opinionated # opinionated style rules
     disabled-checks:
-      - importShadow
-      - builtinShadow # covered by another linter
+    - importShadow  # covered by another linter
+    - builtinShadow # covered by another linter
+    - unnamedResult # opposite of nonamedreturns
+    - hugeParam # probably want to enable for better performance. Benchmark first
     settings:
       captLocal:
         paramsOnly: false

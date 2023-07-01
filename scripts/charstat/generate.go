@@ -132,48 +132,50 @@ func FindCharSkills(skills map[string]SkillTreeConfig, id int) []SkillTreeConfig
 func FindSkillInfo(skills map[string]SkillConfig, config AvatarConfig, key string) character.SkillInfo {
 	info := character.SkillInfo{}
 	for k, value := range skills {
-		if strings.HasPrefix(k, key) {
-			var targetType model.TargetType
-			for _, s := range config.SkillList {
-				if s.Name == value["1"].SkillTriggerKey {
-					targetType = s.TargetInfo.GetType()
-					break
-				}
-			}
+		if !strings.HasPrefix(k, key) {
+			continue
+		}
 
-			bpAdd := int(value["1"].BPAdd.Value)
-			if bpAdd < 0 {
-				bpAdd = 0
+		var targetType model.TargetType
+		for _, s := range config.SkillList {
+			if s.Name == value["1"].SkillTriggerKey {
+				targetType = s.TargetInfo.GetType()
+				break
 			}
+		}
 
-			bpNeed := int(value["1"].BPNeed.Value)
-			if bpNeed < 0 {
-				bpNeed = 0
-			}
+		bpAdd := int(value["1"].BPAdd.Value)
+		if bpAdd < 0 {
+			bpAdd = 0
+		}
 
-			switch value["1"].SkillTriggerKey {
-			case "Skill01":
-				info.Attack = character.Attack{
-					SPAdd:      bpAdd,
-					TargetType: targetType,
-				}
-			case "Skill02":
-				info.Skill = character.Skill{
-					SPNeed:     bpNeed,
-					TargetType: targetType,
-				}
-			case "Skill03":
-				info.Ult = character.Ult{
-					TargetType: targetType,
-				}
-			case "SkillMaze":
-				info.Technique = character.Technique{
-					TargetType: targetType,
-					IsAttack:   value["1"].SkillEffect == "MazeAttack",
-				}
-			default:
-				continue
+		bpNeed := int(value["1"].BPNeed.Value)
+		if bpNeed < 0 {
+			bpNeed = 0
+		}
+
+		switch value["1"].SkillTriggerKey {
+		case "Skill01":
+			info.Attack = character.Attack{
+				SPAdd:      bpAdd,
+				TargetType: targetType,
 			}
+		case "Skill02":
+			info.Skill = character.Skill{
+				SPNeed:     bpNeed,
+				TargetType: targetType,
+			}
+		case "Skill03":
+			info.Ult = character.Ult{
+				TargetType: targetType,
+			}
+		case "SkillMaze":
+			info.Technique = character.Technique{
+				TargetType: targetType,
+				IsAttack:   value["1"].SkillEffect == "MazeAttack",
+			}
+		default:
+			continue
 		}
 	}
 	return info

@@ -42,6 +42,7 @@ func NewEnv(parent *Env) *Env {
 	}
 }
 
+//nolint:gocritic // *Obj is a ptrToRefParam, should be refactored to use Obj instead
 func (e *Env) v(s string) (*Obj, error) {
 	v, ok := e.varMap[s]
 	if ok {

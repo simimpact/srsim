@@ -32,13 +32,13 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 		Defender:         hit.Defender.ID(),
 		AttackType:       hit.AttackType,
 		DamageType:       hit.DamageType,
-		BaseDamage:       0, // TODO
-		BonusDamage:      0, // TODO
-		TotalDamage:      0, // TODO
-		ShieldDamage:     0, // TODO
-		HPDamage:         0, // TODO
+		BaseDamage:       0, // TODO: implement combat
+		BonusDamage:      0, // TODO: implement combat
+		TotalDamage:      0, // TODO: implement combat
+		ShieldDamage:     0, // TODO: implement combat
+		HPDamage:         0, // TODO: implement combat
 		HPRatioRemaining: mgr.attr.HPRatio(hit.Defender.ID()),
-		IsCrit:           false, // TODO
+		IsCrit:           false, // TODO: implement combat
 		UseSnapshot:      hit.UseSnapshot,
 	})
 }

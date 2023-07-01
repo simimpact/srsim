@@ -125,7 +125,7 @@ func newBaseStats(data PromotionData, level int) info.PropMap {
 	return out
 }
 
-func processTraces(traces TraceMap, stats info.PropMap, wanted []string, asc int, level int) map[string]bool {
+func processTraces(traces TraceMap, stats info.PropMap, wanted []string, asc, level int) map[string]bool {
 	active := make(map[string]bool)
 	for _, id := range wanted {
 		if dup := active[id]; dup {
