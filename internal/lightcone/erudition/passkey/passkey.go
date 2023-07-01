@@ -39,7 +39,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	}
 
 	// At the end of every turn, add this modifier (no-op if already exists)
-	engine.Events().TurnEnd.Subscribe(func(event event.TurnEndEvent) {
+	engine.Events().TurnEnd.Subscribe(func(event event.TurnEnd) {
 		engine.AddModifier(owner, mod)
 	})
 
@@ -48,7 +48,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 // after giving energy, remove this modifier so it cannot do it again
-func onAfterAction(mod *modifier.Instance, e event.ActionEndEvent) {
+func onAfterAction(mod *modifier.Instance, e event.ActionEnd) {
 	mod.Engine().ModifyEnergy(mod.Owner(), mod.State().(float64))
 	mod.RemoveSelf()
 }

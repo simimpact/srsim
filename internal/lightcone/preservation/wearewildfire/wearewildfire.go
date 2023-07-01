@@ -48,7 +48,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	}
 
 	// TODO: recheck when multiple waves support is added
-	engine.Events().BattleStart.Subscribe(func(event event.BattleStartEvent) {
+	engine.Events().BattleStart.Subscribe(func(event event.BattleStart) {
 		for char := range event.CharInfo {
 			engine.AddModifier(char, dmgmod)
 		}

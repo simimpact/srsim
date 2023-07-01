@@ -11,14 +11,6 @@ type TurnTargetsAddedEvent struct {
 	TurnOrder []TurnStatus
 }
 
-type TurnStartEventHandler = handler.EventHandler[TurnStartEvent]
-type TurnStartEvent struct {
-	Active    key.TargetID
-	DeltaAV   float64
-	TotalAV   float64
-	TurnOrder []TurnStatus
-}
-
 type TurnResetEventHandler = handler.EventHandler[TurnResetEvent]
 type TurnResetEvent struct {
 	ResetTarget key.TargetID

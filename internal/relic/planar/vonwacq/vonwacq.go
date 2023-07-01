@@ -29,7 +29,7 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID) {
-	engine.Events().BattleStart.Subscribe(func(e event.BattleStartEvent) {
+	engine.Events().BattleStart.Subscribe(func(e event.BattleStart) {
 		for _, char := range e.CharStats {
 			if char.ID() == owner && char.SPD() >= 120 {
 				engine.ModifyGaugeNormalized(char.ID(), -0.4)

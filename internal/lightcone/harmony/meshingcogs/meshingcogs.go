@@ -53,7 +53,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		State:  &state,
 	})
 
-	engine.Events().TurnEnd.Subscribe(func(e event.TurnEndEvent) {
+	engine.Events().TurnEnd.Subscribe(func(e event.TurnEnd) {
 		state.charged = true
 	})
 }

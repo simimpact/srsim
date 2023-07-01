@@ -129,10 +129,10 @@ type Listeners struct {
 	// ------------ sim events
 
 	// Called when an action starts being executed (attack, skill, ult)
-	OnBeforeAction func(mod *Instance, e event.ActionStartEvent)
+	OnBeforeAction func(mod *Instance, e event.ActionStart)
 
 	// Called when an action finishes being executed (attack, skill, ult)
-	OnAfterAction func(mod *Instance, e event.ActionEndEvent)
+	OnAfterAction func(mod *Instance, e event.ActionEnd)
 }
 
 func (mgr *Manager) subscribe() {
@@ -468,7 +468,7 @@ func (mgr *Manager) stanceBreakEnd(e event.StanceReset) {
 	}
 }
 
-func (mgr *Manager) actionStart(e event.ActionStartEvent) {
+func (mgr *Manager) actionStart(e event.ActionStart) {
 	for _, mod := range mgr.targets[e.Owner] {
 		f := mod.listeners.OnBeforeAction
 		if f != nil {
@@ -477,7 +477,7 @@ func (mgr *Manager) actionStart(e event.ActionStartEvent) {
 	}
 }
 
-func (mgr *Manager) actionEnd(e event.ActionEndEvent) {
+func (mgr *Manager) actionEnd(e event.ActionEnd) {
 	for _, mod := range mgr.targets[e.Owner] {
 		f := mod.listeners.OnAfterAction
 		if f != nil {

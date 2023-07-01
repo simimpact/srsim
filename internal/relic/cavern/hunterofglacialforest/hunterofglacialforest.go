@@ -50,7 +50,7 @@ func init() {
 	})
 }
 
-func onBeforeAction(mod *modifier.Instance, e event.ActionStartEvent) {
+func onBeforeAction(mod *modifier.Instance, e event.ActionStart) {
 	if e.AttackType == model.AttackType_ULT {
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 			Name:     buff,

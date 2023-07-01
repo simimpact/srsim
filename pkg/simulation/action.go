@@ -130,7 +130,7 @@ func (sim *Simulation) executeAction(id key.TargetID, isInsert bool) error {
 
 	sim.ModifySP(executable.SPDelta)
 	sim.clearActionTargets()
-	sim.Event.ActionStart.Emit(event.ActionStartEvent{
+	sim.Event.ActionStart.Emit(event.ActionStart{
 		Owner:      id,
 		AttackType: executable.AttackType,
 		IsInsert:   isInsert,
@@ -142,7 +142,7 @@ func (sim *Simulation) executeAction(id key.TargetID, isInsert bool) error {
 	// end attack if in one. no-op if not in an attack
 	// emit end events
 	sim.Combat.EndAttack()
-	sim.Event.ActionEnd.Emit(event.ActionEndEvent{
+	sim.Event.ActionEnd.Emit(event.ActionEnd{
 		Owner:      id,
 		Targets:    sim.ActionTargets,
 		AttackType: executable.AttackType,
@@ -167,7 +167,7 @@ func (sim *Simulation) executeUlt(act actionPkg.Action) error {
 	}
 
 	sim.clearActionTargets()
-	sim.Event.ActionStart.Emit(event.ActionStartEvent{
+	sim.Event.ActionStart.Emit(event.ActionStart{
 		Owner:      id,
 		AttackType: model.AttackType_ULT,
 		IsInsert:   true,
@@ -177,7 +177,7 @@ func (sim *Simulation) executeUlt(act actionPkg.Action) error {
 
 	// end attack if in one. no-op if not in an attack
 	sim.Combat.EndAttack()
-	sim.Event.ActionEnd.Emit(event.ActionEndEvent{
+	sim.Event.ActionEnd.Emit(event.ActionEnd{
 		Owner:      id,
 		Targets:    sim.ActionTargets,
 		AttackType: model.AttackType_ULT,
@@ -188,9 +188,8 @@ func (sim *Simulation) executeUlt(act actionPkg.Action) error {
 
 func (sim *Simulation) executeInsert(i info.Insert) {
 	sim.clearActionTargets()
-	sim.Event.InsertStart.Emit(event.InsertEvent{
+	sim.Event.InsertStart.Emit(event.InsertStart{
 		Owner:      i.Source,
-		Targets:    nil,
 		AbortFlags: i.AbortFlags,
 		Priority:   i.Priority,
 	})
@@ -200,7 +199,7 @@ func (sim *Simulation) executeInsert(i info.Insert) {
 
 	// end attack if in one. no-op if not in an attack
 	sim.Combat.EndAttack()
-	sim.Event.InsertEnd.Emit(event.InsertEvent{
+	sim.Event.InsertEnd.Emit(event.InsertEnd{
 		Owner:      i.Source,
 		Targets:    sim.ActionTargets,
 		AbortFlags: i.AbortFlags,

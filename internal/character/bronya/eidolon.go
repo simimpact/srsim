@@ -19,7 +19,7 @@ const (
 func init() {
 	modifier.Register(E2Hover, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAfterAction: func(mod *modifier.Instance, e event.ActionEndEvent) {
+			OnAfterAction: func(mod *modifier.Instance, e event.ActionEnd) {
 				mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 					Name:   E2Buff,
 					Source: mod.Source(),

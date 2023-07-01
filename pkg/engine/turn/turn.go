@@ -114,7 +114,7 @@ func (mgr *Manager) StartTurn() (key.TargetID, float64, error) {
 	// 	5. Emit TurnStartEvent
 
 	mgr.totalAV += av
-	mgr.event.TurnStart.Emit(event.TurnStartEvent{
+	mgr.event.TurnStart.Emit(event.TurnStart{
 		Active:    mgr.activeTarget,
 		DeltaAV:   av,
 		TotalAV:   mgr.totalAV,

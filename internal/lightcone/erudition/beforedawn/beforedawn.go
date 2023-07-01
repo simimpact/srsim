@@ -85,7 +85,7 @@ func onAfterAttack(mod *modifier.Instance, e event.AttackEndEvent) {
 }
 
 // AfterAction if its ult or skill add the SomnusCorpusMod
-func onAfterAction(mod *modifier.Instance, e event.ActionEndEvent) {
+func onAfterAction(mod *modifier.Instance, e event.ActionEnd) {
 	if e.AttackType == model.AttackType_ULT ||
 		e.AttackType == model.AttackType_SKILL {
 		amt := mod.State().(float64)
