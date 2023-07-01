@@ -51,8 +51,9 @@ func talentRevive(mod *modifier.ModifierInstance) bool {
 
 			mod.RemoveSelf()
 		},
-		Source:   mod.Owner(),
-		Priority: info.CharReviveSelf,
+		Source:     mod.Owner(),
+		Priority:   info.CharReviveSelf,
+		AbortFlags: nil,
 	})
 
 	return true

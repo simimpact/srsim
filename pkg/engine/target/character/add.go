@@ -65,10 +65,15 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 
 	// Give the base stats to the attribute manager so Stats calls can work as expected
 	err = mgr.attr.AddTarget(id, info.Attributes{
-		Level:     lvl,
-		BaseStats: baseStats,
-		MaxEnergy: config.MaxEnergy,
-		Energy:    char.StartEnergy,
+		Level:         lvl,
+		BaseStats:     baseStats,
+		MaxEnergy:     config.MaxEnergy,
+		Energy:        char.StartEnergy,
+		BaseDebuffRES: info.NewDebuffRESMap(),
+		Weakness:      info.NewWeaknessMap(),
+		HPRatio:       1.0, // TODO: make configurable
+		Stance:        0,
+		MaxStance:     0,
 	})
 	if err != nil {
 		return err

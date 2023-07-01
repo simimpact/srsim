@@ -33,7 +33,8 @@ func TestIgnoreResist(t *testing.T) {
 
 	target := key.TargetID(1)
 	mod := info.Modifier{
-		Name: key.Modifier("Test"),
+		Name:   key.Modifier("Test"),
+		Source: target,
 	}
 
 	chance, resist := manager.attemptResist(target, mod, []model.BehaviorFlag{})
@@ -144,7 +145,8 @@ func TestAddInvalidTarget(t *testing.T) {
 	engine.EXPECT().IsValid(target).Return(false).AnyTimes()
 
 	mod := info.Modifier{
-		Name: key.Modifier("TestAddInvalidTarget"),
+		Name:   key.Modifier("TestAddInvalidTarget"),
+		Source: target,
 	}
 
 	added, err := manager.AddModifier(target, mod)
@@ -163,7 +165,8 @@ func TestAddInvalidSource(t *testing.T) {
 	engine.EXPECT().IsValid(key.TargetID(0)).Return(false).After(firstCheck)
 
 	mod := info.Modifier{
-		Name: key.Modifier("TestAddInvalidSource"),
+		Name:   key.Modifier("TestAddInvalidSource"),
+		Source: target,
 	}
 
 	added, err := manager.AddModifier(target, mod)
@@ -272,10 +275,12 @@ func TestAddRefresh(t *testing.T) {
 	name := key.Modifier("TestAddRefresh")
 	mod1 := info.Modifier{
 		Name:     name,
+		Source:   target,
 		Duration: 3,
 	}
 	mod2 := info.Modifier{
 		Name:     name,
+		Source:   target,
 		Duration: 5,
 	}
 
@@ -321,10 +326,12 @@ func TestAddProlong(t *testing.T) {
 	name := key.Modifier("TestAddProlong")
 	mod1 := info.Modifier{
 		Name:     name,
+		Source:   target,
 		Duration: 3,
 	}
 	mod2 := info.Modifier{
 		Name:     name,
+		Source:   target,
 		Duration: 5,
 	}
 

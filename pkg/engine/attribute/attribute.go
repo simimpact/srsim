@@ -55,7 +55,9 @@ func (s *Service) Stats(target key.TargetID) *info.Stats {
 	mods := s.modEval.EvalModifiers(target)
 	attr := s.targets[target]
 	if attr == nil {
-		attr = &info.Attributes{}
+		// default attribute instead of returning an error
+		attr = new(info.Attributes)
+		*attr = info.DefaultAttribute()
 	}
 	return info.NewStats(target, attr, mods)
 }

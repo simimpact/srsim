@@ -51,8 +51,9 @@ func init() {
 						mod.Engine().SetHP(
 							mod.Owner(), mod.Owner(), mod.OwnerStats().MaxHP()*0.25)
 					},
-					Source:   mod.Owner(),
-					Priority: info.CharReviveSelf,
+					Source:     mod.Owner(),
+					Priority:   info.CharReviveSelf,
+					AbortFlags: nil,
 				})
 
 				mod.RemoveSelf()

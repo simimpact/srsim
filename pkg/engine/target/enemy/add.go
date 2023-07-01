@@ -53,10 +53,14 @@ func (mgr *Manager) AddEnemy(id key.TargetID, enemy *model.Enemy) error {
 
 	mgr.attr.AddTarget(id, info.Attributes{
 		Level:         lvl,
+		Stance:        enemy.Toughness,
 		MaxStance:     enemy.Toughness,
 		BaseStats:     baseStats,
 		BaseDebuffRES: debuffRES,
 		Weakness:      weakness,
+		HPRatio:       1.0,
+		Energy:        0,
+		MaxEnergy:     0,
 	})
 
 	info := info.Enemy{
