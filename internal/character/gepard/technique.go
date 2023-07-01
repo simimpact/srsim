@@ -17,7 +17,7 @@ func init() {
 		Duration:   2,
 		StatusType: model.StatusType_STATUS_BUFF,
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				mod.Engine().AddShield(TechniqueShield, info.Shield{
 					Source:      mod.Source(),
 					Target:      mod.Owner(),
@@ -25,7 +25,7 @@ func init() {
 					ShieldValue: 150,
 				})
 			},
-			OnRemove: func(mod *modifier.ModifierInstance) {
+			OnRemove: func(mod *modifier.Instance) {
 				mod.Engine().RemoveShield(TechniqueShield, mod.Owner())
 			},
 		},

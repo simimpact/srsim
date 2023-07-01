@@ -38,7 +38,7 @@ func init() {
 	// TODO: break burn
 }
 
-func burnPhase1(mod *modifier.ModifierInstance) {
+func burnPhase1(mod *modifier.Instance) {
 	state, ok := mod.State().(BurnState)
 	if !ok {
 		panic("incorrect state used for burn modifier")

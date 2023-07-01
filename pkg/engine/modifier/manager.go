@@ -9,7 +9,7 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-type activeModifiers []*ModifierInstance
+type activeModifiers []*Instance
 
 type Eval interface {
 	EvalModifiers(target key.TargetID) info.ModifierState

@@ -63,7 +63,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 // removes team aura on wearer's death
-func onWearerDeath(mod *modifier.ModifierInstance) {
+func onWearerDeath(mod *modifier.Instance) {
 	for _, char := range mod.Engine().Characters() {
 		mod.Engine().RemoveModifierFromSource(char, mod.Owner(), modaura)
 	}

@@ -28,7 +28,7 @@ func init() {
 	modifier.Register(Chorus, modifier.Config{
 		Stacking: modifier.Replace,
 		Listeners: modifier.Listeners{
-			OnBeforeDying: func(mod *modifier.ModifierInstance) {
+			OnBeforeDying: func(mod *modifier.Instance) {
 				if mod.Owner() == mod.Source() {
 					targets := mod.Engine().Characters()
 

@@ -25,9 +25,9 @@ func (mgr *Manager) AddModifier(target key.TargetID, modifier info.Modifier) (bo
 	}
 
 	// prepare the instance to be added to the target
-	instance := mgr.newInstance(target, modifier)
+	instance := mgr.newInstance(target, modifier, mgr.turnCount)
 
-	var result *ModifierInstance
+	var result *Instance
 	var newInstance bool
 	switch config.Stacking {
 	case Unique:
@@ -57,7 +57,6 @@ func (mgr *Manager) AddModifier(target key.TargetID, modifier info.Modifier) (bo
 	//	- Multiple
 	//	- Merge (special case, keeps old but triggers reset + add as if new)
 	if newInstance {
-		result.renewTurn = mgr.turnCount
 		if len(result.stats) > 0 {
 			// special case if new instance and Stats were predefined
 			mgr.emitPropertyChange(target)
@@ -101,7 +100,7 @@ func (mgr *Manager) attemptResist(
 	return chance, true
 }
 
-func (mgr *Manager) unique(target key.TargetID, instance *ModifierInstance) (*ModifierInstance, bool) {
+func (mgr *Manager) unique(target key.TargetID, instance *Instance) (*Instance, bool) {
 	for _, mod := range mgr.targets[target] {
 		if mod.name == instance.name {
 			return mod, false
@@ -111,13 +110,13 @@ func (mgr *Manager) unique(target key.TargetID, instance *ModifierInstance) (*Mo
 	return instance, true
 }
 
-func (mgr *Manager) replaceBySource(target key.TargetID, instance *ModifierInstance) *ModifierInstance {
+func (mgr *Manager) replaceBySource(target key.TargetID, instance *Instance) *Instance {
 	for i, mod := range mgr.targets[target] {
 		if mod.name == instance.name && mod.source == instance.source {
 			// replace means this added instance is the new instance (can have new param values)
 			instance.count = stackCount(instance, mod.count)
 			mgr.targets[target][i] = instance
-			mgr.emitRemove(target, []*ModifierInstance{mod})
+			mgr.emitRemove(target, []*Instance{mod})
 			return instance
 		}
 	}
@@ -126,13 +125,13 @@ func (mgr *Manager) replaceBySource(target key.TargetID, instance *ModifierInsta
 	return instance
 }
 
-func (mgr *Manager) replace(target key.TargetID, instance *ModifierInstance) *ModifierInstance {
+func (mgr *Manager) replace(target key.TargetID, instance *Instance) *Instance {
 	for i, mod := range mgr.targets[target] {
 		if mod.name == instance.name {
 			// replace means this added instance is the new instance (can have new param values)
 			instance.count = stackCount(instance, mod.count)
 			mgr.targets[target][i] = instance
-			mgr.emitRemove(target, []*ModifierInstance{mod})
+			mgr.emitRemove(target, []*Instance{mod})
 			return instance
 		}
 	}
@@ -141,12 +140,12 @@ func (mgr *Manager) replace(target key.TargetID, instance *ModifierInstance) *Mo
 	return instance
 }
 
-func (mgr *Manager) multiple(target key.TargetID, instance *ModifierInstance) (*ModifierInstance, bool) {
+func (mgr *Manager) multiple(target key.TargetID, instance *Instance) (*Instance, bool) {
 	mgr.targets[target] = append(mgr.targets[target], instance)
 	return instance, true
 }
 
-func (mgr *Manager) refresh(target key.TargetID, instance *ModifierInstance) (*ModifierInstance, bool) {
+func (mgr *Manager) refresh(target key.TargetID, instance *Instance) (*Instance, bool) {
 	for _, mod := range mgr.targets[target] {
 		if mod.name == instance.name {
 			// found a matching modifier, reset this modifier's duration
@@ -161,7 +160,7 @@ func (mgr *Manager) refresh(target key.TargetID, instance *ModifierInstance) (*M
 	return instance, true
 }
 
-func (mgr *Manager) prolong(target key.TargetID, instance *ModifierInstance) (*ModifierInstance, bool) {
+func (mgr *Manager) prolong(target key.TargetID, instance *Instance) (*Instance, bool) {
 	for _, mod := range mgr.targets[target] {
 		if mod.name == instance.name {
 			// found a matching modifier, prolong the duration
@@ -176,7 +175,7 @@ func (mgr *Manager) prolong(target key.TargetID, instance *ModifierInstance) (*M
 	return instance, true
 }
 
-func (mgr *Manager) merge(target key.TargetID, instance *ModifierInstance) *ModifierInstance {
+func (mgr *Manager) merge(target key.TargetID, instance *Instance) *Instance {
 	for _, mod := range mgr.targets[target] {
 		if mod.name == instance.name {
 			// found a matching modifier, merge
@@ -192,7 +191,7 @@ func (mgr *Manager) merge(target key.TargetID, instance *ModifierInstance) *Modi
 	return instance
 }
 
-func stackCount(mod *ModifierInstance, prevCount float64) float64 {
+func stackCount(mod *Instance, prevCount float64) float64 {
 	if prevCount < 0 || mod.count < 0 {
 		return mod.count
 	}

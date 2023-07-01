@@ -21,7 +21,7 @@ func init() {
 		StatusType: model.StatusType_STATUS_DEBUFF,
 		TickMoment: modifier.ModifierPhase1End,
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				mod.SetProperty(prop.EffectRES, -0.2)
 			},
 		},
@@ -33,7 +33,7 @@ func init() {
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_DEBUFF,
 		Listeners: modifier.Listeners{
-			OnBeforeHitAll: func(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+			OnBeforeHitAll: func(mod *modifier.Instance, e event.HitStartEvent) {
 				debuffCount := mod.Engine().ModifierCount(e.Defender, model.StatusType_STATUS_DEBUFF)
 				if debuffCount > 5 {
 					debuffCount = 5

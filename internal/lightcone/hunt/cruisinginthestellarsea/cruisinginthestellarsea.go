@@ -57,13 +57,13 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func onBeforeHitAll(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+func onBeforeHitAll(mod *modifier.Instance, e event.HitStartEvent) {
 	if e.Hit.Defender.CurrentHPRatio() <= 0.5 {
 		e.Hit.Attacker.AddProperty(prop.CritChance, mod.State().(Amts).cr)
 	}
 }
 
-func onTriggerDeath(mod *modifier.ModifierInstance, target key.TargetID) {
+func onTriggerDeath(mod *modifier.Instance, target key.TargetID) {
 	amt := mod.State().(Amts).atk
 
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{

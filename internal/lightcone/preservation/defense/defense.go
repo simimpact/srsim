@@ -41,7 +41,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func onBeforeAction(mod *modifier.ModifierInstance, e event.ActionEvent) {
+func onBeforeAction(mod *modifier.Instance, e event.ActionEvent) {
 	healAmt := mod.State().(float64)
 
 	if e.AttackType == model.AttackType_ULT {

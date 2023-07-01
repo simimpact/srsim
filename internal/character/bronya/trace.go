@@ -19,7 +19,7 @@ func init() {
 	// A2 Register
 	modifier.Register(A2, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHit: func(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+			OnBeforeHit: func(mod *modifier.Instance, e event.HitStartEvent) {
 				if e.Hit.AttackType == model.AttackType_NORMAL {
 					e.Hit.Attacker.AddProperty(prop.CritChance, 1)
 				}
@@ -31,7 +31,7 @@ func init() {
 	modifier.Register(A4, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				mod.SetProperty(prop.DEFPercent, 0.2)
 			},
 		},
@@ -41,10 +41,10 @@ func init() {
 	// A6 Register
 	modifier.Register(A6, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				mod.SetProperty(prop.AllDamagePercent, 0.1)
 			},
-			OnBeforeDying: func(mod *modifier.ModifierInstance) {
+			OnBeforeDying: func(mod *modifier.Instance) {
 				if mod.Owner() == mod.Source() {
 					targets := mod.Engine().Characters()
 

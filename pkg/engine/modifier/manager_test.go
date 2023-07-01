@@ -45,7 +45,7 @@ func TestOnPropertyChangeBuff(t *testing.T) {
 
 	modifier.Register(conditionalMod, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnPropertyChange: func(mod *modifier.ModifierInstance) {
+			OnPropertyChange: func(mod *modifier.Instance) {
 				stats := mod.Engine().Stats(mod.Owner())
 				if stats.GetProperty(prop.DEFPercent) >= 0.1 {
 					mod.SetProperty(prop.AllDamagePercent, 0.1)
@@ -106,7 +106,7 @@ func TestReplaceStacking(t *testing.T) {
 		TickMoment:        modifier.ModifierPhase1End,
 		Stacking:          modifier.Replace,
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				mod.AddProperty(prop.CritChance, 0.05*mod.Count())
 			},
 		},
@@ -180,7 +180,7 @@ func TestReplaceStackingBySource(t *testing.T) {
 	modifier.Register(mod, modifier.Config{
 		Stacking: modifier.ReplaceBySource,
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				mod.AddProperty(prop.QuantumPEN, 0.1)
 			},
 		},

@@ -54,7 +54,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func onBeforeHit(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+func onBeforeHit(mod *modifier.Instance, e event.HitStartEvent) {
 	spd := e.Hit.Attacker.SPD()
 
 	if spd >= 110 {

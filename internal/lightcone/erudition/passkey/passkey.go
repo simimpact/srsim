@@ -48,7 +48,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 // after giving energy, remove this modifier so it cannot do it again
-func onAfterAction(mod *modifier.ModifierInstance, e event.ActionEvent) {
+func onAfterAction(mod *modifier.Instance, e event.ActionEvent) {
 	mod.Engine().ModifyEnergy(mod.Owner(), mod.State().(float64))
 	mod.RemoveSelf()
 }

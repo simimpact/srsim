@@ -22,7 +22,7 @@ func init() {
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_DEBUFF,
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				char, _ := mod.Engine().CharacterInfo(mod.Source())
 				mod.SetProperty(prop.ATKPercent, -talentATK[char.TalentLevelIndex()])
 			},
@@ -34,7 +34,7 @@ func init() {
 		Stacking:      modifier.ReplaceBySource,
 		StatusType:    model.StatusType_STATUS_DEBUFF,
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				char, _ := mod.Engine().CharacterInfo(mod.Source())
 				mod.SetProperty(prop.DEFPercent, -talentDEF[char.TalentLevelIndex()])
 			},
@@ -46,7 +46,7 @@ func init() {
 		Stacking:      modifier.ReplaceBySource,
 		StatusType:    model.StatusType_STATUS_DEBUFF,
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				char, _ := mod.Engine().CharacterInfo(mod.Source())
 				mod.SetProperty(prop.SPDPercent, -talentSPD[char.TalentLevelIndex()])
 			},
@@ -55,7 +55,7 @@ func init() {
 
 	modifier.Register(TalentCheck, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAfterAttack: func(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
+			OnAfterAttack: func(mod *modifier.Instance, e event.AttackEndEvent) {
 				if len(e.Targets) == 0 {
 					return
 				}

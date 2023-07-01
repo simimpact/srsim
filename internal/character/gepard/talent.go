@@ -25,7 +25,7 @@ func init() {
 	})
 }
 
-func talentRevive(mod *modifier.ModifierInstance) bool {
+func talentRevive(mod *modifier.Instance) bool {
 	// Dispel all debuffs
 	mod.Engine().DispelStatus(mod.Owner(), info.Dispel{
 		Status: model.StatusType_STATUS_DEBUFF,

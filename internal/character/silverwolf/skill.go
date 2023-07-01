@@ -36,7 +36,7 @@ func init() {
 		Stacking:      modifier.Replace,
 		StatusType:    model.StatusType_STATUS_DEBUFF,
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				dmgType, ok := chooseWeaknessType(mod.Engine(), mod.Owner())
 				if !ok {
 					mod.RemoveSelf()

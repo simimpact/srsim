@@ -28,7 +28,7 @@ func TestRemoveModifierNoOp(t *testing.T) {
 	target := key.TargetID(1)
 	mod := key.Modifier("Test")
 
-	other := &ModifierInstance{
+	other := &Instance{
 		name: key.Modifier("Other"),
 	}
 
@@ -44,7 +44,7 @@ func TestRemoveModifierFromSourceNoOp(t *testing.T) {
 	target := key.TargetID(1)
 	mod := key.Modifier("Test")
 
-	other := &ModifierInstance{
+	other := &Instance{
 		name:   key.Modifier("Test"),
 		source: key.TargetID(2),
 	}
@@ -61,14 +61,14 @@ func TestRemoveModifier(t *testing.T) {
 	target := key.TargetID(1)
 	modsToRemove := key.Modifier("ToRemove")
 
-	mod1 := &ModifierInstance{
+	mod1 := &Instance{
 		name: key.Modifier("Other"),
 	}
-	mod2 := &ModifierInstance{
+	mod2 := &Instance{
 		name:   modsToRemove,
 		source: target,
 	}
-	mod3 := &ModifierInstance{
+	mod3 := &Instance{
 		name:   modsToRemove,
 		source: key.TargetID(3),
 	}
@@ -93,15 +93,15 @@ func TestRemoveModifierFromSource(t *testing.T) {
 	target := key.TargetID(1)
 	modsToRemove := key.Modifier("ToRemove")
 
-	mod1 := &ModifierInstance{
+	mod1 := &Instance{
 		name:   modsToRemove,
 		source: key.TargetID(2),
 	}
-	mod2 := &ModifierInstance{
+	mod2 := &Instance{
 		name:   modsToRemove,
 		source: target,
 	}
-	mod3 := &ModifierInstance{
+	mod3 := &Instance{
 		name:   modsToRemove,
 		source: key.TargetID(3),
 	}
@@ -131,11 +131,11 @@ func TestRemoveModifierWithOnRemoveListener(t *testing.T) {
 	target := key.TargetID(1)
 	name := key.Modifier("TestRemoveModifierWithListener")
 
-	mod := &ModifierInstance{
+	mod := &Instance{
 		name:  name,
 		state: &state{OnRemoveCalled: false},
 		listeners: Listeners{
-			OnRemove: func(modifier *ModifierInstance) {
+			OnRemove: func(modifier *Instance) {
 				state := modifier.State().(*state)
 				state.OnRemoveCalled = true
 			},
@@ -168,12 +168,12 @@ func TestRemoveModifierSelf(t *testing.T) {
 	target := key.TargetID(1)
 	name := key.Modifier("TestRemoveModifierSelf")
 
-	mod := &ModifierInstance{
+	mod := &Instance{
 		name:  name,
 		owner: target,
 		state: &state{OnRemoveCalled: false},
 		listeners: Listeners{
-			OnRemove: func(modifier *ModifierInstance) {
+			OnRemove: func(modifier *Instance) {
 				state := modifier.State().(*state)
 				state.OnRemoveCalled = true
 			},

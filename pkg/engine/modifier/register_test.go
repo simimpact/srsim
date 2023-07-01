@@ -22,14 +22,14 @@ func TestRegisterWithListeners(t *testing.T) {
 	key := key.Modifier("TestModifierListeners")
 	Register(key, Config{
 		Listeners: Listeners{
-			OnAdd: func(modifier *ModifierInstance) {
+			OnAdd: func(modifier *Instance) {
 				state := modifier.State().(*state)
 				state.Called = 1
 			},
 		},
 	})
 
-	mod := &ModifierInstance{
+	mod := &Instance{
 		state: &state{Called: 0},
 	}
 	modifierCatalog[key].Listeners.OnAdd(mod)

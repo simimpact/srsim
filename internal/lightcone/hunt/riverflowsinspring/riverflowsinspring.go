@@ -65,7 +65,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func onPhase2(mod *modifier.ModifierInstance) {
+func onPhase2(mod *modifier.Instance) {
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 		Name:   RiverFlowsinSpringBuff,
 		Source: mod.Owner(),
@@ -76,7 +76,7 @@ func onPhase2(mod *modifier.ModifierInstance) {
 	})
 }
 
-func onAfterBeingHitAll(mod *modifier.ModifierInstance, e event.HitEndEvent) {
+func onAfterBeingHitAll(mod *modifier.Instance, e event.HitEndEvent) {
 	if e.HPDamage > 0 {
 		mod.Engine().RemoveModifier(mod.Owner(), RiverFlowsinSpringBuff)
 	}

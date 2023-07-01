@@ -40,7 +40,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func onBeforeHitAll(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+func onBeforeHitAll(mod *modifier.Instance, e event.HitStartEvent) {
 	if e.Hit.Defender.CurrentHPRatio() > 0.5 {
 		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, mod.State().(float64))
 	}
