@@ -38,7 +38,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func randomlyAddEnergy(mod *modifier.ModifierInstance) {
+func randomlyAddEnergy(mod *modifier.Instance) {
 	allyList := mod.Engine().Characters()
 	amt := mod.State().(float64)
 	var validAllyList []key.TargetID

@@ -17,21 +17,21 @@ func TestExtendDuration(t *testing.T) {
 
 	callCount := 0
 	listeners := Listeners{
-		OnExtendDuration: func(modifier *ModifierInstance) {
+		OnExtendDuration: func(modifier *Instance) {
 			callCount += 1
 		},
 	}
 
-	mod1 := &ModifierInstance{
+	mod1 := &Instance{
 		name:      name,
 		listeners: listeners,
 	}
-	mod2 := &ModifierInstance{
+	mod2 := &Instance{
 		name:      key.Modifier("Other"),
 		duration:  2,
 		listeners: listeners,
 	}
-	mod3 := &ModifierInstance{
+	mod3 := &Instance{
 		name:      name,
 		source:    key.TargetID(2),
 		duration:  1,
@@ -68,22 +68,22 @@ func TestExtendCount(t *testing.T) {
 
 	callCount := 0
 	listeners := Listeners{
-		OnExtendCount: func(modifier *ModifierInstance) {
+		OnExtendCount: func(modifier *Instance) {
 			callCount += 1
 		},
 	}
 
-	mod1 := &ModifierInstance{
+	mod1 := &Instance{
 		name:      name,
 		maxCount:  3,
 		listeners: listeners,
 	}
-	mod2 := &ModifierInstance{
+	mod2 := &Instance{
 		name:      key.Modifier("Other"),
 		count:     2,
 		listeners: listeners,
 	}
-	mod3 := &ModifierInstance{
+	mod3 := &Instance{
 		name:      name,
 		source:    key.TargetID(2),
 		count:     1,

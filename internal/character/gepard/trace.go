@@ -15,7 +15,7 @@ const (
 func init() {
 	modifier.Register(A6, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnPhase1: func(mod *modifier.ModifierInstance) {
+			OnPhase1: func(mod *modifier.Instance) {
 				mod.SetProperty(prop.ATKConvert, mod.Engine().Stats(mod.Owner()).DEF()*0.35)
 			},
 		},

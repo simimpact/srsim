@@ -26,10 +26,10 @@ func init() {
 	modifier.Register(E4, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				mod.SetProperty(prop.EffectRES, 0.2)
 			},
-			OnBeforeDying: func(mod *modifier.ModifierInstance) {
+			OnBeforeDying: func(mod *modifier.Instance) {
 				if mod.Owner() == mod.Source() {
 					targets := mod.Engine().Characters()
 

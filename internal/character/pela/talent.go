@@ -16,7 +16,7 @@ const (
 func init() {
 	modifier.Register(Talent, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAfterAttack: func(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
+			OnAfterAttack: func(mod *modifier.Instance, e event.AttackEndEvent) {
 				char, _ := mod.Engine().CharacterInfo(mod.Owner())
 				for _, trg := range e.Targets {
 					if mod.Engine().ModifierCount(trg, model.StatusType_STATUS_DEBUFF) >= 1 {

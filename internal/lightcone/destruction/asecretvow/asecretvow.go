@@ -44,7 +44,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 // If the enemy hp ratio is greater or equal than the attackers hp ratio, add dmg%
-func onBeforeHitAll(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+func onBeforeHitAll(mod *modifier.Instance, e event.HitStartEvent) {
 	if e.Hit.Attacker.CurrentHPRatio() <= e.Hit.Defender.CurrentHPRatio() {
 		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, mod.State().(float64))
 	}

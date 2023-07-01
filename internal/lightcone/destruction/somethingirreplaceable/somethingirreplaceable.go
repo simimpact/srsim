@@ -60,15 +60,15 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func onTriggerDeath(mod *modifier.ModifierInstance, target key.TargetID) {
+func onTriggerDeath(mod *modifier.Instance, target key.TargetID) {
 	conditions(mod)
 }
 
-func onAfterBeingAttacked(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
+func onAfterBeingAttacked(mod *modifier.Instance, e event.AttackEndEvent) {
 	conditions(mod)
 }
 
-func conditions(mod *modifier.ModifierInstance) {
+func conditions(mod *modifier.Instance) {
 	heal := mod.State().(state).Heal
 	dmgBonus := mod.State().(state).DmgBonus
 

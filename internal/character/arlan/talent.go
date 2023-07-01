@@ -23,13 +23,13 @@ func init() {
 		StatusType: model.StatusType_STATUS_BUFF,
 		Listeners: modifier.Listeners{
 			// set bonus damage on combat start
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				addedBonusDamage := (1 - mod.Engine().HPRatio(mod.Owner())) * mod.State().(talentState).maxBonusDamage
 				mod.SetProperty(prop.AllDamagePercent, addedBonusDamage)
 			},
 
 			// update bonus damage based on new HP
-			OnHPChange: func(mod *modifier.ModifierInstance, e event.HPChangeEvent) {
+			OnHPChange: func(mod *modifier.Instance, e event.HPChangeEvent) {
 				addedBonusDamage := (1 - mod.Engine().HPRatio(mod.Owner())) * mod.State().(talentState).maxBonusDamage
 				mod.SetProperty(prop.AllDamagePercent, addedBonusDamage)
 			},

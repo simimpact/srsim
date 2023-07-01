@@ -69,7 +69,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 // wearer has Shield before attacked
-func onBeforeBeingHitAll(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+func onBeforeBeingHitAll(mod *modifier.Instance, e event.HitStartEvent) {
 	if mod.Engine().IsShielded(mod.Owner()) {
 		state := mod.State().(State)
 		e.Hit.Defender.AddProperty(prop.AllDamageReduce, state.dmgRes)
@@ -77,7 +77,7 @@ func onBeforeBeingHitAll(mod *modifier.ModifierInstance, e event.HitStartEvent) 
 }
 
 // wearer doesn't have Shield after attacked
-func onAfterBeingAttacked(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
+func onAfterBeingAttacked(mod *modifier.Instance, e event.AttackEndEvent) {
 	isShielded := mod.Engine().IsShielded(mod.Owner())
 	isOnCd := mod.Engine().HasModifier(mod.Owner(), modcd)
 
@@ -101,7 +101,7 @@ func onAfterBeingAttacked(mod *modifier.ModifierInstance, e event.AttackEndEvent
 }
 
 // what the shield buff does on add (in this case just providing shield)
-func shieldBuffOnAdd(mod *modifier.ModifierInstance) {
+func shieldBuffOnAdd(mod *modifier.Instance) {
 	state := mod.State().(State)
 	mod.Engine().AddShield(modshield, info.Shield{
 		Source:     mod.Owner(),
@@ -111,6 +111,6 @@ func shieldBuffOnAdd(mod *modifier.ModifierInstance) {
 }
 
 // what the shield buff on remove (in this case leftover shield is removed)
-func shieldBuffOnRemove(mod *modifier.ModifierInstance) {
+func shieldBuffOnRemove(mod *modifier.Instance) {
 	mod.Engine().RemoveShield(modshield, mod.Owner())
 }

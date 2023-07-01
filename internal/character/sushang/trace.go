@@ -30,7 +30,7 @@ func init() {
 	modifier.Register(A2Check, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAdd: a2HPCheck,
-			OnHPChange: func(mod *modifier.ModifierInstance, e event.HPChangeEvent) {
+			OnHPChange: func(mod *modifier.Instance, e event.HPChangeEvent) {
 				a2HPCheck(mod)
 			},
 		},
@@ -67,7 +67,7 @@ func (c *char) initTraces() {
 	}
 }
 
-func a2HPCheck(mod *modifier.ModifierInstance) {
+func a2HPCheck(mod *modifier.Instance) {
 	if mod.Engine().HPRatio(mod.Owner()) <= 0.5 {
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 			Name:   A2Buff,
@@ -79,7 +79,7 @@ func a2HPCheck(mod *modifier.ModifierInstance) {
 	}
 }
 
-func a4OnBeforeHitAll(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+func a4OnBeforeHitAll(mod *modifier.Instance, e event.HitStartEvent) {
 	stacks := mod.State().(float64)
 	e.Hit.Attacker.AddProperty(prop.AllDamagePercent, stacks*0.025)
 }

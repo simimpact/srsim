@@ -46,6 +46,6 @@ func (c *char) addTalentBuff() {
 	})
 }
 
-func talentOnAdd(mod *modifier.ModifierInstance) {
+func talentOnAdd(mod *modifier.Instance) {
 	mod.AddProperty(prop.SPDPercent, mod.Count()*mod.State().(float64))
 }

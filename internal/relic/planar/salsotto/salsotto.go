@@ -42,7 +42,7 @@ func init() {
 	})
 }
 
-func onBeforeHit(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+func onBeforeHit(mod *modifier.Instance, e event.HitStartEvent) {
 	stats := mod.OwnerStats()
 	if stats.CritChance() >= 0.50 {
 		if e.Hit.AttackType == model.AttackType_ULT || e.Hit.AttackType == model.AttackType_INSERT {

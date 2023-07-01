@@ -30,7 +30,7 @@ func init() {
 	modifier.Register(amber, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAdd: onLowerHalfHp,
-			OnHPChange: func(mod *modifier.ModifierInstance, e event.HPChangeEvent) {
+			OnHPChange: func(mod *modifier.Instance, e event.HPChangeEvent) {
 				onLowerHalfHp(mod)
 			},
 		},
@@ -49,7 +49,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 // DEF increases by another 16%/20%/24%/28%/32%
-func onLowerHalfHp(mod *modifier.ModifierInstance) {
+func onLowerHalfHp(mod *modifier.Instance) {
 	if mod.Engine().HPRatio(mod.Owner()) < 0.5 {
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 			Name:   amberbuff,

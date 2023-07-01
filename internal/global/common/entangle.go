@@ -42,7 +42,7 @@ func init() {
 	// TODO: Break Entanglement
 }
 
-func entangleAdd(mod *modifier.ModifierInstance) {
+func entangleAdd(mod *modifier.Instance) {
 	state, ok := mod.State().(EntangleState)
 	if !ok {
 		panic("incorrect state used for Entanglement modifier")
@@ -51,7 +51,7 @@ func entangleAdd(mod *modifier.ModifierInstance) {
 	mod.Engine().ModifyGaugeNormalized(mod.Owner(), state.DelayRatio)
 }
 
-func entangleAfterAttack(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
+func entangleAfterAttack(mod *modifier.Instance, e event.AttackEndEvent) {
 	state := mod.State().(EntangleState)
 
 	// increase count by 1 for each attack within this state
@@ -61,7 +61,7 @@ func entangleAfterAttack(mod *modifier.ModifierInstance, e event.AttackEndEvent)
 	}
 }
 
-func entanglePhase1(mod *modifier.ModifierInstance) {
+func entanglePhase1(mod *modifier.Instance) {
 	state := mod.State().(EntangleState)
 
 	// perform quantum damage

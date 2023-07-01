@@ -56,7 +56,7 @@ func init() {
 	})
 }
 
-func shockPhase1(mod *modifier.ModifierInstance) {
+func shockPhase1(mod *modifier.Instance) {
 	state, ok := mod.State().(ShockState)
 	if !ok {
 		panic("incorrect state used for shock modifier")
@@ -76,7 +76,7 @@ func shockPhase1(mod *modifier.ModifierInstance) {
 	})
 }
 
-func breakShockPhase1(mod *modifier.ModifierInstance) {
+func breakShockPhase1(mod *modifier.Instance) {
 	state, ok := mod.State().(BreakShockState)
 	if !ok {
 		panic("incorrect state used for break shock modifier")

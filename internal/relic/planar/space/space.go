@@ -39,7 +39,7 @@ func init() {
 	})
 }
 
-func onAdd(mod *modifier.ModifierInstance) {
+func onAdd(mod *modifier.Instance) {
 	stats := mod.OwnerStats()
 	if stats.SPD() >= 120 {
 		mod.SetProperty(prop.ATKPercent, 0.24)
@@ -48,7 +48,7 @@ func onAdd(mod *modifier.ModifierInstance) {
 	}
 }
 
-func onPropChange(mod *modifier.ModifierInstance) {
+func onPropChange(mod *modifier.Instance) {
 	stats := mod.OwnerStats()
 	if stats.SPD() >= 120 {
 		mod.SetProperty(prop.ATKPercent, 0.24)
