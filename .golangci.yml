@@ -57,7 +57,7 @@ linters:
 
   ## enforcements which can lead to better code
   - musttag # enforces field tags in (un)marshaled structs
-  - exhaustruct # checks if all structure fields are initialized [TODO: need to configure]
+  - exhaustruct # checks if all structure fields are initialized
 
   ## misc linters
   - gocheckcompilerdirectives # validates go compiler directive comments (//go:)

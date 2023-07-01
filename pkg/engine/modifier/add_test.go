@@ -167,7 +167,7 @@ func TestAddInvalidSource(t *testing.T) {
 
 	mod := info.Modifier{
 		Name:   key.Modifier("TestAddInvalidSource"),
-		Source: target,
+		Source: 0,
 	}
 
 	added, err := manager.AddModifier(target, mod)
