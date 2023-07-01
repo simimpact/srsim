@@ -124,5 +124,9 @@ linters-settings:
   tenv:
     all: true
 
+severity:
+  default-severity: error
+
 issues:
   max-same-issues: 50
+  fix: true
