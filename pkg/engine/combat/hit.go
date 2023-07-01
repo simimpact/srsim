@@ -5,8 +5,15 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
-	"github.com/simimpact/srsim/pkg/model"
 )
+
+// PERFORMHIT
+// Updates states of all involved parties based upon given hit info.
+// 1. Calculates damage to be dealt based upon given hit info
+// 2. If shield is present, absorb as much damage as possible using shield.AbsorbDamage
+// 3. If shield is not present/cannot take all damage, apply damage to target HP
+// 4. Modify stance and energy based upon hit info
+// 5. Emit DamageResultEvent (includes modified state and logging variables)
 
 func (mgr *Manager) performHit(hit *info.Hit) {
 	mgr.event.HitStart.Emit(event.HitStartEvent{
@@ -15,49 +22,21 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 		Hit:      hit,
 	})
 
-	// ACTUAL DAMAGE STUFF GOES HERE:
-	// 1. Calculate Damage given the hit info (using stats contained within the hit)
-	// 2. Given calc'd damage, call shield.AbsorbDamage(hit.defender, amt) float64
-	// 3. AbsorbDamage returns the remaining damage
-	// 4. ModifyHP of the remaining damage
-	// 5. Emit DamageResultEvent
-
-	// remainingDamage := mgr.shld.AbsorbDamage(hit.Defender.ID(), damage)
-
-	// NOTE:
-	// * BaseDamage multipliers, EnergyGain, and StanceDamage should be scaled by HitRatio
-	// * dots & element damage do not crit (unknown if also ByPureDamage?)
-	// * ByPureDamage = true means a "simplified" damage function (the break damage equation)
+	crit := mgr.crit(hit)
 
 	base := mgr.baseDamage(hit)*hit.HitRatio + hit.DamageValue
 	bonus := mgr.bonusDamage(hit)
-	crit := mgr.crit(hit)
-	def := hit.Defender.DEF()
-	defMult := 1 - (def / (def + 200 + 10*float64(hit.Attacker.Level())))
-
+	defMult := mgr.defMult(hit)
 	res := mgr.res(hit)
 	vul := mgr.vul(hit)
-
-	// toughness multiplier
-	toughnessMultiplier := 0.9
-	if hit.Defender.Stance() == 0 {
-		toughnessMultiplier = 1
-	}
-
+	toughnessMultiplier := mgr.toughness(hit)
 	fatigue := 1 - hit.Attacker.GetProperty(prop.Fatigue)
-	allDamageReduce := 1 - hit.Defender.GetProperty(prop.AllDamageReduce)
-	if allDamageReduce < 0.01 {
-		allDamageReduce = 0.01
-	}
-
-	critDmg := 1.0
-	if crit {
-		critDmg += hit.Attacker.CritDamage()
-	}
+	allDamageReduce := mgr.damageReduce(hit)
+	critDmg := mgr.critDmg(hit, crit)
 
 	total := base * bonus * defMult * res * vul * toughnessMultiplier * fatigue * allDamageReduce * critDmg
-	hpUpdate := mgr.shld.AbsorbDamage(hit.Defender.ID(), total)
 
+	hpUpdate := mgr.shld.AbsorbDamage(hit.Defender.ID(), total)
 	mgr.attr.ModifyHPByAmount(hit.Defender.ID(), hit.Attacker.ID(), total, true)
 	mgr.attr.ModifyStance(hit.Defender.ID(), hit.Attacker.ID(), hit.StanceDamage*hit.HitRatio)
 	if mgr.target.IsCharacter(hit.Attacker.ID()) {
@@ -87,52 +66,6 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 		IsCrit:              crit,
 		UseSnapshot:         hit.UseSnapshot,
 	})
-}
-
-// BASE DAMAGE:
-// Base DMG = (MV + Extra MV) * Scaling Attribute + Extra DMG
-// k = scaling attribute
-// v = (MV + Extra MV)
-func (mgr *Manager) baseDamage(h *info.Hit) float64 {
-	var dmgMap info.DamageMap = h.BaseDamage
-	damage := 0.0
-	for k, v := range dmgMap {
-		switch k {
-		case model.DamageFormula_BY_ATK:
-			damage += v * h.Attacker.ATK()
-		case model.DamageFormula_BY_DEF:
-			damage += v * h.Attacker.DEF()
-		case model.DamageFormula_BY_MAX_HP:
-			damage += v * h.Attacker.MaxHP()
-		case model.DamageFormula_BY_BREAK_DAMAGE:
-			damage += v * breakBaseDamage[h.Attacker.Level()]
-		}
-	}
-	return damage
-}
-
-func (mgr *Manager) crit(h *info.Hit) bool {
-	if h.AttackType == model.AttackType_DOT || h.AttackType == model.AttackType_ELEMENT_DAMAGE || h.AsPureDamage {
-		return false
-	}
-	return mgr.rdm.Float64() < h.Attacker.CritChance()
-}
-
-func (mgr *Manager) bonusDamage(h *info.Hit) float64 {
-	dmg := 1.0
-	// If hit doesn't use break damage equation, adds dmg%
-	// Otherwise, adds break effect%
-	if _, ok := h.BaseDamage[model.DamageFormula_BY_BREAK_DAMAGE]; !ok {
-		dmg += h.Attacker.GetProperty(prop.AllDamagePercent)
-		dmg += h.Attacker.GetProperty(prop.DamagePercent(h.DamageType))
-		if h.AttackType == model.AttackType_DOT {
-			dmg += h.Attacker.GetProperty(prop.DOTDamagePercent)
-		}
-	} else {
-		dmg += h.Attacker.BreakEffect()
-	}
-
-	return dmg
 }
 
 func (mgr *Manager) newHit(target key.TargetID, atk info.Attack) *info.Hit {
