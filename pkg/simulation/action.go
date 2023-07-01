@@ -132,6 +132,7 @@ func (sim *Simulation) executeAction(id key.TargetID, isInsert bool) error {
 	sim.clearActionTargets()
 	sim.Event.ActionStart.Emit(event.ActionEvent{
 		Owner:      id,
+		Targets:    nil,
 		AttackType: executable.AttackType,
 		IsInsert:   isInsert,
 	})
@@ -169,6 +170,7 @@ func (sim *Simulation) executeUlt(act actionPkg.Action) error {
 	sim.clearActionTargets()
 	sim.Event.UltStart.Emit(event.ActionEvent{
 		Owner:      id,
+		Targets:    nil,
 		AttackType: model.AttackType_ULT,
 		IsInsert:   true,
 	})
@@ -190,6 +192,7 @@ func (sim *Simulation) executeInsert(i info.Insert) {
 	sim.clearActionTargets()
 	sim.Event.InsertStart.Emit(event.InsertEvent{
 		Owner:      i.Source,
+		Targets:    nil,
 		AbortFlags: i.AbortFlags,
 		Priority:   i.Priority,
 	})

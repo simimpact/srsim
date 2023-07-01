@@ -18,7 +18,7 @@ func (e testCancelEvent) Cancelled() CancellableEvent {
 
 func TestCancelableEmitNoSubscription(t *testing.T) {
 	var handler CancelableEventHandler[testCancelEvent]
-	assert.False(t, handler.Emit(testCancelEvent{}))
+	assert.False(t, handler.Emit(testCancelEvent{cancelled: false}))
 }
 
 func TestCancelableListeners(t *testing.T) {
@@ -42,6 +42,6 @@ func TestCancelableListeners(t *testing.T) {
 		return false
 	}, 0)
 
-	handler.Emit(testCancelEvent{})
+	handler.Emit(testCancelEvent{cancelled: false})
 	assert.Equal(t, 2, callCount)
 }

@@ -18,7 +18,7 @@ type HPChangeEvent struct {
 type LimboWaitHealEventHandler = handler.CancelableEventHandler[LimboWaitHealEvent]
 type LimboWaitHealEvent struct {
 	Target      key.TargetID
-	IsCancelled bool
+	IsCancelled bool `exhaustruct:"optional"`
 }
 
 func (e LimboWaitHealEvent) Cancelled() handler.CancellableEvent {
