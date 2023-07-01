@@ -27,7 +27,7 @@ func (mgr *Manager) totalDamage(h *info.Hit, base float64, dmg float64, crit boo
 	}
 
 	fatigue := 1 - h.Attacker.GetProperty(prop.Fatigue)
-	AllDamageReduce := h.Defender.GetProperty(prop.AllDamageReduce)
+	AllDamageReduce := 1 - h.Defender.GetProperty(prop.AllDamageReduce)
 	if AllDamageReduce < 0.01 {
 		AllDamageReduce = 0.01
 	}
