@@ -26,7 +26,6 @@ type opts struct {
 
 // command line tool; following options are available:
 func main() {
-
 	var opt opts
 	var version bool
 	flag.BoolVar(&version, "version", false, "check gcsim version (git hash)")

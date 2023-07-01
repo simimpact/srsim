@@ -19,7 +19,6 @@ func init() {
 			OnAfterHit: onAfterHit,
 		},
 	})
-
 }
 
 // Sampo's attacks have a 65% base chance to inflict Wind Shear for 3 turn(s).

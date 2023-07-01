@@ -174,7 +174,6 @@ func (p *Parser) parseLet() (ast.Stmt, error) {
 
 // expecting ident = expr
 func (p *Parser) parseAssign() (ast.Stmt, error) {
-
 	ident, err := p.consume(ast.ItemIdentifier)
 	if err != nil {
 		// next token not and identifier
@@ -200,7 +199,6 @@ func (p *Parser) parseAssign() (ast.Stmt, error) {
 	}
 
 	return stmt, nil
-
 }
 
 func (p *Parser) parseIf() (ast.Stmt, error) {
@@ -250,7 +248,6 @@ func (p *Parser) parseIf() (ast.Stmt, error) {
 }
 
 func (p *Parser) parseSwitch() (ast.Stmt, error) {
-
 	// switch expr { }
 	n, err := p.consume(ast.KeywordSwitch)
 	if err != nil {
@@ -309,7 +306,6 @@ func (p *Parser) parseSwitch() (ast.Stmt, error) {
 		default:
 			return nil, fmt.Errorf("ln%v: expecting case or default token, got %v", n.Line, n.Val)
 		}
-
 	}
 
 	return stmt, nil
@@ -551,7 +547,6 @@ func (p *Parser) parseCall(fun ast.Expr) (ast.Expr, error) {
 	expr.Args, err = p.parseCallArgs()
 
 	return expr, err
-
 }
 
 func (p *Parser) parseCallArgs() ([]ast.Expr, error) {
@@ -613,8 +608,8 @@ func (p *Parser) parseBlock() (*ast.BlockStmt, error) {
 		}
 		block.Append(node)
 	}
-
 }
+
 func (p *Parser) parseExpr(pre precedence) (ast.Expr, error) {
 	t := p.next()
 	prefix := p.prefixParseFns[t.Typ]

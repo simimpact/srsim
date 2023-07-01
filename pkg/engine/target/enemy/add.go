@@ -9,7 +9,6 @@ import (
 )
 
 func (mgr *Manager) AddEnemy(id key.TargetID, enemy *model.Enemy) error {
-
 	lvl := int(enemy.Level)
 
 	// TODO: placeholder. should generate curve from dm (leaving to whomever implements enemy)

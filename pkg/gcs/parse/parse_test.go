@@ -67,7 +67,6 @@ func TestOrderPrecedence(t *testing.T) {
 		if actual != test.expected {
 			t.Errorf("expected=%q, got %q", test.expected, actual)
 		}
-
 	}
 }
 

@@ -1,18 +1,17 @@
 package qingque
 
-const suitsDisabled = "DISTINCT SUITS DISABLED"
-
 func (c *char) swap(pos1, pos2 int) {
 	c.tiles[pos1], c.tiles[pos2] = c.tiles[pos2], c.tiles[pos1]
 	c.suits[pos1], c.suits[pos2] = c.suits[pos2], c.suits[pos1]
 }
 
 // Functions if distinct suits aren't needed to save time and memory, for documentation read the comments on the functions including distinct suits
-func (c *char) drawTile() string {
+func (c *char) drawTile() {
 	c.e2()
 	if c.tiles[0] == 4 {
-		return suitsDisabled
+		return
 	}
+
 	s1, s2, s3 := c.tiles[0], c.tiles[1], c.tiles[2]
 	startingTiles := s1 + s2 + s3
 	drawn := c.engine.Rand().Intn(3)
@@ -28,9 +27,9 @@ func (c *char) drawTile() string {
 	if startingTiles == 4 {
 		c.discardTile()
 	}
-	return suitsDisabled
 }
-func (c *char) discardTile() string {
+
+func (c *char) discardTile() {
 	switch {
 	case c.tiles[2] != 0:
 		c.tiles[2] -= 1
@@ -39,7 +38,6 @@ func (c *char) discardTile() string {
 	default:
 		c.tiles[0] -= 1
 	}
-	return suitsDisabled
 }
 
 /**

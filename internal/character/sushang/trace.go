@@ -96,7 +96,6 @@ func (c *char) a4AddStack() {
 		Name:   A4Buff,
 		Source: c.id,
 	})
-
 }
 
 func (c *char) a6() {

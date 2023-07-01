@@ -39,7 +39,6 @@ func init() {
 		StatusType: model.StatusType_STATUS_BUFF,
 		Listeners: modifier.Listeners{
 			OnLimboWaitHeal: func(mod *modifier.ModifierInstance) bool {
-
 				// Dispel all debuffs
 				mod.Engine().DispelStatus(mod.Owner(), info.Dispel{
 					Status: model.StatusType_STATUS_DEBUFF,
@@ -77,7 +76,6 @@ func init() {
 			},
 		},
 	})
-
 }
 
 func (c *char) e2() {

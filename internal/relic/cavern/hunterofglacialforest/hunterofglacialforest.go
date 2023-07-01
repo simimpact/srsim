@@ -48,7 +48,6 @@ func init() {
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_BUFF,
 	})
-
 }
 
 func onBeforeAction(mod *modifier.ModifierInstance, e event.ActionEvent) {

@@ -39,7 +39,6 @@ func Version() string {
 }
 
 func Run(ctx context.Context, list *gcs.ActionList, cfg *model.SimConfig) (*model.SimulationResult, error) {
-
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 

@@ -68,5 +68,4 @@ func (p *Pool) worker() {
 			p.respChan <- res
 		}
 	}
-
 }

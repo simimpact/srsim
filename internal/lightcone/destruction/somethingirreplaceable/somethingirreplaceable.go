@@ -73,7 +73,6 @@ func conditions(mod *modifier.ModifierInstance) {
 	dmgBonus := mod.State().(state).DmgBonus
 
 	if !mod.Engine().HasModifier(mod.Owner(), Buff) {
-
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 			Name:     Buff,
 			Source:   mod.Owner(),
@@ -86,6 +85,5 @@ func conditions(mod *modifier.ModifierInstance) {
 			Source:   mod.Owner(),
 			BaseHeal: info.HealMap{model.HealFormula_BY_HEALER_ATK: heal},
 		})
-
 	}
 }

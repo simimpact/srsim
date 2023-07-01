@@ -23,7 +23,6 @@ func init() {
 }
 
 func (c *char) initTraces() {
-
 	// A2
 	if c.info.Traces["1104101"] {
 		c.engine.AddModifier(c.id, info.Modifier{

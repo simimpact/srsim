@@ -6,7 +6,6 @@ import (
 )
 
 func TestConfigTwoElites() *model.SimConfig {
-
 	return &model.SimConfig{
 		Iterations:  1,
 		WorkerCount: 1,

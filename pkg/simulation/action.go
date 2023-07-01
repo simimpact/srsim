@@ -62,7 +62,6 @@ func (sim *Simulation) ultCheck() error {
 				},
 				Execute: func() { sim.executeUlt(act) }, // TODO: error handling
 			})
-
 		}
 	}
 	return nil

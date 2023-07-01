@@ -40,7 +40,6 @@ func init() {
 			OnBeforeHit: onBeforeHit,
 		},
 	})
-
 }
 
 func onBeforeHit(mod *modifier.ModifierInstance, e event.HitStartEvent) {

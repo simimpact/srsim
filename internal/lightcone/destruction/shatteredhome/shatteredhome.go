@@ -38,7 +38,6 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		Source: owner,
 		State:  0.15 + 0.05*float64(lc.Imposition),
 	})
-
 }
 
 func onBeforeHitAll(mod *modifier.ModifierInstance, e event.HitStartEvent) {

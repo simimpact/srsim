@@ -22,7 +22,6 @@ const (
 )
 
 func init() {
-
 	// A2 Register
 	modifier.Register(A2, modifier.Config{
 		Listeners: modifier.Listeners{

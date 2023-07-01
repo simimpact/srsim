@@ -184,7 +184,7 @@ func (r *retval) Typ() ObjTyp { return typRet }
 
 // actionval.
 func (a *actionval) Inspect() string {
-	targeteval := ""
+	var targeteval string
 	switch a.val.TargetEvaluator {
 	case evaltarget.First:
 		targeteval = "First"

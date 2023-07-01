@@ -36,8 +36,7 @@ func TestIgnoreResist(t *testing.T) {
 		Name: key.Modifier("Test"),
 	}
 
-	chance, resist, err := manager.attemptResist(target, mod, []model.BehaviorFlag{})
-	assert.NoError(t, err)
+	chance, resist := manager.attemptResist(target, mod, []model.BehaviorFlag{})
 	assert.Equal(t, -1.0, chance)
 	assert.False(t, resist)
 }
@@ -87,8 +86,7 @@ func TestResistModifier(t *testing.T) {
 		assert.Equal(t, dres, event.DebuffRES)
 	})
 
-	chance, resist, err := manager.attemptResist(target, mod, flags)
-	assert.NoError(t, err)
+	chance, resist := manager.attemptResist(target, mod, flags)
 	assert.Equal(t, expectedChance, chance)
 	assert.True(t, resist)
 }
@@ -131,8 +129,7 @@ func TestFailedResist(t *testing.T) {
 		assert.Fail(t, "Event should never be emitted (modifier should not be resisted)")
 	})
 
-	chance, resist, err := manager.attemptResist(target, mod, flags)
-	assert.NoError(t, err)
+	chance, resist := manager.attemptResist(target, mod, flags)
 	assert.Equal(t, expectedChance, chance)
 	assert.False(t, resist)
 }

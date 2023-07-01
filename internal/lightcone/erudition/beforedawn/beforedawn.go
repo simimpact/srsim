@@ -15,8 +15,8 @@ import (
 // After the wearer uses their Skill or Ultimate, they gain Somnus Corpus.
 // Upon triggering a follow-up attack, Somnus Corpus will be consumed and the follow-up attack DMG increases by x%.
 const (
-	BeforeDawn   key.Modifier = "before_dawn"
-	SomnusCorpus key.Modifier = "somnus_corpus"
+	BeforeDawn   key.Modifier = "before-dawn"
+	SomnusCorpus key.Modifier = "somnus-corpus"
 )
 
 type somnusState struct {
@@ -57,7 +57,6 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		Stats:  info.PropMap{prop.CritDMG: amt},
 		State:  float64(lc.Imposition),
 	})
-
 }
 
 // BeforeHit if its ult or skill add the dmg% to that hit

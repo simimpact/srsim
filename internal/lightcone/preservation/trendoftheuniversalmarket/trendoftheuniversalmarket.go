@@ -53,7 +53,6 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		Stats:  info.PropMap{prop.DEFPercent: amt},
 		State:  State{dotChance, dotDmg},
 	})
-
 }
 
 // chance to DoT the attacker

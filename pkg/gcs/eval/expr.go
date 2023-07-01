@@ -10,13 +10,13 @@ import (
 func (e *Eval) evalExpr(ex ast.Expr, env *Env) (Obj, error) {
 	switch v := ex.(type) {
 	case *ast.NumberLit:
-		return e.evalNumberLit(v, env), nil
+		return e.evalNumberLit(v), nil
 	case *ast.StringLit:
-		return e.evalStringLit(v, env), nil
+		return e.evalStringLit(v), nil
 	case *ast.NullLit:
 		return e.evalNullLit(v, env), nil
 	case *ast.FuncLit:
-		return e.evalFuncLit(v, env), nil
+		return e.evalFuncLit(v), nil
 	case *ast.Ident:
 		return e.evalIdent(v, env)
 	case *ast.UnaryExpr:
@@ -32,7 +32,7 @@ func (e *Eval) evalExpr(ex ast.Expr, env *Env) (Obj, error) {
 	}
 }
 
-func (e *Eval) evalNumberLit(n *ast.NumberLit, env *Env) Obj {
+func (e *Eval) evalNumberLit(n *ast.NumberLit) Obj {
 	return &number{
 		isFloat: n.IsFloat,
 		ival:    n.IntVal,
@@ -40,7 +40,7 @@ func (e *Eval) evalNumberLit(n *ast.NumberLit, env *Env) Obj {
 	}
 }
 
-func (e *Eval) evalStringLit(n *ast.StringLit, env *Env) Obj {
+func (e *Eval) evalStringLit(n *ast.StringLit) Obj {
 	// strip the ""
 	return &strval{
 		str: strings.Trim(n.Value, "\""),
@@ -51,7 +51,7 @@ func (e *Eval) evalNullLit(n *ast.NullLit, env *Env) Obj {
 	return &null{}
 }
 
-func (e *Eval) evalFuncLit(n *ast.FuncLit, env *Env) Obj {
+func (e *Eval) evalFuncLit(n *ast.FuncLit) Obj {
 	return &funcval{
 		Args: n.Args,
 		Body: n.Body,

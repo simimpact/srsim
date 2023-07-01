@@ -55,7 +55,6 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		},
 		State: critRate,
 	})
-
 }
 
 func onAfterHit(mod *modifier.ModifierInstance, e event.HitEndEvent) {
