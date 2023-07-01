@@ -19,7 +19,7 @@
     "--fast",
     "--fix"
   ],
-  "go.lintOnSave": "workspace",
+  "go.lintOnSave": "package",
 
   "search.exclude": {
     "**/.yarn": true,
