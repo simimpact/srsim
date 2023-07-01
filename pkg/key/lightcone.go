@@ -12,6 +12,7 @@ const (
 	SomethingIrreplaceable LightCone = "something_irreplaceable"
 	UndertheBlueSky        LightCone = "under_the_blue_sky"
 	CollapsingSky          LightCone = "collapsing_sky"
+	OntheFallofanAeon      LightCone = "on_the_fall_of_an_aeon"
 )
 
 // Hunt
