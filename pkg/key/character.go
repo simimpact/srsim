@@ -6,6 +6,7 @@ const (
 	Arlan          Character = "arlan"
 	Bronya         Character = "bronya"
 	DanHeng        Character = "danheng"
+	Gepard         Character = "gepard"
 	Pela           Character = "pela"
 	Qingque        Character = "qingque"
 	SilverWolf     Character = "silverwolf"
