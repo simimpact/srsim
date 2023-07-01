@@ -69,13 +69,13 @@ func Run(ctx context.Context, list *gcs.ActionList, cfg *model.SimConfig) (*mode
 				Config: j,
 			})
 			if err != nil {
-				//context must have been cancelled
+				// context must have been cancelled
 				return
 			}
 		}
 	}()
 
-	//get results back
+	// get results back
 	for i := 0; i < int(cfg.Iterations); i++ {
 		select {
 		case <-ctx.Done():
@@ -89,7 +89,7 @@ func Run(ctx context.Context, list *gcs.ActionList, cfg *model.SimConfig) (*mode
 		}
 	}
 
-	//stats aggregation should happen here and make us a result?
+	// stats aggregation should happen here and make us a result?
 	result := &model.SimulationResult{
 		SimVersion: &sha1ver,
 		Modified:   &modified,

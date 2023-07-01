@@ -65,7 +65,7 @@ func init() {
 	})
 }
 
-func newRandomBug(engine engine.Engine, target key.TargetID, source key.TargetID) info.Modifier {
+func newRandomBug(engine engine.Engine, target, source key.TargetID) info.Modifier {
 	char, _ := engine.CharacterInfo(source)
 	bugs := []key.Modifier{}
 	// get list of bugs not present on target

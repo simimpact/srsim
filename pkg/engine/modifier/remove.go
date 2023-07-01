@@ -38,13 +38,15 @@ func (mgr *Manager) RemoveModifierFromSource(target, source key.TargetID, modifi
 
 func (mgr *Manager) RemoveSelf(target key.TargetID, instance *ModifierInstance) {
 	for i, mod := range mgr.targets[target] {
-		if mod == instance {
-			last := len(mgr.targets[target]) - 1
-			mgr.targets[target][i] = mgr.targets[target][last]
-			mgr.targets[target] = mgr.targets[target][:last]
-			mgr.emitRemove(target, []*ModifierInstance{instance})
-			return
+		if mod != instance {
+			continue
 		}
+
+		last := len(mgr.targets[target]) - 1
+		mgr.targets[target][i] = mgr.targets[target][last]
+		mgr.targets[target] = mgr.targets[target][:last]
+		mgr.emitRemove(target, []*ModifierInstance{instance})
+		return
 	}
 }
 

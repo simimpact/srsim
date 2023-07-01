@@ -22,7 +22,7 @@ func init() {
 		Path:          model.Path_ABUNDANCE,
 		Promotions:    promotions,
 	})
-	//merge heal buff OnStart and energy top up checker
+	// merge heal buff OnStart and energy top up checker
 	modifier.Register(SFMod, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAfterAction: giveTeamEnergy,
@@ -34,7 +34,7 @@ func init() {
 // When using Skill, regenerates 2 Energy for all allies.
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	healBuffAmt := 0.075 + 0.025*float64(lc.Imposition)
-	//Checker : + applies energy top up here.
+	// Checker : + applies energy top up here.
 	engine.AddModifier(owner, info.Modifier{
 		Name:   SFMod,
 		Source: owner,
@@ -46,7 +46,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 func giveTeamEnergy(mod *modifier.ModifierInstance, e event.ActionEvent) {
 	amt := mod.State().(float64)
 	if e.AttackType == model.AttackType_SKILL {
-		//apply team energy top up.
+		// apply team energy top up.
 		for _, char := range mod.Engine().Characters() {
 			mod.Engine().ModifyEnergy(char, amt)
 		}

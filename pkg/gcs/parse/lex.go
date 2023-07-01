@@ -184,7 +184,7 @@ func lexText(l *lexer) stateFn {
 		// l.backup()
 		l.emit(ast.ItemPlus)
 	case r == '/':
-		//check if next is another / or not; if / then lexComment
+		// check if next is another / or not; if / then lexComment
 		n := l.next()
 		if n == '/' {
 			l.ignore()
@@ -196,7 +196,7 @@ func lexText(l *lexer) stateFn {
 	case r == '.':
 		n := l.next()
 		if isNumeric(n) {
-			//backup twice
+			// backup twice
 			l.backup()
 			l.backup()
 			return lexNumber
@@ -207,15 +207,15 @@ func lexText(l *lexer) stateFn {
 		l.backup()
 		return lexNumber
 	case r == '-':
-		//if next item is a number then lex number
+		// if next item is a number then lex number
 		n := l.next()
 		if isNumeric(n) {
-			//backup twice
+			// backup twice
 			l.backup()
 			l.backup()
 			return lexNumber
 		}
-		//other wise it's a - sign
+		// other wise it's a - sign
 		l.backup()
 		l.emit(ast.ItemMinus)
 	case r == '>':

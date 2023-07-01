@@ -45,7 +45,7 @@ func (e *Eval) initSysFuncs(env *Env) {
 }
 
 func (e *Eval) print(c *ast.CallExpr, env *Env) (Obj, error) {
-	//concat all args
+	// concat all args
 	var sb strings.Builder
 	for _, arg := range c.Args {
 		val, err := e.evalExpr(arg, env)
@@ -75,7 +75,7 @@ func (e *Eval) randnorm(c *ast.CallExpr, env *Env) (Obj, error) {
 }
 
 func (e *Eval) typeval(c *ast.CallExpr, env *Env) (Obj, error) {
-	//type(var)
+	// type(var)
 	if len(c.Args) != 1 {
 		return nil, fmt.Errorf("invalid number of params for type, expected 1 got %v", len(c.Args))
 	}
@@ -107,12 +107,12 @@ func (e *Eval) typeval(c *ast.CallExpr, env *Env) (Obj, error) {
 }
 
 func (e *Eval) registerSkillCB(c *ast.CallExpr, env *Env) (Obj, error) {
-	//register_skill_cb(char, func)
+	// register_skill_cb(char, func)
 	if len(c.Args) != 2 {
 		return nil, fmt.Errorf("invalid number of params for register_skill_cb, expected 2 got %v", len(c.Args))
 	}
 
-	//should eval to a number
+	// should eval to a number
 	tarobj, err := e.evalExpr(c.Args[0], env)
 	if err != nil {
 		return nil, err
@@ -122,7 +122,7 @@ func (e *Eval) registerSkillCB(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 	target := tarobj.(*number).ival
 
-	//should eval to a function
+	// should eval to a function
 	funcobj, err := e.evalExpr(c.Args[1], env)
 	if err != nil {
 		return nil, err
@@ -149,12 +149,12 @@ func (e *Eval) registerSkillCB(c *ast.CallExpr, env *Env) (Obj, error) {
 }
 
 func (e *Eval) registerUltCB(c *ast.CallExpr, env *Env) (Obj, error) {
-	//register_ult_cb(char, func)
+	// register_ult_cb(char, func)
 	if len(c.Args) != 2 {
 		return nil, fmt.Errorf("invalid number of params for register_ult_cb, expected 2 got %v", len(c.Args))
 	}
 
-	//should eval to a function
+	// should eval to a function
 	tarobj, err := e.evalExpr(c.Args[0], env)
 	if err != nil {
 		return nil, err
@@ -164,7 +164,7 @@ func (e *Eval) registerUltCB(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 	target := tarobj.(*number).ival
 
-	//should eval to a function
+	// should eval to a function
 	funcobj, err := e.evalExpr(c.Args[1], env)
 	if err != nil {
 		return nil, err
@@ -191,12 +191,12 @@ func (e *Eval) registerUltCB(c *ast.CallExpr, env *Env) (Obj, error) {
 }
 
 func (e *Eval) setDefaultAction(c *ast.CallExpr, env *Env) (Obj, error) {
-	//set_default_action(char, action)
+	// set_default_action(char, action)
 	if len(c.Args) != 2 {
 		return nil, fmt.Errorf("invalid number of params for set_default_action, expected 2 got %v", len(c.Args))
 	}
 
-	//should eval to a function
+	// should eval to a function
 	tarobj, err := e.evalExpr(c.Args[0], env)
 	if err != nil {
 		return nil, err
@@ -206,7 +206,7 @@ func (e *Eval) setDefaultAction(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 	target := tarobj.(*number).ival
 
-	//should eval to an action
+	// should eval to an action
 	actobj, err := e.evalExpr(c.Args[1], env)
 	if err != nil {
 		return nil, err
@@ -226,7 +226,7 @@ func (e *Eval) setDefaultAction(c *ast.CallExpr, env *Env) (Obj, error) {
 
 func (e *Eval) addAction(at key.ActionType, env *Env) {
 	f := func(c *ast.CallExpr, env *Env) (Obj, error) {
-		//attack/skill/ult(evaltarget)
+		// attack/skill/ult(evaltarget)
 		if len(c.Args) != 1 {
 			return nil, fmt.Errorf("invalid number of params for action, expected 1 got %v", len(c.Args))
 		}

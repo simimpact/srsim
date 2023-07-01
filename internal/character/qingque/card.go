@@ -1,5 +1,7 @@
 package qingque
 
+const suitsDisabled = "DISTINCT SUITS DISABLED"
+
 func (c *char) swap(pos1, pos2 int) {
 	c.tiles[pos1], c.tiles[pos2] = c.tiles[pos2], c.tiles[pos1]
 	c.suits[pos1], c.suits[pos2] = c.suits[pos2], c.suits[pos1]
@@ -9,7 +11,7 @@ func (c *char) swap(pos1, pos2 int) {
 func (c *char) drawTile() string {
 	c.e2()
 	if c.tiles[0] == 4 {
-		return "DISTINCT SUITS DISABLED"
+		return suitsDisabled
 	}
 	s1, s2, s3 := c.tiles[0], c.tiles[1], c.tiles[2]
 	startingTiles := s1 + s2 + s3
@@ -26,7 +28,7 @@ func (c *char) drawTile() string {
 	if startingTiles == 4 {
 		c.discardTile()
 	}
-	return "DISTINCT SUITS DISABLED"
+	return suitsDisabled
 }
 func (c *char) discardTile() string {
 	switch {
@@ -37,7 +39,7 @@ func (c *char) discardTile() string {
 	default:
 		c.tiles[0] -= 1
 	}
-	return "DISTINCT SUITS DISABLED"
+	return suitsDisabled
 }
 
 /**

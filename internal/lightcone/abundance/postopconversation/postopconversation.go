@@ -26,33 +26,33 @@ func init() {
 		Promotions:    promotions,
 	})
 
-	//Implement checker here
+	// Implement checker here
 	modifier.Register(PostOpErrNCheck, modifier.Config{
 		Listeners: modifier.Listeners{
-			//NOTE : DM uses OnBeforeDealHeal instead of OnBeforeAction. Might need change.
+			// NOTE : DM uses OnBeforeDealHeal instead of OnBeforeAction. Might need change.
 			OnBeforeAction: buffHealsOnUlt,
 			OnAfterAction:  removeHealBuff,
 		},
 	})
-	//The actual buff modifier goes here
+	// The actual buff modifier goes here
 	modifier.Register(PostOpHealBuff, modifier.Config{})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	//OnStart : Add ERR Buff + Checker
+	// OnStart : Add ERR Buff + Checker
 	errAmt := 0.06 + 0.02*float64(lc.Imposition)
 	engine.AddModifier(owner, info.Modifier{
 		Name:   PostOpErrNCheck,
 		Source: owner,
 		Stats:  info.PropMap{prop.EnergyRegen: errAmt},
-		State:  0.09 + 0.03*float64(lc.Imposition), //heal buff amt passed as state
+		State:  0.09 + 0.03*float64(lc.Imposition), // heal buff amt passed as state
 	})
 }
 
 func buffHealsOnUlt(mod *modifier.ModifierInstance, e event.ActionEvent) {
 	amt := mod.State().(float64)
-	//NOTE : DM said onbeforeheal(unlike cornucopia which uses OnBeforeAction)
-	//Once OnBeforeDealHeal has AttackType prop, need to change this.
+	// NOTE : DM said onbeforeheal(unlike cornucopia which uses OnBeforeAction)
+	// Once OnBeforeDealHeal has AttackType prop, need to change this.
 	if e.AttackType == model.AttackType_ULT {
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 			Name:   PostOpHealBuff,

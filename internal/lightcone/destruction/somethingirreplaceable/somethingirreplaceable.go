@@ -21,10 +21,10 @@ type state struct {
 	DmgBonus float64
 }
 
-//Increases the wearer's ATK by 24%.
-//When the wearer defeats an enemy or is hit, immediately restores HP equal to 8% of the wearer's ATK.
-//At the same time, the wearer's DMG is increased by 24% until the end of their next turn.
-//This effect cannot stack and can only trigger 1 time per turn.
+// Increases the wearer's ATK by 24%.
+// When the wearer defeats an enemy or is hit, immediately restores HP equal to 8% of the wearer's ATK.
+// At the same time, the wearer's DMG is increased by 24% until the end of their next turn.
+// This effect cannot stack and can only trigger 1 time per turn.
 
 func init() {
 	lightcone.Register(key.SomethingIrreplaceable, lightcone.Config{

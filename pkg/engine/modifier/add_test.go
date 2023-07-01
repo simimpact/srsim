@@ -50,41 +50,41 @@ func TestResistModifier(t *testing.T) {
 	rand := rand.New(rand.NewSource(1))
 	engine.EXPECT().Rand().Return(rand).AnyTimes()
 
-	BChance := 0.05
-	EHR := 0.01
-	ERES := 0.3
-	DRES := 0.5
+	bChance := 0.05
+	ehr := 0.01
+	eres := 0.3
+	dres := 0.5
 	flags := []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL}
 
 	target := key.TargetID(1)
 	targetStats := mock.NewEmptyStats(target)
 	engine.EXPECT().Stats(gomock.Eq(target)).Return(targetStats).Times(1)
-	targetStats.AddProperty(prop.EffectRES, ERES)
-	targetStats.AddDebuffRES(model.BehaviorFlag_STAT_CTRL, DRES)
+	targetStats.AddProperty(prop.EffectRES, eres)
+	targetStats.AddDebuffRES(model.BehaviorFlag_STAT_CTRL, dres)
 
 	source := key.TargetID(2)
 	sourceStats := mock.NewEmptyStats(source)
-	sourceStats.AddProperty(prop.EffectHitRate, EHR)
+	sourceStats.AddProperty(prop.EffectHitRate, ehr)
 	engine.EXPECT().Stats(gomock.Eq(source)).Return(sourceStats).Times(1)
 
 	name := key.Modifier("TestResistModifier")
 	mod := info.Modifier{
 		Name:   name,
 		Source: source,
-		Chance: BChance,
+		Chance: bChance,
 	}
 
-	expectedChance := BChance * (1 + EHR) * (1 - ERES) * (1 - DRES)
+	expectedChance := bChance * (1 + ehr) * (1 - eres) * (1 - dres)
 
 	engine.Events().ModifierResisted.Subscribe(func(event event.ModifierResistedEvent) {
 		assert.Equal(t, target, event.Target)
 		assert.Equal(t, source, event.Source)
 		assert.Equal(t, name, event.Modifier)
 		assert.Equal(t, expectedChance, event.Chance)
-		assert.Equal(t, BChance, event.BaseChance)
-		assert.Equal(t, EHR, event.EHR)
-		assert.Equal(t, ERES, event.EffectRES)
-		assert.Equal(t, DRES, event.DebuffRES)
+		assert.Equal(t, bChance, event.BaseChance)
+		assert.Equal(t, ehr, event.EHR)
+		assert.Equal(t, eres, event.EffectRES)
+		assert.Equal(t, dres, event.DebuffRES)
 	})
 
 	chance, resist, err := manager.attemptResist(target, mod, flags)
@@ -101,31 +101,31 @@ func TestFailedResist(t *testing.T) {
 	rand := rand.New(rand.NewSource(1))
 	engine.EXPECT().Rand().Return(rand).AnyTimes()
 
-	BChance := 2.0
-	EHR := 0.01
-	ERES := 0.3
-	DRES := 0.5
+	bChance := 2.0
+	ehr := 0.01
+	eres := 0.3
+	dres := 0.5
 	flags := []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL}
 
 	target := key.TargetID(1)
 	targetStats := mock.NewEmptyStats(target)
 	engine.EXPECT().Stats(gomock.Eq(target)).Return(targetStats).Times(1)
-	targetStats.AddProperty(prop.EffectRES, ERES)
-	targetStats.AddDebuffRES(model.BehaviorFlag_STAT_CTRL, DRES)
+	targetStats.AddProperty(prop.EffectRES, eres)
+	targetStats.AddDebuffRES(model.BehaviorFlag_STAT_CTRL, dres)
 
 	source := key.TargetID(2)
 	sourceStats := mock.NewEmptyStats(source)
-	sourceStats.AddProperty(prop.EffectHitRate, EHR)
+	sourceStats.AddProperty(prop.EffectHitRate, ehr)
 	engine.EXPECT().Stats(gomock.Eq(source)).Return(sourceStats).Times(1)
 
 	name := key.Modifier("TestResistModifier")
 	mod := info.Modifier{
 		Name:   name,
 		Source: source,
-		Chance: BChance,
+		Chance: bChance,
 	}
 
-	expectedChance := BChance * (1 + EHR) * (1 - ERES) * (1 - DRES)
+	expectedChance := bChance * (1 + ehr) * (1 - eres) * (1 - dres)
 
 	engine.Events().ModifierResisted.Subscribe(func(event event.ModifierResistedEvent) {
 		assert.Fail(t, "Event should never be emitted (modifier should not be resisted)")

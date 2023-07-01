@@ -32,7 +32,7 @@ func onAfterHit(mod *modifier.ModifierInstance, e event.HitEndEvent) {
 	AddWindShearTalent(char, mod.Engine(), e.Attacker, e.Defender, duration, 0.65)
 }
 
-func AddWindShearTalent(char info.Character, engine engine.Engine, owner key.TargetID, target key.TargetID, duration int, chance float64) {
+func AddWindShearTalent(char info.Character, engine engine.Engine, owner, target key.TargetID, duration int, chance float64) {
 	if char.Traces["1108101"] {
 		duration += 1
 	}

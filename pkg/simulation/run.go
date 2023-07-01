@@ -14,12 +14,12 @@ type stateFn func(*Simulation) (stateFn, error)
 
 func (sim *Simulation) Run() (*model.IterationResult, error) {
 	var err error
-	//TODO: per Kyle this is totally unnecessary; for that reason alone this will stay
-	//because what's better than another future Kyle problem?
+	// TODO: per Kyle this is totally unnecessary; for that reason alone this will stay
+	// because what's better than another future Kyle problem?
 	for state := initialize; state != nil; {
 		state, err = state(sim)
 		if err != nil {
-			//handle error here
+			// handle error here
 			return nil, err
 		}
 	}
@@ -203,11 +203,12 @@ func endTurn(sim *Simulation) (stateFn, error) {
 // check if we want to exit the sim. If not, return the next state that was passed in
 func (sim *Simulation) exitCheck(next stateFn) (stateFn, error) {
 	var reason model.TerminationReason
-	if len(sim.characters) == 0 {
+	switch {
+	case len(sim.characters) == 0:
 		reason = model.TerminationReason_BATTLE_LOSS
-	} else if len(sim.enemies) == 0 {
+	case len(sim.enemies) == 0:
 		reason = model.TerminationReason_BATTLE_WIN
-	} else if int(sim.TotalAV/100) >= int(sim.cfg.Settings.CycleLimit) {
+	case int(sim.TotalAV/100) >= int(sim.cfg.Settings.CycleLimit):
 		reason = model.TerminationReason_TIMEOUT
 	}
 

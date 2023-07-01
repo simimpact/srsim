@@ -61,12 +61,12 @@ type (
 		Right Expr // operand
 	}
 
-	//A BinaryExpr node represents a binary expression i.e. a > b, 1 + 1, etc..
+	// A BinaryExpr node represents a binary expression i.e. a > b, 1 + 1, etc..
 	BinaryExpr struct {
 		Pos
 		Left  Expr
 		Right Expr  // need to evalute to same type as lhs
-		Op    Token //should be > itemCompareOP and < itemDot
+		Op    Token // should be > itemCompareOP and < itemDot
 	}
 
 	MapExpr struct {

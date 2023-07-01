@@ -23,14 +23,14 @@ func init() {
 		Path:          model.Path_ABUNDANCE,
 		Promotions:    promotions,
 	})
-	//Implement checker here
+	// Implement checker here
 	modifier.Register(CornucopiaCheck, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeAction: buffHealsOnSkillUlt,
 			OnAfterAction:  removeHealBuff,
 		},
 	})
-	//The actual buff modifier goes here
+	// The actual buff modifier goes here
 	modifier.Register(CornucopiaBuff, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
 	})
@@ -38,7 +38,7 @@ func init() {
 
 // When the wearer uses their Skill or Ultimate, their Outgoing Healing increases by 12%(S1)
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	//checker goes here
+	// checker goes here
 	engine.AddModifier(owner, info.Modifier{
 		Name:   CornucopiaCheck,
 		Source: owner,

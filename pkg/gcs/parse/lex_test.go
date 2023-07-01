@@ -41,7 +41,7 @@ func TestBasicToken(t *testing.T) {
 	`
 
 	expected := []ast.Token{
-		//function
+		// function
 		{Typ: ast.KeywordLet, Val: "let"},
 		{Typ: ast.ItemIdentifier, Val: "y"},
 		{Typ: ast.ItemAssign, Val: "="},
@@ -58,18 +58,18 @@ func TestBasicToken(t *testing.T) {
 		{Typ: ast.ItemNumber, Val: "1"},
 		{Typ: ast.ItemTerminateLine, Val: ";"},
 		{Typ: ast.ItemRightBrace, Val: "}"},
-		//variable
+		// variable
 		{Typ: ast.KeywordLet, Val: "let"},
 		{Typ: ast.ItemIdentifier, Val: "x"},
 		{Typ: ast.ItemAssign, Val: "="},
 		{Typ: ast.ItemNumber, Val: "5"},
 		{Typ: ast.ItemTerminateLine, Val: ";"},
-		//while loop
+		// while loop
 		{Typ: ast.KeywordWhile, Val: "while"},
 		{Typ: ast.ItemLeftBrace, Val: "{"},
-		//comment
+		// comment
 		// {typ: itemComment, Val: "comment"},
-		//function call
+		// function call
 		{Typ: ast.ItemIdentifier, Val: "x"},
 		{Typ: ast.ItemAssign, Val: "="},
 		{Typ: ast.ItemIdentifier, Val: "y"},
@@ -77,48 +77,48 @@ func TestBasicToken(t *testing.T) {
 		{Typ: ast.ItemIdentifier, Val: "x"},
 		{Typ: ast.ItemRightParen, Val: ")"},
 		{Typ: ast.ItemTerminateLine, Val: ";"},
-		//if statement
+		// if statement
 		{Typ: ast.KeywordIf, Val: "if"},
 		{Typ: ast.ItemIdentifier, Val: "x"},
 		{Typ: ast.OpGreaterThan, Val: ">"},
 		{Typ: ast.ItemNumber, Val: "10"},
 		{Typ: ast.ItemLeftBrace, Val: "{"},
-		//break
+		// break
 		{Typ: ast.KeywordBreak, Val: "break"},
 		{Typ: ast.ItemIdentifier, Val: "A"},
 		{Typ: ast.ItemTerminateLine, Val: ";"},
-		//end if
+		// end if
 		{Typ: ast.ItemRightBrace, Val: "}"},
-		//comment
+		// comment
 		// {typ: itemComment, Val: "comment"},
-		//switch
+		// switch
 		{Typ: ast.KeywordSwitch, Val: "switch"},
 		{Typ: ast.ItemIdentifier, Val: "x"},
 		{Typ: ast.ItemLeftBrace, Val: "{"},
-		//case
+		// case
 		{Typ: ast.KeywordCase, Val: "case"},
 		{Typ: ast.ItemNumber, Val: "1"},
 		{Typ: ast.ItemColon, Val: ":"},
 		{Typ: ast.KeywordFallthrough, Val: "fallthrough"},
 		{Typ: ast.ItemTerminateLine, Val: ";"},
-		//case
+		// case
 		{Typ: ast.KeywordCase, Val: "case"},
 		{Typ: ast.ItemNumber, Val: "2"},
 		{Typ: ast.ItemColon, Val: ":"},
 		{Typ: ast.KeywordFallthrough, Val: "fallthrough"},
 		{Typ: ast.ItemTerminateLine, Val: ";"},
-		//case
+		// case
 		{Typ: ast.KeywordCase, Val: "case"},
 		{Typ: ast.ItemNumber, Val: "3"},
 		{Typ: ast.ItemColon, Val: ":"},
 		{Typ: ast.KeywordBreak, Val: "break"},
 		{Typ: ast.ItemIdentifier, Val: "A"},
 		{Typ: ast.ItemTerminateLine, Val: ";"},
-		//end switch
+		// end switch
 		{Typ: ast.ItemRightBrace, Val: "}"},
-		//end while
+		// end while
 		{Typ: ast.ItemRightBrace, Val: "}"},
-		//for loop
+		// for loop
 		{Typ: ast.KeywordFor, Val: "for"},
 		{Typ: ast.ItemIdentifier, Val: "x"},
 		{Typ: ast.ItemAssign, Val: "="},
@@ -134,7 +134,7 @@ func TestBasicToken(t *testing.T) {
 		{Typ: ast.ItemPlus, Val: "+"},
 		{Typ: ast.ItemNumber, Val: "1"},
 		{Typ: ast.ItemLeftBrace, Val: "{"},
-		//body
+		// body
 		{Typ: ast.KeywordLet, Val: "let"},
 		{Typ: ast.ItemIdentifier, Val: "i"},
 		{Typ: ast.ItemAssign, Val: "="},
@@ -143,9 +143,9 @@ func TestBasicToken(t *testing.T) {
 		{Typ: ast.ItemIdentifier, Val: "x"},
 		{Typ: ast.ItemRightParen, Val: ")"},
 		{Typ: ast.ItemTerminateLine, Val: ";"},
-		//end for
+		// end for
 		{Typ: ast.ItemRightBrace, Val: "}"},
-		//misc tests
+		// misc tests
 		{Typ: ast.ItemNumber, Val: "-1"},
 		{Typ: ast.ItemNumber, Val: "1"},
 		{Typ: ast.ItemMinus, Val: "-"},

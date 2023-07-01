@@ -8,14 +8,14 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-//TODO: these structure here should eventually be replaced with protos
+// TODO: these structure here should eventually be replaced with protos
 
 type ActionList struct {
-	//TODO: this one is a bit trouble some to replace; i think ideally this should be an interface that
-	//has an eval method
+	// TODO: this one is a bit trouble some to replace; i think ideally this should be an interface that
+	// has an eval method
 	Program   *ast.BlockStmt           `json:"-"`
 	Settings  *model.SimulatorSettings `json:"settings"`
-	Errors    []error                  `json:"-"` //These represents errors preventing ActionList from being executed
+	Errors    []error                  `json:"-"` // These represents errors preventing ActionList from being executed
 	ErrorMsgs []string                 `json:"errors"`
 }
 

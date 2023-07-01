@@ -11,11 +11,11 @@ type Parser struct {
 	lex *lexer
 	res *gcs.ActionList
 
-	//lookahead
+	// lookahead
 	token []ast.Token
 	pos   int
 
-	//parseFn
+	// parseFn
 	prefixParseFns map[ast.TokenType]func() (ast.Expr, error)
 	infixParseFns  map[ast.TokenType]func(ast.Expr) (ast.Expr, error)
 }
@@ -33,7 +33,7 @@ func New(input string) *Parser {
 	p.res = &gcs.ActionList{
 		Program: ast.NewBlockStmt(0),
 	}
-	//expr functions
+	// expr functions
 	p.prefixParseFns[ast.ItemIdentifier] = p.parseIdent
 	p.prefixParseFns[ast.ItemNumber] = p.parseNumber
 	p.prefixParseFns[ast.ItemBool] = p.parseBool
@@ -74,7 +74,7 @@ func (p *Parser) consume(i ast.TokenType) (ast.Token, error) {
 func (p *Parser) next() ast.Token {
 	p.pos++
 	if p.pos == len(p.token) {
-		//grab more from the stream
+		// grab more from the stream
 		n := p.lex.nextItem()
 		p.token = append(p.token, n)
 	}
@@ -84,7 +84,7 @@ func (p *Parser) next() ast.Token {
 // backup backs the input stream up one token.
 func (p *Parser) backup() {
 	p.pos--
-	//no op if at beginning
+	// no op if at beginning
 	if p.pos < -1 {
 		p.pos = -1
 	}

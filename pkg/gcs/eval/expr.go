@@ -41,7 +41,7 @@ func (e *Eval) evalNumberLit(n *ast.NumberLit, env *Env) Obj {
 }
 
 func (e *Eval) evalStringLit(n *ast.StringLit, env *Env) Obj {
-	//strip the ""
+	// strip the ""
 	return &strval{
 		str: strings.Trim(n.Value, "\""),
 	}
@@ -84,11 +84,11 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 
 	fn := v.(*funcval)
-	//check number of param matches
+	// check number of param matches
 	if len(c.Args) != len(fn.Args) {
 		return nil, fmt.Errorf("unmatched number of params for fn %v", c.Fun.String())
 	}
-	//params are just variables assigned to a local env
+	// params are just variables assigned to a local env
 	local := NewEnv(env)
 	for i, v := range fn.Args {
 		param, err := e.evalExpr(c.Args[i], env)
@@ -116,8 +116,8 @@ func (e *Eval) evalUnaryExpr(b *ast.UnaryExpr, env *Env) (Obj, error) {
 	if err != nil {
 		return nil, err
 	}
-	//unary expressions should only result in number results
-	//otherwise panic for now?
+	// unary expressions should only result in number results
+	// otherwise panic for now?
 	r, ok := right.(*number)
 	if !ok {
 		return nil, fmt.Errorf("unary expression does not evaluate to a number, got %v ", right.Inspect())
@@ -132,7 +132,7 @@ func (e *Eval) evalUnaryExpr(b *ast.UnaryExpr, env *Env) (Obj, error) {
 }
 
 func (e *Eval) evalBinaryExpr(b *ast.BinaryExpr, env *Env) (Obj, error) {
-	//eval left, right, operator
+	// eval left, right, operator
 	left, err := e.evalExpr(b.Left, env)
 	if err != nil {
 		return nil, err
@@ -141,8 +141,8 @@ func (e *Eval) evalBinaryExpr(b *ast.BinaryExpr, env *Env) (Obj, error) {
 	if err != nil {
 		return nil, err
 	}
-	//binary expressions should only result in number results
-	//otherwise panic for now?
+	// binary expressions should only result in number results
+	// otherwise panic for now?
 	l, ok := left.(*number)
 	if !ok {
 		return nil, fmt.Errorf("binary expression does not evaluate to a number, got %v ", left.Inspect())
