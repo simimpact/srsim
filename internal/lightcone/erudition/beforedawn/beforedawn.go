@@ -93,7 +93,8 @@ func onAfterAction(mod *modifier.ModifierInstance, e event.ActionEvent) {
 			Name:   SomnusCorpus,
 			Source: mod.Owner(),
 			State: &somnusState{
-				amt: 0.40 + 0.08*amt,
+				amt:  0.40 + 0.08*amt,
+				used: false,
 			},
 		})
 	}

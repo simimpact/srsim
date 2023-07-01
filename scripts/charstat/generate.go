@@ -130,7 +130,7 @@ func FindCharSkills(skills map[string]SkillTreeConfig, id int) []SkillTreeConfig
 }
 
 func FindSkillInfo(skills map[string]SkillConfig, config AvatarConfig, key string) character.SkillInfo {
-	info := character.SkillInfo{}
+	var info character.SkillInfo
 	for k, value := range skills {
 		if !strings.HasPrefix(k, key) {
 			continue
@@ -227,7 +227,7 @@ func ProcessCharacter(
 			continue
 		}
 
-		trace := character.Trace{}
+		var trace character.Trace
 		if len(value.StatusAddList) > 0 {
 			trace.Stat = value.StatusAddList[0].GetType()
 			trace.Amount = value.StatusAddList[0].Value.Value

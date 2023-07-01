@@ -16,7 +16,7 @@ type Manager struct {
 	shld  shield.Absorb
 
 	isInAttack bool
-	attackInfo attackInfo
+	attackInfo attackInfo `exhaustruct:"optional"`
 }
 
 type attackInfo struct {
@@ -28,8 +28,9 @@ type attackInfo struct {
 
 func New(event *event.System, attr attribute.Modifier, shld shield.Absorb) *Manager {
 	return &Manager{
-		event: event,
-		attr:  attr,
-		shld:  shld,
+		event:      event,
+		attr:       attr,
+		shld:       shld,
+		isInAttack: false,
 	}
 }

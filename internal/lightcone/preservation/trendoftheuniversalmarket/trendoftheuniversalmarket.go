@@ -64,6 +64,8 @@ func onAfterBeingAttacked(mod *modifier.ModifierInstance, e event.AttackEndEvent
 		Source: mod.Owner(),
 		State: common.BurnState{
 			DEFDamagePercentage: state.dotDmg,
+			DamagePercentage:    0,
+			DamageValue:         0,
 		},
 		Chance:   state.dotChance,
 		Duration: 2,

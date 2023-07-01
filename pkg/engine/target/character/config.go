@@ -59,7 +59,7 @@ type Attack struct {
 type Skill struct {
 	SPNeed     int
 	TargetType model.TargetType
-	CanUse     SkillValidateFunc
+	CanUse     SkillValidateFunc `exhaustruct:"optional"`
 }
 
 type Ult struct {

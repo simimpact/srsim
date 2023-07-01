@@ -23,8 +23,9 @@ type Manager struct {
 
 func NewManager(engine engine.Engine) *Manager {
 	mgr := &Manager{
-		engine:  engine,
-		targets: make(map[key.TargetID]activeModifiers, 10),
+		engine:    engine,
+		targets:   make(map[key.TargetID]activeModifiers, 10),
+		turnCount: 0,
 	}
 	mgr.subscribe()
 	return mgr

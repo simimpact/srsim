@@ -13,7 +13,9 @@ func TestRemoveModifierUnknownTarget(t *testing.T) {
 	mod := key.Modifier("Test")
 
 	manager := Manager{
-		targets: make(map[key.TargetID]activeModifiers),
+		engine:    nil,
+		targets:   make(map[key.TargetID]activeModifiers),
+		turnCount: 0,
 	}
 
 	manager.RemoveModifier(target, mod)
@@ -131,7 +133,7 @@ func TestRemoveModifierWithOnRemoveListener(t *testing.T) {
 
 	mod := &ModifierInstance{
 		name:  name,
-		state: &state{},
+		state: &state{OnRemoveCalled: false},
 		listeners: Listeners{
 			OnRemove: func(modifier *ModifierInstance) {
 				state := modifier.State().(*state)
@@ -169,7 +171,7 @@ func TestRemoveModifierSelf(t *testing.T) {
 	mod := &ModifierInstance{
 		name:  name,
 		owner: target,
-		state: &state{},
+		state: &state{OnRemoveCalled: false},
 		listeners: Listeners{
 			OnRemove: func(modifier *ModifierInstance) {
 				state := modifier.State().(*state)

@@ -76,8 +76,15 @@ linters-settings:
     check-type-assertions: true
 
   exhaustruct:
-    include:
-    - 'github\.com/simimpact/srsim/pkg/engine/info'
+    exclude:
+    - 'github\.com/simimpact/srsim/pkg/engine/modifier\.Config'
+    - 'github\.com/simimpact/srsim/pkg/engine/modifier\.Listeners'
+    - 'github\.com/simimpact/srsim/pkg/engine/modifier\.ModifierInstance'
+    - 'github\.com/simimpact/srsim/pkg/engine/event'
+    - 'github\.com/simimpact/srsim/pkg/model'
+    - 'github\.com/simimpact/srsim/pkg/gcs'
+    - 'github\.com/simimpact/srsim/pkg/simulation'
+    - 'github\.com/simimpact/srsim/scripts'
 
   funlen:
     lines: 100
@@ -162,3 +169,6 @@ severity:
 
 issues:
   max-same-issues: 50
+  exclude-rules:
+  - source: "//noinspection"
+    linters: [ gocritic ]

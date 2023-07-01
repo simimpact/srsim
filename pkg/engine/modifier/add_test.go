@@ -21,8 +21,9 @@ func NewTestManagerForAdd(t *testing.T) (*Manager, *gomock.Controller) {
 	engine.EXPECT().IsValid(gomock.Any()).Return(true).AnyTimes()
 
 	manager := &Manager{
-		engine:  engine,
-		targets: make(map[key.TargetID]activeModifiers),
+		engine:    engine,
+		targets:   make(map[key.TargetID]activeModifiers),
+		turnCount: 0,
 	}
 	return manager, mockCtrl
 }
