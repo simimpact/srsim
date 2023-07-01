@@ -3,7 +3,6 @@ package combat
 import (
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/prop"
-	"github.com/simimpact/srsim/pkg/model"
 )
 
 func (mgr *Manager) totalDamage(h *info.Hit, base float64, dmg float64, crit bool) float64 {
@@ -12,13 +11,6 @@ func (mgr *Manager) totalDamage(h *info.Hit, base float64, dmg float64, crit boo
 
 	res := mgr.res(h)
 	vul := mgr.vul(h)
-
-	// ByPureDamage equation does not scale on DMG%, and break effect applies.
-	breakDmg := 1.0
-	if h.AttackType == model.AttackType_ELEMENT_DAMAGE {
-		breakDmg += h.Attacker.BreakEffect()
-		dmg = 1.0
-	}
 
 	// toughness multiplier
 	toughness_multiplier := 0.9
@@ -37,7 +29,7 @@ func (mgr *Manager) totalDamage(h *info.Hit, base float64, dmg float64, crit boo
 		crit_dmg += h.Attacker.CritDamage()
 	}
 
-	total := base * dmg * def_mult * res * vul * breakDmg * toughness_multiplier * fatigue * AllDamageReduce * crit_dmg
+	total := base * dmg * def_mult * res * vul * toughness_multiplier * fatigue * AllDamageReduce * crit_dmg
 	return total
 }
 

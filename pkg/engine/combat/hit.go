@@ -89,11 +89,17 @@ func (mgr *Manager) crit(h *info.Hit) bool {
 }
 
 func (mgr *Manager) bonusDamage(h *info.Hit) float64 {
-	dmg := 1.0 + h.Attacker.GetProperty(prop.AllDamagePercent)
-	dmg += h.Attacker.GetProperty(prop.DamagePercent(h.DamageType))
-
-	if h.AttackType == model.AttackType_DOT {
-		dmg += h.Attacker.GetProperty(prop.DOTDamagePercent)
+	dmg := 1.0
+	// Checks if hit doesn't use ByPureDamage equation
+	// Adds bEffect if ByPureDamage, and dmg% if not.
+	if h.BaseDamage[model.DamageFormula_BY_BREAK_DAMAGE] < 0 {
+		dmg += h.Attacker.GetProperty(prop.AllDamagePercent)
+		dmg += h.Attacker.GetProperty(prop.DamagePercent(h.DamageType))
+		if h.AttackType == model.AttackType_DOT {
+			dmg += h.Attacker.GetProperty(prop.DOTDamagePercent)
+		}
+	} else {
+		dmg += h.Attacker.BreakEffect()
 	}
 
 	return dmg
