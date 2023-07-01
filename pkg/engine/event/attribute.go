@@ -21,8 +21,9 @@ type LimboWaitHealEvent struct {
 	IsCancelled bool
 }
 
-func (e LimboWaitHealEvent) Cancelled() {
+func (e LimboWaitHealEvent) Cancelled() handler.CancellableEvent {
 	e.IsCancelled = true
+	return e
 }
 
 type TargetDeathEventHandler = handler.EventHandler[TargetDeathEvent]

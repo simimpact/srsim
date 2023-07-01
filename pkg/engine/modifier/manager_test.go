@@ -20,7 +20,8 @@ func NewTestManager(t *testing.T) (*modifier.Manager, *gomock.Controller) {
 	engine.EXPECT().
 		Stats(gomock.Any()).
 		DoAndReturn(func(target key.TargetID) *info.Stats {
-			attr := &info.Attributes{}
+			attr := new(info.Attributes)
+			*attr = info.DefaultAttribute()
 			mods := manager.EvalModifiers(target)
 			return info.NewStats(target, attr, mods)
 		}).
@@ -131,6 +132,7 @@ func TestReplaceStacking(t *testing.T) {
 	})
 	manager.AddModifier(target, info.Modifier{
 		Name:     mod,
+		Source:   target,
 		Duration: 2,
 	})
 

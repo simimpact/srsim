@@ -6,7 +6,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 
@@ -16,8 +15,8 @@ import (
 )
 
 var (
-	sha1ver   string // sha1 revision used to build the program
-	buildTime string // when the executable was built
+	sha1ver string // sha1 revision used to build the program
+	// buildTime string // when the executable was built
 )
 
 type opts struct {
@@ -27,7 +26,6 @@ type opts struct {
 
 // command line tool; following options are available:
 func main() {
-
 	var opt opts
 	var version bool
 	flag.BoolVar(&version, "version", false, "check gcsim version (git hash)")
@@ -57,7 +55,7 @@ func main() {
 		return
 	}
 
-	script, err := ioutil.ReadFile(opt.script)
+	script, err := os.ReadFile(opt.script)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -77,7 +75,7 @@ func main() {
 }
 
 func ReadConfig(path string) (*model.SimConfig, error) {
-	src, err := ioutil.ReadFile(path)
+	src, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}

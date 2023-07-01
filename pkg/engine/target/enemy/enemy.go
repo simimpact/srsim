@@ -1,3 +1,3 @@
 package enemy
 
-type EnemyInstance interface{}
+type Instance interface{}

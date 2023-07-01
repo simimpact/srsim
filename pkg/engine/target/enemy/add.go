@@ -9,7 +9,6 @@ import (
 )
 
 func (mgr *Manager) AddEnemy(id key.TargetID, enemy *model.Enemy) error {
-
 	lvl := int(enemy.Level)
 
 	// TODO: placeholder. should generate curve from dm (leaving to whomever implements enemy)
@@ -54,10 +53,14 @@ func (mgr *Manager) AddEnemy(id key.TargetID, enemy *model.Enemy) error {
 
 	mgr.attr.AddTarget(id, info.Attributes{
 		Level:         lvl,
+		Stance:        enemy.Toughness,
 		MaxStance:     enemy.Toughness,
 		BaseStats:     baseStats,
 		BaseDebuffRES: debuffRES,
 		Weakness:      weakness,
+		HPRatio:       1.0,
+		Energy:        0,
+		MaxEnergy:     0,
 	})
 
 	info := info.Enemy{
@@ -69,7 +72,7 @@ func (mgr *Manager) AddEnemy(id key.TargetID, enemy *model.Enemy) error {
 	mgr.info[id] = info
 
 	mgr.engine.Events().EnemyAdded.Emit(event.EnemyAddedEvent{
-		Id:   id,
+		ID:   id,
 		Info: info,
 	})
 	return nil

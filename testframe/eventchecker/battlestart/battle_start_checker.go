@@ -2,6 +2,7 @@ package battlestart
 
 import (
 	"fmt"
+
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/event/handler"
 	"github.com/simimpact/srsim/testframe/teststub"

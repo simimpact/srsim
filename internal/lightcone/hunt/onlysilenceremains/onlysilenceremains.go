@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	OnlySilenceRemains       key.Modifier = "only_silence_remains"
-	OnlySilenceRemainsCRBuff key.Modifier = "only_silence_remians_cr_buff"
+	OnlySilenceRemains       key.Modifier = "only-silence-remains"
+	OnlySilenceRemainsCRBuff key.Modifier = "only-silence-remians-cr-buff"
 )
 
 // Increases ATK of its wearer by 16/20/24/28/32%. If there are 2 or fewer
@@ -32,21 +32,21 @@ func init() {
 
 // Note: does not properly handle enemies running away (such as trotters)
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	atk_amt := 0.12 + 0.04*float64(lc.Imposition)
-	cr_amt := 0.09 + 0.03*float64(lc.Imposition)
+	atkAmt := 0.12 + 0.04*float64(lc.Imposition)
+	crAmt := 0.09 + 0.03*float64(lc.Imposition)
 
 	engine.Events().EnemyAdded.Subscribe(func(e event.EnemyAddedEvent) {
-		updateCRBuff(engine, owner, cr_amt)
+		updateCRBuff(engine, owner, crAmt)
 	})
 
 	engine.Events().TargetDeath.Subscribe(func(e event.TargetDeathEvent) {
-		updateCRBuff(engine, owner, cr_amt)
+		updateCRBuff(engine, owner, crAmt)
 	})
 
 	engine.AddModifier(owner, info.Modifier{
 		Name:   OnlySilenceRemains,
 		Source: owner,
-		Stats:  info.PropMap{prop.ATKPercent: atk_amt},
+		Stats:  info.PropMap{prop.ATKPercent: atkAmt},
 	})
 }
 

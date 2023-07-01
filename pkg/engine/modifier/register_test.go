@@ -30,7 +30,7 @@ func TestRegisterWithListeners(t *testing.T) {
 	})
 
 	mod := &ModifierInstance{
-		state: &state{},
+		state: &state{Called: 0},
 	}
 	modifierCatalog[key].Listeners.OnAdd(mod)
 	s := mod.state.(*state)

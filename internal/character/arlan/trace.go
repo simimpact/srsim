@@ -22,7 +22,6 @@ const (
 )
 
 func init() {
-
 	// A2 Register
 	modifier.Register(A2, modifier.Config{
 		Listeners: modifier.Listeners{
@@ -42,7 +41,7 @@ func init() {
 	modifier.Register(A6, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.ModifierInstance) {
-				// TODO
+				// TODO: https://github.com/simimpact/srsim/issues/13
 			},
 			OnAfterBeingAttacked: func(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
 				mod.RemoveSelf()

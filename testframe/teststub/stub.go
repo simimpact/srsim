@@ -2,6 +2,8 @@ package teststub
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/simimpact/srsim/pkg/engine/event/handler"
 	"github.com/simimpact/srsim/pkg/engine/logging"
 	"github.com/simimpact/srsim/pkg/gcs/eval"
@@ -9,7 +11,6 @@ import (
 	"github.com/simimpact/srsim/pkg/simulation"
 	"github.com/simimpact/srsim/testframe/testcfg"
 	"github.com/stretchr/testify/suite"
-	"time"
 )
 
 type Stub struct {
@@ -75,13 +76,13 @@ func (s *Stub) Expect(checkers ...EventChecker) {
 			toContinue, err = checkers[i](e)
 			if toContinue {
 				continue
-			} else {
-				if err != nil {
-					s.FailNow("Event Checker err", err)
-					return
-				}
-				break
 			}
+
+			if err != nil {
+				s.FailNow("Event Checker err", err)
+				return
+			}
+			break
 		}
 		if s.autoContinue || !toContinue {
 			s.haltSignaller <- struct{}{}

@@ -12,9 +12,9 @@ import (
 )
 
 const (
-	Check    key.Modifier = "sleep_like_the_dead_check"
-	Buff     key.Modifier = "sleep_like_the_dead_buff"
-	Cooldown key.Modifier = "sleep_like_the_dead_cooldown"
+	Check    key.Modifier = "sleep-like-the-dead-check"
+	Buff     key.Modifier = "sleep-like-the-dead-buff"
+	Cooldown key.Modifier = "sleep-like-the-dead-cooldown"
 )
 
 // Increases the wearer's CRIT DMG by 30/35/40/45/50%. When the wearer's Basic
@@ -44,18 +44,17 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	crit_dmg := 0.25 + 0.05*float64(lc.Imposition)
-	crit_rate := 0.3 + 0.06*float64(lc.Imposition)
+	critDmg := 0.25 + 0.05*float64(lc.Imposition)
+	critRate := 0.3 + 0.06*float64(lc.Imposition)
 
 	engine.AddModifier(owner, info.Modifier{
 		Name:   Check,
 		Source: owner,
 		Stats: info.PropMap{
-			prop.CritDMG: crit_dmg,
+			prop.CritDMG: critDmg,
 		},
-		State: crit_rate,
+		State: critRate,
 	})
-
 }
 
 func onAfterHit(mod *modifier.ModifierInstance, e event.HitEndEvent) {

@@ -8,9 +8,13 @@ import (
 )
 
 type testCancelEvent struct {
+	cancelled bool
 }
 
-func (e testCancelEvent) Cancelled() {}
+func (e testCancelEvent) Cancelled() CancellableEvent {
+	e.cancelled = true
+	return e
+}
 
 func TestCancelableEmitNoSubscription(t *testing.T) {
 	var handler CancelableEventHandler[testCancelEvent]

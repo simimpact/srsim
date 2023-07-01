@@ -1,6 +1,6 @@
 package modifier
 
-//go:generate mockgen -destination=../../mock/mock_modifier.go -package=mock -mock_names ModifierEval=MockModifier github.com/simimpact/srsim/pkg/engine/modifier ModifierEval
+//go:generate mockgen -destination=../../mock/mock_modifier.go -package=mock -mock_names Eval=MockModifier github.com/simimpact/srsim/pkg/engine/modifier Eval
 
 import (
 	"github.com/simimpact/srsim/pkg/engine"
@@ -11,7 +11,7 @@ import (
 
 type activeModifiers []*ModifierInstance
 
-type ModifierEval interface {
+type Eval interface {
 	EvalModifiers(target key.TargetID) info.ModifierState
 }
 
@@ -23,8 +23,9 @@ type Manager struct {
 
 func NewManager(engine engine.Engine) *Manager {
 	mgr := &Manager{
-		engine:  engine,
-		targets: make(map[key.TargetID]activeModifiers, 10),
+		engine:    engine,
+		targets:   make(map[key.TargetID]activeModifiers, 10),
+		turnCount: 0,
 	}
 	mgr.subscribe()
 	return mgr

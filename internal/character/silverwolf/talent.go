@@ -17,11 +17,6 @@ const (
 	BugSPD      key.Modifier = "silverwolf-bug-speed"
 )
 
-type talentState struct {
-	penAmt float64
-	cd     int
-}
-
 func init() {
 	modifier.Register(BugATK, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
@@ -70,7 +65,7 @@ func init() {
 	})
 }
 
-func newRandomBug(engine engine.Engine, target key.TargetID, source key.TargetID) info.Modifier {
+func newRandomBug(engine engine.Engine, target, source key.TargetID) info.Modifier {
 	char, _ := engine.CharacterInfo(source)
 	bugs := []key.Modifier{}
 	// get list of bugs not present on target

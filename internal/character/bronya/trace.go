@@ -16,7 +16,6 @@ const (
 )
 
 func init() {
-
 	// A2 Register
 	modifier.Register(A2, modifier.Config{
 		Listeners: modifier.Listeners{
@@ -59,7 +58,6 @@ func init() {
 }
 
 func (c *char) initTraces() {
-
 	// A2
 	if c.info.Traces["1101101"] {
 		c.engine.AddModifier(c.id, info.Modifier{
@@ -80,7 +78,7 @@ func (c *char) initTraces() {
 		}
 
 		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAddedEvent) {
-			c.engine.AddModifier(e.Id, info.Modifier{
+			c.engine.AddModifier(e.ID, info.Modifier{
 				Name:   A4,
 				Source: c.id,
 			})
@@ -99,7 +97,7 @@ func (c *char) initTraces() {
 		}
 
 		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAddedEvent) {
-			c.engine.AddModifier(e.Id, info.Modifier{
+			c.engine.AddModifier(e.ID, info.Modifier{
 				Name:   A6,
 				Source: c.id,
 			})

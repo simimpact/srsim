@@ -125,9 +125,12 @@ func (mgr *Manager) ExecuteUlt(act action.Action) (target.ExecutableUlt, error) 
 				})
 			},
 		}, nil
-	} else if multiUlt, ok := char.(info.MultiUlt); ok {
+	}
+
+	if multiUlt, ok := char.(info.MultiUlt); ok {
 		if act.Type != key.ActionUltAttack && act.Type != key.ActionUltSkill { // if key.ActionUlt is used
-			return target.ExecutableUlt{}, fmt.Errorf("wrong action key; expected ult_attack or ult_skill, got %s", string(act.Type))
+			return target.ExecutableUlt{}, fmt.Errorf(
+				"wrong action key; expected ult_attack or ult_skill, got %s", string(act.Type))
 		}
 
 		primaryTarget, err := evaltarget.Evaluate(mgr.engine, evaltarget.Info{

@@ -15,8 +15,8 @@ const (
 	Buff  key.Modifier = "the-seriousness-of-breakfast-buff"
 )
 
-//Increases the wearer's DMG by 12/15/18/21/24%.
-//For every defeated enemy, the wearer's ATK increases by 4/5/6/7/8%, stacking up to 3 time(s).
+// Increases the wearer's DMG by 12/15/18/21/24%.
+// For every defeated enemy, the wearer's ATK increases by 4/5/6/7/8%, stacking up to 3 time(s).
 
 func init() {
 	lightcone.Register(key.TheSeriousnessofBreakfast, lightcone.Config{

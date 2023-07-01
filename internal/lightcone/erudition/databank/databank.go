@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	DataBank key.Modifier = "data_bank"
+	DataBank key.Modifier = "data-bank"
 )
 
 func init() {
@@ -36,7 +36,6 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		Source: owner,
 		State:  0.21 + float64(lc.Imposition)*0.07,
 	})
-
 }
 
 func onBeforeHit(mod *modifier.ModifierInstance, e event.HitStartEvent) {

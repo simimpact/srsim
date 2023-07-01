@@ -9,10 +9,6 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-const (
-	mod key.Modifier = "sprightly-vonwacq"
-)
-
 // 2pc:
 // Increases the wearer's Energy Regeneration Rate by 5%.
 // When the wearer's SPD reaches 120 or higher,

@@ -35,7 +35,6 @@ func init() {
 			},
 		},
 	})
-
 }
 
 func (c *char) addTalentMod() {

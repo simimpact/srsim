@@ -26,5 +26,4 @@ func (c *char) E2TargetDeathListener(e event.TargetDeathEvent) {
 	for _, target := range c.engine.Enemies() {
 		AddWindShearTalent(c.info, c.engine, c.id, target, duration, 1)
 	}
-
 }

@@ -52,7 +52,7 @@ func TestCharAdd(t *testing.T) {
 		t.FailNow()
 	}
 
-	eval := New(res.Program, context.Background())
+	eval := New(context.Background(), res.Program)
 	err = eval.Init()
 	if err != nil {
 		t.Error(err)

@@ -2,8 +2,9 @@ package teststub
 
 import (
 	"fmt"
-	"github.com/simimpact/srsim/pkg/engine/event/handler"
 	"time"
+
+	"github.com/simimpact/srsim/pkg/engine/event/handler"
 )
 
 type TestLogger struct {
@@ -11,10 +12,10 @@ type TestLogger struct {
 	haltSignaller chan struct{}
 }
 
-type logEventWrapper struct {
-	EventName string
-	Data      interface{}
-}
+// type logEventWrapper struct {
+// 	EventName string
+// 	Data      interface{}
+// }
 
 func (l *TestLogger) Log(e interface{}) {
 	fmt.Printf("Event Received: %+#v\n", e)

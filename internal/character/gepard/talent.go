@@ -26,7 +26,6 @@ func init() {
 }
 
 func talentRevive(mod *modifier.ModifierInstance) bool {
-
 	// Dispel all debuffs
 	mod.Engine().DispelStatus(mod.Owner(), info.Dispel{
 		Status: model.StatusType_STATUS_DEBUFF,
@@ -36,7 +35,6 @@ func talentRevive(mod *modifier.ModifierInstance) bool {
 	// Queue Heal
 	mod.Engine().InsertAbility(info.Insert{
 		Execute: func() {
-
 			// Set HP to specified Percentage
 			mod.Engine().SetHP(
 				mod.Owner(), mod.Owner(), mod.OwnerStats().MaxHP()*mod.State().(talentState).revivePerc)
@@ -53,8 +51,9 @@ func talentRevive(mod *modifier.ModifierInstance) bool {
 
 			mod.RemoveSelf()
 		},
-		Source:   mod.Owner(),
-		Priority: info.CharReviveSelf,
+		Source:     mod.Owner(),
+		Priority:   info.CharReviveSelf,
+		AbortFlags: nil,
 	})
 
 	return true

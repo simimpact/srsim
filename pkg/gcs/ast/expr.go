@@ -61,12 +61,12 @@ type (
 		Right Expr // operand
 	}
 
-	//A BinaryExpr node represents a binary expression i.e. a > b, 1 + 1, etc..
+	// A BinaryExpr node represents a binary expression i.e. a > b, 1 + 1, etc..
 	BinaryExpr struct {
 		Pos
 		Left  Expr
 		Right Expr  // need to evalute to same type as lhs
-		Op    Token //should be > itemCompareOP and < itemDot
+		Op    Token // should be > itemCompareOP and < itemDot
 	}
 
 	MapExpr struct {
@@ -253,29 +253,29 @@ func (i *Ident) Copy() Node {
 	return i.CopyIdent()
 }
 
-func (b *Ident) String() string {
+func (i *Ident) String() string {
 	var sb strings.Builder
-	b.writeTo(&sb)
+	i.writeTo(&sb)
 	return sb.String()
 }
 
-func (b *Ident) writeTo(sb *strings.Builder) {
-	sb.WriteString(b.Value)
+func (i *Ident) writeTo(sb *strings.Builder) {
+	sb.WriteString(i.Value)
 }
 
 // CallExpr.
 
-func (c *CallExpr) CopyFn() Expr {
-	if c == nil {
+func (f *CallExpr) CopyFn() Expr {
+	if f == nil {
 		return nil
 	}
 	n := &CallExpr{
-		Pos:  c.Pos,
-		Fun:  c.Fun.CopyExpr(),
-		Args: make([]Expr, 0, len(c.Args)),
+		Pos:  f.Pos,
+		Fun:  f.Fun.CopyExpr(),
+		Args: make([]Expr, 0, len(f.Args)),
 	}
-	for i := range c.Args {
-		n.Args = append(n.Args, c.Args[i].CopyExpr())
+	for i := range f.Args {
+		n.Args = append(n.Args, f.Args[i].CopyExpr())
 	}
 
 	return n
@@ -295,10 +295,10 @@ func (f *CallExpr) String() string {
 	return sb.String()
 }
 
-func (b *CallExpr) writeTo(sb *strings.Builder) {
-	b.Fun.writeTo(sb)
+func (f *CallExpr) writeTo(sb *strings.Builder) {
+	f.Fun.writeTo(sb)
 	sb.WriteString("(")
-	for i, v := range b.Args {
+	for i, v := range f.Args {
 		if i > 0 {
 			sb.WriteString(", ")
 		}

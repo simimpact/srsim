@@ -62,7 +62,6 @@ func (sim *Simulation) ultCheck() error {
 				},
 				Execute: func() { sim.executeUlt(act) }, // TODO: error handling
 			})
-
 		}
 	}
 	return nil
@@ -71,37 +70,37 @@ func (sim *Simulation) ultCheck() error {
 // execute everything on the queue. After queue execution is complete, return the next stateFn
 // as the next state to run. This logic will run the exitCheck on each execution. If an exit
 // condition is met, will return that state instead
-func (s *Simulation) executeQueue(phase info.BattlePhase, next stateFn) (stateFn, error) {
+func (sim *Simulation) executeQueue(phase info.BattlePhase, next stateFn) (stateFn, error) {
 	// always ult check when calling executeQueue
-	if err := s.ultCheck(); err != nil {
+	if err := sim.ultCheck(); err != nil {
 		return next, err
 	}
 
 	// if active is not a character, cannot prform any queue execution until after ActionEnd
-	if phase < info.ActionEnd && !s.IsCharacter(s.Active) {
-		return s.exitCheck(next)
+	if phase < info.ActionEnd && !sim.IsCharacter(sim.Active) {
+		return sim.exitCheck(next)
 	}
 
-	for !s.Queue.IsEmpty() {
-		insert := s.Queue.Pop()
+	for !sim.Queue.IsEmpty() {
+		insert := sim.Queue.Pop()
 
 		// if source has no HP, skip this insert
-		if s.Attr.HPRatio(insert.Source) <= 0 {
+		if sim.Attr.HPRatio(insert.Source) <= 0 {
 			continue
 		}
 
 		// if the source has an abort flag, skip this insert
-		if s.HasBehaviorFlag(insert.Source, insert.AbortFlags...) {
+		if sim.HasBehaviorFlag(insert.Source, insert.AbortFlags...) {
 			continue
 		}
 
 		insert.Execute()
 
 		// attempt to exit. If can exit, stop sim now
-		if next, err := s.exitCheck(next); next == nil || err != nil {
+		if next, err := sim.exitCheck(next); next == nil || err != nil {
 			return next, err
 		}
-		if err := s.ultCheck(); err != nil {
+		if err := sim.ultCheck(); err != nil {
 			return next, err
 		}
 	}
@@ -208,8 +207,8 @@ func (sim *Simulation) executeInsert(i info.Insert) {
 	})
 }
 
-func (s *Simulation) clearActionTargets() {
-	for k := range s.ActionTargets {
-		delete(s.ActionTargets, k)
+func (sim *Simulation) clearActionTargets() {
+	for k := range sim.ActionTargets {
+		delete(sim.ActionTargets, k)
 	}
 }

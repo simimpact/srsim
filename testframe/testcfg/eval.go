@@ -19,5 +19,5 @@ func StandardTestEval() *eval.Eval {
 	if err != nil {
 		panic(err)
 	}
-	return eval.New(res.Program, context.Background())
+	return eval.New(context.Background(), res.Program)
 }

@@ -70,7 +70,7 @@ func (c *char) e4() {
 		}
 
 		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAddedEvent) {
-			c.engine.AddModifier(e.Id, info.Modifier{
+			c.engine.AddModifier(e.ID, info.Modifier{
 				Name:   E4,
 				Source: c.id,
 			})

@@ -39,7 +39,6 @@ func init() {
 		StatusType: model.StatusType_STATUS_BUFF,
 		Listeners: modifier.Listeners{
 			OnLimboWaitHeal: func(mod *modifier.ModifierInstance) bool {
-
 				// Dispel all debuffs
 				mod.Engine().DispelStatus(mod.Owner(), info.Dispel{
 					Status: model.StatusType_STATUS_DEBUFF,
@@ -52,8 +51,9 @@ func init() {
 						mod.Engine().SetHP(
 							mod.Owner(), mod.Owner(), mod.OwnerStats().MaxHP()*0.25)
 					},
-					Source:   mod.Owner(),
-					Priority: info.CharReviveSelf,
+					Source:     mod.Owner(),
+					Priority:   info.CharReviveSelf,
+					AbortFlags: nil,
 				})
 
 				mod.RemoveSelf()
@@ -77,7 +77,6 @@ func init() {
 			},
 		},
 	})
-
 }
 
 func (c *char) e2() {

@@ -42,6 +42,7 @@ func NewEnv(parent *Env) *Env {
 	}
 }
 
+//nolint:gocritic // *Obj is a ptrToRefParam, should be refactored to use Obj instead
 func (e *Env) v(s string) (*Obj, error) {
 	v, ok := e.varMap[s]
 	if ok {
@@ -62,7 +63,7 @@ func (e *Eval) addConstant(name string, value Obj, env *Env) {
 	env.varMap[name] = &value
 }
 
-func New(ast *ast.BlockStmt, ctx context.Context) *Eval {
+func New(ctx context.Context, ast *ast.BlockStmt) *Eval {
 	e := &Eval{AST: ast}
 	e.ctx = ctx
 	return e
@@ -157,9 +158,8 @@ func (n *null) Typ() ObjTyp     { return typNull }
 func (n *number) Inspect() string {
 	if n.isFloat {
 		return strconv.FormatFloat(n.fval, 'f', -1, 64)
-	} else {
-		return strconv.FormatInt(n.ival, 10)
 	}
+	return strconv.FormatInt(n.ival, 10)
 }
 func (n *number) Typ() ObjTyp { return typNum }
 
@@ -179,11 +179,11 @@ func (b *bfuncval) Typ() ObjTyp     { return typBif }
 func (r *retval) Inspect() string {
 	return r.res.Inspect()
 }
-func (n *retval) Typ() ObjTyp { return typRet }
+func (r *retval) Typ() ObjTyp { return typRet }
 
 // actionval.
 func (a *actionval) Inspect() string {
-	targeteval := ""
+	var targeteval string
 	switch a.val.TargetEvaluator {
 	case evaltarget.First:
 		targeteval = "First"

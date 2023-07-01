@@ -9,7 +9,7 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-const BASE_GAUGE float64 = 10000.0
+const BaseGauge float64 = 10000.0
 
 type target struct {
 	id    key.TargetID
@@ -18,7 +18,7 @@ type target struct {
 
 type Manager struct {
 	event *event.System
-	attr  attribute.AttributeGetter
+	attr  attribute.Getter
 
 	// TODO: I'd create a custom data type/struct that contains both order & targetIndex. It then
 	// manages all operations on the order array and keeps the index map up to date for easy access
@@ -30,13 +30,16 @@ type Manager struct {
 	totalAV      float64
 }
 
-func New(e *event.System, attr attribute.AttributeGetter) *Manager {
+func New(e *event.System, attr attribute.Getter) *Manager {
 	mgr := &Manager{
-		event:       e,
-		attr:        attr,
-		order:       make([]*target, 0, 10),
-		targetIndex: make(map[key.TargetID]int, 10),
-		gaugeCost:   1.0,
+		event:        e,
+		attr:         attr,
+		order:        make([]*target, 0, 10),
+		targetIndex:  make(map[key.TargetID]int, 10),
+		gaugeCost:    1.0,
+		activeTurn:   false,
+		activeTarget: 0,
+		totalAV:      0,
 	}
 	return mgr
 }
@@ -61,7 +64,7 @@ func (mgr *Manager) AddTargets(ids ...key.TargetID) {
 	for _, id := range ids {
 		t := &target{
 			id:    id,
-			gauge: BASE_GAUGE,
+			gauge: BaseGauge,
 		}
 		mgr.order = append(mgr.order, t)
 		mgr.targetIndex[id] = len(mgr.order) - 1
@@ -126,7 +129,7 @@ func (mgr *Manager) ResetTurn() error {
 			"target at top of order must have 0 gauge to call reset (their turn is active) %+v", mgr.order[0])
 	}
 	mgr.activeTurn = false
-	mgr.target(mgr.activeTarget).gauge = BASE_GAUGE * mgr.gaugeCost
+	mgr.target(mgr.activeTarget).gauge = BaseGauge * mgr.gaugeCost
 
 	// Resets the gauge of the target taking their turn (target at top of stack). New gauge is set at
 	// BASE_GAUGE * gaugeCost

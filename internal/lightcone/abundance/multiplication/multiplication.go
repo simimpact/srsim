@@ -30,7 +30,6 @@ func init() {
 			},
 		},
 	})
-
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
