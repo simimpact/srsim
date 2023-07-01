@@ -51,8 +51,8 @@ func (mgr *Manager) res(h *info.Hit) float64 {
 func (mgr *Manager) vul(h *info.Hit) float64 {
 	vul := 1.0 + h.Defender.GetProperty(prop.AllDamageTaken)
 	vul += h.Attacker.GetProperty(prop.DamageTaken(h.DamageType))
-	if vul > 1.35 {
-		vul = 1.35
+	if vul > 3.5 {
+		vul = 3.5
 	}
 	return vul
 }
