@@ -1,5 +1,7 @@
 package combat
 
+//go:generate go run generate.go
+
 import (
 	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/event"
