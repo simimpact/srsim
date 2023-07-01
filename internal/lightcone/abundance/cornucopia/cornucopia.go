@@ -27,7 +27,7 @@ func init() {
 	modifier.Register(CornucopiaCheck, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeAction: buffHealsOnSkillUlt,
-			OnAfterAction: removeHealBuff,
+			OnAfterAction:  removeHealBuff,
 		},
 	})
 	//The actual buff modifier goes here
@@ -36,28 +36,30 @@ func init() {
 	})
 }
 
-//When the wearer uses their Skill or Ultimate, their Outgoing Healing increases by 12%(S1)
+// When the wearer uses their Skill or Ultimate, their Outgoing Healing increases by 12%(S1)
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	//checker goes here
-	engine.AddModifier(owner, info.Modifier{ 
+	engine.AddModifier(owner, info.Modifier{
 		Name:   CornucopiaCheck,
 		Source: owner,
-		State:  0.09 + 0.03 * float64(lc.Imposition),
+		State:  0.09 + 0.03*float64(lc.Imposition),
 	})
 }
-//add buff only on skill and ult actions
+
+// add buff only on skill and ult actions
 func buffHealsOnSkillUlt(mod *modifier.ModifierInstance, e event.ActionEvent) {
 	healAmt := mod.State().(float64)
 	switch e.AttackType {
-	case model.AttackType_SKILL, model.AttackType_ULT :
+	case model.AttackType_SKILL, model.AttackType_ULT:
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-			Name:     CornucopiaBuff,
-			Source:   mod.Owner(),
-			Stats:    info.PropMap{prop.HealBoost: healAmt},
+			Name:   CornucopiaBuff,
+			Source: mod.Owner(),
+			Stats:  info.PropMap{prop.HealBoost: healAmt},
 		})
 	}
 }
-//remove buff after each "action"
-func removeHealBuff(mod *modifier.ModifierInstance, e event.ActionEvent)  {
+
+// remove buff after each "action"
+func removeHealBuff(mod *modifier.ModifierInstance, e event.ActionEvent) {
 	mod.Engine().RemoveModifier(mod.Owner(), CornucopiaBuff)
 }

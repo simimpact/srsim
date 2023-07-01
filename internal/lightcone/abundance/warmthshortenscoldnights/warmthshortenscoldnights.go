@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	CheckNBuff   key.Modifier = "warmth_shortens_cold_nights"
+	CheckNBuff key.Modifier = "warmth_shortens_cold_nights"
 )
 
 func init() {
@@ -37,15 +37,16 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	engine.AddModifier(owner, info.Modifier{
 		Name:   CheckNBuff,
 		Source: owner,
-		Stats:  info.PropMap{prop.HPPercent: amt}, //static "buff"
-		State:  0.015 + 0.005 * float64(lc.Imposition), //state to pass into check logic
+		Stats:  info.PropMap{prop.HPPercent: amt},    //static "buff"
+		State:  0.015 + 0.005*float64(lc.Imposition), //state to pass into check logic
 	})
 }
-//if basic atk/skill, heal the whole team by x%
+
+// if basic atk/skill, heal the whole team by x%
 func healTeamOnBasicOrSkill(mod *modifier.ModifierInstance, e event.ActionEvent) {
 	amt := mod.State().(float64)
 	switch e.AttackType {
-	case model.AttackType_NORMAL, model.AttackType_SKILL :
+	case model.AttackType_NORMAL, model.AttackType_SKILL:
 		//apply team heal with % based on target
 		mod.Engine().Heal(info.Heal{
 			Targets:  mod.Engine().Characters(), //fetch alive allies IDs through the engine

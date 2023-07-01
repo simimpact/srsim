@@ -1,11 +1,22 @@
 linters:
   disable-all: true
   enable:
-  - gosimple
-  - govet
-  - ineffassign
-  - staticcheck
-  - unused
+  - gosimple # specializes in simplifying a code
+  - govet # reports suspicious constructs, such as Printf calls whose arguments do not align with the format string
+  - ineffassign # detects when assignments to existing variables are not used
+  - staticcheck # is a go vet on steroids, applying a ton of static analysis checks
+  - unused # checks for unused constants, variables, functions and types
+  - asasalint # checks for pass []any as any in variadic func(...any)
+  - typecheck # like the front-end of a Go compiler, parses and type-checks Go code
+  - bidichk # checks for dangerous unicode character sequences
+  # - cyclop # checks function and package cyclomatic complexity
+  - dogsled # checks assignments with too many blank identifiers (e.g. x, , , _, := f())
+  # - dupl # tool for code clone detection
+  - errchkjson # checks for unnecessary json marshal error checks
+  - errorlint # finds code that will cause problems with the error wrapping scheme introduced in Go 1.13
+  # - exhaustive # checks exhaustiveness of enum switch statements
+  - gofmt # go fmt requirement
+  - goimports # in addition to fixing imports, goimports also formats your code in the same style as gofmt
 
 linters-settings:
   govet:
@@ -14,6 +25,18 @@ linters-settings:
     disable:
     - fieldalignment # great for micro-optimizations, too much work for us to maintain
     - shadow # can help to find hard to find bugs, but annoying to make golang code compatible
+
+  cyclop:
+    max-complexity: 30
+    package-average: 10.0
+
+  exhaustruct:
+    exclude:
+      - 'modifier\.Config$'
+      - 'modifier\.Listeners'
+      - 'ast'
+      - 'model\.'
+      - 'generate\.go'
 
 issues:
   max-same-issues: 50

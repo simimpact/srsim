@@ -1,8 +1,9 @@
 package handler
 
 import (
-	"github.com/simimpact/srsim/pkg/engine/logging"
 	"sort"
+
+	"github.com/simimpact/srsim/pkg/engine/logging"
 )
 
 // Priority EventHandler that will execute listeners in order of priority (ascending)
