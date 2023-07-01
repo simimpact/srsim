@@ -1,7 +1,6 @@
 package enemy
 
 import (
-	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/prop"
@@ -53,12 +52,12 @@ func (mgr *Manager) AddEnemy(id key.TargetID, enemy *model.Enemy) error {
 		}
 	}
 
-	mgr.attr.AddTarget(id, attribute.BaseStats{
-		Level:     lvl,
-		MaxStance: enemy.Toughness,
-		Stats:     baseStats,
-		DebuffRES: debuffRES,
-		Weakness:  weakness,
+	mgr.attr.AddTarget(id, info.Attributes{
+		Level:         lvl,
+		MaxStance:     enemy.Toughness,
+		BaseStats:     baseStats,
+		BaseDebuffRES: debuffRES,
+		Weakness:      weakness,
 	})
 
 	info := info.Enemy{

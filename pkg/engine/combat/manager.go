@@ -1,5 +1,7 @@
 package combat
 
+//go:generate go run generate.go
+
 import (
 	"math/rand"
 

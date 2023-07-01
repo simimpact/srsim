@@ -2,6 +2,8 @@
 // character stats
 package attribute
 
+//go:generate mockgen -destination=../../mock/mock_attribute.go -package=mock -mock_names AttributeModifier=MockAttribute github.com/simimpact/srsim/pkg/engine/attribute AttributeModifier
+
 import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
@@ -21,7 +23,7 @@ type AttributeGetter interface {
 type AttributeModifier interface {
 	AttributeGetter
 
-	AddTarget(target key.TargetID, base BaseStats) error
+	AddTarget(target key.TargetID, base info.Attributes) error
 
 	SetHP(target, source key.TargetID, amt float64, isDamage bool) error
 	ModifyHPByRatio(target, source key.TargetID, data info.ModifyHPByRatio, isDamage bool) error
