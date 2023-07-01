@@ -27,13 +27,12 @@ linters:
   # TODO: use this when merged into tagliatelle https://github.com/ldez/tagliatelle/pull/21
 
   ## code complexity detectors
-  # - cyclop # checks function and package cyclomatic complexity
-  # - exhaustive # checks exhaustiveness of enum switch statements
-  # - funlen # tool for detection of long functions
+  - nestif # reports deeply nested if statements
   # - lll # reports long lines
+  # - funlen # tool for detection of long functions
   # - gocognit # computes and checks the cognitive complexity of functions
   # - gocyclo # computes and checks the cyclomatic complexity of functions
-  # - nestif # reports deeply nested if statements
+  # - cyclop # checks function and package cyclomatic complexity
 
   ## code smell (can lead to errors/bugs)
   - asasalint # checks for pass []any as any in variadic func(...any)
