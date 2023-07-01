@@ -53,7 +53,7 @@ func (s *Service) emitStanceChange(target, source key.TargetID, prevS, newS floa
 			Source: source,
 		})
 	} else if prevS == 0 {
-		s.event.StanceBreakEnd.Emit(event.StanceBreakEndEvent{
+		s.event.StanceReset.Emit(event.StanceResetEvent{
 			Target: target,
 		})
 	}

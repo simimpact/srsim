@@ -149,7 +149,7 @@ func (mgr *Manager) subscribe() {
 	events.EnergyChange.Subscribe(mgr.energyChange)
 	events.StanceChange.Subscribe(mgr.stanceChange)
 	events.StanceBreak.Subscribe(mgr.stanceBreak)
-	events.StanceBreakEnd.Subscribe(mgr.stanceBreakEnd)
+	events.StanceReset.Subscribe(mgr.stanceBreakEnd)
 
 	// shield events
 	events.ShieldAdded.Subscribe(mgr.shieldAdded)
@@ -459,7 +459,7 @@ func (mgr *Manager) stanceBreak(e event.StanceBreakEvent) {
 	}
 }
 
-func (mgr *Manager) stanceBreakEnd(e event.StanceBreakEndEvent) {
+func (mgr *Manager) stanceBreakEnd(e event.StanceResetEvent) {
 	for _, mod := range mgr.targets[e.Target] {
 		f := mod.listeners.OnEndBreak
 		if f != nil {

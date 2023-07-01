@@ -52,8 +52,8 @@ type StanceBreakEvent struct {
 	Source key.TargetID
 }
 
-type StanceBreakEndEventHandler = handler.EventHandler[StanceBreakEndEvent]
-type StanceBreakEndEvent struct {
+type StanceResetEventHandler = handler.EventHandler[StanceResetEvent]
+type StanceResetEvent struct {
 	Target key.TargetID
 }
 
