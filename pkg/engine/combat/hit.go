@@ -75,7 +75,7 @@ func (mgr *Manager) baseDamage(h *info.Hit) float64 {
 		case model.DamageFormula_BY_MAX_HP:
 			damage += v * h.Attacker.MaxHP()
 		case model.DamageFormula_BY_BREAK_DAMAGE:
-			damage += v * float64(h.Attacker.Level()) // TODO: evaluate if this is the best way
+			damage += v * breakBaseDamage[h.Attacker.Level()] // TODO: evaluate if this is the best way
 		}
 	}
 	return damage
