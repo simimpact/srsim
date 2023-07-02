@@ -28,7 +28,7 @@ func (t *QPQTest) Test_EnergyAdd() {
 	t.SetAutoRun(false)
 	t.SetAutoContinue(false)
 	t.StartSimulation()
-	dummy := t.Characters.GetCharacterId(1)
+	dummy := t.Characters.GetCharacterID(1)
 	t.NextTurn(dummy)
 	t.Expect(turnstart.ExpectFor(), turnstart.CurrentTurnIs(dummy))
 	t.Continue()
@@ -36,5 +36,4 @@ func (t *QPQTest) Test_EnergyAdd() {
 	info := t.Characters.GetCharacterInfo(0)
 	t.Require().Equal(float64(8), info.Energy())
 	t.Continue()
-
 }

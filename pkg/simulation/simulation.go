@@ -5,14 +5,11 @@ import (
 	"encoding/binary"
 	"math/rand"
 
-	"github.com/simimpact/srsim/pkg/engine/logging"
-
-	"github.com/simimpact/srsim/pkg/logic"
-
 	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/combat"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/logging"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/queue"
 	"github.com/simimpact/srsim/pkg/engine/shield"
@@ -20,6 +17,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/target/enemy"
 	"github.com/simimpact/srsim/pkg/engine/turn"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/logic"
 	"github.com/simimpact/srsim/pkg/model"
 )
 

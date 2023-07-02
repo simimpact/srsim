@@ -2,7 +2,6 @@ package testcfg
 
 import (
 	"github.com/simimpact/srsim/pkg/model"
-	"github.com/simimpact/srsim/testframe/testcfg/testchar"
 )
 
 func TestConfigTwoElites() *model.SimConfig {
@@ -13,7 +12,7 @@ func TestConfigTwoElites() *model.SimConfig {
 			CycleLimit: 10,
 			TtkMode:    false,
 		},
-		Characters: []*model.Character{testchar.DummyChar()},
+		Characters: []*model.Character{},
 		Enemies:    []*model.Enemy{StandardEnemy(), StandardEnemy()},
 	}
 }

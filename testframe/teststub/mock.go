@@ -1,9 +1,10 @@
 package teststub
 
 import (
+	"time"
+
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/key"
-	"time"
 )
 
 type mockManager struct {

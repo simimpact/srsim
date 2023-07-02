@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/simimpact/srsim/pkg/engine"
-
 	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/key"
@@ -43,11 +42,14 @@ type manager struct {
 
 func New(e *event.System, attr attribute.Getter) Manager {
 	mgr := &manager{
-		event:       e,
-		attr:        attr,
-		order:       make([]*target, 0, 10),
-		targetIndex: make(map[key.TargetID]int, 10),
-		gaugeCost:   1.0,
+		event:        e,
+		attr:         attr,
+		order:        make([]*target, 0, 10),
+		targetIndex:  make(map[key.TargetID]int, 10),
+		gaugeCost:    1.0,
+		activeTurn:   false,
+		activeTarget: 0,
+		totalAV:      0,
 	}
 	return mgr
 }

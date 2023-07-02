@@ -6,13 +6,13 @@ import (
 
 	"github.com/simimpact/srsim/pkg/engine/event/handler"
 	"github.com/simimpact/srsim/pkg/engine/logging"
-	"github.com/simimpact/srsim/pkg/key"
-	"github.com/simimpact/srsim/pkg/logic/gcs/eval"
 	"github.com/simimpact/srsim/pkg/model"
 	"github.com/simimpact/srsim/pkg/simulation"
 	"github.com/simimpact/srsim/testframe/eventchecker"
 	"github.com/simimpact/srsim/testframe/eventchecker/battlestart"
 	"github.com/simimpact/srsim/testframe/testcfg"
+	"github.com/simimpact/srsim/testframe/testcfg/testchar"
+	"github.com/simimpact/srsim/testframe/testcfg/testeval"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -29,9 +29,9 @@ type Stub struct {
 	autoRun  bool
 	turnPipe chan TurnCommand
 
-	// cfg and eval are used to start a normal run
+	// cfg and evaluator are used to start a normal run
 	cfg       *model.SimConfig
-	eval      *eval.Eval
+	evaluator *evaluator
 	simulator *simulation.Simulation
 
 	// Characters gives access to various character-related testing actions
@@ -45,7 +45,13 @@ func (s *Stub) SetupTest() {
 	s.cfg = testcfg.TestConfigTwoElites()
 	s.autoContinue = true
 	s.autoRun = true
-	s.Characters = Characters{cfg: s.cfg}
+	s.Characters = Characters{
+		cfg:             s.cfg,
+		characters:      nil,
+		attributes:      nil,
+		customFunctions: nil,
+	}
+	s.evaluator = newEvaluator()
 }
 
 func (s *Stub) TearDownTest() {
@@ -61,15 +67,19 @@ func (s *Stub) TearDownTest() {
 	close(s.turnPipe)
 }
 
+// StartSimulation handles the setup for starting the asynchronous sim run.
+// Call this once you finish setting up test parameters.
 func (s *Stub) StartSimulation() {
 	l := NewTestLogger(s.eventPipe, s.haltSignaller)
 	logging.InitLogger(l)
-	s.eval = testcfg.GenerateStandardTestEval(s.cfg)
-	s.simulator = simulation.NewSimulation(s.cfg, s.eval, 0)
+	// if no chars are provided, we will add a dummy char
+	if len(s.cfg.Characters) == 0 {
+		s.Characters.AddCharacter(testchar.DummyChar())
+	}
+	s.simulator = simulation.NewSimulation(s.cfg, s.evaluator, 0)
 	if !s.autoRun {
 		s.simulator.Turn = newMockManager(s.turnPipe)
 	}
-	s.Characters.characters = s.simulator.Characters()
 	s.Characters.attributes = s.simulator.Attr
 	go func() {
 		itres, err := s.simulator.Run()
@@ -78,14 +88,18 @@ func (s *Stub) StartSimulation() {
 		}
 		fmt.Println(itres)
 	}()
-	// common start sim logic, fast-forward sim to BattleStart state
+	// start sim logic, fast-forward sim to BattleStart state
 	s.Expect(battlestart.ExpectFor())
-	s.RefreshCharacters()
+	// initialize the evaluator and Character based on current state
+	s.Characters.characters = s.simulator.Characters()
+	s.initEval()
+
 	if !s.autoContinue {
 		s.Continue()
 	}
 }
 
+// Expect handles all sorts of checks against events. Refer to eventchecker.EventChecker for more details.
 func (s *Stub) Expect(checkers ...eventchecker.EventChecker) {
 	for {
 		var e handler.Event
@@ -108,10 +122,6 @@ func (s *Stub) Expect(checkers ...eventchecker.EventChecker) {
 				break
 			}
 		}
-		if !toContinue {
-			LogExpectFalse("%#+v", e)
-			s.haltSignaller <- struct{}{}
-		}
 		if toContinue {
 			LogExpectSuccess("%#+v", e)
 			if s.autoContinue {
@@ -119,36 +129,18 @@ func (s *Stub) Expect(checkers ...eventchecker.EventChecker) {
 			}
 			return
 		}
+		LogExpectFalse("%#+v", e)
+		s.haltSignaller <- struct{}{}
 	}
 }
 
-// Continue resumes the simulation. This must be called after each Expect if AutoContinue is disabled.
-func (s *Stub) Continue() {
-	s.haltSignaller <- struct{}{}
-}
-
-func (s *Stub) SetAutoContinue(cont bool) {
-	s.autoContinue = cont
-}
-
-func (s *Stub) SetAutoRun(cont bool) {
-	s.autoRun = cont
-}
-
-// TerminateRun pipes a command with an astronomical AV to immediately exceed the cycle limit, ending the run
-func (s *Stub) TerminateRun() {
-	go func() {
-		s.turnPipe <- TurnCommand{Next: s.Characters.GetCharacterId(0), Av: 100000}
-	}()
-}
-
-// NextTurn queues the next turn without using up any AV cost
-func (s *Stub) NextTurn(id key.TargetID) {
-	go func() {
-		s.turnPipe <- TurnCommand{Next: id}
-	}()
-}
-
-func (s *Stub) RefreshCharacters() {
-	s.Characters.characters = s.simulator.Characters()
+func (s *Stub) initEval() {
+	_ = s.evaluator.Init(s.simulator)
+	for i := range s.cfg.Characters {
+		eval := s.Characters.getCharacterEval(i)
+		if eval == nil {
+			eval = testeval.Default()
+		}
+		s.evaluator.registerAction(s.Characters.GetCharacterID(i), eval)
+	}
 }
