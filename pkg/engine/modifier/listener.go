@@ -67,10 +67,10 @@ type Listeners struct {
 	// ------------ shield events
 
 	// Called when a shield has been added to the attached target.
-	OnShieldAdded func(mod *Instance, e event.ShieldAddedEvent)
+	OnShieldAdded func(mod *Instance, e event.ShieldAdded)
 
 	// Called when a shield has been removed from the attached target.
-	OnShieldRemoved func(mod *Instance, e event.ShieldRemovedEvent)
+	OnShieldRemoved func(mod *Instance, e event.ShieldRemoved)
 
 	// ------------ combat events
 
@@ -486,7 +486,7 @@ func (mgr *Manager) actionEnd(e event.ActionEnd) {
 	}
 }
 
-func (mgr *Manager) shieldAdded(e event.ShieldAddedEvent) {
+func (mgr *Manager) shieldAdded(e event.ShieldAdded) {
 	for _, mod := range mgr.targets[e.Info.Target] {
 		f := mod.listeners.OnShieldAdded
 		if f != nil {
@@ -495,7 +495,7 @@ func (mgr *Manager) shieldAdded(e event.ShieldAddedEvent) {
 	}
 }
 
-func (mgr *Manager) shieldRemoved(e event.ShieldRemovedEvent) {
+func (mgr *Manager) shieldRemoved(e event.ShieldRemoved) {
 	for _, mod := range mgr.targets[e.Target] {
 		f := mod.listeners.OnShieldRemoved
 		if f != nil {
