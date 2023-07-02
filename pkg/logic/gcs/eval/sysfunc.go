@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/simimpact/srsim/pkg/engine/action"
 	"github.com/simimpact/srsim/pkg/engine/target/evaltarget"
-	"github.com/simimpact/srsim/pkg/gcs/ast"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/logic"
+	"github.com/simimpact/srsim/pkg/logic/gcs/ast"
 )
 
 func (e *Eval) initSysFuncs(env *Env) {
@@ -21,11 +21,11 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addFunction("set_default_action", e.setDefaultAction, env)
 
 	// actions
-	e.addAction(key.ActionAttack, env)
-	e.addAction(key.ActionSkill, env)
-	e.addAction(key.ActionUlt, env)
-	e.addAction(key.ActionUltAttack, env)
-	e.addAction(key.ActionUltSkill, env)
+	e.addAction(logic.ActionAttack, env)
+	e.addAction(logic.ActionSkill, env)
+	e.addAction(logic.ActionUlt, env)
+	e.addAction(logic.ActionUltAttack, env)
+	e.addAction(logic.ActionUltSkill, env)
 
 	// target evaluators
 	e.addConstant("First", &number{ival: int64(evaltarget.First)}, env)
@@ -33,9 +33,9 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addConstant("LowestHPRatio", &number{ival: int64(evaltarget.LowestHPRatio)}, env)
 
 	// chars
-	if e.Engine != nil {
-		for _, k := range e.Engine.Characters() {
-			char, err := e.Engine.CharacterInfo(k)
+	if e.engine != nil {
+		for _, k := range e.engine.Characters() {
+			char, err := e.engine.CharacterInfo(k)
 			if err != nil { // ???
 				return
 			}
@@ -59,7 +59,7 @@ func (e *Eval) print(c *ast.CallExpr, env *Env) (Obj, error) {
 }
 
 func (e *Eval) rand(c *ast.CallExpr, env *Env) (Obj, error) {
-	x := e.Engine.Rand().Float64()
+	x := e.engine.Rand().Float64()
 	return &number{
 		fval:    x,
 		isFloat: true,
@@ -67,7 +67,7 @@ func (e *Eval) rand(c *ast.CallExpr, env *Env) (Obj, error) {
 }
 
 func (e *Eval) randnorm(c *ast.CallExpr, env *Env) (Obj, error) {
-	x := e.Engine.Rand().NormFloat64()
+	x := e.engine.Rand().NormFloat64()
 	return &number{
 		fval:    x,
 		isFloat: true,
@@ -216,7 +216,7 @@ func (e *Eval) setDefaultAction(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 
 	act := *actobj.(*actionval)
-	if act.val.Type != key.ActionAttack {
+	if act.val.Type != logic.ActionAttack {
 		return nil, fmt.Errorf("action should be an attack, got %v", actobj.Inspect())
 	}
 	act.val.Target = key.TargetID(target)
@@ -224,7 +224,7 @@ func (e *Eval) setDefaultAction(c *ast.CallExpr, env *Env) (Obj, error) {
 	return &null{}, nil
 }
 
-func (e *Eval) addAction(at key.ActionType, env *Env) {
+func (e *Eval) addAction(at logic.ActionType, env *Env) {
 	f := func(c *ast.CallExpr, env *Env) (Obj, error) {
 		// attack/skill/ult(evaltarget)
 		if len(c.Args) != 1 {
@@ -241,7 +241,7 @@ func (e *Eval) addAction(at key.ActionType, env *Env) {
 		evaltarget := etval.(*number).ival
 
 		return &actionval{
-			val: action.Action{
+			val: logic.Action{
 				Type:            at,
 				TargetEvaluator: key.TargetEvaluator(evaltarget), // TODO: check is valid
 			},

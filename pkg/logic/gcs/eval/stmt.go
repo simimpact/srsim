@@ -3,7 +3,7 @@ package eval
 import (
 	"fmt"
 
-	"github.com/simimpact/srsim/pkg/gcs/ast"
+	"github.com/simimpact/srsim/pkg/logic/gcs/ast"
 )
 
 func (e *Eval) evalStmt(s ast.Stmt, env *Env) (Obj, error) {

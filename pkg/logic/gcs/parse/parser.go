@@ -3,8 +3,8 @@ package parse
 import (
 	"errors"
 
-	"github.com/simimpact/srsim/pkg/gcs"
-	"github.com/simimpact/srsim/pkg/gcs/ast"
+	"github.com/simimpact/srsim/pkg/logic/gcs"
+	"github.com/simimpact/srsim/pkg/logic/gcs/ast"
 )
 
 type Parser struct {

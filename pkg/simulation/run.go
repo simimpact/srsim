@@ -60,8 +60,7 @@ func initialize(sim *Simulation) (stateFn, error) {
 	}
 
 	// run the script to register callbacks
-	err := sim.eval.Init()
-	if err != nil {
+	if err := sim.eval.Init(sim); err != nil {
 		return nil, err
 	}
 

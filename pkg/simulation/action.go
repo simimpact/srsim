@@ -3,12 +3,12 @@ package simulation
 import (
 	"fmt"
 
-	actionPkg "github.com/simimpact/srsim/pkg/engine/action"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/queue"
 	"github.com/simimpact/srsim/pkg/engine/target"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/logic"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
@@ -151,7 +151,7 @@ func (sim *Simulation) executeAction(id key.TargetID, isInsert bool) error {
 	return nil
 }
 
-func (sim *Simulation) executeUlt(act actionPkg.Action) error {
+func (sim *Simulation) executeUlt(act logic.Action) error {
 	var executable target.ExecutableUlt
 	var err error
 

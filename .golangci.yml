@@ -80,8 +80,8 @@ linters-settings:
     - 'github\.com/simimpact/srsim/pkg/engine/modifier\.Listeners'
     - 'github\.com/simimpact/srsim/pkg/engine/modifier\.Instance'
     - 'github\.com/simimpact/srsim/pkg/engine/event\.System'
+    - 'github\.com/simimpact/srsim/pkg/logic/gcs'
     - 'github\.com/simimpact/srsim/pkg/model'
-    - 'github\.com/simimpact/srsim/pkg/gcs'
     - 'github\.com/simimpact/srsim/pkg/simulation'
     - 'github\.com/simimpact/srsim/scripts'
 

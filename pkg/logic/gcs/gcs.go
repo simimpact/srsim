@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"log"
 
-	"github.com/simimpact/srsim/pkg/gcs/ast"
+	"github.com/simimpact/srsim/pkg/logic/gcs/ast"
 	"github.com/simimpact/srsim/pkg/model"
 )
 

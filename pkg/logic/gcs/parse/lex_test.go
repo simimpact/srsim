@@ -3,7 +3,7 @@ package parse
 import (
 	"testing"
 
-	"github.com/simimpact/srsim/pkg/gcs/ast"
+	"github.com/simimpact/srsim/pkg/logic/gcs/ast"
 )
 
 func TestBasicToken(t *testing.T) {

@@ -3,8 +3,8 @@ package workerpool
 import (
 	"context"
 
-	"github.com/simimpact/srsim/pkg/gcs"
-	"github.com/simimpact/srsim/pkg/gcs/eval"
+	"github.com/simimpact/srsim/pkg/logic/gcs"
+	"github.com/simimpact/srsim/pkg/logic/gcs/eval"
 	"github.com/simimpact/srsim/pkg/model"
 	"github.com/simimpact/srsim/pkg/simulation"
 )
