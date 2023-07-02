@@ -11,8 +11,8 @@ type DefaultLogger struct {
 }
 
 type logEventWrapper struct {
-	EventName string
-	Data      interface{}
+	EventName string      `json:"name"`
+	Data      interface{} `json:"event"`
 }
 
 func NewDefaultLogger() *DefaultLogger {

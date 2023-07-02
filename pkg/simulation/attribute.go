@@ -15,7 +15,7 @@ func (sim *Simulation) ModifySP(amt int) int {
 	}
 
 	if old != sim.Sp {
-		sim.Event.SPChange.Emit(event.SPChangeEvent{
+		sim.Event.SPChange.Emit(event.SPChange{
 			OldSP: old,
 			NewSP: sim.Sp,
 		})

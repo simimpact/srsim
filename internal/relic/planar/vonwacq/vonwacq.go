@@ -9,10 +9,6 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-const (
-	mod key.Modifier = "sprightly-vonwacq"
-)
-
 // 2pc:
 // Increases the wearer's Energy Regeneration Rate by 5%.
 // When the wearer's SPD reaches 120 or higher,
@@ -33,7 +29,7 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID) {
-	engine.Events().BattleStart.Subscribe(func(e event.BattleStartEvent) {
+	engine.Events().BattleStart.Subscribe(func(e event.BattleStart) {
 		for _, char := range e.CharStats {
 			if char.ID() == owner && char.SPD() >= 120 {
 				engine.ModifyGaugeNormalized(char.ID(), -0.4)

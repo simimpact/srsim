@@ -6,8 +6,8 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-type EnemyAddedEventHandler = handler.EventHandler[EnemyAddedEvent]
-type EnemyAddedEvent struct {
-	Id   key.TargetID
+type EnemyAddedEventHandler = handler.EventHandler[EnemyAdded]
+type EnemyAdded struct {
+	ID   key.TargetID
 	Info info.Enemy
 }

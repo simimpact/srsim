@@ -9,11 +9,9 @@ import (
 var ultHits = []float64{0.3, 0.1, 0.6}
 
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
-
 	c.e2()
 
 	for _, hitRatio := range ultHits {
-
 		// Primary Target
 		c.engine.Attack(info.Attack{
 			Source:     c.id,

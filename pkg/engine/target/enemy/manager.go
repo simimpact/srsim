@@ -11,11 +11,11 @@ import (
 
 type Manager struct {
 	engine engine.Engine
-	attr   attribute.AttributeModifier
+	attr   attribute.Modifier
 	info   map[key.TargetID]info.Enemy
 }
 
-func New(engine engine.Engine, attr attribute.AttributeModifier) *Manager {
+func New(engine engine.Engine, attr attribute.Modifier) *Manager {
 	return &Manager{
 		engine: engine,
 		attr:   attr,
@@ -23,7 +23,7 @@ func New(engine engine.Engine, attr attribute.AttributeModifier) *Manager {
 	}
 }
 
-func (mgr *Manager) Get(id key.TargetID) (EnemyInstance, error) {
+func (mgr *Manager) Get(id key.TargetID) (Instance, error) {
 	panic("not implemented")
 }
 

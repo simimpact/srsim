@@ -28,6 +28,7 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 		c.tiles = []int{0, 0, 0}
 		c.suits[0] = ""
 		c.unusedSuits = []string{"Wan", "Tong", "Tiao"}
+		c.a6()
 		if c.info.Eidolon >= 6 {
 			c.engine.ModifySP(1)
 		}

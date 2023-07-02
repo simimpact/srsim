@@ -26,7 +26,6 @@ func init() {
 var ultHits = []float64{0.25, 0.25, 0.25, 0.25}
 
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
-
 	for _, hitRatio := range ultHits {
 		c.engine.Attack(info.Attack{
 			Source:     c.id,
@@ -57,7 +56,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	}
 }
 
-func onBeforeBeingHitAll(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+func onBeforeBeingHitAll(mod *modifier.Instance, e event.HitStart) {
 	if e.Hit.AttackType == model.AttackType_DOT {
 		e.Hit.Defender.AddProperty(prop.AllDamageTaken, mod.State().(float64))
 	}

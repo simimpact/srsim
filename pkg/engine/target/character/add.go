@@ -3,7 +3,6 @@ package character
 import (
 	"fmt"
 
-	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/equip/lightcone"
 	"github.com/simimpact/srsim/pkg/engine/equip/relic"
 	"github.com/simimpact/srsim/pkg/engine/event"
@@ -65,11 +64,16 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 	}
 
 	// Give the base stats to the attribute manager so Stats calls can work as expected
-	err = mgr.attr.AddTarget(id, attribute.BaseStats{
-		Level:       lvl,
-		Stats:       baseStats,
-		MaxEnergy:   config.MaxEnergy,
-		StartEnergy: char.StartEnergy,
+	err = mgr.attr.AddTarget(id, info.Attributes{
+		Level:         lvl,
+		BaseStats:     baseStats,
+		MaxEnergy:     config.MaxEnergy,
+		Energy:        char.StartEnergy,
+		BaseDebuffRES: info.NewDebuffRESMap(),
+		Weakness:      info.NewWeaknessMap(),
+		HPRatio:       1.0, // TODO: make configurable
+		Stance:        0,
+		MaxStance:     0,
 	})
 	if err != nil {
 		return err
@@ -107,8 +111,8 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 		f(mgr.engine, id)
 	}
 
-	mgr.engine.Events().CharacterAdded.Emit(event.CharacterAddedEvent{
-		Id:   id,
+	mgr.engine.Events().CharacterAdded.Emit(event.CharacterAdded{
+		ID:   id,
 		Info: info,
 	})
 	return nil
@@ -126,7 +130,7 @@ func newBaseStats(data PromotionData, level int) info.PropMap {
 	return out
 }
 
-func processTraces(traces TraceMap, stats info.PropMap, wanted []string, asc int, level int) map[string]bool {
+func processTraces(traces TraceMap, stats info.PropMap, wanted []string, asc, level int) map[string]bool {
 	active := make(map[string]bool)
 	for _, id := range wanted {
 		if dup := active[id]; dup {

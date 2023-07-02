@@ -1,11 +1,12 @@
 package basic
 
 import (
+	"testing"
+
 	"github.com/simimpact/srsim/testframe/eventchecker/battlestart"
 	"github.com/simimpact/srsim/testframe/eventchecker/termination"
 	"github.com/simimpact/srsim/testframe/teststub"
 	"github.com/stretchr/testify/suite"
-	"testing"
 )
 
 type BasicTest struct {

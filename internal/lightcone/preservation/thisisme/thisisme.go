@@ -53,18 +53,20 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 // increase ult damage
-func onBeforeHit(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+func onBeforeHit(mod *modifier.Instance, e event.HitStart) {
 	state := mod.State().(State)
-	_, hasId := state.idMap[e.Hit.Defender.ID()]
+	_, hasID := state.idMap[e.Hit.Defender.ID()]
 
-	if e.Hit.AttackType == model.AttackType_ULT && !hasId {
+	if e.Hit.AttackType == model.AttackType_ULT && !hasID {
 		state.idMap[e.Hit.Defender.ID()] = true
 		e.Hit.DamageValue += state.ultBonus * e.Hit.Attacker.DEF()
 	}
 }
 
 // remove modifier so next ult deals ult dmg + only 1x bonus from this lc
-func onAfterAction(mod *modifier.ModifierInstance, e event.ActionEvent) {
+func onAfterAction(mod *modifier.Instance, e event.ActionEnd) {
 	state := mod.State().(State)
-	state.idMap = make(map[key.TargetID]bool)
+	for k := range state.idMap {
+		delete(state.idMap, k)
+	}
 }

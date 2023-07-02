@@ -23,7 +23,7 @@ func init() {
 
 	modifier.Register(SkillCritCheck, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAfterHit: func(mod *modifier.ModifierInstance, e event.HitEndEvent) {
+			OnAfterHit: func(mod *modifier.Instance, e event.HitEnd) {
 				if e.IsCrit {
 					slowAmt := mod.State().(float64)
 					mod.Engine().AddModifier(e.Defender, info.Modifier{

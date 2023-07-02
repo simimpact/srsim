@@ -2,6 +2,7 @@ package battlestart
 
 import (
 	"fmt"
+
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/event/handler"
 	"github.com/simimpact/srsim/testframe/teststub"
@@ -9,7 +10,7 @@ import (
 
 func ExpectOnly() teststub.EventChecker {
 	return func(e handler.Event) (bool, error) {
-		_, ok := e.(event.BattleStartEvent)
+		_, ok := e.(event.BattleStart)
 		if !ok {
 			return false, fmt.Errorf("incorrect Event %T", e)
 		}
@@ -19,7 +20,7 @@ func ExpectOnly() teststub.EventChecker {
 
 func ExpectFor() teststub.EventChecker {
 	return func(e handler.Event) (bool, error) {
-		_, ok := e.(event.BattleStartEvent)
+		_, ok := e.(event.BattleStart)
 		if !ok {
 			return false, nil
 		}

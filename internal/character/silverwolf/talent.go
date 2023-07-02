@@ -17,17 +17,12 @@ const (
 	BugSPD      key.Modifier = "silverwolf-bug-speed"
 )
 
-type talentState struct {
-	penAmt float64
-	cd     int
-}
-
 func init() {
 	modifier.Register(BugATK, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_DEBUFF,
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				char, _ := mod.Engine().CharacterInfo(mod.Source())
 				mod.SetProperty(prop.ATKPercent, -talentATK[char.TalentLevelIndex()])
 			},
@@ -39,7 +34,7 @@ func init() {
 		Stacking:      modifier.ReplaceBySource,
 		StatusType:    model.StatusType_STATUS_DEBUFF,
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				char, _ := mod.Engine().CharacterInfo(mod.Source())
 				mod.SetProperty(prop.DEFPercent, -talentDEF[char.TalentLevelIndex()])
 			},
@@ -51,7 +46,7 @@ func init() {
 		Stacking:      modifier.ReplaceBySource,
 		StatusType:    model.StatusType_STATUS_DEBUFF,
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				char, _ := mod.Engine().CharacterInfo(mod.Source())
 				mod.SetProperty(prop.SPDPercent, -talentSPD[char.TalentLevelIndex()])
 			},
@@ -60,7 +55,7 @@ func init() {
 
 	modifier.Register(TalentCheck, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAfterAttack: func(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
+			OnAfterAttack: func(mod *modifier.Instance, e event.AttackEnd) {
 				if len(e.Targets) == 0 {
 					return
 				}
@@ -70,7 +65,7 @@ func init() {
 	})
 }
 
-func newRandomBug(engine engine.Engine, target key.TargetID, source key.TargetID) info.Modifier {
+func newRandomBug(engine engine.Engine, target, source key.TargetID) info.Modifier {
 	char, _ := engine.CharacterInfo(source)
 	bugs := []key.Modifier{}
 	// get list of bugs not present on target

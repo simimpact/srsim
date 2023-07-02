@@ -21,7 +21,7 @@ func (mgr *Manager) AbsorbDamage(target key.TargetID, damage float64) float64 {
 		if shield.HP < 0 {
 			shield.HP = 0
 		}
-		mgr.event.ShieldChange.Emit(event.ShieldChangeEvent{
+		mgr.event.ShieldChange.Emit(event.ShieldChange{
 			ID:     id,
 			Target: target,
 			OldHP:  prevHP,

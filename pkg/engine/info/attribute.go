@@ -244,3 +244,17 @@ func statCalc(base, percent, flat float64) float64 {
 	}
 	return out
 }
+
+func DefaultAttribute() Attributes {
+	return Attributes{
+		Level:         1,
+		BaseStats:     NewPropMap(),
+		BaseDebuffRES: NewDebuffRESMap(),
+		Weakness:      NewWeaknessMap(),
+		HPRatio:       1.0,
+		Energy:        0,
+		MaxEnergy:     0,
+		Stance:        0,
+		MaxStance:     0,
+	}
+}

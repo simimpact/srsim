@@ -7,10 +7,6 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-const (
-	mod key.Modifier = "knight-of-purity-palace"
-)
-
 // 2pc: Increases DEF by 15%.
 // 4pc: Increases the max DMG that can be absorbed by the Shield created by the wearer by 20%.
 func init() {

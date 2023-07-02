@@ -1,9 +1,12 @@
 package simulation
 
 import (
+	crypto "crypto/rand"
 	"encoding/binary"
-	"github.com/simimpact/srsim/pkg/engine/logging"
 	"math/rand"
+
+	"github.com/simimpact/srsim/pkg/engine/logging"
+	"github.com/simimpact/srsim/pkg/logic"
 
 	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/combat"
@@ -15,22 +18,17 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/target/character"
 	"github.com/simimpact/srsim/pkg/engine/target/enemy"
 	"github.com/simimpact/srsim/pkg/engine/turn"
-	"github.com/simimpact/srsim/pkg/gcs/eval"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-type Target interface {
-	Exec(key.ActionType)
-}
-
 type Simulation struct {
 	cfg  *model.SimConfig
-	eval *eval.Eval
+	eval logic.Eval
 	seed int64
 
 	// services
-	IdGen    *key.TargetIDGenerator
+	IDGen    *key.TargetIDGenerator
 	Random   *rand.Rand
 	Event    *event.System
 	Queue    *queue.Handler
@@ -54,17 +52,17 @@ type Simulation struct {
 	ActionTargets map[key.TargetID]bool
 }
 
-func RunWithLog(logger logging.Logger, cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationResult, error) {
+func RunWithLog(logger logging.Logger, cfg *model.SimConfig, eval logic.Eval, seed int64) (*model.IterationResult, error) {
 	logging.InitLogger(logger)
 	return Run(cfg, eval, seed)
 }
 
-func Run(cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationResult, error) {
+func Run(cfg *model.SimConfig, eval logic.Eval, seed int64) (*model.IterationResult, error) {
 	s := NewSimulation(cfg, eval, seed)
 	return s.Run()
 }
 
-func NewSimulation(cfg *model.SimConfig, eval *eval.Eval, seed int64) *Simulation {
+func NewSimulation(cfg *model.SimConfig, eval logic.Eval, seed int64) *Simulation {
 	s := &Simulation{
 		cfg:  cfg,
 		eval: eval,
@@ -73,7 +71,7 @@ func NewSimulation(cfg *model.SimConfig, eval *eval.Eval, seed int64) *Simulatio
 		Event:  &event.System{},
 		Queue:  queue.New(),
 		Random: rand.New(rand.NewSource(seed)),
-		IdGen:  key.NewTargetIDGenerator(),
+		IDGen:  key.NewTargetIDGenerator(),
 
 		Sp:            3,
 		Tp:            4, // TODO: define starting amount in config?
@@ -83,7 +81,6 @@ func NewSimulation(cfg *model.SimConfig, eval *eval.Eval, seed int64) *Simulatio
 		neutrals:      make([]key.TargetID, 0, 5),
 		ActionTargets: make(map[key.TargetID]bool, 10),
 	}
-	s.eval.Engine = s
 
 	// init services
 
@@ -106,7 +103,7 @@ func NewSimulation(cfg *model.SimConfig, eval *eval.Eval, seed int64) *Simulatio
 
 func RandSeed() (int64, error) {
 	var b [8]byte
-	_, err := rand.Read(b[:])
+	_, err := crypto.Read(b[:])
 	if err != nil {
 		return 0, err
 	}

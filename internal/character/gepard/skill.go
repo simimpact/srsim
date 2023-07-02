@@ -42,6 +42,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		Source: c.id,
 		State: common.FreezeState{
 			DamagePercentage: skillFreezeDMG[c.info.SkillLevelIndex()],
+			DamageValue:      0,
 		},
 		Chance:   freezeChance,
 		Duration: 1,

@@ -11,6 +11,7 @@ type Stmt interface {
 type (
 
 	// BlockStmt represents a brace statement list
+	///nolint:musttag // marhsalling of BlockStmt is disabled
 	BlockStmt struct {
 		List []Node
 		Pos
@@ -200,7 +201,6 @@ func (l *LetStmt) writeTo(sb *strings.Builder) {
 	sb.WriteString(l.Ident.String())
 	sb.WriteString(" = ")
 	if l.Val != nil {
-
 		l.Val.writeTo(sb)
 	}
 }

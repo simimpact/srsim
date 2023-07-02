@@ -5,7 +5,7 @@ import (
 	"runtime/debug"
 	"strconv"
 
-	"github.com/simimpact/srsim/pkg/gcs"
+	"github.com/simimpact/srsim/pkg/logic/gcs"
 	"github.com/simimpact/srsim/pkg/model"
 	"github.com/simimpact/srsim/pkg/simulator/workerpool"
 	"github.com/simimpact/srsim/pkg/statistics/agg"
@@ -39,7 +39,6 @@ func Version() string {
 }
 
 func Run(ctx context.Context, list *gcs.ActionList, cfg *model.SimConfig) (*model.SimulationResult, error) {
-
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
@@ -69,13 +68,13 @@ func Run(ctx context.Context, list *gcs.ActionList, cfg *model.SimConfig) (*mode
 				Config: j,
 			})
 			if err != nil {
-				//context must have been cancelled
+				// context must have been cancelled
 				return
 			}
 		}
 	}()
 
-	//get results back
+	// get results back
 	for i := 0; i < int(cfg.Iterations); i++ {
 		select {
 		case <-ctx.Done():
@@ -89,7 +88,7 @@ func Run(ctx context.Context, list *gcs.ActionList, cfg *model.SimConfig) (*mode
 		}
 	}
 
-	//stats aggregation should happen here and make us a result?
+	// stats aggregation should happen here and make us a result?
 	result := &model.SimulationResult{
 		SimVersion: &sha1ver,
 		Modified:   &modified,

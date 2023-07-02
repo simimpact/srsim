@@ -9,6 +9,6 @@ type Event interface {
 	// ToProto()
 }
 
-type cancellableEvent interface {
-	Cancelled()
+type CancellableEvent interface {
+	Cancelled() CancellableEvent
 }

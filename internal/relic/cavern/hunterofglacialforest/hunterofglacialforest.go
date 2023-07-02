@@ -48,10 +48,9 @@ func init() {
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_BUFF,
 	})
-
 }
 
-func onBeforeAction(mod *modifier.ModifierInstance, e event.ActionEvent) {
+func onBeforeAction(mod *modifier.Instance, e event.ActionStart) {
 	if e.AttackType == model.AttackType_ULT {
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 			Name:     buff,

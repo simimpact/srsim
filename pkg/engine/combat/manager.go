@@ -1,5 +1,7 @@
 package combat
 
+//go:generate go run generate.go
+
 import (
 	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/event"
@@ -10,11 +12,11 @@ import (
 
 type Manager struct {
 	event *event.System
-	attr  attribute.AttributeModifier
-	shld  shield.ShieldAbsorb
+	attr  attribute.Modifier
+	shld  shield.Absorb
 
 	isInAttack bool
-	attackInfo attackInfo
+	attackInfo attackInfo `exhaustruct:"optional"`
 }
 
 type attackInfo struct {
@@ -24,10 +26,11 @@ type attackInfo struct {
 	damageType model.DamageType
 }
 
-func New(event *event.System, attr attribute.AttributeModifier, shld shield.ShieldAbsorb) *Manager {
+func New(event *event.System, attr attribute.Modifier, shld shield.Absorb) *Manager {
 	return &Manager{
-		event: event,
-		attr:  attr,
-		shld:  shld,
+		event:      event,
+		attr:       attr,
+		shld:       shld,
+		isInAttack: false,
 	}
 }

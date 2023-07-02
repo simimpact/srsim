@@ -8,7 +8,7 @@ import (
 
 func ExpectFor() teststub.EventChecker {
 	return func(e handler.Event) (bool, error) {
-		_, ok := e.(event.TerminationEvent)
+		_, ok := e.(event.Termination)
 		if !ok {
 			return false, nil
 		}

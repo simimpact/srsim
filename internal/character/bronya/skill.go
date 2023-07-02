@@ -19,7 +19,6 @@ func init() {
 }
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
-
 	// Try E1
 	c.e1()
 

@@ -45,7 +45,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func onAdd(mod *modifier.ModifierInstance) {
+func onAdd(mod *modifier.Instance) {
 	amount := mod.State().(float64)
 	mod.AddProperty(prop.AggroPercent, 2.0)
 	mod.AddProperty(prop.DEFPercent, amount)
@@ -53,11 +53,11 @@ func onAdd(mod *modifier.ModifierInstance) {
 }
 
 // reset back to 1x amount at end of turn
-func onPhase2(mod *modifier.ModifierInstance) {
+func onPhase2(mod *modifier.Instance) {
 	mod.SetProperty(prop.DEFPercent, mod.State().(float64))
 }
 
 // after attack, double the DEF
-func onAfterBeingAttacked(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
+func onAfterBeingAttacked(mod *modifier.Instance, e event.AttackEnd) {
 	mod.SetProperty(prop.DEFPercent, 2.0*mod.State().(float64))
 }

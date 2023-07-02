@@ -19,7 +19,7 @@ func init() {
 	// When HP is lower than or equal to 50% of Max HP, increases Skill's DMG by 10%.
 	modifier.Register(E1, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHit: func(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+			OnBeforeHit: func(mod *modifier.Instance, e event.HitStart) {
 				if e.Hit.AttackType != model.AttackType_SKILL {
 					return
 				}
@@ -38,8 +38,7 @@ func init() {
 		Duration:   2,
 		StatusType: model.StatusType_STATUS_BUFF,
 		Listeners: modifier.Listeners{
-			OnLimboWaitHeal: func(mod *modifier.ModifierInstance) bool {
-
+			OnLimboWaitHeal: func(mod *modifier.Instance) bool {
 				// Dispel all debuffs
 				mod.Engine().DispelStatus(mod.Owner(), info.Dispel{
 					Status: model.StatusType_STATUS_DEBUFF,
@@ -52,8 +51,9 @@ func init() {
 						mod.Engine().SetHP(
 							mod.Owner(), mod.Owner(), mod.OwnerStats().MaxHP()*0.25)
 					},
-					Source:   mod.Owner(),
-					Priority: info.CharReviveSelf,
+					Source:     mod.Owner(),
+					Priority:   info.CharReviveSelf,
+					AbortFlags: nil,
 				})
 
 				mod.RemoveSelf()
@@ -66,7 +66,7 @@ func init() {
 	// DMG taken by the target enemy now applies to adjacent enemies as well.
 	modifier.Register(E6, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHit: func(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+			OnBeforeHit: func(mod *modifier.Instance, e event.HitStart) {
 				if e.Hit.AttackType != model.AttackType_ULT {
 					return
 				}
@@ -77,7 +77,6 @@ func init() {
 			},
 		},
 	})
-
 }
 
 func (c *char) e2() {
