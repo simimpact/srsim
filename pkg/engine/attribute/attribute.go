@@ -2,7 +2,7 @@
 // character stats
 package attribute
 
-//go:generate mockgen -destination=../../mock/mock_attribute.go -package=mock -mock_names AttributeModifier=MockAttribute github.com/simimpact/srsim/pkg/engine/attribute AttributeModifier
+//go:generate mockgen -destination=../../mock/mock_attribute.go -package=mock -mock_names Modifier=MockAttribute github.com/simimpact/srsim/pkg/engine/attribute Modifier
 
 import (
 	"github.com/simimpact/srsim/pkg/engine/event"
@@ -11,7 +11,7 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-type AttributeGetter interface {
+type Getter interface {
 	Stats(target key.TargetID) *info.Stats
 	Stance(target key.TargetID) float64
 	Energy(target key.TargetID) float64
@@ -20,8 +20,8 @@ type AttributeGetter interface {
 	HPRatio(target key.TargetID) float64
 }
 
-type AttributeModifier interface {
-	AttributeGetter
+type Modifier interface {
+	Getter
 
 	AddTarget(target key.TargetID, base info.Attributes) error
 
@@ -39,11 +39,11 @@ type AttributeModifier interface {
 
 type Service struct {
 	event   *event.System
-	modEval modifier.ModifierEval
+	modEval modifier.Eval
 	targets map[key.TargetID]*info.Attributes
 }
 
-func New(event *event.System, modEval modifier.ModifierEval) *Service {
+func New(event *event.System, modEval modifier.Eval) *Service {
 	return &Service{
 		event:   event,
 		modEval: modEval,
@@ -55,7 +55,9 @@ func (s *Service) Stats(target key.TargetID) *info.Stats {
 	mods := s.modEval.EvalModifiers(target)
 	attr := s.targets[target]
 	if attr == nil {
-		attr = &info.Attributes{}
+		// default attribute instead of returning an error
+		attr = new(info.Attributes)
+		*attr = info.DefaultAttribute()
 	}
 	return info.NewStats(target, attr, mods)
 }

@@ -12,18 +12,18 @@ type snapshot struct {
 	neutrals   []*info.Stats
 }
 
-func (s *Simulation) createSnapshot() snapshot {
-	charStats := make([]*info.Stats, len(s.characters))
-	for i, t := range s.characters {
-		charStats[i] = s.Attr.Stats(t)
+func (sim *Simulation) createSnapshot() snapshot {
+	charStats := make([]*info.Stats, len(sim.characters))
+	for i, t := range sim.characters {
+		charStats[i] = sim.Attr.Stats(t)
 	}
-	enemyStats := make([]*info.Stats, len(s.enemies))
-	for i, t := range s.enemies {
-		enemyStats[i] = s.Attr.Stats(t)
+	enemyStats := make([]*info.Stats, len(sim.enemies))
+	for i, t := range sim.enemies {
+		enemyStats[i] = sim.Attr.Stats(t)
 	}
-	neutralStats := make([]*info.Stats, len(s.neutrals))
-	for i, t := range s.neutrals {
-		neutralStats[i] = s.Attr.Stats(t)
+	neutralStats := make([]*info.Stats, len(sim.neutrals))
+	for i, t := range sim.neutrals {
+		neutralStats[i] = sim.Attr.Stats(t)
 	}
 	return snapshot{
 		characters: charStats,
@@ -38,10 +38,10 @@ func (s *Simulation) createSnapshot() snapshot {
 //
 // Due to the current sim control flow, the information about who killed this target has been lost.
 // Emitting event that this death was a suicide, which is not the ideal behavior
-func (s *Simulation) deathCheck(targets []key.TargetID) {
+func (sim *Simulation) deathCheck(targets []key.TargetID) {
 	for _, target := range targets {
-		if s.Attr.HPRatio(target) <= 0 {
-			s.Event.TargetDeath.Emit(event.TargetDeathEvent{
+		if sim.Attr.HPRatio(target) <= 0 {
+			sim.Event.TargetDeath.Emit(event.TargetDeath{
 				Target: target,
 				Killer: target,
 			})

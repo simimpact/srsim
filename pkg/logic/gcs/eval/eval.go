@@ -7,10 +7,10 @@ import (
 	"strconv"
 
 	"github.com/simimpact/srsim/pkg/engine"
-	"github.com/simimpact/srsim/pkg/engine/action"
 	"github.com/simimpact/srsim/pkg/engine/target/evaltarget"
-	"github.com/simimpact/srsim/pkg/gcs/ast"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/logic"
+	"github.com/simimpact/srsim/pkg/logic/gcs/ast"
 )
 
 type TargetNode struct {
@@ -23,11 +23,11 @@ type Eval struct {
 	AST    ast.Node
 	global *Env
 	ctx    context.Context
-	Engine engine.Engine
+	engine engine.Engine
 
 	targetNode     map[key.TargetID]TargetNode
 	ultNodes       []TargetNode
-	defaultActions map[key.TargetID]action.Action
+	defaultActions map[key.TargetID]logic.Action
 }
 
 type Env struct {
@@ -42,6 +42,7 @@ func NewEnv(parent *Env) *Env {
 	}
 }
 
+//nolint:gocritic // *Obj is a ptrToRefParam, should be refactored to use Obj instead
 func (e *Env) v(s string) (*Obj, error) {
 	v, ok := e.varMap[s]
 	if ok {
@@ -62,18 +63,19 @@ func (e *Eval) addConstant(name string, value Obj, env *Env) {
 	env.varMap[name] = &value
 }
 
-func New(ast *ast.BlockStmt, ctx context.Context) *Eval {
+func New(ctx context.Context, ast *ast.BlockStmt) *Eval {
 	e := &Eval{AST: ast}
 	e.ctx = ctx
 	return e
 }
 
 // Run will execute the provided AST.
-func (e *Eval) Init() error {
+func (e *Eval) Init(eng engine.Engine) error {
+	e.engine = eng
 	e.global = NewEnv(nil)
 	e.targetNode = make(map[key.TargetID]TargetNode)
 	e.ultNodes = make([]TargetNode, 0)
-	e.defaultActions = make(map[key.TargetID]action.Action)
+	e.defaultActions = make(map[key.TargetID]logic.Action)
 	e.initSysFuncs(e.global)
 	e.initConditionalFuncs(e.global)
 
@@ -129,7 +131,7 @@ type (
 	}
 
 	actionval struct {
-		val action.Action
+		val logic.Action
 	}
 
 	mapval struct {
@@ -157,9 +159,8 @@ func (n *null) Typ() ObjTyp     { return typNull }
 func (n *number) Inspect() string {
 	if n.isFloat {
 		return strconv.FormatFloat(n.fval, 'f', -1, 64)
-	} else {
-		return strconv.FormatInt(n.ival, 10)
 	}
+	return strconv.FormatInt(n.ival, 10)
 }
 func (n *number) Typ() ObjTyp { return typNum }
 
@@ -179,11 +180,11 @@ func (b *bfuncval) Typ() ObjTyp     { return typBif }
 func (r *retval) Inspect() string {
 	return r.res.Inspect()
 }
-func (n *retval) Typ() ObjTyp { return typRet }
+func (r *retval) Typ() ObjTyp { return typRet }
 
 // actionval.
 func (a *actionval) Inspect() string {
-	targeteval := ""
+	var targeteval string
 	switch a.val.TargetEvaluator {
 	case evaltarget.First:
 		targeteval = "First"

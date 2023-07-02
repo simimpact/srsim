@@ -19,20 +19,19 @@ func init() {
 			OnAfterHit: onAfterHit,
 		},
 	})
-
 }
 
-//Sampo's attacks have a 65% base chance to inflict Wind Shear for 3 turn(s).
-//Enemies inflicted with Wind Shear will take Wind DoT equal to 20% of Sampo's ATK at the beginning of each turn. Wind Shear can stack up to 5 time(s).
-//Tree01 add 1 duration
-//Rank06 adds DamagePercentegeAdd
-func onAfterHit(mod *modifier.ModifierInstance, e event.HitEndEvent) {
+// Sampo's attacks have a 65% base chance to inflict Wind Shear for 3 turn(s).
+// Enemies inflicted with Wind Shear will take Wind DoT equal to 20% of Sampo's ATK at the beginning of each turn. Wind Shear can stack up to 5 time(s).
+// Tree01 add 1 duration
+// Rank06 adds DamagePercentegeAdd
+func onAfterHit(mod *modifier.Instance, e event.HitEnd) {
 	char, _ := mod.Engine().CharacterInfo(e.Attacker)
 	duration := 3
 	AddWindShearTalent(char, mod.Engine(), e.Attacker, e.Defender, duration, 0.65)
 }
 
-func AddWindShearTalent(char info.Character, engine engine.Engine, owner key.TargetID, target key.TargetID, duration int, chance float64) {
+func AddWindShearTalent(char info.Character, engine engine.Engine, owner, target key.TargetID, duration int, chance float64) {
 	if char.Traces["1108101"] {
 		duration += 1
 	}

@@ -3,8 +3,8 @@ package workerpool
 import (
 	"context"
 
-	"github.com/simimpact/srsim/pkg/gcs"
-	"github.com/simimpact/srsim/pkg/gcs/eval"
+	"github.com/simimpact/srsim/pkg/logic/gcs"
+	"github.com/simimpact/srsim/pkg/logic/gcs/eval"
 	"github.com/simimpact/srsim/pkg/model"
 	"github.com/simimpact/srsim/pkg/simulation"
 )
@@ -60,7 +60,7 @@ func (p *Pool) worker() {
 				return
 			}
 
-			res, err := simulation.Run(job.Config, eval.New(job.Script.Program, p.ctx), seed)
+			res, err := simulation.Run(job.Config, eval.New(p.ctx, job.Script.Program), seed)
 			if err != nil {
 				p.errChan <- err
 				return
@@ -68,5 +68,4 @@ func (p *Pool) worker() {
 			p.respChan <- res
 		}
 	}
-
 }

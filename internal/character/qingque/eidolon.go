@@ -17,7 +17,7 @@ const (
 func init() {
 	modifier.Register(E1, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHit: func(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+			OnBeforeHit: func(mod *modifier.Instance, e event.HitStart) {
 				if e.Hit.AttackType != model.AttackType_ULT {
 					return
 				}

@@ -40,7 +40,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func onTriggerBreak(mod *modifier.ModifierInstance, target key.TargetID) {
+func onTriggerBreak(mod *modifier.Instance, target key.TargetID) {
 	healAmt := mod.State().(float64)
 	mod.Engine().Heal(info.Heal{
 		Targets:  []key.TargetID{mod.Owner()},

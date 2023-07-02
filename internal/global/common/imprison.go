@@ -34,7 +34,7 @@ func init() {
 	})
 }
 
-func imprisonAdd(mod *modifier.ModifierInstance) {
+func imprisonAdd(mod *modifier.Instance) {
 	state, ok := mod.State().(ImprisonState)
 	if !ok {
 		panic("incorrect state used for imprisonment modifier")

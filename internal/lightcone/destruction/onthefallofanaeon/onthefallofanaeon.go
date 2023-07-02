@@ -68,7 +68,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func onBeforeAttack(mod *modifier.ModifierInstance, e event.AttackStartEvent) {
+func onBeforeAttack(mod *modifier.Instance, e event.AttackStart) {
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 		Name:   BuffAtk,
 		Source: mod.Owner(),
@@ -76,12 +76,12 @@ func onBeforeAttack(mod *modifier.ModifierInstance, e event.AttackStartEvent) {
 	})
 }
 
-func onAdd(mod *modifier.ModifierInstance) {
+func onAdd(mod *modifier.Instance) {
 	atkBuff := mod.State().(state).atkBuff
 	mod.AddProperty(prop.ATKPercent, atkBuff*mod.Count())
 }
 
-func onTriggerBreak(mod *modifier.ModifierInstance, target key.TargetID) {
+func onTriggerBreak(mod *modifier.Instance, target key.TargetID) {
 	dmgBonus := mod.State().(state).dmgBonus
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 		Name:   BuffDmgBonus,

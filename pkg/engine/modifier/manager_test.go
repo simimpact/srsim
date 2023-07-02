@@ -20,7 +20,8 @@ func NewTestManager(t *testing.T) (*modifier.Manager, *gomock.Controller) {
 	engine.EXPECT().
 		Stats(gomock.Any()).
 		DoAndReturn(func(target key.TargetID) *info.Stats {
-			attr := &info.Attributes{}
+			attr := new(info.Attributes)
+			*attr = info.DefaultAttribute()
 			mods := manager.EvalModifiers(target)
 			return info.NewStats(target, attr, mods)
 		}).
@@ -44,7 +45,7 @@ func TestOnPropertyChangeBuff(t *testing.T) {
 
 	modifier.Register(conditionalMod, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnPropertyChange: func(mod *modifier.ModifierInstance) {
+			OnPropertyChange: func(mod *modifier.Instance) {
 				stats := mod.Engine().Stats(mod.Owner())
 				if stats.GetProperty(prop.DEFPercent) >= 0.1 {
 					mod.SetProperty(prop.AllDamagePercent, 0.1)
@@ -105,7 +106,7 @@ func TestReplaceStacking(t *testing.T) {
 		TickMoment:        modifier.ModifierPhase1End,
 		Stacking:          modifier.Replace,
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				mod.AddProperty(prop.CritChance, 0.05*mod.Count())
 			},
 		},
@@ -131,6 +132,7 @@ func TestReplaceStacking(t *testing.T) {
 	})
 	manager.AddModifier(target, info.Modifier{
 		Name:     mod,
+		Source:   target,
 		Duration: 2,
 	})
 
@@ -178,7 +180,7 @@ func TestReplaceStackingBySource(t *testing.T) {
 	modifier.Register(mod, modifier.Config{
 		Stacking: modifier.ReplaceBySource,
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				mod.AddProperty(prop.QuantumPEN, 0.1)
 			},
 		},

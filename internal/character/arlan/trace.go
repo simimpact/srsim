@@ -22,11 +22,10 @@ const (
 )
 
 func init() {
-
 	// A2 Register
 	modifier.Register(A2, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnTriggerDeath: func(mod *modifier.ModifierInstance, target key.TargetID) {
+			OnTriggerDeath: func(mod *modifier.Instance, target key.TargetID) {
 				if mod.Engine().HPRatio(mod.Owner()) <= 0.3 {
 					mod.Engine().Heal(info.Heal{
 						Targets:  []key.TargetID{mod.Owner()},
@@ -41,10 +40,10 @@ func init() {
 	// A6 Register
 	modifier.Register(A6, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
-				// TODO
+			OnAdd: func(mod *modifier.Instance) {
+				// TODO: https://github.com/simimpact/srsim/issues/13
 			},
-			OnAfterBeingAttacked: func(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
+			OnAfterBeingAttacked: func(mod *modifier.Instance, e event.AttackEnd) {
 				mod.RemoveSelf()
 			},
 		},

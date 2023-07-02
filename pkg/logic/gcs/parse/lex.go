@@ -6,7 +6,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/simimpact/srsim/pkg/gcs/ast"
+	"github.com/simimpact/srsim/pkg/logic/gcs/ast"
 )
 
 const eof = -1
@@ -113,10 +113,10 @@ func (l *lexer) nextItem() ast.Token {
 
 // drain drains the output so the lexing goroutine will exit.
 // Called by the parser, not in the lexing goroutine.
-func (l *lexer) drain() {
-	for range l.items {
-	}
-}
+// func (l *lexer) drain() {
+// 	for range l.items {
+// 	}
+// }
 
 // lex creates a new scanner for the input string.
 func lex(input string) *lexer {
@@ -184,19 +184,18 @@ func lexText(l *lexer) stateFn {
 		// l.backup()
 		l.emit(ast.ItemPlus)
 	case r == '/':
-		//check if next is another / or not; if / then lexComment
+		// check if next is another / or not; if / then lexComment
 		n := l.next()
 		if n == '/' {
 			l.ignore()
 			return lexComment
-		} else {
-			l.backup()
-			l.emit(ast.ItemForwardSlash)
 		}
+		l.backup()
+		l.emit(ast.ItemForwardSlash)
 	case r == '.':
 		n := l.next()
 		if isNumeric(n) {
-			//backup twice
+			// backup twice
 			l.backup()
 			l.backup()
 			return lexNumber
@@ -207,15 +206,15 @@ func lexText(l *lexer) stateFn {
 		l.backup()
 		return lexNumber
 	case r == '-':
-		//if next item is a number then lex number
+		// if next item is a number then lex number
 		n := l.next()
 		if isNumeric(n) {
-			//backup twice
+			// backup twice
 			l.backup()
 			l.backup()
 			return lexNumber
 		}
-		//other wise it's a - sign
+		// other wise it's a - sign
 		l.backup()
 		l.emit(ast.ItemMinus)
 	case r == '>':

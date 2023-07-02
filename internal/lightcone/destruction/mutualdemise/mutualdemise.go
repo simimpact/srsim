@@ -27,7 +27,7 @@ func init() {
 	modifier.Register(MutualDemiseCheck, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAdd: adjustCritRate,
-			OnHPChange: func(mod *modifier.ModifierInstance, e event.HPChangeEvent) {
+			OnHPChange: func(mod *modifier.Instance, e event.HPChange) {
 				adjustCritRate(mod)
 			},
 		},
@@ -47,7 +47,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func adjustCritRate(mod *modifier.ModifierInstance) {
+func adjustCritRate(mod *modifier.Instance) {
 	if mod.Engine().HPRatio(mod.Owner()) < 0.8 {
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 			Name:   MutualDemiseBuff,

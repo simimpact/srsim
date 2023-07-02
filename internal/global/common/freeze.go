@@ -32,7 +32,7 @@ func init() {
 	})
 }
 
-func freezePhase1(mod *modifier.ModifierInstance) {
+func freezePhase1(mod *modifier.Instance) {
 	state, ok := mod.State().(FreezeState)
 	if !ok {
 		panic("incorrect state used for freeze modifier")

@@ -39,7 +39,7 @@ func init() {
 	})
 }
 
-func onAdd(mod *modifier.ModifierInstance) {
+func onAdd(mod *modifier.Instance) {
 	stats := mod.OwnerStats()
 	if stats.SPD() >= 145 {
 		mod.SetProperty(prop.BreakEffect, 0.36)
@@ -48,7 +48,7 @@ func onAdd(mod *modifier.ModifierInstance) {
 	}
 }
 
-func onPropChange(mod *modifier.ModifierInstance) {
+func onPropChange(mod *modifier.Instance) {
 	stats := mod.OwnerStats()
 	if stats.SPD() >= 145 {
 		mod.SetProperty(prop.BreakEffect, 0.36)

@@ -28,7 +28,7 @@ func init() {
 	modifier.Register(Chorus, modifier.Config{
 		Stacking: modifier.Replace,
 		Listeners: modifier.Listeners{
-			OnBeforeDying: func(mod *modifier.ModifierInstance) {
+			OnBeforeDying: func(mod *modifier.Instance) {
 				if mod.Owner() == mod.Source() {
 					targets := mod.Engine().Characters()
 
@@ -48,7 +48,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		Stats:  info.PropMap{prop.ATKPercent: 0.07 + 0.01*float64(lc.Imposition)},
 	}
 
-	engine.Events().BattleStart.Subscribe(func(event event.BattleStartEvent) {
+	engine.Events().BattleStart.Subscribe(func(event event.BattleStart) {
 		for char := range event.CharInfo {
 			engine.AddModifier(char, mod)
 		}

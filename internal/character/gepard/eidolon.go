@@ -26,10 +26,10 @@ func init() {
 	modifier.Register(E4, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				mod.SetProperty(prop.EffectRES, 0.2)
 			},
-			OnBeforeDying: func(mod *modifier.ModifierInstance) {
+			OnBeforeDying: func(mod *modifier.Instance) {
 				if mod.Owner() == mod.Source() {
 					targets := mod.Engine().Characters()
 
@@ -44,7 +44,7 @@ func init() {
 
 func (c *char) e2() {
 	if c.info.Eidolon >= 2 {
-		c.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemovedEvent) {
+		c.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemoved) {
 			if event.Modifier.Name == common.Freeze && c.engine.HasModifier(event.Target, E2Tracker) {
 				c.engine.AddModifier(event.Target, info.Modifier{
 					Name:   E2,
@@ -69,8 +69,8 @@ func (c *char) e4() {
 			})
 		}
 
-		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAddedEvent) {
-			c.engine.AddModifier(e.Id, info.Modifier{
+		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAdded) {
+			c.engine.AddModifier(e.ID, info.Modifier{
 				Name:   E4,
 				Source: c.id,
 			})

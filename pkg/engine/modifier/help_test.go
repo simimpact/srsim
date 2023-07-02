@@ -20,8 +20,9 @@ func NewTestManager(t *testing.T) (*Manager, *gomock.Controller) {
 	engine := mock.NewMockEngine(mockCtrl)
 
 	manager := &Manager{
-		engine:  engine,
-		targets: make(map[key.TargetID]activeModifiers),
+		engine:    engine,
+		targets:   make(map[key.TargetID]activeModifiers),
+		turnCount: 0,
 	}
 	return manager, mockCtrl
 }
@@ -32,8 +33,9 @@ func NewTestManagerWithEvents(t *testing.T) (*Manager, *gomock.Controller) {
 	engine := mock.NewMockEngineWithEvents(mockCtrl)
 
 	manager := &Manager{
-		engine:  engine,
-		targets: make(map[key.TargetID]activeModifiers),
+		engine:    engine,
+		targets:   make(map[key.TargetID]activeModifiers),
+		turnCount: 0,
 	}
 	return manager, mockCtrl
 }

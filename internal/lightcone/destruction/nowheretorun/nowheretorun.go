@@ -44,7 +44,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func onTriggerDeath(mod *modifier.ModifierInstance, target key.TargetID) {
+func onTriggerDeath(mod *modifier.Instance, target key.TargetID) {
 	mod.Engine().Heal(info.Heal{
 		Targets:  []key.TargetID{mod.Owner()},
 		Source:   mod.Owner(),

@@ -15,8 +15,8 @@ const (
 	Buff  key.Modifier = "the-seriousness-of-breakfast-buff"
 )
 
-//Increases the wearer's DMG by 12/15/18/21/24%.
-//For every defeated enemy, the wearer's ATK increases by 4/5/6/7/8%, stacking up to 3 time(s).
+// Increases the wearer's DMG by 12/15/18/21/24%.
+// For every defeated enemy, the wearer's ATK increases by 4/5/6/7/8%, stacking up to 3 time(s).
 
 func init() {
 	lightcone.Register(key.TheSeriousnessofBreakfast, lightcone.Config{
@@ -53,13 +53,13 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func onTriggerDeath(mod *modifier.ModifierInstance, target key.TargetID) {
+func onTriggerDeath(mod *modifier.Instance, target key.TargetID) {
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 		Name:   Buff,
 		Source: mod.Owner(),
 	})
 }
 
-func onAdd(mod *modifier.ModifierInstance) {
+func onAdd(mod *modifier.Instance) {
 	mod.AddProperty(prop.ATKPercent, mod.Count()*mod.State().(float64))
 }
