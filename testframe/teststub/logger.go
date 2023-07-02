@@ -1,8 +1,9 @@
 package teststub
 
 import (
-	"github.com/simimpact/srsim/pkg/engine/event/handler"
 	"time"
+
+	"github.com/simimpact/srsim/pkg/engine/event/handler"
 )
 
 type TestLogger struct {
