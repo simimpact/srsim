@@ -57,7 +57,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func onAfterHit(mod *modifier.Instance, e event.HitEndEvent) {
+func onAfterHit(mod *modifier.Instance, e event.HitEnd) {
 	if !e.IsCrit && !mod.Engine().HasModifier(mod.Owner(), Cooldown) {
 		if e.AttackType == model.AttackType_NORMAL || e.AttackType == model.AttackType_SKILL {
 			mod.Engine().AddModifier(mod.Owner(), info.Modifier{

@@ -19,7 +19,7 @@ func init() {
 	// A2 Register
 	modifier.Register(A2, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHit: func(mod *modifier.Instance, e event.HitStartEvent) {
+			OnBeforeHit: func(mod *modifier.Instance, e event.HitStart) {
 				if e.Hit.AttackType == model.AttackType_NORMAL {
 					e.Hit.Attacker.AddProperty(prop.CritChance, 1)
 				}

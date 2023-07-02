@@ -41,7 +41,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func onBeforeHit(mod *modifier.Instance, e event.HitStartEvent) {
+func onBeforeHit(mod *modifier.Instance, e event.HitStart) {
 	if e.Hit.AttackType == model.AttackType_NORMAL || e.Hit.AttackType == model.AttackType_SKILL {
 		amt := mod.State().(float64)
 		if e.Hit.Attacker.Energy() == e.Hit.Attacker.MaxEnergy() {

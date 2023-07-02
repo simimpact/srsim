@@ -58,7 +58,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func onBeforeHit(mod *modifier.Instance, e event.HitStartEvent) {
+func onBeforeHit(mod *modifier.Instance, e event.HitStart) {
 	if !hasModifierFromSource(mod.Engine(), e.Defender, mod.Owner(), Target) {
 		if mod.Engine().HasModifier(mod.Owner(), Buff) {
 			stacks := mod.Engine().GetModifiers(mod.Owner(), Buff)[0].Count
@@ -86,7 +86,7 @@ func hasModifierFromSource(engine engine.Engine, target, source key.TargetID, ke
 	return false
 }
 
-func onAfterHit(mod *modifier.Instance, e event.HitEndEvent) {
+func onAfterHit(mod *modifier.Instance, e event.HitEnd) {
 	if mod.Engine().HasModifier(mod.Owner(), Buff) {
 		stacks := mod.Engine().GetModifiers(mod.Owner(), Buff)[0].Count
 		if stacks == 5 {

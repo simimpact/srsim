@@ -55,7 +55,7 @@ func init() {
 
 	modifier.Register(TalentCheck, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAfterAttack: func(mod *modifier.Instance, e event.AttackEndEvent) {
+			OnAfterAttack: func(mod *modifier.Instance, e event.AttackEnd) {
 				if len(e.Targets) == 0 {
 					return
 				}

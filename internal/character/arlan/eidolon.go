@@ -19,7 +19,7 @@ func init() {
 	// When HP is lower than or equal to 50% of Max HP, increases Skill's DMG by 10%.
 	modifier.Register(E1, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHit: func(mod *modifier.Instance, e event.HitStartEvent) {
+			OnBeforeHit: func(mod *modifier.Instance, e event.HitStart) {
 				if e.Hit.AttackType != model.AttackType_SKILL {
 					return
 				}
@@ -66,7 +66,7 @@ func init() {
 	// DMG taken by the target enemy now applies to adjacent enemies as well.
 	modifier.Register(E6, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHit: func(mod *modifier.Instance, e event.HitStartEvent) {
+			OnBeforeHit: func(mod *modifier.Instance, e event.HitStart) {
 				if e.Hit.AttackType != model.AttackType_ULT {
 					return
 				}

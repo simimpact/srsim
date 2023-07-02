@@ -33,7 +33,7 @@ func init() {
 	})
 }
 
-func tryEnergyRegen(mod *modifier.Instance, _ event.AttackEndEvent) {
+func tryEnergyRegen(mod *modifier.Instance, _ event.AttackEnd) {
 	state := mod.State().(*cogsState)
 	if !state.charged {
 		return

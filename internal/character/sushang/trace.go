@@ -79,7 +79,7 @@ func a2HPCheck(mod *modifier.Instance) {
 	}
 }
 
-func a4OnBeforeHitAll(mod *modifier.Instance, e event.HitStartEvent) {
+func a4OnBeforeHitAll(mod *modifier.Instance, e event.HitStart) {
 	stacks := mod.State().(float64)
 	e.Hit.Attacker.AddProperty(prop.AllDamagePercent, stacks*0.025)
 }

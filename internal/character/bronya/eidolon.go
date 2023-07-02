@@ -70,7 +70,7 @@ func (c *char) e2(target key.TargetID) {
 	}
 }
 
-func (c *char) e4Listener(e event.AttackEndEvent) {
+func (c *char) e4Listener(e event.AttackEnd) {
 	// Assumed to be E4+ from subscription
 
 	// has to be Ally Attacker

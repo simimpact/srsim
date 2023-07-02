@@ -39,7 +39,7 @@ func init() {
 
 	modifier.Register(mod, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHit: func(mod *modifier.Instance, e event.HitStartEvent) {
+			OnBeforeHit: func(mod *modifier.Instance, e event.HitStart) {
 				if e.Hit.AttackType == model.AttackType_NORMAL {
 					e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.1)
 				}

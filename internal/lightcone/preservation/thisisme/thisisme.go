@@ -53,7 +53,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 // increase ult damage
-func onBeforeHit(mod *modifier.Instance, e event.HitStartEvent) {
+func onBeforeHit(mod *modifier.Instance, e event.HitStart) {
 	state := mod.State().(State)
 	_, hasID := state.idMap[e.Hit.Defender.ID()]
 

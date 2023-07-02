@@ -75,56 +75,56 @@ type Listeners struct {
 	// ------------ combat events
 
 	// Called when an attack starts and the attached target is the attacker.
-	OnBeforeAttack func(mod *Instance, e event.AttackStartEvent)
+	OnBeforeAttack func(mod *Instance, e event.AttackStart)
 
 	// Called when an attack starts and the attached target is one of the targets being attacked.
-	OnBeforeBeingAttacked func(mod *Instance, e event.AttackStartEvent)
+	OnBeforeBeingAttacked func(mod *Instance, e event.AttackStart)
 
 	// Called after an attack finishes (after all hits) and the attached target is the attacker
-	OnAfterAttack func(mod *Instance, e event.AttackEndEvent)
+	OnAfterAttack func(mod *Instance, e event.AttackEnd)
 
 	// Called after an attack finishes (after all hits) and the attached target was hit by the attack.
-	OnAfterBeingAttacked func(mod *Instance, e event.AttackEndEvent)
+	OnAfterBeingAttacked func(mod *Instance, e event.AttackEnd)
 
 	// Called before any hit occurs and the attached target is the attacker. Hit data is mutable.
-	OnBeforeHitAll func(mod *Instance, e event.HitStartEvent)
+	OnBeforeHitAll func(mod *Instance, e event.HitStart)
 
 	// Called before a qualified hit occurs and the attached target is the attacker. "Qualified" hit
 	// means it is not of AttackType DOT, PURSUED, or ELEMENT_DAMAGE. Hit data is mutable.
-	OnBeforeHit func(mod *Instance, e event.HitStartEvent)
+	OnBeforeHit func(mod *Instance, e event.HitStart)
 
 	// called before any hit occurs and the attached target is the defender. Hit data is mutable.
-	OnBeforeBeingHitAll func(mod *Instance, e event.HitStartEvent)
+	OnBeforeBeingHitAll func(mod *Instance, e event.HitStart)
 
 	// Called before a qualified hit occurs and the attached target is the defender. "Qualified" hit
 	// means it is not of AttackType DOT, PURSUED, or ELEMENT_DAMAGE. Hit data is mutable.
-	OnBeforeBeingHit func(mod *Instance, e event.HitStartEvent)
+	OnBeforeBeingHit func(mod *Instance, e event.HitStart)
 
 	// Called after any hit occurs and the attached target is the attacker.
-	OnAfterHitAll func(mod *Instance, e event.HitEndEvent)
+	OnAfterHitAll func(mod *Instance, e event.HitEnd)
 
 	// Called after a qualified hit occurs and the attached target is the attacker. "Qualified" hit
 	// means it is not of AttackType DOT, PURSUED, or ELEMENT_DAMAGE.
-	OnAfterHit func(mod *Instance, e event.HitEndEvent)
+	OnAfterHit func(mod *Instance, e event.HitEnd)
 
 	// Called after any hit occurs and the attached target is the defender.
-	OnAfterBeingHitAll func(mod *Instance, e event.HitEndEvent)
+	OnAfterBeingHitAll func(mod *Instance, e event.HitEnd)
 
 	// Called after a qualified hit occurs and the attached target is the defender. "Qualified" hit
 	// means it is not of AttackType DOT, PURSUED, or ELEMENT_DAMAGE.
-	OnAfterBeingHit func(mod *Instance, e event.HitEndEvent)
+	OnAfterBeingHit func(mod *Instance, e event.HitEnd)
 
 	// Called before performing a heal and the attached target is the healer. Heal data is mutable.
-	OnBeforeDealHeal func(mod *Instance, e *event.HealStartEvent)
+	OnBeforeDealHeal func(mod *Instance, e *event.HealStart)
 
 	// Called before performing a heal and the attached target is the receiver. Heal data is mutable.
-	OnBeforeBeingHeal func(mod *Instance, e *event.HealStartEvent)
+	OnBeforeBeingHeal func(mod *Instance, e *event.HealStart)
 
 	// Called after a heal is performed and the attached target is the healer.
-	OnAfterDealHeal func(mod *Instance, e event.HealEndEvent)
+	OnAfterDealHeal func(mod *Instance, e event.HealEnd)
 
 	// Called after a heal is performed and the attached target is the receiver
-	OnAfterBeingHeal func(mod *Instance, e event.HealEndEvent)
+	OnAfterBeingHeal func(mod *Instance, e event.HealEnd)
 
 	// ------------ sim events
 
@@ -228,7 +228,7 @@ func (mgr *Manager) emitExtendCount(target key.TargetID, mod *Instance, old floa
 	})
 }
 
-func (mgr *Manager) attackStart(e event.AttackStartEvent) {
+func (mgr *Manager) attackStart(e event.AttackStart) {
 	for _, mod := range mgr.targets[e.Attacker] {
 		f := mod.listeners.OnBeforeAttack
 		if f != nil {
@@ -245,7 +245,7 @@ func (mgr *Manager) attackStart(e event.AttackStartEvent) {
 	}
 }
 
-func (mgr *Manager) attackEnd(e event.AttackEndEvent) {
+func (mgr *Manager) attackEnd(e event.AttackEnd) {
 	for _, mod := range mgr.targets[e.Attacker] {
 		f := mod.listeners.OnAfterAttack
 		if f != nil {
@@ -262,7 +262,7 @@ func (mgr *Manager) attackEnd(e event.AttackEndEvent) {
 	}
 }
 
-func (mgr *Manager) hitStart(e event.HitStartEvent) {
+func (mgr *Manager) hitStart(e event.HitStart) {
 	qualified := e.Hit.AttackType.IsQualified()
 	snapshot := e.Hit.UseSnapshot
 
@@ -299,7 +299,7 @@ func (mgr *Manager) hitStart(e event.HitStartEvent) {
 	}
 }
 
-func (mgr *Manager) hitEnd(e event.HitEndEvent) {
+func (mgr *Manager) hitEnd(e event.HitEnd) {
 	qualified := e.AttackType.IsQualified()
 	snapshot := e.UseSnapshot
 
@@ -336,7 +336,7 @@ func (mgr *Manager) hitEnd(e event.HitEndEvent) {
 	}
 }
 
-func (mgr *Manager) healStart(e *event.HealStartEvent) {
+func (mgr *Manager) healStart(e *event.HealStart) {
 	snapshot := e.UseSnapshot
 
 	for _, mod := range mgr.targets[e.Healer.ID()] {
@@ -362,7 +362,7 @@ func (mgr *Manager) healStart(e *event.HealStartEvent) {
 	}
 }
 
-func (mgr *Manager) healEnd(e event.HealEndEvent) {
+func (mgr *Manager) healEnd(e event.HealEnd) {
 	snapshot := e.UseSnapshot
 
 	for _, mod := range mgr.targets[e.Healer] {

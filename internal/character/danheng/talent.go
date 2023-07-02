@@ -66,7 +66,7 @@ func (c *char) talentActionEndListener(e event.ActionEnd) {
 	})
 }
 
-func talentBeforeHitAll(mod *modifier.Instance, e event.HitStartEvent) {
+func talentBeforeHitAll(mod *modifier.Instance, e event.HitStart) {
 	state := mod.State().(talentState)
 
 	/// only give pen to normal, skill, and ult hits. pursued will not be buffed

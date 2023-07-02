@@ -60,7 +60,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 // BeforeHit if its ult or skill add the dmg% to that hit
-func onBeforeHit(mod *modifier.Instance, e event.HitStartEvent) {
+func onBeforeHit(mod *modifier.Instance, e event.HitStart) {
 	if e.Hit.AttackType == model.AttackType_ULT ||
 		e.Hit.AttackType == model.AttackType_SKILL {
 		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.15+0.03*mod.State().(float64))
@@ -68,7 +68,7 @@ func onBeforeHit(mod *modifier.Instance, e event.HitStartEvent) {
 }
 
 // Beforehit if its follow and it has the SomnusCorpusMod add the dmg% to that hit and change used to true
-func onBeforeHitSomnus(mod *modifier.Instance, e event.HitStartEvent) {
+func onBeforeHitSomnus(mod *modifier.Instance, e event.HitStart) {
 	state := mod.State().(*somnusState)
 	if e.Hit.AttackType == model.AttackType_INSERT {
 		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, state.amt)
@@ -77,7 +77,7 @@ func onBeforeHitSomnus(mod *modifier.Instance, e event.HitStartEvent) {
 }
 
 // after attack if SomnusCorpMod is used, remove self.
-func onAfterAttack(mod *modifier.Instance, e event.AttackEndEvent) {
+func onAfterAttack(mod *modifier.Instance, e event.AttackEnd) {
 	state := mod.State().(*somnusState)
 	if state.used {
 		mod.RemoveSelf()

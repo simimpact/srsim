@@ -43,7 +43,7 @@ func init() {
 			OnAdd: func(mod *modifier.Instance) {
 				// TODO: https://github.com/simimpact/srsim/issues/13
 			},
-			OnAfterBeingAttacked: func(mod *modifier.Instance, e event.AttackEndEvent) {
+			OnAfterBeingAttacked: func(mod *modifier.Instance, e event.AttackEnd) {
 				mod.RemoveSelf()
 			},
 		},

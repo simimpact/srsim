@@ -56,7 +56,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	}
 }
 
-func onBeforeBeingHitAll(mod *modifier.Instance, e event.HitStartEvent) {
+func onBeforeBeingHitAll(mod *modifier.Instance, e event.HitStart) {
 	if e.Hit.AttackType == model.AttackType_DOT {
 		e.Hit.Defender.AddProperty(prop.AllDamageTaken, mod.State().(float64))
 	}

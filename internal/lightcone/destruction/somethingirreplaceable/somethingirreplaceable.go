@@ -64,7 +64,7 @@ func onTriggerDeath(mod *modifier.Instance, target key.TargetID) {
 	conditions(mod)
 }
 
-func onAfterBeingAttacked(mod *modifier.Instance, e event.AttackEndEvent) {
+func onAfterBeingAttacked(mod *modifier.Instance, e event.AttackEnd) {
 	conditions(mod)
 }
 

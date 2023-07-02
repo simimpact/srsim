@@ -69,7 +69,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 // wearer has Shield before attacked
-func onBeforeBeingHitAll(mod *modifier.Instance, e event.HitStartEvent) {
+func onBeforeBeingHitAll(mod *modifier.Instance, e event.HitStart) {
 	if mod.Engine().IsShielded(mod.Owner()) {
 		state := mod.State().(State)
 		e.Hit.Defender.AddProperty(prop.AllDamageReduce, state.dmgRes)
@@ -77,7 +77,7 @@ func onBeforeBeingHitAll(mod *modifier.Instance, e event.HitStartEvent) {
 }
 
 // wearer doesn't have Shield after attacked
-func onAfterBeingAttacked(mod *modifier.Instance, e event.AttackEndEvent) {
+func onAfterBeingAttacked(mod *modifier.Instance, e event.AttackEnd) {
 	isShielded := mod.Engine().IsShielded(mod.Owner())
 	isOnCd := mod.Engine().HasModifier(mod.Owner(), modcd)
 

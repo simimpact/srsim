@@ -58,6 +58,6 @@ func onPhase2(mod *modifier.Instance) {
 }
 
 // after attack, double the DEF
-func onAfterBeingAttacked(mod *modifier.Instance, e event.AttackEndEvent) {
+func onAfterBeingAttacked(mod *modifier.Instance, e event.AttackEnd) {
 	mod.SetProperty(prop.DEFPercent, 2.0*mod.State().(float64))
 }

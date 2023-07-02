@@ -56,7 +56,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 // chance to DoT the attacker
-func onAfterBeingAttacked(mod *modifier.Instance, e event.AttackEndEvent) {
+func onAfterBeingAttacked(mod *modifier.Instance, e event.AttackEnd) {
 	state := mod.State().(State)
 
 	mod.Engine().AddModifier(e.Attacker, info.Modifier{
