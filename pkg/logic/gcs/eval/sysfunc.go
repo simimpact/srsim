@@ -21,11 +21,11 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addFunction("set_default_action", e.setDefaultAction, env)
 
 	// actions
-	e.addAction(key.ActionAttack, env)
-	e.addAction(key.ActionSkill, env)
-	e.addAction(key.ActionUlt, env)
-	e.addAction(key.ActionUltAttack, env)
-	e.addAction(key.ActionUltSkill, env)
+	e.addAction(logic.ActionAttack, env)
+	e.addAction(logic.ActionSkill, env)
+	e.addAction(logic.ActionUlt, env)
+	e.addAction(logic.ActionUltAttack, env)
+	e.addAction(logic.ActionUltSkill, env)
 
 	// target evaluators
 	e.addConstant("First", &number{ival: int64(evaltarget.First)}, env)
@@ -216,7 +216,7 @@ func (e *Eval) setDefaultAction(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 
 	act := *actobj.(*actionval)
-	if act.val.Type != key.ActionAttack {
+	if act.val.Type != logic.ActionAttack {
 		return nil, fmt.Errorf("action should be an attack, got %v", actobj.Inspect())
 	}
 	act.val.Target = key.TargetID(target)
@@ -224,7 +224,7 @@ func (e *Eval) setDefaultAction(c *ast.CallExpr, env *Env) (Obj, error) {
 	return &null{}, nil
 }
 
-func (e *Eval) addAction(at key.ActionType, env *Env) {
+func (e *Eval) addAction(at logic.ActionType, env *Env) {
 	f := func(c *ast.CallExpr, env *Env) (Obj, error) {
 		// attack/skill/ult(evaltarget)
 		if len(c.Args) != 1 {

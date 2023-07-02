@@ -13,11 +13,11 @@ func (e *Eval) NextAction(target key.TargetID) (logic.Action, error) {
 	if !ok {
 		return logic.Action{}, errors.New("not found action callback")
 	}
-	act, err := e.evalTargetNode(t, key.ActionAttack, key.ActionSkill)
+	act, err := e.evalTargetNode(t, logic.ActionAttack, logic.ActionSkill)
 	if err != nil {
 		return logic.Action{}, err
 	}
-	if act.Type == key.InvalidAction {
+	if act.Type == logic.InvalidAction {
 		act, ok = e.defaultActions[target]
 		if !ok {
 			return logic.Action{}, errors.New("not found default action")
@@ -31,11 +31,11 @@ func (e *Eval) NextAction(target key.TargetID) (logic.Action, error) {
 func (e *Eval) UltCheck() ([]logic.Action, error) {
 	result := make([]logic.Action, 0)
 	for _, t := range e.ultNodes {
-		act, err := e.evalTargetNode(t, key.ActionUlt)
+		act, err := e.evalTargetNode(t, logic.ActionUlt)
 		if err != nil {
 			return nil, err
 		}
-		if act.Type != key.InvalidAction {
+		if act.Type != logic.InvalidAction {
 			act.Target = t.target
 			result = append(result, act)
 		}
@@ -43,7 +43,7 @@ func (e *Eval) UltCheck() ([]logic.Action, error) {
 	return result, nil
 }
 
-func (e *Eval) evalTargetNode(t TargetNode, checkType ...key.ActionType) (logic.Action, error) {
+func (e *Eval) evalTargetNode(t TargetNode, checkType ...logic.ActionType) (logic.Action, error) {
 	obj, err := e.evalNode(t.node, t.env)
 	if err != nil {
 		return logic.Action{}, err
@@ -62,7 +62,7 @@ func (e *Eval) evalTargetNode(t TargetNode, checkType ...key.ActionType) (logic.
 	}
 
 	// check required types
-	if act.Type != key.InvalidAction && len(checkType) > 0 {
+	if act.Type != logic.InvalidAction && len(checkType) > 0 {
 		found := false
 		for _, v := range checkType {
 			if act.Type == v {

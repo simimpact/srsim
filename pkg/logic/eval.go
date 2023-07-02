@@ -12,7 +12,20 @@ type Eval interface {
 }
 
 type Action struct {
-	Type            key.ActionType
+	Type            ActionType
 	Target          key.TargetID        `exhaustruct:"optional"`
 	TargetEvaluator key.TargetEvaluator `exhaustruct:"optional"`
 }
+
+type ActionType string
+
+const (
+	InvalidAction ActionType = ""
+	ActionAttack  ActionType = "attack"
+	ActionSkill   ActionType = "skill"
+	ActionUlt     ActionType = "ult"
+	// ActionUltAttack / ActionUltSkill is used to support case of MC
+	ActionUltAttack ActionType = "ult_attack"
+	ActionUltSkill  ActionType = "ult_skill"
+	EndActionType   ActionType = "end"
+)

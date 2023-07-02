@@ -6,7 +6,6 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/simimpact/srsim/pkg/engine/target/evaltarget"
-	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/logic"
 	"github.com/simimpact/srsim/pkg/logic/gcs/parse"
 )
@@ -62,19 +61,19 @@ func TestCharAdd(t *testing.T) {
 	// skill
 	act, err := eval.NextAction(0)
 	assertValidSkill(t, act, err, logic.Action{
-		Type:            key.ActionSkill,
+		Type:            logic.ActionSkill,
 		Target:          0,
 		TargetEvaluator: evaltarget.LowestHP,
 	})
 	act, err = eval.NextAction(1)
 	assertValidSkill(t, act, err, logic.Action{
-		Type:            key.ActionAttack,
+		Type:            logic.ActionAttack,
 		Target:          1,
 		TargetEvaluator: evaltarget.LowestHP,
 	})
 	act, err = eval.NextAction(1)
 	assertValidSkill(t, act, err, logic.Action{
-		Type:            key.ActionSkill,
+		Type:            logic.ActionSkill,
 		Target:          1,
 		TargetEvaluator: evaltarget.First,
 	})
@@ -83,7 +82,7 @@ func TestCharAdd(t *testing.T) {
 	acts, err := eval.UltCheck()
 	assertValidUlt(t, acts, err, []logic.Action{
 		{
-			Type:            key.ActionUlt,
+			Type:            logic.ActionUlt,
 			Target:          1,
 			TargetEvaluator: evaltarget.LowestHP,
 		},
@@ -91,7 +90,7 @@ func TestCharAdd(t *testing.T) {
 	acts, err = eval.UltCheck()
 	assertValidUlt(t, acts, err, []logic.Action{
 		{
-			Type:            key.ActionUlt,
+			Type:            logic.ActionUlt,
 			Target:          0,
 			TargetEvaluator: evaltarget.First,
 		},

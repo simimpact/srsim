@@ -34,7 +34,7 @@ func (mgr *Manager) ExecuteAction(id key.TargetID, isInsert bool) (target.Execut
 	}
 
 	check := skillInfo.Skill.CanUse
-	useSkill := act.Type == key.ActionSkill
+	useSkill := act.Type == logic.ActionSkill
 	if useSkill && mgr.engine.SP() >= skillInfo.Skill.SPNeed && (check == nil || check(mgr.engine, char)) {
 		primaryTarget, err := evaltarget.Evaluate(mgr.engine, evaltarget.Info{
 			Source:      id,
@@ -102,7 +102,7 @@ func (mgr *Manager) ExecuteUlt(act logic.Action) (target.ExecutableUlt, error) {
 	char := mgr.instances[id]
 
 	if singleUlt, ok := char.(info.SingleUlt); ok {
-		if act.Type != key.ActionUlt { // if key.ActionUltAttack or key.ActionUltSkill is used
+		if act.Type != logic.ActionUlt { // if key.ActionUltAttack or key.ActionUltSkill is used
 			return target.ExecutableUlt{}, fmt.Errorf("wrong action key; expected ult, got %s", string(act.Type))
 		}
 
@@ -128,7 +128,7 @@ func (mgr *Manager) ExecuteUlt(act logic.Action) (target.ExecutableUlt, error) {
 	}
 
 	if multiUlt, ok := char.(info.MultiUlt); ok {
-		if act.Type != key.ActionUltAttack && act.Type != key.ActionUltSkill { // if key.ActionUlt is used
+		if act.Type != logic.ActionUltAttack && act.Type != logic.ActionUltSkill { // if key.ActionUlt is used
 			return target.ExecutableUlt{}, fmt.Errorf(
 				"wrong action key; expected ult_attack or ult_skill, got %s", string(act.Type))
 		}
