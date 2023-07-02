@@ -51,12 +51,12 @@ func initialize(sim *Simulation) (stateFn, error) {
 	// us wanting to retain characters in the same state between multiple waves (if ever supported)
 	for _, char := range sim.cfg.Characters {
 		id := sim.IDGen.New()
+		sim.Targets[id] = info.ClassCharacter
+		sim.characters = append(sim.characters, id)
+
 		if err := sim.Char.AddCharacter(id, char); err != nil {
 			return nil, fmt.Errorf("error initializing character %w", err)
 		}
-
-		sim.Targets[id] = info.ClassCharacter
-		sim.characters = append(sim.characters, id)
 	}
 
 	// run the script to register callbacks
@@ -119,7 +119,7 @@ func engage(sim *Simulation) (stateFn, error) {
 // This does not directly emit a TurnStartEvent since the underlying turn manager does that for us.
 func beginTurn(sim *Simulation) (stateFn, error) {
 	// determine who's turn it is and increase total AV
-	next, av, err := sim.Turn.StartTurn()
+	next, av, turnOrder, err := sim.Turn.StartTurn()
 	if !sim.IsValid(next) || err != nil {
 		return nil, fmt.Errorf(
 			"unexpected: turn manager returned an invalid target for next turn %w", err)
@@ -127,6 +127,12 @@ func beginTurn(sim *Simulation) (stateFn, error) {
 	sim.Active = next
 	sim.TotalAV += av
 
+	sim.Event.TurnStart.Emit(event.TurnStart{
+		Active:    next,
+		DeltaAV:   av,
+		TotalAV:   sim.TotalAV,
+		TurnOrder: turnOrder, // TODO: populate
+	})
 	sim.Modifier.Tick(sim.Active, info.TurnStart)
 	return phase1, nil
 }
