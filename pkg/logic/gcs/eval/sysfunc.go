@@ -33,9 +33,9 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addConstant("LowestHPRatio", &number{ival: int64(evaltarget.LowestHPRatio)}, env)
 
 	// chars
-	if e.Engine != nil {
-		for _, k := range e.Engine.Characters() {
-			char, err := e.Engine.CharacterInfo(k)
+	if e.engine != nil {
+		for _, k := range e.engine.Characters() {
+			char, err := e.engine.CharacterInfo(k)
 			if err != nil { // ???
 				return
 			}
@@ -59,7 +59,7 @@ func (e *Eval) print(c *ast.CallExpr, env *Env) (Obj, error) {
 }
 
 func (e *Eval) rand(c *ast.CallExpr, env *Env) (Obj, error) {
-	x := e.Engine.Rand().Float64()
+	x := e.engine.Rand().Float64()
 	return &number{
 		fval:    x,
 		isFloat: true,
@@ -67,7 +67,7 @@ func (e *Eval) rand(c *ast.CallExpr, env *Env) (Obj, error) {
 }
 
 func (e *Eval) randnorm(c *ast.CallExpr, env *Env) (Obj, error) {
-	x := e.Engine.Rand().NormFloat64()
+	x := e.engine.Rand().NormFloat64()
 	return &number{
 		fval:    x,
 		isFloat: true,

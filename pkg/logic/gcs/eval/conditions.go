@@ -69,10 +69,10 @@ func (e *Eval) hasModifier(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 	modifier := key.Modifier(tarobj.(*strval).str)
 
-	if !e.Engine.IsValid(target) {
+	if !e.engine.IsValid(target) {
 		return nil, fmt.Errorf("target %d is invalid", target)
 	}
-	return bton(e.Engine.HasModifier(target, modifier)), nil
+	return bton(e.engine.HasModifier(target, modifier)), nil
 }
 
 func (e *Eval) modifierCount(c *ast.CallExpr, env *Env) (Obj, error) {
@@ -101,10 +101,10 @@ func (e *Eval) modifierCount(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 	status := model.StatusType(typobj.(*number).ival)
 
-	if !e.Engine.IsValid(target) {
+	if !e.engine.IsValid(target) {
 		return nil, fmt.Errorf("target %d is invalid", target)
 	}
-	return &number{ival: int64(e.Engine.ModifierCount(target, status))}, nil
+	return &number{ival: int64(e.engine.ModifierCount(target, status))}, nil
 }
 
 // attribute
@@ -125,10 +125,10 @@ func (e *Eval) ultReady(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 	target := key.TargetID(tarobj.(*number).ival)
 
-	if !e.Engine.IsCharacter(target) {
+	if !e.engine.IsCharacter(target) {
 		return nil, fmt.Errorf("target %d is not a character", target)
 	}
-	return bton(e.Engine.EnergyRatio(target) >= 1), nil
+	return bton(e.engine.EnergyRatio(target) >= 1), nil
 }
 
 func (e *Eval) skillPoints(c *ast.CallExpr, env *Env) (Obj, error) {
@@ -137,7 +137,7 @@ func (e *Eval) skillPoints(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("invalid number of params for skill_points, expected 0 got %v", len(c.Args))
 	}
 
-	return &number{ival: int64(e.Engine.SP())}, nil
+	return &number{ival: int64(e.engine.SP())}, nil
 }
 
 func (e *Eval) energy(c *ast.CallExpr, env *Env) (Obj, error) {
@@ -156,10 +156,10 @@ func (e *Eval) energy(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 	target := key.TargetID(tarobj.(*number).ival)
 
-	if !e.Engine.IsValid(target) {
+	if !e.engine.IsValid(target) {
 		return nil, fmt.Errorf("target %d is invalid", target)
 	}
-	return &number{ival: int64(e.Engine.Energy(target))}, nil
+	return &number{ival: int64(e.engine.Energy(target))}, nil
 }
 
 func (e *Eval) maxEnergy(c *ast.CallExpr, env *Env) (Obj, error) {
@@ -178,10 +178,10 @@ func (e *Eval) maxEnergy(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 	target := key.TargetID(tarobj.(*number).ival)
 
-	if !e.Engine.IsValid(target) {
+	if !e.engine.IsValid(target) {
 		return nil, fmt.Errorf("target %d is invalid", target)
 	}
-	return &number{ival: int64(e.Engine.MaxEnergy(target))}, nil
+	return &number{ival: int64(e.engine.MaxEnergy(target))}, nil
 }
 
 func (e *Eval) hpRatio(c *ast.CallExpr, env *Env) (Obj, error) {
@@ -200,11 +200,11 @@ func (e *Eval) hpRatio(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 	target := key.TargetID(tarobj.(*number).ival)
 
-	if !e.Engine.IsValid(target) {
+	if !e.engine.IsValid(target) {
 		return nil, fmt.Errorf("target %d is invalid", target)
 	}
 	return &number{
-		fval:    e.Engine.HPRatio(target),
+		fval:    e.engine.HPRatio(target),
 		isFloat: true,
 	}, nil
 }
@@ -237,10 +237,10 @@ func (e *Eval) hasShield(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 	key := key.Shield(keyobj.(*strval).str)
 
-	if !e.Engine.IsValid(target) {
+	if !e.engine.IsValid(target) {
 		return nil, fmt.Errorf("target %d is invalid", target)
 	}
-	return bton(e.Engine.HasShield(target, key)), nil
+	return bton(e.engine.HasShield(target, key)), nil
 }
 
 func (e *Eval) isShielded(c *ast.CallExpr, env *Env) (Obj, error) {
@@ -259,10 +259,10 @@ func (e *Eval) isShielded(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 	target := key.TargetID(tarobj.(*number).ival)
 
-	if !e.Engine.IsValid(target) {
+	if !e.engine.IsValid(target) {
 		return nil, fmt.Errorf("target %d is invalid", target)
 	}
-	return bton(e.Engine.IsShielded(target)), nil
+	return bton(e.engine.IsShielded(target)), nil
 }
 
 // info
@@ -283,7 +283,7 @@ func (e *Eval) skillReady(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 	target := key.TargetID(tarobj.(*number).ival)
 
-	result, err := e.Engine.CanUseSkill(target)
+	result, err := e.engine.CanUseSkill(target)
 	if err != nil {
 		return nil, err
 	}
@@ -308,7 +308,7 @@ func (e *Eval) isValid(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 	target := key.TargetID(tarobj.(*number).ival)
 
-	return bton(e.Engine.IsValid(target)), nil
+	return bton(e.engine.IsValid(target)), nil
 }
 
 func (e *Eval) isCharacter(c *ast.CallExpr, env *Env) (Obj, error) {
@@ -327,7 +327,7 @@ func (e *Eval) isCharacter(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 	target := key.TargetID(tarobj.(*number).ival)
 
-	return bton(e.Engine.IsCharacter(target)), nil
+	return bton(e.engine.IsCharacter(target)), nil
 }
 
 func (e *Eval) isEnemy(c *ast.CallExpr, env *Env) (Obj, error) {
@@ -346,5 +346,5 @@ func (e *Eval) isEnemy(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 	target := key.TargetID(tarobj.(*number).ival)
 
-	return bton(e.Engine.IsEnemy(target)), nil
+	return bton(e.engine.IsEnemy(target)), nil
 }

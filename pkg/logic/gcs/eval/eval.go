@@ -23,7 +23,7 @@ type Eval struct {
 	AST    ast.Node
 	global *Env
 	ctx    context.Context
-	Engine engine.Engine
+	engine engine.Engine
 
 	targetNode     map[key.TargetID]TargetNode
 	ultNodes       []TargetNode
@@ -71,7 +71,7 @@ func New(ctx context.Context, ast *ast.BlockStmt) *Eval {
 
 // Run will execute the provided AST.
 func (e *Eval) Init(eng engine.Engine) error {
-	e.Engine = eng
+	e.engine = eng
 	e.global = NewEnv(nil)
 	e.targetNode = make(map[key.TargetID]TargetNode)
 	e.ultNodes = make([]TargetNode, 0)
