@@ -5,7 +5,7 @@ import (
 	"runtime/debug"
 	"strconv"
 
-	"github.com/simimpact/srsim/pkg/gcs"
+	"github.com/simimpact/srsim/pkg/logic/gcs"
 	"github.com/simimpact/srsim/pkg/model"
 	"github.com/simimpact/srsim/pkg/simulator/workerpool"
 	"github.com/simimpact/srsim/pkg/statistics/agg"

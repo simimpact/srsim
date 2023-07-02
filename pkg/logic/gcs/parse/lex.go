@@ -6,7 +6,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/simimpact/srsim/pkg/gcs/ast"
+	"github.com/simimpact/srsim/pkg/logic/gcs/ast"
 )
 
 const eof = -1

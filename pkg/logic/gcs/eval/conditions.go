@@ -3,8 +3,8 @@ package eval
 import (
 	"fmt"
 
-	"github.com/simimpact/srsim/pkg/gcs/ast"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/logic/gcs/ast"
 	"github.com/simimpact/srsim/pkg/model"
 )
 

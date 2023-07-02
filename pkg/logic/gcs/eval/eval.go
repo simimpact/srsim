@@ -7,10 +7,10 @@ import (
 	"strconv"
 
 	"github.com/simimpact/srsim/pkg/engine"
-	"github.com/simimpact/srsim/pkg/engine/action"
 	"github.com/simimpact/srsim/pkg/engine/target/evaltarget"
-	"github.com/simimpact/srsim/pkg/gcs/ast"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/logic"
+	"github.com/simimpact/srsim/pkg/logic/gcs/ast"
 )
 
 type TargetNode struct {
@@ -27,7 +27,7 @@ type Eval struct {
 
 	targetNode     map[key.TargetID]TargetNode
 	ultNodes       []TargetNode
-	defaultActions map[key.TargetID]action.Action
+	defaultActions map[key.TargetID]logic.Action
 }
 
 type Env struct {
@@ -70,11 +70,12 @@ func New(ctx context.Context, ast *ast.BlockStmt) *Eval {
 }
 
 // Run will execute the provided AST.
-func (e *Eval) Init() error {
+func (e *Eval) Init(eng engine.Engine) error {
+	e.Engine = eng
 	e.global = NewEnv(nil)
 	e.targetNode = make(map[key.TargetID]TargetNode)
 	e.ultNodes = make([]TargetNode, 0)
-	e.defaultActions = make(map[key.TargetID]action.Action)
+	e.defaultActions = make(map[key.TargetID]logic.Action)
 	e.initSysFuncs(e.global)
 	e.initConditionalFuncs(e.global)
 
@@ -130,7 +131,7 @@ type (
 	}
 
 	actionval struct {
-		val action.Action
+		val logic.Action
 	}
 
 	mapval struct {

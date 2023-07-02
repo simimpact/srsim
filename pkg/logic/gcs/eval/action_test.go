@@ -5,10 +5,10 @@ import (
 	"testing"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/simimpact/srsim/pkg/engine/action"
 	"github.com/simimpact/srsim/pkg/engine/target/evaltarget"
-	"github.com/simimpact/srsim/pkg/gcs/parse"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/logic"
+	"github.com/simimpact/srsim/pkg/logic/gcs/parse"
 )
 
 const actions = `
@@ -53,7 +53,7 @@ func TestCharAdd(t *testing.T) {
 	}
 
 	eval := New(context.Background(), res.Program)
-	err = eval.Init()
+	err = eval.Init(nil)
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
@@ -61,19 +61,19 @@ func TestCharAdd(t *testing.T) {
 
 	// skill
 	act, err := eval.NextAction(0)
-	assertValidSkill(t, act, err, action.Action{
+	assertValidSkill(t, act, err, logic.Action{
 		Type:            key.ActionSkill,
 		Target:          0,
 		TargetEvaluator: evaltarget.LowestHP,
 	})
 	act, err = eval.NextAction(1)
-	assertValidSkill(t, act, err, action.Action{
+	assertValidSkill(t, act, err, logic.Action{
 		Type:            key.ActionAttack,
 		Target:          1,
 		TargetEvaluator: evaltarget.LowestHP,
 	})
 	act, err = eval.NextAction(1)
-	assertValidSkill(t, act, err, action.Action{
+	assertValidSkill(t, act, err, logic.Action{
 		Type:            key.ActionSkill,
 		Target:          1,
 		TargetEvaluator: evaltarget.First,
@@ -81,7 +81,7 @@ func TestCharAdd(t *testing.T) {
 
 	// ult
 	acts, err := eval.UltCheck()
-	assertValidUlt(t, acts, err, []action.Action{
+	assertValidUlt(t, acts, err, []logic.Action{
 		{
 			Type:            key.ActionUlt,
 			Target:          1,
@@ -89,7 +89,7 @@ func TestCharAdd(t *testing.T) {
 		},
 	})
 	acts, err = eval.UltCheck()
-	assertValidUlt(t, acts, err, []action.Action{
+	assertValidUlt(t, acts, err, []logic.Action{
 		{
 			Type:            key.ActionUlt,
 			Target:          0,
@@ -97,10 +97,10 @@ func TestCharAdd(t *testing.T) {
 		},
 	})
 	acts, err = eval.UltCheck()
-	assertValidUlt(t, acts, err, []action.Action{})
+	assertValidUlt(t, acts, err, []logic.Action{})
 }
 
-func assertValidSkill(t *testing.T, act action.Action, err error, validact action.Action) {
+func assertValidSkill(t *testing.T, act logic.Action, err error, validact logic.Action) {
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
@@ -111,7 +111,7 @@ func assertValidSkill(t *testing.T, act action.Action, err error, validact actio
 	}
 }
 
-func assertValidUlt(t *testing.T, acts []action.Action, err error, validacts []action.Action) {
+func assertValidUlt(t *testing.T, acts []logic.Action, err error, validacts []logic.Action) {
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

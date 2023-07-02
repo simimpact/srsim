@@ -6,7 +6,7 @@ import (
 
 	"github.com/simimpact/srsim/pkg/engine/event/handler"
 	"github.com/simimpact/srsim/pkg/engine/logging"
-	"github.com/simimpact/srsim/pkg/gcs/eval"
+	"github.com/simimpact/srsim/pkg/logic/gcs/eval"
 	"github.com/simimpact/srsim/pkg/model"
 	"github.com/simimpact/srsim/pkg/simulation"
 	"github.com/simimpact/srsim/testframe/testcfg"

@@ -9,7 +9,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/simimpact/srsim/pkg/gcs/parse"
+	"github.com/simimpact/srsim/pkg/logic/gcs/parse"
 	"github.com/simimpact/srsim/pkg/model"
 	"github.com/simimpact/srsim/pkg/simulator"
 )

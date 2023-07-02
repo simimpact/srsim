@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/simimpact/srsim/pkg/engine/action"
 	"github.com/simimpact/srsim/pkg/engine/target/evaltarget"
-	"github.com/simimpact/srsim/pkg/gcs/ast"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/logic"
+	"github.com/simimpact/srsim/pkg/logic/gcs/ast"
 )
 
 func (e *Eval) initSysFuncs(env *Env) {
@@ -241,7 +241,7 @@ func (e *Eval) addAction(at key.ActionType, env *Env) {
 		evaltarget := etval.(*number).ival
 
 		return &actionval{
-			val: action.Action{
+			val: logic.Action{
 				Type:            at,
 				TargetEvaluator: key.TargetEvaluator(evaltarget), // TODO: check is valid
 			},

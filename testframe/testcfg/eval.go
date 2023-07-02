@@ -3,8 +3,8 @@ package testcfg
 import (
 	"context"
 
-	"github.com/simimpact/srsim/pkg/gcs/eval"
-	"github.com/simimpact/srsim/pkg/gcs/parse"
+	"github.com/simimpact/srsim/pkg/logic/gcs/eval"
+	"github.com/simimpact/srsim/pkg/logic/gcs/parse"
 )
 
 const actions = `

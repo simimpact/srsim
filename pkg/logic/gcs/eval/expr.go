@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/simimpact/srsim/pkg/gcs/ast"
+	"github.com/simimpact/srsim/pkg/logic/gcs/ast"
 )
 
 func (e *Eval) evalExpr(ex ast.Expr, env *Env) (Obj, error) {

@@ -3,11 +3,11 @@ package character
 import (
 	"fmt"
 
-	"github.com/simimpact/srsim/pkg/engine/action"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/target"
 	"github.com/simimpact/srsim/pkg/engine/target/evaltarget"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/logic"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
@@ -93,7 +93,7 @@ func (mgr *Manager) ExecuteAction(id key.TargetID, isInsert bool) (target.Execut
 //  1. find the method to execute in the character instance based on UltType
 //  2. call TargetEvaluator to determine the primary target
 //  3. return ExecutableUlt w/ this information bundled
-func (mgr *Manager) ExecuteUlt(act action.Action) (target.ExecutableUlt, error) {
+func (mgr *Manager) ExecuteUlt(act logic.Action) (target.ExecutableUlt, error) {
 	id := act.Target
 	skillInfo, err := mgr.SkillInfo(id)
 	if err != nil {
