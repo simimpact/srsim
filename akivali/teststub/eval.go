@@ -3,10 +3,10 @@ package teststub
 import (
 	"fmt"
 
+	"github.com/simimpact/srsim/akivali/testcfg/testeval"
 	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/logic"
-	"github.com/simimpact/srsim/testframe/testcfg/testeval"
 )
 
 var _ logic.Eval = (*evaluator)(nil)

@@ -1,11 +1,11 @@
 package teststub
 
 import (
+	"github.com/simimpact/srsim/akivali/testcfg/testeval"
 	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
-	"github.com/simimpact/srsim/testframe/testcfg/testeval"
 )
 
 // Characters provide interfaces for

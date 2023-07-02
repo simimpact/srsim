@@ -3,11 +3,11 @@ package lightcone
 import (
 	"testing"
 
-	"github.com/simimpact/srsim/testframe/eventchecker/turnend"
-	"github.com/simimpact/srsim/testframe/eventchecker/turnstart"
-	"github.com/simimpact/srsim/testframe/testcfg/testchar"
-	"github.com/simimpact/srsim/testframe/testcfg/testcone"
-	"github.com/simimpact/srsim/testframe/teststub"
+	"github.com/simimpact/srsim/akivali/eventchecker/turnend"
+	"github.com/simimpact/srsim/akivali/eventchecker/turnstart"
+	"github.com/simimpact/srsim/akivali/testcfg/testchar"
+	"github.com/simimpact/srsim/akivali/testcfg/testcone"
+	"github.com/simimpact/srsim/akivali/teststub"
 	"github.com/stretchr/testify/suite"
 )
 
