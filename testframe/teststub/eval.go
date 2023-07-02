@@ -25,10 +25,6 @@ func newEvaluator() *evaluator {
 	}
 }
 
-func (e *evaluator) registerUltLogic(f testeval.UltFunc) {
-	e.ult = f
-}
-
 func (e *evaluator) registerAction(id key.TargetID, f testeval.ActionEval) {
 	e.charAction[id] = f
 }

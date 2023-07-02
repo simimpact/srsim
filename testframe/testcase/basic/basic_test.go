@@ -26,6 +26,7 @@ func (t *BasicTest) Test_Framework() {
 
 func (t *BasicTest) Test_TurnLogic() {
 	t.SetAutoRun(false)
+	t.Characters.AddCharacter(testchar.DummyChar())
 	t.Characters.AddCharacter(testchar.DanHung())
 	t.StartSimulation()
 	dummyID := t.Characters.GetCharacterID(0)

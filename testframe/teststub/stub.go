@@ -114,13 +114,12 @@ func (s *Stub) Expect(checkers ...eventchecker.EventChecker) {
 			toContinue, err = checkers[i](e)
 			if toContinue {
 				continue
-			} else {
-				if err != nil {
-					s.FailNow("Event Checker err", err)
-					return
-				}
-				break
 			}
+			if err != nil {
+				s.FailNow("Event Checker err", err)
+				return
+			}
+			break
 		}
 		if toContinue {
 			LogExpectSuccess("%#+v", e)
