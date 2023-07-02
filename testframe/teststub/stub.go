@@ -2,18 +2,18 @@ package teststub
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/simimpact/srsim/pkg/engine/event/handler"
 	"github.com/simimpact/srsim/pkg/engine/logging"
-	"github.com/simimpact/srsim/pkg/gcs/eval"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/logic/gcs/eval"
 	"github.com/simimpact/srsim/pkg/model"
 	"github.com/simimpact/srsim/pkg/simulation"
 	"github.com/simimpact/srsim/testframe/eventchecker"
 	"github.com/simimpact/srsim/testframe/eventchecker/battlestart"
 	"github.com/simimpact/srsim/testframe/testcfg"
 	"github.com/stretchr/testify/suite"
-	"runtime/debug"
-	"time"
 )
 
 type Stub struct {
@@ -114,8 +114,6 @@ func (s *Stub) Expect(checkers ...eventchecker.EventChecker) {
 		}
 		if toContinue {
 			LogExpectSuccess("%#+v", e)
-			LogExpectSuccess("Callstack: ")
-			debug.PrintStack()
 			if s.autoContinue {
 				s.haltSignaller <- struct{}{}
 			}

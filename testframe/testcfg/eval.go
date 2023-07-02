@@ -3,8 +3,9 @@ package testcfg
 import (
 	"context"
 	"fmt"
-	"github.com/simimpact/srsim/pkg/model"
 	"strings"
+
+	"github.com/simimpact/srsim/pkg/model"
 
 	"github.com/simimpact/srsim/pkg/logic/gcs/eval"
 	"github.com/simimpact/srsim/pkg/logic/gcs/parse"
@@ -42,6 +43,5 @@ register_ult_cb(%s, fn () { return ult(LowestHP); });
 	if err != nil {
 		panic(err)
 	}
-	return eval.New(res.Program, context.Background())
-
+	return eval.New(context.Background(), res.Program)
 }

@@ -2,6 +2,7 @@ package turnstart
 
 import (
 	"fmt"
+
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/event/handler"
 	"github.com/simimpact/srsim/pkg/key"
@@ -10,7 +11,7 @@ import (
 
 func ExpectFor() eventchecker.EventChecker {
 	return func(e handler.Event) (bool, error) {
-		_, ok := e.(event.TurnStartEvent)
+		_, ok := e.(event.TurnStart)
 		if !ok {
 			return false, nil
 		}
@@ -20,7 +21,7 @@ func ExpectFor() eventchecker.EventChecker {
 
 func CurrentTurnIs(id key.TargetID) eventchecker.EventChecker {
 	return func(e handler.Event) (bool, error) {
-		ev, ok := e.(event.TurnStartEvent)
+		ev, ok := e.(event.TurnStart)
 		if !ok {
 			return false, fmt.Errorf("incorrect Event")
 		}

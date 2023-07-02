@@ -8,7 +8,7 @@ import (
 
 func ExpectFor() eventchecker.EventChecker {
 	return func(e handler.Event) (bool, error) {
-		_, ok := e.(event.TurnEndEvent)
+		_, ok := e.(event.TurnEnd)
 		if !ok {
 			return false, nil
 		}

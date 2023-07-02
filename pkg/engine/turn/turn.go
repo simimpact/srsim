@@ -3,6 +3,7 @@ package turn
 
 import (
 	"fmt"
+
 	"github.com/simimpact/srsim/pkg/engine"
 
 	"github.com/simimpact/srsim/pkg/engine/attribute"
@@ -10,7 +11,7 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-const BASE_GAUGE float64 = 10000.0
+const BaseGauge float64 = 10000.0
 
 type Manager interface {
 	TotalAV() float64
@@ -28,7 +29,7 @@ type target struct {
 
 type manager struct {
 	event *event.System
-	attr  attribute.AttributeGetter
+	attr  attribute.Getter
 
 	// TODO: I'd create a custom data type/struct that contains both order & targetIndex. It then
 	// manages all operations on the order array and keeps the index map up to date for easy access
@@ -40,7 +41,7 @@ type manager struct {
 	totalAV      float64
 }
 
-func New(e *event.System, attr attribute.AttributeGetter) Manager {
+func New(e *event.System, attr attribute.Getter) Manager {
 	mgr := &manager{
 		event:       e,
 		attr:        attr,
@@ -71,7 +72,7 @@ func (mgr *manager) AddTargets(ids ...key.TargetID) {
 	for _, id := range ids {
 		t := &target{
 			id:    id,
-			gauge: BASE_GAUGE,
+			gauge: BaseGauge,
 		}
 		mgr.order = append(mgr.order, t)
 		mgr.targetIndex[id] = len(mgr.order) - 1
@@ -80,7 +81,7 @@ func (mgr *manager) AddTargets(ids ...key.TargetID) {
 	// TODO: sort the order array based on each target's AV. This sort algorithm must be stable.
 	//		update targetIndexes based off the new positions post sort.
 
-	mgr.event.TurnTargetsAdded.Emit(event.TurnTargetsAddedEvent{
+	mgr.event.TurnTargetsAdded.Emit(event.TurnTargetsAdded{
 		Targets:   ids,
 		TurnOrder: []event.TurnStatus{}, // TODO: populate
 	})
@@ -129,10 +130,10 @@ func (mgr *manager) ResetTurn() error {
 			"target at top of order must have 0 gauge to call reset (their turn is active) %+v", mgr.order[0])
 	}
 	mgr.activeTurn = false
-	mgr.target(mgr.activeTarget).gauge = BASE_GAUGE * mgr.gaugeCost
+	mgr.target(mgr.activeTarget).gauge = BaseGauge * mgr.gaugeCost
 
 	// Resets the gauge of the target taking their turn (target at top of stack). New gauge is set at
-	// BASE_GAUGE * gaugeCost
+	// BaseGauge * gaugeCost
 	//
 	// target should then be moved to the bottom of the turn order and then sorted up to the correct
 	// position based on their AV. In the event of ties, this target should be last in the order
@@ -145,7 +146,7 @@ func (mgr *manager) ResetTurn() error {
 	// 4. update targetIndexes for all targets that moved in the order (or just repopulate all)
 	// 5. emit TurnResetEvent
 
-	mgr.event.TurnReset.Emit(event.TurnResetEvent{
+	mgr.event.TurnReset.Emit(event.TurnReset{
 		ResetTarget: mgr.activeTarget,
 		GaugeCost:   mgr.gaugeCost,
 		TurnOrder:   []event.TurnStatus{}, // TODO: need to populate based on new order

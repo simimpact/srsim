@@ -3,9 +3,9 @@ package simulation
 import (
 	crypto "crypto/rand"
 	"encoding/binary"
+	"github.com/simimpact/srsim/pkg/engine/logging"
 	"math/rand"
 
-	"github.com/simimpact/srsim/pkg/engine/logging"
 	"github.com/simimpact/srsim/pkg/logic"
 
 	"github.com/simimpact/srsim/pkg/engine/attribute"
