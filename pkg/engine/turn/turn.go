@@ -73,7 +73,7 @@ func (mgr *Manager) AddTargets(ids ...key.TargetID) {
 	// TODO: sort the order array based on each target's AV. This sort algorithm must be stable.
 	//		update targetIndexes based off the new positions post sort.
 
-	mgr.event.TurnTargetsAdded.Emit(event.TurnTargetsAddedEvent{
+	mgr.event.TurnTargetsAdded.Emit(event.TurnTargetsAdded{
 		Targets:   ids,
 		TurnOrder: []event.TurnStatus{}, // TODO: populate
 	})
@@ -145,7 +145,7 @@ func (mgr *Manager) ResetTurn() error {
 	// 4. update targetIndexes for all targets that moved in the order (or just repopulate all)
 	// 5. emit TurnResetEvent
 
-	mgr.event.TurnReset.Emit(event.TurnResetEvent{
+	mgr.event.TurnReset.Emit(event.TurnReset{
 		ResetTarget: mgr.activeTarget,
 		GaugeCost:   mgr.gaugeCost,
 		TurnOrder:   []event.TurnStatus{}, // TODO: need to populate based on new order
