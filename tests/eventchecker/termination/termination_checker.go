@@ -1,9 +1,9 @@
 package termination
 
 import (
-	"github.com/simimpact/srsim/akivali/eventchecker"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/event/handler"
+	"github.com/simimpact/srsim/tests/eventchecker"
 )
 
 func ExpectFor() eventchecker.EventChecker {

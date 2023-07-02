@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/simimpact/srsim/akivali/eventchecker"
-	"github.com/simimpact/srsim/akivali/eventchecker/battlestart"
-	"github.com/simimpact/srsim/akivali/testcfg"
-	"github.com/simimpact/srsim/akivali/testcfg/testchar"
-	"github.com/simimpact/srsim/akivali/testcfg/testeval"
 	"github.com/simimpact/srsim/pkg/engine/event/handler"
 	"github.com/simimpact/srsim/pkg/engine/logging"
 	"github.com/simimpact/srsim/pkg/model"
 	"github.com/simimpact/srsim/pkg/simulation"
+	"github.com/simimpact/srsim/tests/eventchecker"
+	"github.com/simimpact/srsim/tests/eventchecker/battlestart"
+	"github.com/simimpact/srsim/tests/testcfg"
+	"github.com/simimpact/srsim/tests/testcfg/testchar"
+	"github.com/simimpact/srsim/tests/testcfg/testeval"
 	"github.com/stretchr/testify/suite"
 )
 

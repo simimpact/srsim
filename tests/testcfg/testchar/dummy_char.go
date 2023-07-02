@@ -1,9 +1,9 @@
 package testchar
 
 import (
-	"github.com/simimpact/srsim/akivali/testcfg/testcone"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
+	"github.com/simimpact/srsim/tests/testcfg/testcone"
 )
 
 func DummyChar() *model.Character {

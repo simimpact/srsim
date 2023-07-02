@@ -1,6 +1,6 @@
-# Akivali (Name Pending) 
+# Test
 
-Akivali (name pending) is the all-in-one Testing Framework designed for SRSIM.
+Akivali (name pending) (renamed to test by kyle) is the all-in-one Testing Framework designed for SRSIM.
 
 This framework is designed to be event-driven. We expect all important actions in the sim 
 be traceable via Events. If a feature cannot be verified by Akivali, it cannot be audited via 

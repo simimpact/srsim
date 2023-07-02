@@ -3,11 +3,11 @@ package basic
 import (
 	"testing"
 
-	"github.com/simimpact/srsim/akivali/eventchecker/termination"
-	"github.com/simimpact/srsim/akivali/eventchecker/turnstart"
-	"github.com/simimpact/srsim/akivali/testcfg/testchar"
-	"github.com/simimpact/srsim/akivali/teststub"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/tests/eventchecker/termination"
+	"github.com/simimpact/srsim/tests/eventchecker/turnstart"
+	"github.com/simimpact/srsim/tests/testcfg/testchar"
+	"github.com/simimpact/srsim/tests/teststub"
 	"github.com/stretchr/testify/suite"
 )
 
