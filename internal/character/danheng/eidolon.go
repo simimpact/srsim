@@ -17,7 +17,7 @@ func init() {
 	// When the target enemy's current HP percentage is greater than or equal to 50%, CRIT Rate increases by 12%.
 	modifier.Register(E1, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHitAll: func(mod *modifier.Instance, e event.HitStartEvent) {
+			OnBeforeHitAll: func(mod *modifier.Instance, e event.HitStart) {
 				if e.Hit.Defender.CurrentHPRatio() >= 0.5 {
 					e.Hit.Attacker.AddProperty(prop.CritChance, 0.12)
 				}

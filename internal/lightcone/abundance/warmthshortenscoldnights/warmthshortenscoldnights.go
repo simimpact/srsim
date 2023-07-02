@@ -43,7 +43,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 // if basic atk/skill, heal the whole team by x%
-func healTeamOnBasicOrSkill(mod *modifier.Instance, e event.ActionEvent) {
+func healTeamOnBasicOrSkill(mod *modifier.Instance, e event.ActionEnd) {
 	amt := mod.State().(float64)
 	switch e.AttackType {
 	case model.AttackType_NORMAL, model.AttackType_SKILL:

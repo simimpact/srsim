@@ -76,7 +76,7 @@ func onPhase2(mod *modifier.Instance) {
 	})
 }
 
-func onAfterBeingHitAll(mod *modifier.Instance, e event.HitEndEvent) {
+func onAfterBeingHitAll(mod *modifier.Instance, e event.HitEnd) {
 	if e.HPDamage > 0 {
 		mod.Engine().RemoveModifier(mod.Owner(), RiverFlowsinSpringBuff)
 	}

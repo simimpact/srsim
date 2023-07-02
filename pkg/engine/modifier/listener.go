@@ -36,7 +36,7 @@ type Listeners struct {
 	// ------------ attribute events
 
 	// Called when the current HP of the attached target changes
-	OnHPChange func(mod *Instance, e event.HPChangeEvent)
+	OnHPChange func(mod *Instance, e event.HPChange)
 
 	// Called when attached target's current HP = 0. If returns true, will cancel the event and
 	// prevent the TargetDeathEvent from occuring. Used by revives.
@@ -50,10 +50,10 @@ type Listeners struct {
 	OnTriggerDeath func(mod *Instance, target key.TargetID)
 
 	// Called whe nthe attached start
-	OnEnergyChange func(mod *Instance, e event.EnergyChangeEvent)
+	OnEnergyChange func(mod *Instance, e event.EnergyChange)
 
 	// Called when the attached target stance changes
-	OnStanceChange func(mod *Instance, e event.StanceChangeEvent)
+	OnStanceChange func(mod *Instance, e event.StanceChange)
 
 	// Called when the attached target causes another target to go into a break state (0 stance).
 	OnTriggerBreak func(mod *Instance, target key.TargetID)
@@ -67,72 +67,72 @@ type Listeners struct {
 	// ------------ shield events
 
 	// Called when a shield has been added to the attached target.
-	OnShieldAdded func(mod *Instance, e event.ShieldAddedEvent)
+	OnShieldAdded func(mod *Instance, e event.ShieldAdded)
 
 	// Called when a shield has been removed from the attached target.
-	OnShieldRemoved func(mod *Instance, e event.ShieldRemovedEvent)
+	OnShieldRemoved func(mod *Instance, e event.ShieldRemoved)
 
 	// ------------ combat events
 
 	// Called when an attack starts and the attached target is the attacker.
-	OnBeforeAttack func(mod *Instance, e event.AttackStartEvent)
+	OnBeforeAttack func(mod *Instance, e event.AttackStart)
 
 	// Called when an attack starts and the attached target is one of the targets being attacked.
-	OnBeforeBeingAttacked func(mod *Instance, e event.AttackStartEvent)
+	OnBeforeBeingAttacked func(mod *Instance, e event.AttackStart)
 
 	// Called after an attack finishes (after all hits) and the attached target is the attacker
-	OnAfterAttack func(mod *Instance, e event.AttackEndEvent)
+	OnAfterAttack func(mod *Instance, e event.AttackEnd)
 
 	// Called after an attack finishes (after all hits) and the attached target was hit by the attack.
-	OnAfterBeingAttacked func(mod *Instance, e event.AttackEndEvent)
+	OnAfterBeingAttacked func(mod *Instance, e event.AttackEnd)
 
 	// Called before any hit occurs and the attached target is the attacker. Hit data is mutable.
-	OnBeforeHitAll func(mod *Instance, e event.HitStartEvent)
+	OnBeforeHitAll func(mod *Instance, e event.HitStart)
 
 	// Called before a qualified hit occurs and the attached target is the attacker. "Qualified" hit
 	// means it is not of AttackType DOT, PURSUED, or ELEMENT_DAMAGE. Hit data is mutable.
-	OnBeforeHit func(mod *Instance, e event.HitStartEvent)
+	OnBeforeHit func(mod *Instance, e event.HitStart)
 
 	// called before any hit occurs and the attached target is the defender. Hit data is mutable.
-	OnBeforeBeingHitAll func(mod *Instance, e event.HitStartEvent)
+	OnBeforeBeingHitAll func(mod *Instance, e event.HitStart)
 
 	// Called before a qualified hit occurs and the attached target is the defender. "Qualified" hit
 	// means it is not of AttackType DOT, PURSUED, or ELEMENT_DAMAGE. Hit data is mutable.
-	OnBeforeBeingHit func(mod *Instance, e event.HitStartEvent)
+	OnBeforeBeingHit func(mod *Instance, e event.HitStart)
 
 	// Called after any hit occurs and the attached target is the attacker.
-	OnAfterHitAll func(mod *Instance, e event.HitEndEvent)
+	OnAfterHitAll func(mod *Instance, e event.HitEnd)
 
 	// Called after a qualified hit occurs and the attached target is the attacker. "Qualified" hit
 	// means it is not of AttackType DOT, PURSUED, or ELEMENT_DAMAGE.
-	OnAfterHit func(mod *Instance, e event.HitEndEvent)
+	OnAfterHit func(mod *Instance, e event.HitEnd)
 
 	// Called after any hit occurs and the attached target is the defender.
-	OnAfterBeingHitAll func(mod *Instance, e event.HitEndEvent)
+	OnAfterBeingHitAll func(mod *Instance, e event.HitEnd)
 
 	// Called after a qualified hit occurs and the attached target is the defender. "Qualified" hit
 	// means it is not of AttackType DOT, PURSUED, or ELEMENT_DAMAGE.
-	OnAfterBeingHit func(mod *Instance, e event.HitEndEvent)
+	OnAfterBeingHit func(mod *Instance, e event.HitEnd)
 
 	// Called before performing a heal and the attached target is the healer. Heal data is mutable.
-	OnBeforeDealHeal func(mod *Instance, e *event.HealStartEvent)
+	OnBeforeDealHeal func(mod *Instance, e *event.HealStart)
 
 	// Called before performing a heal and the attached target is the receiver. Heal data is mutable.
-	OnBeforeBeingHeal func(mod *Instance, e *event.HealStartEvent)
+	OnBeforeBeingHeal func(mod *Instance, e *event.HealStart)
 
 	// Called after a heal is performed and the attached target is the healer.
-	OnAfterDealHeal func(mod *Instance, e event.HealEndEvent)
+	OnAfterDealHeal func(mod *Instance, e event.HealEnd)
 
 	// Called after a heal is performed and the attached target is the receiver
-	OnAfterBeingHeal func(mod *Instance, e event.HealEndEvent)
+	OnAfterBeingHeal func(mod *Instance, e event.HealEnd)
 
 	// ------------ sim events
 
 	// Called when an action starts being executed (attack, skill, ult)
-	OnBeforeAction func(mod *Instance, e event.ActionEvent)
+	OnBeforeAction func(mod *Instance, e event.ActionStart)
 
 	// Called when an action finishes being executed (attack, skill, ult)
-	OnAfterAction func(mod *Instance, e event.ActionEvent)
+	OnAfterAction func(mod *Instance, e event.ActionEnd)
 }
 
 func (mgr *Manager) subscribe() {
@@ -141,8 +141,6 @@ func (mgr *Manager) subscribe() {
 	// sim events
 	events.ActionStart.Subscribe(mgr.actionStart)
 	events.ActionEnd.Subscribe(mgr.actionEnd)
-	events.UltStart.Subscribe(mgr.actionStart)
-	events.UltEnd.Subscribe(mgr.actionEnd)
 
 	// attribute events
 	events.HPChange.Subscribe(mgr.hpChange)
@@ -151,7 +149,7 @@ func (mgr *Manager) subscribe() {
 	events.EnergyChange.Subscribe(mgr.energyChange)
 	events.StanceChange.Subscribe(mgr.stanceChange)
 	events.StanceBreak.Subscribe(mgr.stanceBreak)
-	events.StanceBreakEnd.Subscribe(mgr.stanceBreakEnd)
+	events.StanceReset.Subscribe(mgr.stanceBreakEnd)
 
 	// shield events
 	events.ShieldAdded.Subscribe(mgr.shieldAdded)
@@ -180,7 +178,7 @@ func (mgr *Manager) emitAdd(target key.TargetID, mod *Instance, chance float64) 
 	if f != nil {
 		f(mod)
 	}
-	mgr.engine.Events().ModifierAdded.Emit(event.ModifierAddedEvent{
+	mgr.engine.Events().ModifierAdded.Emit(event.ModifierAdded{
 		Target:   target,
 		Modifier: mod.ToModel(),
 		Chance:   chance,
@@ -197,7 +195,7 @@ func (mgr *Manager) emitRemove(target key.TargetID, mods []*Instance) {
 		if f != nil {
 			f(mod)
 		}
-		mgr.engine.Events().ModifierRemoved.Emit(event.ModifierRemovedEvent{
+		mgr.engine.Events().ModifierRemoved.Emit(event.ModifierRemoved{
 			Target:   target,
 			Modifier: mod.ToModel(),
 		})
@@ -209,7 +207,7 @@ func (mgr *Manager) emitExtendDuration(target key.TargetID, mod *Instance, old i
 	if f != nil {
 		f(mod)
 	}
-	mgr.engine.Events().ModifierExtendedDuration.Emit(event.ModifierExtendedDurationEvent{
+	mgr.engine.Events().ModifierExtendedDuration.Emit(event.ModifierExtendedDuration{
 		Target:   target,
 		Modifier: mod.ToModel(),
 		OldValue: old,
@@ -222,7 +220,7 @@ func (mgr *Manager) emitExtendCount(target key.TargetID, mod *Instance, old floa
 	if f != nil {
 		f(mod)
 	}
-	mgr.engine.Events().ModifierExtendedCount.Emit(event.ModifierExtendedCountEvent{
+	mgr.engine.Events().ModifierExtendedCount.Emit(event.ModifierExtendedCount{
 		Target:   target,
 		Modifier: mod.ToModel(),
 		OldValue: old,
@@ -230,7 +228,7 @@ func (mgr *Manager) emitExtendCount(target key.TargetID, mod *Instance, old floa
 	})
 }
 
-func (mgr *Manager) attackStart(e event.AttackStartEvent) {
+func (mgr *Manager) attackStart(e event.AttackStart) {
 	for _, mod := range mgr.targets[e.Attacker] {
 		f := mod.listeners.OnBeforeAttack
 		if f != nil {
@@ -247,7 +245,7 @@ func (mgr *Manager) attackStart(e event.AttackStartEvent) {
 	}
 }
 
-func (mgr *Manager) attackEnd(e event.AttackEndEvent) {
+func (mgr *Manager) attackEnd(e event.AttackEnd) {
 	for _, mod := range mgr.targets[e.Attacker] {
 		f := mod.listeners.OnAfterAttack
 		if f != nil {
@@ -264,7 +262,7 @@ func (mgr *Manager) attackEnd(e event.AttackEndEvent) {
 	}
 }
 
-func (mgr *Manager) hitStart(e event.HitStartEvent) {
+func (mgr *Manager) hitStart(e event.HitStart) {
 	qualified := e.Hit.AttackType.IsQualified()
 	snapshot := e.Hit.UseSnapshot
 
@@ -301,7 +299,7 @@ func (mgr *Manager) hitStart(e event.HitStartEvent) {
 	}
 }
 
-func (mgr *Manager) hitEnd(e event.HitEndEvent) {
+func (mgr *Manager) hitEnd(e event.HitEnd) {
 	qualified := e.AttackType.IsQualified()
 	snapshot := e.UseSnapshot
 
@@ -338,7 +336,7 @@ func (mgr *Manager) hitEnd(e event.HitEndEvent) {
 	}
 }
 
-func (mgr *Manager) healStart(e *event.HealStartEvent) {
+func (mgr *Manager) healStart(e *event.HealStart) {
 	snapshot := e.UseSnapshot
 
 	for _, mod := range mgr.targets[e.Healer.ID()] {
@@ -364,7 +362,7 @@ func (mgr *Manager) healStart(e *event.HealStartEvent) {
 	}
 }
 
-func (mgr *Manager) healEnd(e event.HealEndEvent) {
+func (mgr *Manager) healEnd(e event.HealEnd) {
 	snapshot := e.UseSnapshot
 
 	for _, mod := range mgr.targets[e.Healer] {
@@ -390,7 +388,7 @@ func (mgr *Manager) healEnd(e event.HealEndEvent) {
 	}
 }
 
-func (mgr *Manager) hpChange(e event.HPChangeEvent) {
+func (mgr *Manager) hpChange(e event.HPChange) {
 	for _, mod := range mgr.targets[e.Target] {
 		f := mod.listeners.OnHPChange
 		if f != nil {
@@ -399,7 +397,7 @@ func (mgr *Manager) hpChange(e event.HPChangeEvent) {
 	}
 }
 
-func (mgr *Manager) limboWaitHeal(e event.LimboWaitHealEvent) bool {
+func (mgr *Manager) limboWaitHeal(e event.LimboWaitHeal) bool {
 	for _, mod := range mgr.targets[e.Target] {
 		f := mod.listeners.OnLimboWaitHeal
 		if f != nil {
@@ -412,7 +410,7 @@ func (mgr *Manager) limboWaitHeal(e event.LimboWaitHealEvent) bool {
 	return false
 }
 
-func (mgr *Manager) targetDeath(e event.TargetDeathEvent) {
+func (mgr *Manager) targetDeath(e event.TargetDeath) {
 	for _, mod := range mgr.targets[e.Target] {
 		f := mod.listeners.OnBeforeDying
 		if f != nil {
@@ -428,7 +426,7 @@ func (mgr *Manager) targetDeath(e event.TargetDeathEvent) {
 	}
 }
 
-func (mgr *Manager) energyChange(e event.EnergyChangeEvent) {
+func (mgr *Manager) energyChange(e event.EnergyChange) {
 	for _, mod := range mgr.targets[e.Target] {
 		f := mod.listeners.OnEnergyChange
 		if f != nil {
@@ -437,7 +435,7 @@ func (mgr *Manager) energyChange(e event.EnergyChangeEvent) {
 	}
 }
 
-func (mgr *Manager) stanceChange(e event.StanceChangeEvent) {
+func (mgr *Manager) stanceChange(e event.StanceChange) {
 	for _, mod := range mgr.targets[e.Target] {
 		f := mod.listeners.OnStanceChange
 		if f != nil {
@@ -446,7 +444,7 @@ func (mgr *Manager) stanceChange(e event.StanceChangeEvent) {
 	}
 }
 
-func (mgr *Manager) stanceBreak(e event.StanceBreakEvent) {
+func (mgr *Manager) stanceBreak(e event.StanceBreak) {
 	for _, mod := range mgr.targets[e.Source] {
 		f := mod.listeners.OnTriggerBreak
 		if f != nil {
@@ -461,7 +459,7 @@ func (mgr *Manager) stanceBreak(e event.StanceBreakEvent) {
 	}
 }
 
-func (mgr *Manager) stanceBreakEnd(e event.StanceBreakEndEvent) {
+func (mgr *Manager) stanceBreakEnd(e event.StanceReset) {
 	for _, mod := range mgr.targets[e.Target] {
 		f := mod.listeners.OnEndBreak
 		if f != nil {
@@ -470,7 +468,7 @@ func (mgr *Manager) stanceBreakEnd(e event.StanceBreakEndEvent) {
 	}
 }
 
-func (mgr *Manager) actionStart(e event.ActionEvent) {
+func (mgr *Manager) actionStart(e event.ActionStart) {
 	for _, mod := range mgr.targets[e.Owner] {
 		f := mod.listeners.OnBeforeAction
 		if f != nil {
@@ -479,7 +477,7 @@ func (mgr *Manager) actionStart(e event.ActionEvent) {
 	}
 }
 
-func (mgr *Manager) actionEnd(e event.ActionEvent) {
+func (mgr *Manager) actionEnd(e event.ActionEnd) {
 	for _, mod := range mgr.targets[e.Owner] {
 		f := mod.listeners.OnAfterAction
 		if f != nil {
@@ -488,7 +486,7 @@ func (mgr *Manager) actionEnd(e event.ActionEvent) {
 	}
 }
 
-func (mgr *Manager) shieldAdded(e event.ShieldAddedEvent) {
+func (mgr *Manager) shieldAdded(e event.ShieldAdded) {
 	for _, mod := range mgr.targets[e.Info.Target] {
 		f := mod.listeners.OnShieldAdded
 		if f != nil {
@@ -497,7 +495,7 @@ func (mgr *Manager) shieldAdded(e event.ShieldAddedEvent) {
 	}
 }
 
-func (mgr *Manager) shieldRemoved(e event.ShieldRemovedEvent) {
+func (mgr *Manager) shieldRemoved(e event.ShieldRemoved) {
 	for _, mod := range mgr.targets[e.Target] {
 		f := mod.listeners.OnShieldRemoved
 		if f != nil {

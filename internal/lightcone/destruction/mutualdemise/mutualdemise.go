@@ -27,7 +27,7 @@ func init() {
 	modifier.Register(MutualDemiseCheck, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAdd: adjustCritRate,
-			OnHPChange: func(mod *modifier.Instance, e event.HPChangeEvent) {
+			OnHPChange: func(mod *modifier.Instance, e event.HPChange) {
 				adjustCritRate(mod)
 			},
 		},

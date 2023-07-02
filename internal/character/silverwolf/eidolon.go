@@ -33,7 +33,7 @@ func init() {
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_DEBUFF,
 		Listeners: modifier.Listeners{
-			OnBeforeHitAll: func(mod *modifier.Instance, e event.HitStartEvent) {
+			OnBeforeHitAll: func(mod *modifier.Instance, e event.HitStart) {
 				debuffCount := mod.Engine().ModifierCount(e.Defender, model.StatusType_STATUS_DEBUFF)
 				if debuffCount > 5 {
 					debuffCount = 5
@@ -83,14 +83,14 @@ func (c *char) e4(target key.TargetID) {
 
 func (c *char) initEidolons() {
 	if c.info.Eidolon >= 2 {
-		c.engine.Events().EnemyAdded.Subscribe(func(e event.EnemyAddedEvent) {
+		c.engine.Events().EnemyAdded.Subscribe(func(e event.EnemyAdded) {
 			c.engine.AddModifier(e.ID, info.Modifier{
 				Name:   E2,
 				Source: c.id,
 			})
 		})
 
-		c.engine.Events().TargetDeath.Subscribe(func(event event.TargetDeathEvent) {
+		c.engine.Events().TargetDeath.Subscribe(func(event event.TargetDeath) {
 			if event.Target == c.id {
 				targets := c.engine.Enemies()
 

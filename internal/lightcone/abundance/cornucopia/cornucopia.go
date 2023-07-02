@@ -47,7 +47,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 // add buff only on skill and ult actions
-func buffHealsOnSkillUlt(mod *modifier.Instance, e event.ActionEvent) {
+func buffHealsOnSkillUlt(mod *modifier.Instance, e event.ActionStart) {
 	healAmt := mod.State().(float64)
 	switch e.AttackType {
 	case model.AttackType_SKILL, model.AttackType_ULT:
@@ -60,6 +60,6 @@ func buffHealsOnSkillUlt(mod *modifier.Instance, e event.ActionEvent) {
 }
 
 // remove buff after each "action"
-func removeHealBuff(mod *modifier.Instance, e event.ActionEvent) {
+func removeHealBuff(mod *modifier.Instance, e event.ActionEnd) {
 	mod.Engine().RemoveModifier(mod.Owner(), CornucopiaBuff)
 }

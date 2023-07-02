@@ -49,7 +49,7 @@ var triggerFlags = []model.BehaviorFlag{
 	model.BehaviorFlag_STAT_DOT_POISON,
 }
 
-func onBeforeHitAll(mod *modifier.Instance, e event.HitStartEvent) {
+func onBeforeHitAll(mod *modifier.Instance, e event.HitStart) {
 	amt := mod.State().(float64)
 
 	if mod.Engine().HasBehaviorFlag(e.Defender, triggerFlags...) {

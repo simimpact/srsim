@@ -44,7 +44,7 @@ func (mgr *Manager) SetGauge(target key.TargetID, amt float64) error {
 		}
 	}
 
-	mgr.event.GaugeChange.Emit(event.GaugeChangeEvent{
+	mgr.event.GaugeChange.Emit(event.GaugeChange{
 		Target:    target,
 		OldGauge:  prev,
 		NewGauge:  mgr.target(target).gauge,
@@ -82,7 +82,7 @@ func (mgr *Manager) SetCurrentGaugeCost(amt float64) {
 		return
 	}
 
-	mgr.event.CurrentGaugeCostChange.Emit(event.CurrentGaugeCostChangeEvent{
+	mgr.event.CurrentGaugeCostChange.Emit(event.CurrentGaugeCostChange{
 		OldCost: prev,
 		NewCost: mgr.gaugeCost,
 	})

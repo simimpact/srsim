@@ -44,7 +44,7 @@ func init() {
 
 func (c *char) e2() {
 	if c.info.Eidolon >= 2 {
-		c.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemovedEvent) {
+		c.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemoved) {
 			if event.Modifier.Name == common.Freeze && c.engine.HasModifier(event.Target, E2Tracker) {
 				c.engine.AddModifier(event.Target, info.Modifier{
 					Name:   E2,
@@ -69,7 +69,7 @@ func (c *char) e4() {
 			})
 		}
 
-		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAddedEvent) {
+		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAdded) {
 			c.engine.AddModifier(e.ID, info.Modifier{
 				Name:   E4,
 				Source: c.id,

@@ -27,7 +27,7 @@ func (c *char) a4() {
 	}
 }
 
-func A6OnBeforeBeingHitAll(mod *modifier.Instance, e event.HitStartEvent) {
+func A6OnBeforeBeingHitAll(mod *modifier.Instance, e event.HitStart) {
 	if mod.Engine().HasBehaviorFlag(e.Hit.Attacker.ID(), model.BehaviorFlag_STAT_DOT_POISON) {
 		e.Hit.Attacker.AddProperty(prop.Fatigue, 0.15)
 	}

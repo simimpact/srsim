@@ -60,7 +60,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 // after an attack, add 1 stack iff new attack type
-func onAfterAttack(mod *modifier.Instance, e event.AttackEndEvent) {
+func onAfterAttack(mod *modifier.Instance, e event.AttackEnd) {
 	state := mod.State().(checkState)
 
 	// must be normal, skill, or ult

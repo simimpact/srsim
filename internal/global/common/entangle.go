@@ -51,7 +51,7 @@ func entangleAdd(mod *modifier.Instance) {
 	mod.Engine().ModifyGaugeNormalized(mod.Owner(), state.DelayRatio)
 }
 
-func entangleAfterAttack(mod *modifier.Instance, e event.AttackEndEvent) {
+func entangleAfterAttack(mod *modifier.Instance, e event.AttackEnd) {
 	state := mod.State().(EntangleState)
 
 	// increase count by 1 for each attack within this state

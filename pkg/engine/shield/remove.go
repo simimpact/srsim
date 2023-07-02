@@ -13,7 +13,7 @@ func (mgr *Manager) RemoveShield(id key.Shield, target key.TargetID) {
 
 	delete(mgr.targets[target], id)
 
-	mgr.event.ShieldRemoved.Emit(event.ShieldRemovedEvent{
+	mgr.event.ShieldRemoved.Emit(event.ShieldRemoved{
 		ID:     id,
 		Target: target,
 	})

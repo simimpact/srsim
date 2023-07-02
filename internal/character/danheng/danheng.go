@@ -52,7 +52,6 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 
 	// for talent to modifier when Dan Heng is targetted by ally action
 	engine.Events().ActionEnd.Subscribe(c.talentActionEndListener)
-	engine.Events().UltEnd.Subscribe(c.talentActionEndListener)
 
 	c.initTraces()
 	c.initEidolons()

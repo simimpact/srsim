@@ -42,7 +42,7 @@ func initialize(sim *Simulation) (stateFn, error) {
 	// TODO: stats collectors should enable here?
 
 	// want to emit after all hooks in the event that they subscribe to these
-	sim.Event.Initialize.Emit(event.InitializeEvent{
+	sim.Event.Initialize.Emit(event.Initialize{
 		Config: sim.cfg,
 		Seed:   sim.seed,
 	})
@@ -95,7 +95,7 @@ func startBattle(sim *Simulation) (stateFn, error) {
 
 	// emit BattleStart event to log the "start state" of everything
 	snap := sim.createSnapshot()
-	sim.Event.BattleStart.Emit(event.BattleStartEvent{
+	sim.Event.BattleStart.Emit(event.BattleStart{
 		CharInfo:     sim.Char.Characters(),
 		EnemyInfo:    sim.Enemy.Enemies(),
 		CharStats:    snap.characters,
@@ -191,7 +191,7 @@ func endTurn(sim *Simulation) (stateFn, error) {
 
 	// emit TurnEnd event to log the current state of all remaining targets
 	snap := sim.createSnapshot()
-	sim.Event.TurnEnd.Emit(event.TurnEndEvent{
+	sim.Event.TurnEnd.Emit(event.TurnEnd{
 		Characters: snap.characters,
 		Enemies:    snap.enemies,
 		Neutrals:   snap.neutrals,
@@ -213,7 +213,7 @@ func (sim *Simulation) exitCheck(next stateFn) (stateFn, error) {
 	}
 
 	if reason != model.TerminationReason_INVALID_TERMINATION {
-		sim.Event.Termination.Emit(event.TerminationEvent{
+		sim.Event.Termination.Emit(event.Termination{
 			TotalAV: sim.TotalAV,
 			Reason:  reason,
 		})

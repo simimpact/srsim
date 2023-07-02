@@ -68,7 +68,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func onBeforeAttack(mod *modifier.Instance, e event.AttackStartEvent) {
+func onBeforeAttack(mod *modifier.Instance, e event.AttackStart) {
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 		Name:   BuffAtk,
 		Source: mod.Owner(),

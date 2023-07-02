@@ -19,7 +19,7 @@ func init() {
 	// A2 Register
 	modifier.Register(A2, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHit: func(mod *modifier.Instance, e event.HitStartEvent) {
+			OnBeforeHit: func(mod *modifier.Instance, e event.HitStart) {
 				if e.Hit.AttackType == model.AttackType_NORMAL {
 					e.Hit.Attacker.AddProperty(prop.CritChance, 1)
 				}
@@ -77,7 +77,7 @@ func (c *char) initTraces() {
 			})
 		}
 
-		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAddedEvent) {
+		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAdded) {
 			c.engine.AddModifier(e.ID, info.Modifier{
 				Name:   A4,
 				Source: c.id,
@@ -96,7 +96,7 @@ func (c *char) initTraces() {
 			})
 		}
 
-		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAddedEvent) {
+		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAdded) {
 			c.engine.AddModifier(e.ID, info.Modifier{
 				Name:   A6,
 				Source: c.id,

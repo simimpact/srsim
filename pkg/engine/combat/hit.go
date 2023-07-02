@@ -7,7 +7,7 @@ import (
 )
 
 func (mgr *Manager) performHit(hit *info.Hit) {
-	mgr.event.HitStart.Emit(event.HitStartEvent{
+	mgr.event.HitStart.Emit(event.HitStart{
 		Attacker: hit.Attacker.ID(),
 		Defender: hit.Defender.ID(),
 		Hit:      hit,
@@ -27,7 +27,7 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 	// * dots & element damage do not crit (unknown if also ByPureDamage?)
 	// * ByPureDamage = true means a "simplified" damage function (the break damage equation)
 
-	mgr.event.HitEnd.Emit(event.HitEndEvent{
+	mgr.event.HitEnd.Emit(event.HitEnd{
 		Attacker:         hit.Attacker.ID(),
 		Defender:         hit.Defender.ID(),
 		AttackType:       hit.AttackType,

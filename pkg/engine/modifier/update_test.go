@@ -40,7 +40,7 @@ func TestExtendDuration(t *testing.T) {
 	manager.targets[target] = append(manager.targets[target], mod1, mod2, mod3)
 
 	called := 0
-	manager.engine.Events().ModifierExtendedDuration.Subscribe(func(event event.ModifierExtendedDurationEvent) {
+	manager.engine.Events().ModifierExtendedDuration.Subscribe(func(event event.ModifierExtendedDuration) {
 		switch called {
 		case 0:
 			assert.Equal(t, 0, event.OldValue)
@@ -92,7 +92,7 @@ func TestExtendCount(t *testing.T) {
 	manager.targets[target] = append(manager.targets[target], mod1, mod2, mod3)
 
 	called := 0
-	manager.engine.Events().ModifierExtendedCount.Subscribe(func(event event.ModifierExtendedCountEvent) {
+	manager.engine.Events().ModifierExtendedCount.Subscribe(func(event event.ModifierExtendedCount) {
 		switch called {
 		case 0:
 			assert.Equal(t, 0.0, event.OldValue)

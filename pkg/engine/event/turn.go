@@ -5,37 +5,29 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-type TurnTargetsAddedEventHandler = handler.EventHandler[TurnTargetsAddedEvent]
-type TurnTargetsAddedEvent struct {
+type TurnTargetsAddedEventHandler = handler.EventHandler[TurnTargetsAdded]
+type TurnTargetsAdded struct {
 	Targets   []key.TargetID
 	TurnOrder []TurnStatus
 }
 
-type TurnStartEventHandler = handler.EventHandler[TurnStartEvent]
-type TurnStartEvent struct {
-	Active    key.TargetID
-	DeltaAV   float64
-	TotalAV   float64
-	TurnOrder []TurnStatus
-}
-
-type TurnResetEventHandler = handler.EventHandler[TurnResetEvent]
-type TurnResetEvent struct {
+type TurnResetEventHandler = handler.EventHandler[TurnReset]
+type TurnReset struct {
 	ResetTarget key.TargetID
 	GaugeCost   float64
 	TurnOrder   []TurnStatus
 }
 
-type GaugeChangeEventHandler = handler.EventHandler[GaugeChangeEvent]
-type GaugeChangeEvent struct {
+type GaugeChangeEventHandler = handler.EventHandler[GaugeChange]
+type GaugeChange struct {
 	Target    key.TargetID
 	OldGauge  float64
 	NewGauge  float64
 	TurnOrder []TurnStatus
 }
 
-type CurrentGaugeCostChangeEventHandler = handler.EventHandler[CurrentGaugeCostChangeEvent]
-type CurrentGaugeCostChangeEvent struct {
+type CurrentGaugeCostChangeEventHandler = handler.EventHandler[CurrentGaugeCostChange]
+type CurrentGaugeCostChange struct {
 	OldCost float64
 	NewCost float64
 }

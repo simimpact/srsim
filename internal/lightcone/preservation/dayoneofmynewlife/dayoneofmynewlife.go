@@ -55,7 +55,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	// NOTE: fine to leave this as-is, but this may have to change in the
 	// future when adding support for multiple waves. `BattleStart` happens
 	// at the beginning of each wave
-	engine.Events().BattleStart.Subscribe(func(event event.BattleStartEvent) {
+	engine.Events().BattleStart.Subscribe(func(event event.BattleStart) {
 		for char := range event.CharInfo {
 			engine.AddModifier(char, mod)
 		}

@@ -47,7 +47,7 @@ func init() {
 	modifier.Register(E6, modifier.Config{
 		Stacking: modifier.ReplaceBySource,
 		Listeners: modifier.Listeners{
-			OnAfterAttack: func(mod *modifier.Instance, e event.AttackEndEvent) {
+			OnAfterAttack: func(mod *modifier.Instance, e event.AttackEnd) {
 				for _, trg := range e.Targets {
 					if mod.Engine().ModifierCount(trg, model.StatusType_STATUS_DEBUFF) >= 1 {
 						mod.Engine().Attack(info.Attack{

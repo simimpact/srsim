@@ -30,7 +30,7 @@ func init() {
 	modifier.Register(A2Check, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAdd: a2HPCheck,
-			OnHPChange: func(mod *modifier.Instance, e event.HPChangeEvent) {
+			OnHPChange: func(mod *modifier.Instance, e event.HPChange) {
 				a2HPCheck(mod)
 			},
 		},
@@ -79,7 +79,7 @@ func a2HPCheck(mod *modifier.Instance) {
 	}
 }
 
-func a4OnBeforeHitAll(mod *modifier.Instance, e event.HitStartEvent) {
+func a4OnBeforeHitAll(mod *modifier.Instance, e event.HitStart) {
 	stacks := mod.State().(float64)
 	e.Hit.Attacker.AddProperty(prop.AllDamagePercent, stacks*0.025)
 }

@@ -19,7 +19,7 @@ const (
 func init() {
 	modifier.Register(E2Hover, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAfterAction: func(mod *modifier.Instance, e event.ActionEvent) {
+			OnAfterAction: func(mod *modifier.Instance, e event.ActionEnd) {
 				mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 					Name:   E2Buff,
 					Source: mod.Source(),
@@ -70,7 +70,7 @@ func (c *char) e2(target key.TargetID) {
 	}
 }
 
-func (c *char) e4Listener(e event.AttackEndEvent) {
+func (c *char) e4Listener(e event.AttackEnd) {
 	// Assumed to be E4+ from subscription
 
 	// has to be Ally Attacker

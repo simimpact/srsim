@@ -28,7 +28,7 @@ func init() {
 	modifier.Register(A2Check, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAdd: a2HPCheck,
-			OnHPChange: func(mod *modifier.Instance, e event.HPChangeEvent) {
+			OnHPChange: func(mod *modifier.Instance, e event.HPChange) {
 				a2HPCheck(mod)
 			},
 		},
@@ -50,7 +50,7 @@ func init() {
 
 	modifier.Register(A6, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHit: func(mod *modifier.Instance, e event.HitStartEvent) {
+			OnBeforeHit: func(mod *modifier.Instance, e event.HitStart) {
 				if e.Hit.AttackType != model.AttackType_NORMAL {
 					return
 				}

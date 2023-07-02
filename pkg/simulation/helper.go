@@ -41,7 +41,7 @@ func (sim *Simulation) createSnapshot() snapshot {
 func (sim *Simulation) deathCheck(targets []key.TargetID) {
 	for _, target := range targets {
 		if sim.Attr.HPRatio(target) <= 0 {
-			sim.Event.TargetDeath.Emit(event.TargetDeathEvent{
+			sim.Event.TargetDeath.Emit(event.TargetDeath{
 				Target: target,
 				Killer: target,
 			})

@@ -30,7 +30,7 @@ func init() {
 	modifier.Register(amber, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAdd: onLowerHalfHp,
-			OnHPChange: func(mod *modifier.Instance, e event.HPChangeEvent) {
+			OnHPChange: func(mod *modifier.Instance, e event.HPChange) {
 				onLowerHalfHp(mod)
 			},
 		},

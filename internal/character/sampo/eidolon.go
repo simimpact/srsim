@@ -5,7 +5,7 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-func (c *char) E2TargetDeathListener(e event.TargetDeathEvent) {
+func (c *char) E2TargetDeathListener(e event.TargetDeath) {
 	if c.engine.HPRatio(c.id) <= 0 {
 		return
 	}
