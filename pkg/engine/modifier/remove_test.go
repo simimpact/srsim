@@ -75,7 +75,7 @@ func TestRemoveModifier(t *testing.T) {
 	manager.targets[target] = append(manager.targets[target], mod3, mod1, mod2)
 
 	called := 0
-	manager.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemovedEvent) {
+	manager.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemoved) {
 		assert.Equal(t, modsToRemove, event.Modifier.Name)
 		called += 1
 	})
@@ -108,7 +108,7 @@ func TestRemoveModifierFromSource(t *testing.T) {
 	manager.targets[target] = append(manager.targets[target], mod3, mod2, mod1)
 
 	called := 0
-	manager.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemovedEvent) {
+	manager.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemoved) {
 		assert.Equal(t, modsToRemove, event.Modifier.Name)
 		called += 1
 	})
@@ -145,7 +145,7 @@ func TestRemoveModifierWithOnRemoveListener(t *testing.T) {
 	manager.targets[target] = append(manager.targets[target], mod)
 
 	called := 0
-	manager.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemovedEvent) {
+	manager.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemoved) {
 		state := event.Modifier.State.(*state)
 		assert.Equal(t, name, event.Modifier.Name)
 		assert.True(t, state.OnRemoveCalled)
@@ -184,7 +184,7 @@ func TestRemoveModifierSelf(t *testing.T) {
 	manager.targets[target] = append(manager.targets[target], mod)
 
 	called := 0
-	manager.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemovedEvent) {
+	manager.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemoved) {
 		state := event.Modifier.State.(*state)
 		assert.Equal(t, name, event.Modifier.Name)
 		assert.True(t, state.OnRemoveCalled)

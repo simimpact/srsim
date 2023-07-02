@@ -178,7 +178,7 @@ func (mgr *Manager) emitAdd(target key.TargetID, mod *Instance, chance float64) 
 	if f != nil {
 		f(mod)
 	}
-	mgr.engine.Events().ModifierAdded.Emit(event.ModifierAddedEvent{
+	mgr.engine.Events().ModifierAdded.Emit(event.ModifierAdded{
 		Target:   target,
 		Modifier: mod.ToModel(),
 		Chance:   chance,
@@ -195,7 +195,7 @@ func (mgr *Manager) emitRemove(target key.TargetID, mods []*Instance) {
 		if f != nil {
 			f(mod)
 		}
-		mgr.engine.Events().ModifierRemoved.Emit(event.ModifierRemovedEvent{
+		mgr.engine.Events().ModifierRemoved.Emit(event.ModifierRemoved{
 			Target:   target,
 			Modifier: mod.ToModel(),
 		})
@@ -207,7 +207,7 @@ func (mgr *Manager) emitExtendDuration(target key.TargetID, mod *Instance, old i
 	if f != nil {
 		f(mod)
 	}
-	mgr.engine.Events().ModifierExtendedDuration.Emit(event.ModifierExtendedDurationEvent{
+	mgr.engine.Events().ModifierExtendedDuration.Emit(event.ModifierExtendedDuration{
 		Target:   target,
 		Modifier: mod.ToModel(),
 		OldValue: old,
@@ -220,7 +220,7 @@ func (mgr *Manager) emitExtendCount(target key.TargetID, mod *Instance, old floa
 	if f != nil {
 		f(mod)
 	}
-	mgr.engine.Events().ModifierExtendedCount.Emit(event.ModifierExtendedCountEvent{
+	mgr.engine.Events().ModifierExtendedCount.Emit(event.ModifierExtendedCount{
 		Target:   target,
 		Modifier: mod.ToModel(),
 		OldValue: old,

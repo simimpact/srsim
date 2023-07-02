@@ -87,7 +87,7 @@ func (mgr *Manager) attemptResist(
 	}
 
 	// resisted, emit event
-	mgr.engine.Events().ModifierResisted.Emit(event.ModifierResistedEvent{
+	mgr.engine.Events().ModifierResisted.Emit(event.ModifierResisted{
 		Target:     target,
 		Source:     mod.Source,
 		Modifier:   mod.Name,
