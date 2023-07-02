@@ -5,10 +5,10 @@ import (
 
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/event/handler"
-	"github.com/simimpact/srsim/testframe/teststub"
+	"github.com/simimpact/srsim/tests/eventchecker"
 )
 
-func ExpectOnly() teststub.EventChecker {
+func ExpectOnly() eventchecker.EventChecker {
 	return func(e handler.Event) (bool, error) {
 		_, ok := e.(event.BattleStart)
 		if !ok {
@@ -18,7 +18,7 @@ func ExpectOnly() teststub.EventChecker {
 	}
 }
 
-func ExpectFor() teststub.EventChecker {
+func ExpectFor() eventchecker.EventChecker {
 	return func(e handler.Event) (bool, error) {
 		_, ok := e.(event.BattleStart)
 		if !ok {

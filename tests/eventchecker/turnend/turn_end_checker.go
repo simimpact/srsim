@@ -1,14 +1,14 @@
-package termination
+package turnend
 
 import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/event/handler"
-	"github.com/simimpact/srsim/testframe/teststub"
+	"github.com/simimpact/srsim/tests/eventchecker"
 )
 
-func ExpectFor() teststub.EventChecker {
+func ExpectFor() eventchecker.EventChecker {
 	return func(e handler.Event) (bool, error) {
-		_, ok := e.(event.Termination)
+		_, ok := e.(event.TurnEnd)
 		if !ok {
 			return false, nil
 		}
