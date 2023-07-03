@@ -7,7 +7,7 @@ import (
 )
 
 func (mgr *Manager) baseDamage(h *info.Hit) float64 {
-	var dmgMap info.DamageMap = h.BaseDamage
+	dmgMap := h.BaseDamage
 	damage := 0.0
 	for k, v := range dmgMap {
 		switch k {
@@ -28,13 +28,14 @@ func (mgr *Manager) bonusDamage(h *info.Hit) float64 {
 	dmg := 1.0
 	// If hit doesn't use break damage equation, adds dmg%
 	// Otherwise, adds break effect%
-	if h.AsPureDamage {
+	if !h.AsPureDamage {
 		dmg += h.Attacker.GetProperty(prop.AllDamagePercent)
 		dmg += h.Attacker.GetProperty(prop.DamagePercent(h.DamageType))
 		if h.AttackType == model.AttackType_DOT {
 			dmg += h.Attacker.GetProperty(prop.DOTDamagePercent)
 		}
-	} else {
+	}
+	if h.BaseDamage[model.DamageFormula_BY_BREAK_DAMAGE] != 0 {
 		dmg += h.Attacker.BreakEffect()
 	}
 
