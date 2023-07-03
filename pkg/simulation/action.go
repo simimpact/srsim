@@ -63,7 +63,6 @@ func (sim *Simulation) ultCheck() error {
 				Execute: func() { sim.executeUlt(act) }, // TODO: error handling
 			})
 			sim.Attr.ModifyEnergy(act.Target, -sim.Attr.MaxEnergy(act.Target))
-
 		}
 	}
 	return nil
