@@ -3,6 +3,9 @@ package combat
 //go:generate go run generate.go
 
 import (
+	"math/rand"
+
+	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/shield"
@@ -11,11 +14,13 @@ import (
 )
 
 type Manager struct {
-	event *event.System
-	attr  attribute.Modifier
-	shld  shield.Absorb
+	event  *event.System
+	attr   attribute.Modifier
+	shld   shield.Absorb
+	target engine.Target
+	rdm    *rand.Rand
 
-	isInAttack bool
+	isInAttack bool       `exhaustruct:"optional"`
 	attackInfo attackInfo `exhaustruct:"optional"`
 }
 
@@ -26,11 +31,12 @@ type attackInfo struct {
 	damageType model.DamageType
 }
 
-func New(event *event.System, attr attribute.Modifier, shld shield.Absorb) *Manager {
+func New(event *event.System, attr attribute.Modifier, shld shield.Absorb, target engine.Target, rdm *rand.Rand) *Manager {
 	return &Manager{
-		event:      event,
-		attr:       attr,
-		shld:       shld,
-		isInAttack: false,
+		event:  event,
+		attr:   attr,
+		shld:   shld,
+		target: target,
+		rdm:    rdm,
 	}
 }

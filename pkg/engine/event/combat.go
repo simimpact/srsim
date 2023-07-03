@@ -32,18 +32,25 @@ type HitStart struct {
 
 type HitEndEventHandler = handler.EventHandler[HitEnd]
 type HitEnd struct {
-	Attacker         key.TargetID
-	Defender         key.TargetID
-	AttackType       model.AttackType
-	DamageType       model.DamageType
-	BaseDamage       float64
-	BonusDamage      float64
-	TotalDamage      float64
-	HPDamage         float64
-	ShieldDamage     float64
-	HPRatioRemaining float64
-	IsCrit           bool
-	UseSnapshot      bool
+	Attacker            key.TargetID
+	Defender            key.TargetID
+	AttackType          model.AttackType
+	DamageType          model.DamageType
+	BaseDamage          float64
+	BonusDamage         float64
+	DefenceMultiplier   float64
+	Resistance          float64
+	Vulnerability       float64
+	ToughnessMultiplier float64
+	Fatigue             float64
+	AllDamageReduce     float64
+	CritDamage          float64
+	TotalDamage         float64
+	HPDamage            float64
+	ShieldDamage        float64
+	HPRatioRemaining    float64
+	IsCrit              bool
+	UseSnapshot         bool
 }
 
 type HealStartEventHandler = handler.MutableEventHandler[HealStart]

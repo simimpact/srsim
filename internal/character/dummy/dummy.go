@@ -14,7 +14,7 @@ func init() {
 		Create:     NewInstance,
 		Rarity:     4,
 		Element:    model.DamageType_QUANTUM,
-		Path:       model.Path_ERUDITION,
+		Path:       model.Path_ABUNDANCE,
 		MaxEnergy:  120,
 		Promotions: promotions,
 		Traces:     traces,
