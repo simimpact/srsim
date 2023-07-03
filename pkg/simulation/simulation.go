@@ -5,8 +5,6 @@ import (
 	"encoding/binary"
 	"math/rand"
 
-	"github.com/simimpact/srsim/pkg/engine/logging"
-
 	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/combat"
 	"github.com/simimpact/srsim/pkg/engine/event"
