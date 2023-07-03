@@ -94,7 +94,8 @@ func NewSimulation(cfg *model.SimConfig, eval logic.Eval, seed int64) *Simulatio
 	// game logic
 	s.Turn = turn.New(s.Event, s.Attr)
 	s.Shield = shield.New(s.Event, s.Attr)
-	s.Combat = combat.New(s.Event, s.Attr, s.Shield)
+	s.Combat = combat.New(s.Event, s.Attr, s.Shield, s, s.Random)
+
 	return s
 }
 
