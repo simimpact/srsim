@@ -8,8 +8,8 @@ import (
 )
 
 func (mgr *Manager) Heal(heal info.Heal) {
-	source := mgr.attr.Stats(heal.Source)
 	for _, t := range heal.Targets {
+		source := mgr.attr.Stats(heal.Source)
 		target := mgr.attr.Stats(t)
 
 		// make copy of healMap
@@ -27,10 +27,9 @@ func (mgr *Manager) Heal(heal info.Heal) {
 		}
 		mgr.event.HealStart.Emit(e)
 
-		// TODO: Perform Heal. Use the data in the event to perform the heal
 		// Get base heal amount
 		hpLost := target.MaxHP() - target.HP()
-		base := 0.0
+		base := heal.HealValue
 		for k, v := range baseHeal {
 			switch k {
 			case model.HealFormula_BY_HEALER_ATK:
