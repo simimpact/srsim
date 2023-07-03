@@ -12,7 +12,7 @@ func (mgr *Manager) Heal(heal info.Heal) {
 			baseHeal[k] = v
 		}
 
-		e := &event.HealStartEvent{
+		e := &event.HealStart{
 			Target:      mgr.attr.Stats(t),
 			Healer:      mgr.attr.Stats(heal.Source),
 			BaseHeal:    baseHeal,
@@ -24,7 +24,7 @@ func (mgr *Manager) Heal(heal info.Heal) {
 		// TODO: Perform Heal. Use the data in the event to perform the heal
 		// TOOD: call ModifyHP to add the new HP to the healed target
 
-		mgr.event.HealEnd.Emit(event.HealEndEvent{
+		mgr.event.HealEnd.Emit(event.HealEnd{
 			Target:             t,
 			Healer:             heal.Source,
 			HealAmount:         0, // TODO:

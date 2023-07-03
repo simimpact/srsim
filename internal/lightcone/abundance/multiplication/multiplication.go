@@ -22,7 +22,7 @@ func init() {
 
 	modifier.Register(Multiplication, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeAction: func(mod *modifier.ModifierInstance, e event.ActionEvent) {
+			OnBeforeAction: func(mod *modifier.Instance, e event.ActionStart) {
 				imposition := mod.State().(int)
 				if e.AttackType == model.AttackType_NORMAL {
 					mod.Engine().ModifyCurrentGaugeCost(-0.1 - float64(imposition)*0.02)
@@ -30,7 +30,6 @@ func init() {
 			},
 		},
 	})
-
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {

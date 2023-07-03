@@ -88,7 +88,7 @@ func main() {
 		}
 
 		var avatarConfig AvatarConfig
-		err = OpenConfig(&avatarConfig, dmPath, value.JsonPath)
+		err = OpenConfig(&avatarConfig, dmPath, value.JSONPath)
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -130,50 +130,52 @@ func FindCharSkills(skills map[string]SkillTreeConfig, id int) []SkillTreeConfig
 }
 
 func FindSkillInfo(skills map[string]SkillConfig, config AvatarConfig, key string) character.SkillInfo {
-	info := character.SkillInfo{}
+	var info character.SkillInfo
 	for k, value := range skills {
-		if strings.HasPrefix(k, key) {
-			var targetType model.TargetType
-			for _, s := range config.SkillList {
-				if s.Name == value["1"].SkillTriggerKey {
-					targetType = s.TargetInfo.GetType()
-					break
-				}
-			}
+		if !strings.HasPrefix(k, key) {
+			continue
+		}
 
-			BPAdd := int(value["1"].BPAdd.Value)
-			if BPAdd < 0 {
-				BPAdd = 0
+		var targetType model.TargetType
+		for _, s := range config.SkillList {
+			if s.Name == value["1"].SkillTriggerKey {
+				targetType = s.TargetInfo.GetType()
+				break
 			}
+		}
 
-			BPNeed := int(value["1"].BPNeed.Value)
-			if BPNeed < 0 {
-				BPNeed = 0
-			}
+		bpAdd := int(value["1"].BPAdd.Value)
+		if bpAdd < 0 {
+			bpAdd = 0
+		}
 
-			switch value["1"].SkillTriggerKey {
-			case "Skill01":
-				info.Attack = character.Attack{
-					SPAdd:      BPAdd,
-					TargetType: targetType,
-				}
-			case "Skill02":
-				info.Skill = character.Skill{
-					SPNeed:     BPNeed,
-					TargetType: targetType,
-				}
-			case "Skill03":
-				info.Ult = character.Ult{
-					TargetType: targetType,
-				}
-			case "SkillMaze":
-				info.Technique = character.Technique{
-					TargetType: targetType,
-					IsAttack:   value["1"].SkillEffect == "MazeAttack",
-				}
-			default:
-				continue
+		bpNeed := int(value["1"].BPNeed.Value)
+		if bpNeed < 0 {
+			bpNeed = 0
+		}
+
+		switch value["1"].SkillTriggerKey {
+		case "Skill01":
+			info.Attack = character.Attack{
+				SPAdd:      bpAdd,
+				TargetType: targetType,
 			}
+		case "Skill02":
+			info.Skill = character.Skill{
+				SPNeed:     bpNeed,
+				TargetType: targetType,
+			}
+		case "Skill03":
+			info.Ult = character.Ult{
+				TargetType: targetType,
+			}
+		case "SkillMaze":
+			info.Technique = character.Technique{
+				TargetType: targetType,
+				IsAttack:   value["1"].SkillEffect == "MazeAttack",
+			}
+		default:
+			continue
 		}
 	}
 	return info
@@ -225,7 +227,7 @@ func ProcessCharacter(
 			continue
 		}
 
-		trace := character.Trace{}
+		var trace character.Trace
 		if len(value.StatusAddList) > 0 {
 			trace.Stat = value.StatusAddList[0].GetType()
 			trace.Amount = value.StatusAddList[0].Value.Value
@@ -245,80 +247,98 @@ func ProcessCharacter(
 
 	fchar, err := os.Create(filepath.Join(path, data.KeyLower+".go"))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	defer fchar.Close()
 	tchar, err := template.New("outchar").Parse(tmplChar)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	if err := tchar.Execute(fchar, data); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 
 	fdata, err := os.Create(filepath.Join(path, "data.go"))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	defer fdata.Close()
 	tdata, err := template.New("outdata").Parse(tmplData)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	if err := tdata.Execute(fdata, data); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 
 	fatk, err := os.Create(filepath.Join(path, "attack.go"))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	defer fatk.Close()
 	tatk, err := template.New("outattack").Parse(tmplAtk)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	if err := tatk.Execute(fatk, data); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 
 	fskill, err := os.Create(filepath.Join(path, "skill.go"))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	defer fskill.Close()
 	tskill, err := template.New("outskill").Parse(tmplSkill)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	if err := tskill.Execute(fskill, data); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 
 	fult, err := os.Create(filepath.Join(path, "ult.go"))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	defer fult.Close()
 	tult, err := template.New("outult").Parse(tmplUlt)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	if err := tult.Execute(fult, data); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 
 	ftech, err := os.Create(filepath.Join(path, "technique.go"))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	defer ftech.Close()
 	ttech, err := template.New("outtech").Parse(tmplTechnique)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	if err := ttech.Execute(ftech, data); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 }
 

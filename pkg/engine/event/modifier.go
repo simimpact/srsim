@@ -6,15 +6,15 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-type ModifierAddedEventHandler = handler.EventHandler[ModifierAddedEvent]
-type ModifierAddedEvent struct {
+type ModifierAddedEventHandler = handler.EventHandler[ModifierAdded]
+type ModifierAdded struct {
 	Target   key.TargetID
 	Modifier info.Modifier
 	Chance   float64
 }
 
-type ModifierResistedEventHandler = handler.EventHandler[ModifierResistedEvent]
-type ModifierResistedEvent struct {
+type ModifierResistedEventHandler = handler.EventHandler[ModifierResisted]
+type ModifierResisted struct {
 	Target     key.TargetID
 	Source     key.TargetID
 	Modifier   key.Modifier
@@ -25,22 +25,22 @@ type ModifierResistedEvent struct {
 	DebuffRES  float64
 }
 
-type ModifierRemovedEventHandler = handler.EventHandler[ModifierRemovedEvent]
-type ModifierRemovedEvent struct {
+type ModifierRemovedEventHandler = handler.EventHandler[ModifierRemoved]
+type ModifierRemoved struct {
 	Target   key.TargetID
 	Modifier info.Modifier
 }
 
-type ModifierExtendedDurationEventHandler = handler.EventHandler[ModifierExtendedDurationEvent]
-type ModifierExtendedDurationEvent struct {
+type ModifierExtendedDurationEventHandler = handler.EventHandler[ModifierExtendedDuration]
+type ModifierExtendedDuration struct {
 	Target   key.TargetID
 	Modifier info.Modifier
 	OldValue int
 	NewValue int
 }
 
-type ModifierExtendedCountEventHandler = handler.EventHandler[ModifierExtendedCountEvent]
-type ModifierExtendedCountEvent struct {
+type ModifierExtendedCountEventHandler = handler.EventHandler[ModifierExtendedCount]
+type ModifierExtendedCount struct {
 	Target   key.TargetID
 	Modifier info.Modifier
 	OldValue float64

@@ -20,7 +20,7 @@ func (mgr *Manager) Attack(atk info.Attack) {
 			damageType: atk.DamageType,
 		}
 
-		mgr.event.AttackStart.Emit(event.AttackStartEvent{
+		mgr.event.AttackStart.Emit(event.AttackStart{
 			Attacker:   atk.Source,
 			AttackType: atk.AttackType,
 			Targets:    atk.Targets,
@@ -36,7 +36,7 @@ func (mgr *Manager) Attack(atk info.Attack) {
 func (mgr *Manager) EndAttack() {
 	if mgr.isInAttack {
 		mgr.isInAttack = false
-		mgr.event.AttackEnd.Emit(event.AttackEndEvent{
+		mgr.event.AttackEnd.Emit(event.AttackEnd{
 			Attacker:   mgr.attackInfo.attacker,
 			Targets:    mgr.attackInfo.targets,
 			AttackType: mgr.attackInfo.attackType,

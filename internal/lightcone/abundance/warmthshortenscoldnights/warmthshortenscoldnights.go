@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	CheckNBuff   key.Modifier = "warmth_shortens_cold_nights"
+	CheckNBuff key.Modifier = "warmth_shortens_cold_nights"
 )
 
 func init() {
@@ -23,7 +23,7 @@ func init() {
 		Promotions:    promotions,
 	})
 
-	//Check if action is basic atk / skill
+	// Check if action is basic atk / skill
 	modifier.Register(CheckNBuff, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAfterAction: healTeamOnBasicOrSkill,
@@ -33,22 +33,23 @@ func init() {
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	amt := 0.12 + 0.04*float64(lc.Imposition)
-	//OnStart : (Simplified to 1 call)
+	// OnStart : (Simplified to 1 call)
 	engine.AddModifier(owner, info.Modifier{
 		Name:   CheckNBuff,
 		Source: owner,
-		Stats:  info.PropMap{prop.HPPercent: amt}, //static "buff"
-		State:  0.015 + 0.005 * float64(lc.Imposition), //state to pass into check logic
+		Stats:  info.PropMap{prop.HPPercent: amt},    // static "buff"
+		State:  0.015 + 0.005*float64(lc.Imposition), // state to pass into check logic
 	})
 }
-//if basic atk/skill, heal the whole team by x%
-func healTeamOnBasicOrSkill(mod *modifier.ModifierInstance, e event.ActionEvent) {
+
+// if basic atk/skill, heal the whole team by x%
+func healTeamOnBasicOrSkill(mod *modifier.Instance, e event.ActionEnd) {
 	amt := mod.State().(float64)
 	switch e.AttackType {
-	case model.AttackType_NORMAL, model.AttackType_SKILL :
-		//apply team heal with % based on target
+	case model.AttackType_NORMAL, model.AttackType_SKILL:
+		// apply team heal with % based on target
 		mod.Engine().Heal(info.Heal{
-			Targets:  mod.Engine().Characters(), //fetch alive allies IDs through the engine
+			Targets:  mod.Engine().Characters(), // fetch alive allies IDs through the engine
 			Source:   mod.Owner(),
 			BaseHeal: info.HealMap{model.HealFormula_BY_TARGET_MAX_HP: amt},
 		})

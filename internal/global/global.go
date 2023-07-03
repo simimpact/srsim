@@ -14,7 +14,7 @@ func init() {
 
 // When a target dies, give 10 energy to the killer (that can be scaled with ERR)
 func EnergyOnDeath(engine engine.Engine) error {
-	engine.Events().TargetDeath.Subscribe(func(event event.TargetDeathEvent) {
+	engine.Events().TargetDeath.Subscribe(func(event event.TargetDeath) {
 		engine.ModifyEnergy(event.Killer, 10.0)
 	})
 	return nil

@@ -5,6 +5,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
+	model "github.com/simimpact/srsim/pkg/model"
 )
 
 func NewMockEngineWithEvents(ctrl *gomock.Controller) *MockEngine {
@@ -15,10 +16,14 @@ func NewMockEngineWithEvents(ctrl *gomock.Controller) *MockEngine {
 }
 
 func NewEmptyStats(target key.TargetID) *info.Stats {
-	attr := &info.Attributes{}
+	attr := new(info.Attributes)
 	mods := info.ModifierState{
 		Props:     info.NewPropMap(),
 		DebuffRES: info.NewDebuffRESMap(),
+		Weakness:  info.NewWeaknessMap(),
+		Counts:    make(map[model.StatusType]int),
+		Flags:     nil,
+		Modifiers: nil,
 	}
 	return info.NewStats(target, attr, mods)
 }

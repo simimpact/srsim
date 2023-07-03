@@ -20,7 +20,7 @@ func init() {
 	// When an enemy is defeated, Pela regenerates 5 Energy.
 	modifier.Register(E1, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnTriggerDeath: func(mod *modifier.ModifierInstance, target key.TargetID) {
+			OnTriggerDeath: func(mod *modifier.Instance, target key.TargetID) {
 				if !mod.Engine().IsEnemy(target) {
 					return
 				}
@@ -47,7 +47,7 @@ func init() {
 	modifier.Register(E6, modifier.Config{
 		Stacking: modifier.ReplaceBySource,
 		Listeners: modifier.Listeners{
-			OnAfterAttack: func(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
+			OnAfterAttack: func(mod *modifier.Instance, e event.AttackEnd) {
 				for _, trg := range e.Targets {
 					if mod.Engine().ModifierCount(trg, model.StatusType_STATUS_DEBUFF) >= 1 {
 						mod.Engine().Attack(info.Attack{
@@ -60,7 +60,6 @@ func init() {
 							},
 						})
 					}
-
 				}
 			},
 		},

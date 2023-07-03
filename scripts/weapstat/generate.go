@@ -58,10 +58,6 @@ func main() {
 	}
 
 	for key, value := range cones {
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
 		coneName := GetName(textMap, value.EquipmentName.Hash)
 		if coneName == "" {
 			continue
@@ -129,23 +125,28 @@ func ProcessLightCone(name string, cone EquipmentConfig, promotions PromotionCon
 	defer fcone.Close()
 	tchar, err := template.New("outchar").Parse(tmplCone)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	if err := tchar.Execute(fcone, data); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 
 	fdata, err := os.Create(filepath.Join(path, "data.go"))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	defer fdata.Close()
 	tdata, err := template.New("outdata").Parse(tmplData)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	if err := tdata.Execute(fdata, data); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 }
 

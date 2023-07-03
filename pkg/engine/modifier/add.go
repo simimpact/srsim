@@ -19,23 +19,25 @@ func (mgr *Manager) AddModifier(target key.TargetID, modifier info.Modifier) (bo
 		return false, fmt.Errorf("invalid source id: %v", modifier.Source)
 	}
 
-	chance, resisted, err := mgr.attemptResist(target, modifier, config.BehaviorFlags)
-	if err != nil || resisted {
-		return false, err
+	chance, resisted := mgr.attemptResist(target, modifier, config.BehaviorFlags)
+	if resisted {
+		return false, nil
 	}
 
 	// prepare the instance to be added to the target
-	instance := mgr.newInstance(target, modifier)
+	instance := mgr.newInstance(target, modifier, mgr.turnCount)
 
-	var result *ModifierInstance
+	var result *Instance
 	var newInstance bool
 	switch config.Stacking {
 	case Unique:
 		result, newInstance = mgr.unique(target, instance)
 	case ReplaceBySource:
-		result, newInstance = mgr.replaceBySource(target, instance)
+		result = mgr.replaceBySource(target, instance)
+		newInstance = true
 	case Replace:
-		result, newInstance = mgr.replace(target, instance)
+		result = mgr.replace(target, instance)
+		newInstance = true
 	case Multiple:
 		result, newInstance = mgr.multiple(target, instance)
 	case Refresh:
@@ -43,7 +45,8 @@ func (mgr *Manager) AddModifier(target key.TargetID, modifier info.Modifier) (bo
 	case Prolong:
 		result, newInstance = mgr.prolong(target, instance)
 	case Merge:
-		result, newInstance = mgr.merge(target, instance)
+		result = mgr.merge(target, instance)
+		newInstance = true
 	default:
 		return false, fmt.Errorf("unsupported stacking method: %v", config.Stacking)
 	}
@@ -54,7 +57,6 @@ func (mgr *Manager) AddModifier(target key.TargetID, modifier info.Modifier) (bo
 	//	- Multiple
 	//	- Merge (special case, keeps old but triggers reset + add as if new)
 	if newInstance {
-		result.renewTurn = mgr.turnCount
 		if len(result.stats) > 0 {
 			// special case if new instance and Stats were predefined
 			mgr.emitPropertyChange(target)
@@ -66,10 +68,10 @@ func (mgr *Manager) AddModifier(target key.TargetID, modifier info.Modifier) (bo
 
 // returns the 1) chance to apply, 2) true if resisted, 3) error
 func (mgr *Manager) attemptResist(
-	target key.TargetID, mod info.Modifier, flags []model.BehaviorFlag) (float64, bool, error) {
+	target key.TargetID, mod info.Modifier, flags []model.BehaviorFlag) (float64, bool) {
 	// if unspecified, do not resist
 	if mod.Chance <= 0 {
-		return -1, false, nil
+		return -1, false
 	}
 
 	srcStats := mgr.engine.Stats(mod.Source)
@@ -81,11 +83,11 @@ func (mgr *Manager) attemptResist(
 
 	chance := mod.Chance * (1 + effectHitRate) * (1 - effectRES) * (1 - debuffRES)
 	if mgr.engine.Rand().Float64() < chance {
-		return chance, false, nil
+		return chance, false
 	}
 
 	// resisted, emit event
-	mgr.engine.Events().ModifierResisted.Emit(event.ModifierResistedEvent{
+	mgr.engine.Events().ModifierResisted.Emit(event.ModifierResisted{
 		Target:     target,
 		Source:     mod.Source,
 		Modifier:   mod.Name,
@@ -95,10 +97,10 @@ func (mgr *Manager) attemptResist(
 		EffectRES:  effectRES,
 		DebuffRES:  debuffRES,
 	})
-	return chance, true, nil
+	return chance, true
 }
 
-func (mgr *Manager) unique(target key.TargetID, instance *ModifierInstance) (*ModifierInstance, bool) {
+func (mgr *Manager) unique(target key.TargetID, instance *Instance) (*Instance, bool) {
 	for _, mod := range mgr.targets[target] {
 		if mod.name == instance.name {
 			return mod, false
@@ -108,42 +110,42 @@ func (mgr *Manager) unique(target key.TargetID, instance *ModifierInstance) (*Mo
 	return instance, true
 }
 
-func (mgr *Manager) replaceBySource(target key.TargetID, instance *ModifierInstance) (*ModifierInstance, bool) {
+func (mgr *Manager) replaceBySource(target key.TargetID, instance *Instance) *Instance {
 	for i, mod := range mgr.targets[target] {
 		if mod.name == instance.name && mod.source == instance.source {
 			// replace means this added instance is the new instance (can have new param values)
 			instance.count = stackCount(instance, mod.count)
 			mgr.targets[target][i] = instance
-			mgr.emitRemove(target, []*ModifierInstance{mod})
-			return instance, true
+			mgr.emitRemove(target, []*Instance{mod})
+			return instance
 		}
 	}
 	// no match, add this instance as a new modifier
 	mgr.targets[target] = append(mgr.targets[target], instance)
-	return instance, true
+	return instance
 }
 
-func (mgr *Manager) replace(target key.TargetID, instance *ModifierInstance) (*ModifierInstance, bool) {
+func (mgr *Manager) replace(target key.TargetID, instance *Instance) *Instance {
 	for i, mod := range mgr.targets[target] {
 		if mod.name == instance.name {
 			// replace means this added instance is the new instance (can have new param values)
 			instance.count = stackCount(instance, mod.count)
 			mgr.targets[target][i] = instance
-			mgr.emitRemove(target, []*ModifierInstance{mod})
-			return instance, true
+			mgr.emitRemove(target, []*Instance{mod})
+			return instance
 		}
 	}
 	// no match, add this instance as a new modifier
 	mgr.targets[target] = append(mgr.targets[target], instance)
-	return instance, true
+	return instance
 }
 
-func (mgr *Manager) multiple(target key.TargetID, instance *ModifierInstance) (*ModifierInstance, bool) {
+func (mgr *Manager) multiple(target key.TargetID, instance *Instance) (*Instance, bool) {
 	mgr.targets[target] = append(mgr.targets[target], instance)
 	return instance, true
 }
 
-func (mgr *Manager) refresh(target key.TargetID, instance *ModifierInstance) (*ModifierInstance, bool) {
+func (mgr *Manager) refresh(target key.TargetID, instance *Instance) (*Instance, bool) {
 	for _, mod := range mgr.targets[target] {
 		if mod.name == instance.name {
 			// found a matching modifier, reset this modifier's duration
@@ -158,7 +160,7 @@ func (mgr *Manager) refresh(target key.TargetID, instance *ModifierInstance) (*M
 	return instance, true
 }
 
-func (mgr *Manager) prolong(target key.TargetID, instance *ModifierInstance) (*ModifierInstance, bool) {
+func (mgr *Manager) prolong(target key.TargetID, instance *Instance) (*Instance, bool) {
 	for _, mod := range mgr.targets[target] {
 		if mod.name == instance.name {
 			// found a matching modifier, prolong the duration
@@ -173,7 +175,7 @@ func (mgr *Manager) prolong(target key.TargetID, instance *ModifierInstance) (*M
 	return instance, true
 }
 
-func (mgr *Manager) merge(target key.TargetID, instance *ModifierInstance) (*ModifierInstance, bool) {
+func (mgr *Manager) merge(target key.TargetID, instance *Instance) *Instance {
 	for _, mod := range mgr.targets[target] {
 		if mod.name == instance.name {
 			// found a matching modifier, merge
@@ -181,15 +183,15 @@ func (mgr *Manager) merge(target key.TargetID, instance *ModifierInstance) (*Mod
 			if instance.duration > mod.duration {
 				mod.duration = instance.duration
 			}
-			return mod, true
+			return mod
 		}
 	}
 	// no match, add this instance as a new modifier
 	mgr.targets[target] = append(mgr.targets[target], instance)
-	return instance, true
+	return instance
 }
 
-func stackCount(mod *ModifierInstance, prevCount float64) float64 {
+func stackCount(mod *Instance, prevCount float64) float64 {
 	if prevCount < 0 || mod.count < 0 {
 		return mod.count
 	}

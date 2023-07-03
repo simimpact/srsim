@@ -19,7 +19,7 @@ func init() {
 	})
 }
 
-func (c *char) talentTurnStartListener(e event.TurnStartEvent) {
+func (c *char) talentTurnStartListener(e event.TurnStart) {
 	if c.engine.IsCharacter(e.Active) {
 		c.drawTile()
 	}

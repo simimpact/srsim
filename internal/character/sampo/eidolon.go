@@ -5,7 +5,7 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-func (c *char) E2TargetDeathListener(e event.TargetDeathEvent) {
+func (c *char) E2TargetDeathListener(e event.TargetDeath) {
 	if c.engine.HPRatio(c.id) <= 0 {
 		return
 	}
@@ -26,5 +26,4 @@ func (c *char) E2TargetDeathListener(e event.TargetDeathEvent) {
 	for _, target := range c.engine.Enemies() {
 		AddWindShearTalent(c.info, c.engine, c.id, target, duration, 1)
 	}
-
 }

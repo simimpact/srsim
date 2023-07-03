@@ -36,7 +36,7 @@ func (mgr *Manager) Tick(target key.TargetID, phase info.BattlePhase) {
 
 func (mgr *Manager) modifierPhaseEnd(target key.TargetID, time TickMoment) {
 	i := 0
-	var removedMods []*ModifierInstance
+	var removedMods []*Instance
 	for _, mod := range mgr.targets[target] {
 		// only update modifier if its tick moment is for this given BattlePhase
 		if modifierCatalog[mod.name].TickMoment != time {

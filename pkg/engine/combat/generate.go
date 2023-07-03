@@ -12,10 +12,12 @@ import (
 	"text/template"
 )
 
+//nolint:tagliatelle // need to match datamine
 type ValueInfo struct {
 	Value float64 `json:"Value"`
 }
 
+//nolint:tagliatelle // need to match datamine
 type BreakLevel struct {
 	Level           int       `json:"Level"`
 	BreakBaseDamage ValueInfo `json:"BreakBaseDamage"`

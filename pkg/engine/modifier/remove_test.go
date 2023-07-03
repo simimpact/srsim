@@ -13,7 +13,9 @@ func TestRemoveModifierUnknownTarget(t *testing.T) {
 	mod := key.Modifier("Test")
 
 	manager := Manager{
-		targets: make(map[key.TargetID]activeModifiers),
+		engine:    nil,
+		targets:   make(map[key.TargetID]activeModifiers),
+		turnCount: 0,
 	}
 
 	manager.RemoveModifier(target, mod)
@@ -26,7 +28,7 @@ func TestRemoveModifierNoOp(t *testing.T) {
 	target := key.TargetID(1)
 	mod := key.Modifier("Test")
 
-	other := &ModifierInstance{
+	other := &Instance{
 		name: key.Modifier("Other"),
 	}
 
@@ -42,7 +44,7 @@ func TestRemoveModifierFromSourceNoOp(t *testing.T) {
 	target := key.TargetID(1)
 	mod := key.Modifier("Test")
 
-	other := &ModifierInstance{
+	other := &Instance{
 		name:   key.Modifier("Test"),
 		source: key.TargetID(2),
 	}
@@ -59,21 +61,21 @@ func TestRemoveModifier(t *testing.T) {
 	target := key.TargetID(1)
 	modsToRemove := key.Modifier("ToRemove")
 
-	mod1 := &ModifierInstance{
+	mod1 := &Instance{
 		name: key.Modifier("Other"),
 	}
-	mod2 := &ModifierInstance{
+	mod2 := &Instance{
 		name:   modsToRemove,
 		source: target,
 	}
-	mod3 := &ModifierInstance{
+	mod3 := &Instance{
 		name:   modsToRemove,
 		source: key.TargetID(3),
 	}
 	manager.targets[target] = append(manager.targets[target], mod3, mod1, mod2)
 
 	called := 0
-	manager.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemovedEvent) {
+	manager.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemoved) {
 		assert.Equal(t, modsToRemove, event.Modifier.Name)
 		called += 1
 	})
@@ -91,22 +93,22 @@ func TestRemoveModifierFromSource(t *testing.T) {
 	target := key.TargetID(1)
 	modsToRemove := key.Modifier("ToRemove")
 
-	mod1 := &ModifierInstance{
+	mod1 := &Instance{
 		name:   modsToRemove,
 		source: key.TargetID(2),
 	}
-	mod2 := &ModifierInstance{
+	mod2 := &Instance{
 		name:   modsToRemove,
 		source: target,
 	}
-	mod3 := &ModifierInstance{
+	mod3 := &Instance{
 		name:   modsToRemove,
 		source: key.TargetID(3),
 	}
 	manager.targets[target] = append(manager.targets[target], mod3, mod2, mod1)
 
 	called := 0
-	manager.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemovedEvent) {
+	manager.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemoved) {
 		assert.Equal(t, modsToRemove, event.Modifier.Name)
 		called += 1
 	})
@@ -129,11 +131,11 @@ func TestRemoveModifierWithOnRemoveListener(t *testing.T) {
 	target := key.TargetID(1)
 	name := key.Modifier("TestRemoveModifierWithListener")
 
-	mod := &ModifierInstance{
+	mod := &Instance{
 		name:  name,
-		state: &state{},
+		state: &state{OnRemoveCalled: false},
 		listeners: Listeners{
-			OnRemove: func(modifier *ModifierInstance) {
+			OnRemove: func(modifier *Instance) {
 				state := modifier.State().(*state)
 				state.OnRemoveCalled = true
 			},
@@ -143,7 +145,7 @@ func TestRemoveModifierWithOnRemoveListener(t *testing.T) {
 	manager.targets[target] = append(manager.targets[target], mod)
 
 	called := 0
-	manager.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemovedEvent) {
+	manager.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemoved) {
 		state := event.Modifier.State.(*state)
 		assert.Equal(t, name, event.Modifier.Name)
 		assert.True(t, state.OnRemoveCalled)
@@ -166,12 +168,12 @@ func TestRemoveModifierSelf(t *testing.T) {
 	target := key.TargetID(1)
 	name := key.Modifier("TestRemoveModifierSelf")
 
-	mod := &ModifierInstance{
+	mod := &Instance{
 		name:  name,
 		owner: target,
-		state: &state{},
+		state: &state{OnRemoveCalled: false},
 		listeners: Listeners{
-			OnRemove: func(modifier *ModifierInstance) {
+			OnRemove: func(modifier *Instance) {
 				state := modifier.State().(*state)
 				state.OnRemoveCalled = true
 			},
@@ -182,7 +184,7 @@ func TestRemoveModifierSelf(t *testing.T) {
 	manager.targets[target] = append(manager.targets[target], mod)
 
 	called := 0
-	manager.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemovedEvent) {
+	manager.engine.Events().ModifierRemoved.Subscribe(func(event event.ModifierRemoved) {
 		state := event.Modifier.State.(*state)
 		assert.Equal(t, name, event.Modifier.Name)
 		assert.True(t, state.OnRemoveCalled)

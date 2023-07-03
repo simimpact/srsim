@@ -7,7 +7,7 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-func (mgr *Manager) SetGauge(target key.TargetID, amt float64) error {
+func (mgr *manager) SetGauge(target key.TargetID, amt float64) error {
 	if _, ok := mgr.targetIndex[target]; !ok {
 		return fmt.Errorf("unknown target: %v", target)
 	}
@@ -44,7 +44,7 @@ func (mgr *Manager) SetGauge(target key.TargetID, amt float64) error {
 		}
 	}
 
-	mgr.event.GaugeChange.Emit(event.GaugeChangeEvent{
+	mgr.event.GaugeChange.Emit(event.GaugeChange{
 		Target:    target,
 		OldGauge:  prev,
 		NewGauge:  mgr.target(target).gauge,
@@ -53,15 +53,15 @@ func (mgr *Manager) SetGauge(target key.TargetID, amt float64) error {
 	return nil
 }
 
-func (mgr *Manager) ModifyGaugeNormalized(target key.TargetID, amt float64) error {
+func (mgr *manager) ModifyGaugeNormalized(target key.TargetID, amt float64) error {
 	if _, ok := mgr.targetIndex[target]; !ok {
 		return fmt.Errorf("unknown target: %v", target)
 	}
 
-	return mgr.SetGauge(target, mgr.target(target).gauge+amt*BASE_GAUGE)
+	return mgr.SetGauge(target, mgr.target(target).gauge+amt*BaseGauge)
 }
 
-func (mgr *Manager) ModifyGaugeAV(target key.TargetID, amt float64) error {
+func (mgr *manager) ModifyGaugeAV(target key.TargetID, amt float64) error {
 	if _, ok := mgr.targetIndex[target]; !ok {
 		return fmt.Errorf("unknown target: %v", target)
 	}
@@ -70,11 +70,11 @@ func (mgr *Manager) ModifyGaugeAV(target key.TargetID, amt float64) error {
 	return mgr.SetGauge(target, mgr.target(target).gauge+added)
 }
 
-func (mgr *Manager) ModifyCurrentGaugeCost(amt float64) {
+func (mgr *manager) ModifyCurrentGaugeCost(amt float64) {
 	mgr.SetCurrentGaugeCost(mgr.gaugeCost + amt)
 }
 
-func (mgr *Manager) SetCurrentGaugeCost(amt float64) {
+func (mgr *manager) SetCurrentGaugeCost(amt float64) {
 	prev := mgr.gaugeCost
 	mgr.gaugeCost = amt
 
@@ -82,7 +82,7 @@ func (mgr *Manager) SetCurrentGaugeCost(amt float64) {
 		return
 	}
 
-	mgr.event.CurrentGaugeCostChange.Emit(event.CurrentGaugeCostChangeEvent{
+	mgr.event.CurrentGaugeCostChange.Emit(event.CurrentGaugeCostChange{
 		OldCost: prev,
 		NewCost: mgr.gaugeCost,
 	})

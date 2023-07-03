@@ -42,7 +42,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func onBeforeHitAll(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+func onBeforeHitAll(mod *modifier.Instance, e event.HitStart) {
 	debuffCount := float64(e.Hit.Defender.StatusCount(model.StatusType_STATUS_DEBUFF))
 	if debuffCount > 3 {
 		debuffCount = 3

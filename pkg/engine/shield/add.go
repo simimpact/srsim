@@ -15,7 +15,7 @@ func (mgr *Manager) AddShield(id key.Shield, shield info.Shield) {
 	// 5. emit ShieldAdded event
 
 	// emit to signify shield added
-	mgr.event.ShieldAdded.Emit(event.ShieldAddedEvent{
+	mgr.event.ShieldAdded.Emit(event.ShieldAdded{
 		ID:           id,
 		Info:         shield,
 		ShieldHealth: 0, // TODO: populate

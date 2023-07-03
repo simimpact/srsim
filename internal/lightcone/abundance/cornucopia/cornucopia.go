@@ -23,41 +23,43 @@ func init() {
 		Path:          model.Path_ABUNDANCE,
 		Promotions:    promotions,
 	})
-	//Implement checker here
+	// Implement checker here
 	modifier.Register(CornucopiaCheck, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeAction: buffHealsOnSkillUlt,
-			OnAfterAction: removeHealBuff,
+			OnAfterAction:  removeHealBuff,
 		},
 	})
-	//The actual buff modifier goes here
+	// The actual buff modifier goes here
 	modifier.Register(CornucopiaBuff, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
 	})
 }
 
-//When the wearer uses their Skill or Ultimate, their Outgoing Healing increases by 12%(S1)
+// When the wearer uses their Skill or Ultimate, their Outgoing Healing increases by 12%(S1)
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	//checker goes here
-	engine.AddModifier(owner, info.Modifier{ 
+	// checker goes here
+	engine.AddModifier(owner, info.Modifier{
 		Name:   CornucopiaCheck,
 		Source: owner,
-		State:  0.09 + 0.03 * float64(lc.Imposition),
+		State:  0.09 + 0.03*float64(lc.Imposition),
 	})
 }
-//add buff only on skill and ult actions
-func buffHealsOnSkillUlt(mod *modifier.ModifierInstance, e event.ActionEvent) {
+
+// add buff only on skill and ult actions
+func buffHealsOnSkillUlt(mod *modifier.Instance, e event.ActionStart) {
 	healAmt := mod.State().(float64)
 	switch e.AttackType {
-	case model.AttackType_SKILL, model.AttackType_ULT :
+	case model.AttackType_SKILL, model.AttackType_ULT:
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-			Name:     CornucopiaBuff,
-			Source:   mod.Owner(),
-			Stats:    info.PropMap{prop.HealBoost: healAmt},
+			Name:   CornucopiaBuff,
+			Source: mod.Owner(),
+			Stats:  info.PropMap{prop.HealBoost: healAmt},
 		})
 	}
 }
-//remove buff after each "action"
-func removeHealBuff(mod *modifier.ModifierInstance, e event.ActionEvent)  {
+
+// remove buff after each "action"
+func removeHealBuff(mod *modifier.Instance, e event.ActionEnd) {
 	mod.Engine().RemoveModifier(mod.Owner(), CornucopiaBuff)
 }

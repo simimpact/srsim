@@ -16,7 +16,7 @@ import (
 // 5. Emit DamageResultEvent (includes modified state and logging variables)
 
 func (mgr *Manager) performHit(hit *info.Hit) {
-	mgr.event.HitStart.Emit(event.HitStartEvent{
+	mgr.event.HitStart.Emit(event.HitStart{
 		Attacker: hit.Attacker.ID(),
 		Defender: hit.Defender.ID(),
 		Hit:      hit,
@@ -45,7 +45,7 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 		mgr.attr.ModifyEnergy(hit.Defender.ID(), hit.EnergyGain*hit.HitRatio)
 	}
 
-	mgr.event.HitEnd.Emit(event.HitEndEvent{
+	mgr.event.HitEnd.Emit(event.HitEnd{
 		Attacker:            hit.Attacker.ID(),
 		Defender:            hit.Defender.ID(),
 		AttackType:          hit.AttackType,

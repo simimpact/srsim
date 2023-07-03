@@ -8,13 +8,17 @@ import (
 )
 
 type testCancelEvent struct {
+	cancelled bool
 }
 
-func (e testCancelEvent) Cancelled() {}
+func (e testCancelEvent) Cancelled() CancellableEvent {
+	e.cancelled = true
+	return e
+}
 
 func TestCancelableEmitNoSubscription(t *testing.T) {
 	var handler CancelableEventHandler[testCancelEvent]
-	assert.False(t, handler.Emit(testCancelEvent{}))
+	assert.False(t, handler.Emit(testCancelEvent{cancelled: false}))
 }
 
 func TestCancelableListeners(t *testing.T) {
@@ -38,6 +42,6 @@ func TestCancelableListeners(t *testing.T) {
 		return false
 	}, 0)
 
-	handler.Emit(testCancelEvent{})
+	handler.Emit(testCancelEvent{cancelled: false})
 	assert.Equal(t, 2, callCount)
 }

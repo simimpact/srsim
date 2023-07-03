@@ -1,5 +1,5 @@
 package shield
 
-type ShieldInstance struct {
+type Instance struct {
 	HP float64
 }

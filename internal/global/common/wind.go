@@ -35,7 +35,7 @@ func init() {
 	// TODO: Break wind shear
 }
 
-func windShearPhase1(mod *modifier.ModifierInstance) {
+func windShearPhase1(mod *modifier.Instance) {
 	state, ok := mod.State().(WindShearState)
 	if !ok {
 		panic("incorrect state used for wind shear modifier")
