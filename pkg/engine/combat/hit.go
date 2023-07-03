@@ -60,7 +60,7 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 		Fatigue:             fatigue,
 		AllDamageReduce:     allDamageReduce,
 		CritDamage:          critDmg,
-		TotalDamage:         total,
+		TotalDamage:         total - hpUpdate,
 		ShieldDamage:        total,
 		HPRatioRemaining:    mgr.attr.HPRatio(hit.Defender.ID()),
 		IsCrit:              crit,

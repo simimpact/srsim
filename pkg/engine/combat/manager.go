@@ -20,7 +20,7 @@ type Manager struct {
 	target engine.Target
 	rdm    *rand.Rand
 
-	isInAttack bool
+	isInAttack bool       `exhaustruct:"optional"`
 	attackInfo attackInfo `exhaustruct:"optional"`
 }
 
