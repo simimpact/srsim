@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	mod = key.Modifier("pan-galactic-commercial-enterprise")
+	mod key.Modifier = "pan-galactic-commercial-enterprise"
 )
 
 // 2pc:

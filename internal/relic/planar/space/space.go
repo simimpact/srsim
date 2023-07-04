@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	mod = key.Modifier("space-sealing-station")
+	mod key.Modifier = "space-sealing-station"
 )
 
 // 2pc:

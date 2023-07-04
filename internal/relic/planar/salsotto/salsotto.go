@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	mod = key.Modifier("inert-salsotto")
+	mod key.Modifier = "inert-salsotto"
 )
 
 // 2pc:
