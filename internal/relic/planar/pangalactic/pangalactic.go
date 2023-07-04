@@ -22,6 +22,10 @@ func init() {
 		Effects: []relic.SetEffect{
 			{
 				MinCount: 2,
+				Stats:    info.PropMap{prop.EffectHitRate: 0.10},
+			},
+			{
+				MinCount: 2,
 				CreateEffect: func(engine engine.Engine, owner key.TargetID) {
 					engine.AddModifier(owner, info.Modifier{
 						Name:   mod,
@@ -32,6 +36,10 @@ func init() {
 		},
 	})
 
+	// This is not 100% accurate to the game, as it only uses OnAdd and OnPropertyChange
+	// Game hooks onto OnPhase1, OnPhase2, OnBeforeAction (all targets), OnAfterAction (all targets),
+	// and OnBattleStart
+
 	modifier.Register(mod, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAdd:            onCheck,
@@ -41,7 +49,6 @@ func init() {
 }
 
 func onCheck(mod *modifier.Instance) {
-	mod.SetProperty(prop.EffectHitRate, 0.1)
 	stats := mod.OwnerStats()
 	atk := 0.25 * stats.EffectHitRate()
 	if atk >= 0.25 {
