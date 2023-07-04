@@ -22,17 +22,17 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 		Hit:      hit,
 	})
 
-	crit := mgr.crit(hit)
+	crit := crit(hit, mgr.rdm)
 
-	base := mgr.baseDamage(hit)*hit.HitRatio + hit.DamageValue
-	bonus := mgr.bonusDamage(hit)
-	defMult := mgr.defMult(hit)
-	res := mgr.res(hit)
-	vul := mgr.vul(hit)
-	toughnessMultiplier := mgr.toughness(hit)
+	base := baseDamage(hit)*hit.HitRatio + hit.DamageValue
+	bonus := bonusDamage(hit)
+	defMult := defMult(hit)
+	res := res(hit)
+	vul := vul(hit)
+	toughnessMultiplier := toughness(hit)
 	fatigue := 1 - hit.Attacker.GetProperty(prop.Fatigue)
-	allDamageReduce := mgr.damageReduce(hit)
-	critDmg := mgr.critDmg(hit, crit)
+	allDamageReduce := damageReduce(hit)
+	critDmg := critDmg(hit, crit)
 
 	total := base * bonus * defMult * res * vul * toughnessMultiplier * fatigue * allDamageReduce * critDmg
 

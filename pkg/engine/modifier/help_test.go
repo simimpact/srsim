@@ -16,7 +16,6 @@ func FailOnPanic(t *testing.T) {
 
 func NewTestManager(t *testing.T) (*Manager, *gomock.Controller) {
 	mockCtrl := gomock.NewController(t)
-	defer mockCtrl.Finish()
 	engine := mock.NewMockEngine(mockCtrl)
 
 	manager := &Manager{
@@ -29,7 +28,6 @@ func NewTestManager(t *testing.T) (*Manager, *gomock.Controller) {
 
 func NewTestManagerWithEvents(t *testing.T) (*Manager, *gomock.Controller) {
 	mockCtrl := gomock.NewController(t)
-	defer mockCtrl.Finish()
 	engine := mock.NewMockEngineWithEvents(mockCtrl)
 
 	manager := &Manager{
