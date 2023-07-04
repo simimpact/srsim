@@ -37,8 +37,8 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 	total := base * bonus * defMult * res * vul * toughnessMultiplier * fatigue * allDamageReduce * critDmg
 
 	hpUpdate := mgr.shld.AbsorbDamage(hit.Defender.ID(), total)
-	mgr.attr.ModifyHPByAmount(hit.Defender.ID(), hit.Attacker.ID(), total, true)
-	mgr.attr.ModifyStance(hit.Defender.ID(), hit.Attacker.ID(), hit.StanceDamage*hit.HitRatio)
+	mgr.attr.ModifyHPByAmount(hit.Defender.ID(), hit.Attacker.ID(), -total, true)
+	mgr.attr.ModifyStance(hit.Defender.ID(), hit.Attacker.ID(), -hit.StanceDamage*hit.HitRatio)
 	if mgr.target.IsCharacter(hit.Attacker.ID()) {
 		mgr.attr.ModifyEnergy(hit.Attacker.ID(), hit.EnergyGain*hit.HitRatio)
 	} else {

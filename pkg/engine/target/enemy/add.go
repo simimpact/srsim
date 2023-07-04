@@ -18,7 +18,7 @@ func (mgr *Manager) AddEnemy(id key.TargetID, enemy *model.Enemy) error {
 
 	debuffRES := info.NewDebuffRESMap()
 	for _, res := range enemy.DebuffRes {
-		debuffRES.Modify(res.Stat, res.Amount)
+		debuffRES.Modify(res.Flag, res.Amount)
 	}
 
 	weakness := info.NewWeaknessMap()

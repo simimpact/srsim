@@ -9,7 +9,7 @@ import (
 type Aggregator interface {
 	Add(result *model.IterationResult)
 	// TODO: Merge(other Aggregator) Aggregator for multi-threaded aggregations (optional optimization)
-	Flush(result *model.SimulationStatistics)
+	Flush(result *model.Statistics)
 }
 
 type NewAggFunc func(cfg *model.SimConfig) (Aggregator, error)
