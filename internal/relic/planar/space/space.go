@@ -33,22 +33,13 @@ func init() {
 
 	modifier.Register(mod, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAdd:            onAdd,
-			OnPropertyChange: onPropChange,
+			OnAdd:            onCheck,
+			OnPropertyChange: onCheck,
 		},
 	})
 }
 
-func onAdd(mod *modifier.Instance) {
-	stats := mod.OwnerStats()
-	if stats.SPD() >= 120 {
-		mod.SetProperty(prop.ATKPercent, 0.24)
-	} else {
-		mod.SetProperty(prop.ATKPercent, 0.12)
-	}
-}
-
-func onPropChange(mod *modifier.Instance) {
+func onCheck(mod *modifier.Instance) {
 	stats := mod.OwnerStats()
 	if stats.SPD() >= 120 {
 		mod.SetProperty(prop.ATKPercent, 0.24)

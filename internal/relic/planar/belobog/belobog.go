@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	mod = key.Modifier("belobog-of-the-architects")
+	mod key.Modifier = "belobog-of-the-architects"
 )
 
 // Increases the wearer's DEF by 15%. When the wearer's Effect Hit Rate is 50% or higher,
@@ -32,22 +32,13 @@ func init() {
 
 	modifier.Register(mod, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAdd:            onAdd,
-			OnPropertyChange: onPropChange,
+			OnAdd:            onCheck,
+			OnPropertyChange: onCheck,
 		},
 	})
 }
 
-func onAdd(mod *modifier.Instance) {
-	stats := mod.OwnerStats()
-	if stats.EffectHitRate() >= 0.5 {
-		mod.SetProperty(prop.DEFPercent, 0.30)
-	} else {
-		mod.SetProperty(prop.DEFPercent, 0.15)
-	}
-}
-
-func onPropChange(mod *modifier.Instance) {
+func onCheck(mod *modifier.Instance) {
 	stats := mod.OwnerStats()
 	if stats.EffectHitRate() >= 0.5 {
 		mod.SetProperty(prop.DEFPercent, 0.30)
