@@ -16,15 +16,22 @@ const (
 // Increases the wearer's Max HP by 12%. When the wearer's SPD reaches 120 or higher,
 // all allies' ATK increases by 8%.
 func init() {
-	relic.Register(key.SpaceSealingStation, relic.Config{
+	relic.Register(key.FleetOfTheAgeless, relic.Config{
 		Effects: []relic.SetEffect{
 			{
 				MinCount: 2,
+				Stats:    info.PropMap{prop.HPPercent: 0.12},
+			},
+			{
+				MinCount: 2,
 				CreateEffect: func(engine engine.Engine, owner key.TargetID) {
-					engine.AddModifier(owner, info.Modifier{
-						Name:   mod,
-						Source: owner,
-					})
+					targets := engine.Characters()
+					for _, i := range targets {
+						engine.AddModifier(i, info.Modifier{
+							Name:   mod,
+							Source: owner,
+						})
+					}
 				},
 			},
 		},
@@ -41,9 +48,6 @@ func init() {
 func onCheck(mod *modifier.Instance) {
 	stats := mod.OwnerStats()
 	if stats.SPD() >= 120 {
-		mod.SetProperty(prop.HPPercent, 0.12)
-	} else {
 		mod.SetProperty(prop.ATKPercent, 0.08)
-
 	}
 }
