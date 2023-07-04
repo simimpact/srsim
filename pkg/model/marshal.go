@@ -7,6 +7,7 @@ func marshalOptions() protojson.MarshalOptions {
 		AllowPartial:    true,
 		UseEnumNumbers:  false,
 		EmitUnpopulated: false,
+		UseProtoNames:   true,
 	}
 }
 

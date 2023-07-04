@@ -8,7 +8,6 @@ func TestConfigTwoElites() *model.SimConfig {
 	return &model.SimConfig{
 		Settings: &model.SimulatorSettings{
 			CycleLimit: 10,
-			TtkMode:    false,
 		},
 		Characters: []*model.Character{},
 		Enemies:    []*model.Enemy{StandardEnemy(), StandardEnemy()},

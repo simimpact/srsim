@@ -31,8 +31,12 @@ func execute(opts *ExecutionOpts) error {
 	title("--- execution settings ---")
 	fmt.Printf("%s %s\n", item("config:  "), opts.configPath)
 	fmt.Printf("%s %s\n", item("outpath: "), opts.outpath)
-	fmt.Printf("%s %v\n", item("iters:   "), opts.iterations)
-	fmt.Printf("%s %v\n", item("workers: "), opts.workers)
+
+	if !opts.debug {
+		fmt.Printf("%s %v\n", item("iters:   "), opts.iterations)
+		fmt.Printf("%s %v\n", item("workers: "), opts.workers)
+	}
+
 	fmt.Printf("%s %v\n", item("debug:   "), opts.debug)
 	fmt.Printf("%s %v\n", item("seed:    "), opts.seed)
 	fmt.Println()

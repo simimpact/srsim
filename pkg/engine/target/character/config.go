@@ -71,7 +71,11 @@ type Technique struct {
 	IsAttack   bool
 }
 
-func (c Config) ascension(maxLvl int) int {
+func (c Config) ascension(maxLvl, lvl int) int {
+	if maxLvl <= 0 {
+		maxLvl = lvl
+	}
+
 	for i, promo := range c.Promotions {
 		if promo.MaxLevel >= maxLvl {
 			return i

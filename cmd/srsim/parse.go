@@ -47,8 +47,8 @@ func parseConfig(path string) (*model.SimConfig, error) {
 // TODO: move to simulation so can be used by wasm
 func parseLogic(config *model.SimConfig) (*gcs.ActionList, error) {
 	switch logic := config.Logic.(type) {
-	case *model.SimConfig_Gcs:
-		p := parse.New(logic.Gcs)
+	case *model.SimConfig_Gcsl:
+		p := parse.New(logic.Gcsl)
 		return p.Parse()
 	default:
 		return nil, fmt.Errorf("unknown logic type: %v", logic)

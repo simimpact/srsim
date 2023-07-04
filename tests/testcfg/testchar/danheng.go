@@ -12,8 +12,13 @@ func DanHung() *model.Character {
 		MaxLevel: 80,
 		Eidols:   0,
 		Traces:   nil,
-		Talents:  []uint32{1, 1, 1, 1},
-		Cone: &model.LightCone{
+		Abilities: &model.Abilities{
+			Attack: 1,
+			Skill:  1,
+			Ult:    1,
+			Talent: 1,
+		},
+		LightCone: &model.LightCone{
 			Key:        key.OnlySilenceRemains.String(),
 			Level:      80,
 			MaxLevel:   80,

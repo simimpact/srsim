@@ -21,7 +21,7 @@ func TestBasicTest(t *testing.T) {
 
 func (t *QPQTest) Test_EnergyAdd() {
 	dummyChar := testchar.DummyChar()
-	dummyChar.Cone = testcone.QuidProQuo()
+	dummyChar.LightCone = testcone.QuidProQuo()
 	t.Characters.ResetCharacters()
 	t.Characters.AddCharacter(testchar.DanHung())
 	t.Characters.AddCharacter(dummyChar)
