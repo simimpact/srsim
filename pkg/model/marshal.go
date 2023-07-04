@@ -26,6 +26,6 @@ func (c *SimConfig) MarshalJSON() ([]byte, error) {
 	return marshalOptions().Marshal(c)
 }
 
-func (r *SimulationResult) MarshalJSON() ([]byte, error) {
+func (r *SimResult) MarshalJSON() ([]byte, error) {
 	return marshalOptions().Marshal(r)
 }

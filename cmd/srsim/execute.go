@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/schollz/progressbar/v3"
@@ -38,7 +39,7 @@ func execute(opts *ExecutionOpts) error {
 	}
 
 	fmt.Printf("%s %v\n", item("debug:   "), opts.debug)
-	fmt.Printf("%s %v\n", item("seed:    "), opts.seed)
+	fmt.Printf("%s %s\n", item("seed:    "), strconv.FormatUint(uint64(opts.seed), 10))
 	fmt.Println()
 
 	os.Remove(LogFile(opts.outpath))
@@ -102,11 +103,11 @@ func executeLogging(opts *ExecutionOpts) error {
 	return err
 }
 
-func executeSimulation(opts *ExecutionOpts) (*model.SimulationResult, error) {
+func executeSimulation(opts *ExecutionOpts) (*model.SimResult, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	result := simulation.CreateResult(opts.config)
+	result := simulation.CreateResult(opts.config, opts.seed)
 	aggs, err := simulation.InitializeAggregators(opts.iterations, opts.config)
 	if err != nil {
 		return result, err

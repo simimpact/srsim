@@ -7,7 +7,7 @@ message SimConfig {
   SimulatorSettings settings = 1;
 
   repeated Character characters = 2;
-  repeated Enemy enemies = 3;
+  repeated Enemy enemies = 3; // TODO: waves
   reserved 4, 5; // TODO: blessings, curious
 
   Engage engage = 6;
@@ -32,6 +32,10 @@ message Character {
   repeated Relic relics = 8;
   double start_energy = 9;
   double start_hp = 10;
+}
+
+message Wave {
+  repeated Enemy enemies = 1;
 }
 
 message Enemy {
