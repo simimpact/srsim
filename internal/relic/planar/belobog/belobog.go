@@ -1,4 +1,4 @@
-package talia
+package belobog
 
 import (
 	"github.com/simimpact/srsim/pkg/engine"
@@ -10,14 +10,13 @@ import (
 )
 
 const (
-	mod key.Modifier = "talia-kingdom-of-banditry"
+	mod key.Modifier = "belobog-of-the-architects"
 )
 
-// 2pc:
-// Increases the wearer's Break Effect by 16%.
-// When the wearer's SPD reaches 145 or higher, the wearer's Break effect increases by an extra 20%.
+// Increases the wearer's DEF by 15%. When the wearer's Effect Hit Rate is 50% or higher,
+// the wearer gains an extra 15% DEF.
 func init() {
-	relic.Register(key.TaliaKingdomOfBanditry, relic.Config{
+	relic.Register(key.BelobogOfTheArchitects, relic.Config{
 		Effects: []relic.SetEffect{
 			{
 				MinCount: 2,
@@ -41,9 +40,9 @@ func init() {
 
 func onCheck(mod *modifier.Instance) {
 	stats := mod.OwnerStats()
-	if stats.SPD() >= 145 {
-		mod.SetProperty(prop.BreakEffect, 0.36)
+	if stats.EffectHitRate() >= 0.5 {
+		mod.SetProperty(prop.DEFPercent, 0.30)
 	} else {
-		mod.SetProperty(prop.BreakEffect, 0.16)
+		mod.SetProperty(prop.DEFPercent, 0.15)
 	}
 }
