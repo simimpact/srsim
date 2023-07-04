@@ -5,7 +5,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/simimpact/srsim/pkg/key"
-	"github.com/simimpact/srsim/pkg/mock"
+	"github.com/simimpact/srsim/tests/mock"
 )
 
 func FailOnPanic(t *testing.T) {

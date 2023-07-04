@@ -1,8 +1,6 @@
 // root package for all core logic that powers srsim
 package engine
 
-//go:generate mockgen -destination=../mock/mock_engine.go -package=mock github.com/simimpact/srsim/pkg/engine Engine
-
 // only event & info are allowed to be imported from engine here
 import (
 	"math/rand"
