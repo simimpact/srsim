@@ -50,7 +50,7 @@ func init() {
 
 func onCheck(mod *modifier.Instance) {
 	stats := mod.OwnerStats()
-	atk := 0.25 * stats.EffectHitRate()
+	atk := 0.25 * stats.GetProperty(prop.EffectHitRate)
 	if atk >= 0.25 {
 		atk = 0.25
 	}
