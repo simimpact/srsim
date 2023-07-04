@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	mod = key.Modifier("belobog-of-the-architects")
+	mod key.Modifier = "belobog-of-the-architects"
 )
 
 // Increases the wearer's DEF by 15%. When the wearer's Effect Hit Rate is 50% or higher,
