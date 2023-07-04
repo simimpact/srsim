@@ -16,4 +16,5 @@ const (
 	InertSalsotto          Relic = "inert_salsotto"
 	TaliaKingdomOfBanditry Relic = "talia_kingdom_of_banditry"
 	SprightlyVonwacq       Relic = "sprightly_vonwacq"
+	FleetOfTheAgeless      Relic = "fleet_of_the_ageless"
 )

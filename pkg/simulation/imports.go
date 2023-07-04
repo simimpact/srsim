@@ -65,4 +65,5 @@ import (
 	_ "github.com/simimpact/srsim/internal/relic/planar/space"
 	_ "github.com/simimpact/srsim/internal/relic/planar/talia"
 	_ "github.com/simimpact/srsim/internal/relic/planar/vonwacq"
+	- "github.com/simimpact/srsim/internal/relic/planar/fleet"
 )
