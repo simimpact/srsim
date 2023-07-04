@@ -61,6 +61,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/relic/cavern/musketeer"
 	_ "github.com/simimpact/srsim/internal/relic/cavern/puritypalace"
 	_ "github.com/simimpact/srsim/internal/relic/cavern/wanderingcloud"
+	_ "github.com/simimpact/srsim/internal/relic/planar/pangalactic"
 	_ "github.com/simimpact/srsim/internal/relic/planar/salsotto"
 	_ "github.com/simimpact/srsim/internal/relic/planar/space"
 	_ "github.com/simimpact/srsim/internal/relic/planar/talia"
