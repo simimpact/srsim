@@ -1,4 +1,4 @@
-package space
+package pangalactic
 
 import (
 	"github.com/simimpact/srsim/pkg/engine"
@@ -10,15 +10,20 @@ import (
 )
 
 const (
-	mod key.Modifier = "space-sealing-station"
+	mod key.Modifier = "pan-galactic-commercial-enterprise"
 )
 
 // 2pc:
-// Increases the wearer's ATK by 12%. When the wearer's SPD reaches 120 or higher,
-// the wearer's ATK increases by an extra 12%.
+// Increases the wearer's Effect Hit Rate by 10%.
+// Meanwhile, the wearer's ATK increases by an amount that is equal to
+// 25% of the current Effect Hit Rate, up to a maximum of 25%.
 func init() {
-	relic.Register(key.SpaceSealingStation, relic.Config{
+	relic.Register(key.PanGalactic, relic.Config{
 		Effects: []relic.SetEffect{
+			{
+				MinCount: 2,
+				Stats:    info.PropMap{prop.EffectHitRate: 0.10},
+			},
 			{
 				MinCount: 2,
 				CreateEffect: func(engine engine.Engine, owner key.TargetID) {
@@ -31,6 +36,10 @@ func init() {
 		},
 	})
 
+	// This is not 100% accurate to the game, as it only uses OnAdd and OnPropertyChange
+	// Game hooks onto OnPhase1, OnPhase2, OnBeforeAction (all targets), OnAfterAction (all targets),
+	// and OnBattleStart
+
 	modifier.Register(mod, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAdd:            onCheck,
@@ -41,9 +50,9 @@ func init() {
 
 func onCheck(mod *modifier.Instance) {
 	stats := mod.OwnerStats()
-	if stats.SPD() >= 120 {
-		mod.SetProperty(prop.ATKPercent, 0.24)
-	} else {
-		mod.SetProperty(prop.ATKPercent, 0.12)
+	atk := 0.25 * stats.GetProperty(prop.EffectHitRate)
+	if atk >= 0.25 {
+		atk = 0.25
 	}
+	mod.SetProperty(prop.ATKPercent, atk)
 }
