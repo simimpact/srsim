@@ -1,4 +1,4 @@
-package space
+package belobog
 
 import (
 	"github.com/simimpact/srsim/pkg/engine"
@@ -10,14 +10,13 @@ import (
 )
 
 const (
-	mod = key.Modifier("space-sealing-station")
+	mod key.Modifier = "belobog-of-the-architects"
 )
 
-// 2pc:
-// Increases the wearer's ATK by 12%. When the wearer's SPD reaches 120 or higher,
-// the wearer's ATK increases by an extra 12%.
+// Increases the wearer's DEF by 15%. When the wearer's Effect Hit Rate is 50% or higher,
+// the wearer gains an extra 15% DEF.
 func init() {
-	relic.Register(key.SpaceSealingStation, relic.Config{
+	relic.Register(key.BelobogOfTheArchitects, relic.Config{
 		Effects: []relic.SetEffect{
 			{
 				MinCount: 2,
@@ -41,9 +40,9 @@ func init() {
 
 func onCheck(mod *modifier.Instance) {
 	stats := mod.OwnerStats()
-	if stats.SPD() >= 120 {
-		mod.SetProperty(prop.ATKPercent, 0.24)
+	if stats.EffectHitRate() >= 0.5 {
+		mod.SetProperty(prop.DEFPercent, 0.30)
 	} else {
-		mod.SetProperty(prop.ATKPercent, 0.12)
+		mod.SetProperty(prop.DEFPercent, 0.15)
 	}
 }

@@ -33,22 +33,13 @@ func init() {
 
 	modifier.Register(mod, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAdd:            onAdd,
-			OnPropertyChange: onPropChange,
+			OnAdd:            onCheck,
+			OnPropertyChange: onCheck,
 		},
 	})
 }
 
-func onAdd(mod *modifier.Instance) {
-	stats := mod.OwnerStats()
-	if stats.SPD() >= 145 {
-		mod.SetProperty(prop.BreakEffect, 0.36)
-	} else {
-		mod.SetProperty(prop.BreakEffect, 0.16)
-	}
-}
-
-func onPropChange(mod *modifier.Instance) {
+func onCheck(mod *modifier.Instance) {
 	stats := mod.OwnerStats()
 	if stats.SPD() >= 145 {
 		mod.SetProperty(prop.BreakEffect, 0.36)
