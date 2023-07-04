@@ -2,8 +2,6 @@
 // character stats
 package attribute
 
-//go:generate mockgen -destination=../../mock/mock_attribute.go -package=mock -mock_names Modifier=MockAttribute github.com/simimpact/srsim/pkg/engine/attribute Modifier
-
 import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
