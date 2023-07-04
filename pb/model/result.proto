@@ -12,6 +12,8 @@ message SimulationResult {
   optional string sim_version = 2 [ json_name = "sim_version" ];
   optional bool modified = 3 [json_name="modified"];
   string build_date = 4 [json_name="build_date"];
+
+  SimulationStatistics statistics = 5 [json_name="statistics"];
 }
 
 message IterationResult {

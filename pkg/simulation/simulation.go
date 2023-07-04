@@ -58,7 +58,7 @@ type Simulation struct {
 	ActionTargets map[key.TargetID]bool
 }
 
-func Run(opts RunOpts) (*model.IterationResult, error) {
+func Run(opts *RunOpts) (*model.IterationResult, error) {
 	logging.InitLoggers(opts.Loggers...)
 	return NewSimulation(opts.Config, opts.Eval, opts.Seed).Run()
 }

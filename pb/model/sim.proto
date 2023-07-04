@@ -4,12 +4,14 @@ option go_package = "github.com/simimpact/srsim/pkg/model";
 import "pb/model/enum.proto";
 
 message SimConfig {
-    int32 iterations = 1 [json_name="iterations"];
-    int32 worker_count = 2 [json_name="worker_count"];
-    SimulatorSettings settings = 3 [json_name="settings"];
+    SimulatorSettings settings = 1 [json_name="settings"];
 
-    repeated Character characters = 4 [json_name="characters"];
-    repeated Enemy enemies = 5 [json_name="enemies"];
+    repeated Character characters = 2 [json_name="characters"];
+    repeated Enemy enemies = 3 [json_name="enemies"];
+
+    oneof logic {
+        string gcs = 4 [json_name="logic"];
+    }
 }
 
 message SimulatorSettings {
