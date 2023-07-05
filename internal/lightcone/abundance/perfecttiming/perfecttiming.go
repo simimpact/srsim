@@ -70,7 +70,7 @@ func giveHealBoost(engine engine.Engine, owner *info.Stats, imposition int, prev
 		engine.AddModifier(owner.ID(), info.Modifier{
 			Name:   PTHealBoost,
 			Source: owner.ID(),
-			Stats:  info.PropMap{prop.HealBoost: healBoostAmt},
+			Stats:  info.PropMap{prop.HealBoostConvert: healBoostAmt},
 		})
 		return healBoostAmt
 	}
