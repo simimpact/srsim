@@ -14,8 +14,8 @@ import (
 // that is equal to 33% of Effect RES. Outgoing Healing can be increased this way by up to 15%.
 
 const (
-	PTEffRes    key.Modifier = "perfect_timing_eff_res"
-	PTHealBoost key.Modifier = "perfect_timing_heal_boost"
+	PTEffRes    key.Modifier = "perfect-timing"
+	PTHealBoost key.Modifier = "perfect-timing-heal-boost"
 )
 
 func init() {
