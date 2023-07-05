@@ -41,38 +41,38 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		Source: owner,
 		Stats:  info.PropMap{prop.EffectRES: effResAmt},
 	})
-	// OnBattleStart -> giveHealBoost to owner.
-	healBuffAmt := 0.0
+	// OnBattleStart -> giveHealBoost to owner. track last healBoostAmt through func returns
+	healBoostAmt := 0.0
 	engine.Events().BattleStart.Subscribe(func(e event.BattleStart) {
 		for _, char := range e.CharStats {
 			if char.ID() == owner {
-				giveHealBuff(engine, char, lc.Imposition, healBuffAmt)
+				healBoostAmt = giveHealBoost(engine, char, lc.Imposition, healBoostAmt)
 			}
 		}
 	})
 	// OnActionEnd -> recalc HealBoost.
 	engine.Events().ActionEnd.Subscribe(func(e event.ActionEnd) {
-		healBuffAmt = giveHealBuff(engine, engine.Stats(owner), lc.Imposition, healBuffAmt)
+		giveHealBoost(engine, engine.Stats(owner), lc.Imposition, healBoostAmt)
 	})
 }
 
-func giveHealBuff(engine engine.Engine, owner *info.Stats, imposition int, prevBuff float64) float64 {
-	// calc healBuffAmt from current effRES value
+func giveHealBoost(engine engine.Engine, owner *info.Stats, imposition int, prevBuff float64) float64 {
+	// calc healBoostAmt from current effRES value
 	currEffRes := engine.Stats(owner.ID()).EffectRES()
-	healBuffAmt := currEffRes * (0.30 + 0.03*float64(imposition))
+	healBoostAmt := currEffRes * (0.30 + 0.03*float64(imposition))
 	// set max healboost amt
-	maxHealBuffAmt := 0.12 + 0.03*float64(imposition)
-	if healBuffAmt > maxHealBuffAmt {
-		healBuffAmt = maxHealBuffAmt
+	maxhealBoostAmt := 0.12 + 0.03*float64(imposition)
+	if healBoostAmt > maxhealBoostAmt {
+		healBoostAmt = maxhealBoostAmt
 	}
-	// update modifier if healBuffAmt changes
-	if healBuffAmt != prevBuff {
+	// update modifier if healBoostAmt changes
+	if healBoostAmt != prevBuff {
 		engine.AddModifier(owner.ID(), info.Modifier{
 			Name:   PTHealBoost,
 			Source: owner.ID(),
-			Stats:  info.PropMap{prop.HealBoost: healBuffAmt},
+			Stats:  info.PropMap{prop.HealBoost: healBoostAmt},
 		})
-		return healBuffAmt
+		return healBoostAmt
 	}
 	return prevBuff
 }
