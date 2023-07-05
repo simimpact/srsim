@@ -25,11 +25,8 @@ func init() {
 		Path:          model.Path_ABUNDANCE,
 		Promotions:    promotions,
 	})
-	modifier.Register(PTEffRes, modifier.Config{
-		Listeners: modifier.Listeners{
-			OnAdd: giveHealBuff,
-		},
-	})
+	modifier.Register(PTEffRes, modifier.Config{})
+
 	modifier.Register(PTHealBoost, modifier.Config{})
 }
 
@@ -39,7 +36,6 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		Name:   PTEffRes,
 		Source: owner,
 		Stats:  info.PropMap{prop.EffectRES: effResAmt},
-		State:  float64(lc.Imposition), // 2 calcs outside depends on lc imp. level.
 	})
 }
 
