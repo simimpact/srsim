@@ -34,14 +34,15 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
+	// OnAdd -> give eff. RES
 	effResAmt := 0.12 + 0.04*float64(lc.Imposition)
-	healBuffAmt := 0.0
 	engine.AddModifier(owner, info.Modifier{
 		Name:   PTEffRes,
 		Source: owner,
 		Stats:  info.PropMap{prop.EffectRES: effResAmt},
 	})
 	// OnBattleStart -> giveHealBoost to owner.
+	healBuffAmt := 0.0
 	engine.Events().BattleStart.Subscribe(func(e event.BattleStart) {
 		for _, char := range e.CharStats {
 			if char.ID() == owner {
@@ -56,13 +57,16 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 func giveHealBuff(engine engine.Engine, owner *info.Stats, imposition int, prevBuff float64) float64 {
+	// calc healBuffAmt from current effRES value
 	currEffRes := engine.Stats(owner.ID()).EffectRES()
 	healBuffAmt := currEffRes * (0.30 + 0.03*float64(imposition))
+	// set max healboost amt
+	maxHealBuffAmt := 0.12 + 0.03*float64(imposition)
+	if healBuffAmt > maxHealBuffAmt {
+		healBuffAmt = maxHealBuffAmt
+	}
+	// update modifier if healBuffAmt changes
 	if healBuffAmt != prevBuff {
-		maxHealBuffAmt := 0.12 + 0.03*float64(imposition)
-		if healBuffAmt > maxHealBuffAmt {
-			healBuffAmt = maxHealBuffAmt
-		}
 		engine.AddModifier(owner.ID(), info.Modifier{
 			Name:   PTHealBoost,
 			Source: owner.ID(),
