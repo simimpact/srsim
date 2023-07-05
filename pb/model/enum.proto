@@ -216,3 +216,10 @@ enum TargetType {
   ALLIES = 2;
   ENEMIES = 3;
 }
+
+enum TerminationReason {
+  INVALID_TERMINATION = 0;
+  BATTLE_LOSS = 1;
+  BATTLE_WIN = 2;
+  TIMEOUT = 3;
+}

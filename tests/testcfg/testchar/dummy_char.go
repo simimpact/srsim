@@ -13,8 +13,8 @@ func DummyChar() *model.Character {
 		MaxLevel:    80,
 		Eidols:      0,
 		Traces:      nil,
-		Talents:     nil,
-		Cone:        testcone.DataBank(),
+		Abilities:   nil,
+		LightCone:   testcone.DataBank(),
 		Relics:      nil,
 		StartEnergy: 0,
 	}

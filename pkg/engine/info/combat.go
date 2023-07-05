@@ -86,14 +86,14 @@ type Hit struct {
 	//
 	// If HitRatio is specified, the energy gained will be multiplied by the hit ratio.
 	// IE: 30.0 EnergyGain with a 0.5 HitRatio means only 15.0 energy added (before ERR bonus)
-	EnergyGain float64
+	EnergyGain float64 `exhaustruct:"optional"`
 
 	// How much stance/toughness damage this attack will deal. This stance damage will scale with
 	// Stance DMG% increase.
 	//
 	// If HitRatio is specified, the stance damage will be multiplied by the hit ratio.
 	// IE: 30.0 StanceDamage with a 0.5 HitRatio means only 15 stance dmage will occur (before bonus)
-	StanceDamage float64
+	StanceDamage float64 `exhaustruct:"optional"`
 
 	// Hit ratio reduces the BaseDamage, EnergyGain, and StanceDamage by the given percentage. This
 	// is used for attacks that perform multiple hits. It is expected that the sum of all HitRatio
@@ -102,14 +102,14 @@ type Hit struct {
 
 	// If true, will use the "pure damage" formula. This removes some variables from the damage
 	// equation, such as crit.
-	AsPureDamage bool
+	AsPureDamage bool `exhaustruct:"optional"`
 
 	// An additional flat damage amount that can be added to the base damage
-	DamageValue float64
+	DamageValue float64 `exhaustruct:"optional"`
 
 	// If set to true, will execute this hit in a "snapshot" state. This means that any modifiers
 	// that subscribe to hit listeners will not be executed. This is used by break damage dots.
-	UseSnapshot bool
+	UseSnapshot bool `exhaustruct:"optional"`
 }
 
 type Heal struct {
