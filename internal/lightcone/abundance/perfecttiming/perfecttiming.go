@@ -56,18 +56,20 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 func giveHealBuff(engine engine.Engine, owner *info.Stats, imposition int, prevBuff float64) float64 {
-	// take user's eff res value post-gear buff.
 	currEffRes := engine.Stats(owner.ID()).EffectRES()
-	// out. heal buff depend on eff res post-buff. can't take in base stats.
 	healBuffAmt := currEffRes*0.30 + 0.03*float64(imposition)
-	maxHealBuffAmt := 0.12 + 0.03*float64(imposition)
-	if healBuffAmt > maxHealBuffAmt {
-		healBuffAmt = maxHealBuffAmt
+	if healBuffAmt != prevBuff {
+		maxHealBuffAmt := 0.12 + 0.03*float64(imposition)
+		if healBuffAmt > maxHealBuffAmt {
+			healBuffAmt = maxHealBuffAmt
+		}
+		engine.AddModifier(owner.ID(), info.Modifier{
+			Name:   PTHealBoost,
+			Source: owner.ID(),
+			Stats:  info.PropMap{prop.HealBoost: healBuffAmt},
+		})
+	} else {
+		return prevBuff
 	}
-	engine.AddModifier(owner.ID(), info.Modifier{
-		Name:   PTHealBoost,
-		Source: owner.ID(),
-		Stats:  info.PropMap{prop.HealBoost: healBuffAmt},
-	})
 	return healBuffAmt
 }
