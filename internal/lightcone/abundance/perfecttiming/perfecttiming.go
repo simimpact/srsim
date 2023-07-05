@@ -35,7 +35,7 @@ func init() {
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	effResAmt := 0.12 + 0.04*float64(lc.Imposition)
-	healBuffAmt := float64(0)
+	healBuffAmt := 0.0
 	engine.AddModifier(owner, info.Modifier{
 		Name:   PTEffRes,
 		Source: owner,
@@ -57,7 +57,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 
 func giveHealBuff(engine engine.Engine, owner *info.Stats, imposition int, prevBuff float64) float64 {
 	currEffRes := engine.Stats(owner.ID()).EffectRES()
-	healBuffAmt := currEffRes*0.30 + 0.03*float64(imposition)
+	healBuffAmt := currEffRes * (0.30 + 0.03*float64(imposition))
 	if healBuffAmt != prevBuff {
 		maxHealBuffAmt := 0.12 + 0.03*float64(imposition)
 		if healBuffAmt > maxHealBuffAmt {
@@ -68,8 +68,7 @@ func giveHealBuff(engine engine.Engine, owner *info.Stats, imposition int, prevB
 			Source: owner.ID(),
 			Stats:  info.PropMap{prop.HealBoost: healBuffAmt},
 		})
-	} else {
-		return prevBuff
+		return healBuffAmt
 	}
-	return healBuffAmt
+	return prevBuff
 }
