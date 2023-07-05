@@ -52,7 +52,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 	// OnActionEnd -> recalc HealBoost.
 	engine.Events().ActionEnd.Subscribe(func(e event.ActionEnd) {
-		giveHealBoost(engine, engine.Stats(owner), lc.Imposition, healBoostAmt)
+		healBoostAmt = giveHealBoost(engine, engine.Stats(owner), lc.Imposition, healBoostAmt)
 	})
 }
 
