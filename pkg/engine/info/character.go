@@ -6,31 +6,31 @@ import (
 )
 
 type Character struct {
-	Key          key.Character
-	Level        int
-	Ascension    int
-	Eidolon      int
-	Traces       map[string]bool
-	AbilityLevel AbilityLevel
-	Path         model.Path
-	Element      model.DamageType
-	LightCone    LightCone
-	Relics       map[key.Relic]int
+	Key          key.Character     `json:"key"`
+	Level        int               `json:"level"`
+	Ascension    int               `json:"ascension"`
+	Eidolon      int               `json:"eidolon"`
+	Traces       map[string]bool   `json:"traces"`
+	AbilityLevel AbilityLevel      `json:"ability_level"`
+	Path         model.Path        `json:"path"`
+	Element      model.DamageType  `json:"element"`
+	LightCone    LightCone         `json:"light_cone"`
+	Relics       map[key.Relic]int `json:"relics"`
 }
 
 type AbilityLevel struct {
-	Attack int
-	Skill  int
-	Ult    int
-	Talent int
+	Attack int `json:"attack"`
+	Skill  int `json:"skill"`
+	Ult    int `json:"ult"`
+	Talent int `json:"talent"`
 }
 
 type LightCone struct {
-	Key        key.LightCone
-	Level      int
-	Ascension  int
-	Imposition int
-	Path       model.Path
+	Key        key.LightCone `json:"key"`
+	Level      int           `json:"level"`
+	Ascension  int           `json:"ascension"`
+	Imposition int           `json:"imposition"`
+	Path       model.Path    `json:"path"`
 }
 
 type CharInstance interface {

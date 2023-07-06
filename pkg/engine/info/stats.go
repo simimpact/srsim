@@ -1,6 +1,8 @@
 package info
 
 import (
+	"encoding/json"
+
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
@@ -221,4 +223,63 @@ func statCalc(base, percent, flat float64) float64 {
 		return 0
 	}
 	return out
+}
+
+type StatsEncoded struct {
+	ID           key.TargetID             `json:"id"`
+	HPRatio      float64                  `json:"hp_ratio"`
+	Energy       float64                  `json:"energy"`
+	Stance       float64                  `json:"stance"`
+	Props        PropMap                  `json:"props"`
+	DebuffRES    DebuffRESMap             `json:"debuff_res"`
+	Weakness     WeaknessMap              `json:"weakness"`
+	Flags        []model.BehaviorFlag     `json:"flags"`
+	StatusCounts map[model.StatusType]int `json:"status_counts"`
+	Modifiers    []key.Modifier           `json:"modifiers"`
+	Stats        *ComputedStats           `json:"stats"`
+}
+
+type ComputedStats struct {
+	HP            float64 `json:"hp"`
+	ATK           float64 `json:"atk"`
+	DEF           float64 `json:"def"`
+	SPD           float64 `json:"spd"`
+	Aggro         float64 `json:"aggro"`
+	CritChance    float64 `json:"crit_chance"`
+	CritDMG       float64 `json:"crit_dmg"`
+	HealBoost     float64 `json:"heal_boost"`
+	EffectHitRate float64 `json:"effect_hit_rate"`
+	EffectRES     float64 `json:"effect_res"`
+	EnergyRegen   float64 `json:"energy_regen"`
+	BreakEffect   float64 `json:"break_effect"`
+}
+
+func (stats *Stats) MarshalJSON() ([]byte, error) {
+	out := StatsEncoded{
+		ID:           stats.ID(),
+		HPRatio:      stats.CurrentHPRatio(),
+		Energy:       stats.Energy(),
+		Stance:       stats.Stance(),
+		DebuffRES:    stats.debuffRES,
+		Weakness:     stats.weakness,
+		Flags:        stats.flags,
+		StatusCounts: stats.statusCounts,
+		Modifiers:    stats.Modifiers(),
+		Props:        stats.props,
+		Stats: &ComputedStats{
+			HP:            stats.HP(),
+			ATK:           stats.ATK(),
+			DEF:           stats.DEF(),
+			SPD:           stats.SPD(),
+			CritChance:    stats.CritChance(),
+			CritDMG:       stats.CritDamage(),
+			HealBoost:     stats.HealBoost(),
+			EffectHitRate: stats.EffectHitRate(),
+			EffectRES:     stats.EffectRES(),
+			EnergyRegen:   stats.EnergyRegen(),
+			BreakEffect:   stats.BreakEffect(),
+			Aggro:         stats.Aggro(),
+		},
+	}
+	return json.Marshal(out)
 }

@@ -44,3 +44,7 @@ const (
 	EnemyInsertUlt          InsertPriority = 1000
 	EnemyInsertAction       InsertPriority = 1300
 )
+
+func (i InsertPriority) MarshalText() ([]byte, error) {
+	return []byte(i.String()), nil
+}
