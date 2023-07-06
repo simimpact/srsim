@@ -9,6 +9,9 @@ import (
 )
 
 // Desc : The wearer is more likely to be attacked, and DMG taken is reduced by 18%.
+// Apparent modifiers : Aggro and DmgTakenReduce
+// DM Listeners : OnStack = aggroAddedRatio + allDamageReduce, OnStart = addModifier
+// Conclusion : on Create, add singular modifier w/ all calcs. register mod at init.
 
 func init() {
 	lightcone.Register(key.LandausChoice, lightcone.Config{
