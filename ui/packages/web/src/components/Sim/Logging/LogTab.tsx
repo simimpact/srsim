@@ -1,54 +1,55 @@
-import { useMutation } from "@tanstack/react-query";
-import { LucideIcon } from "lucide-react";
-import { Log } from "@/bindings/Log";
-import { Button } from "@/components/Primitives/Button";
 import {
-  ColumnFieldFilter,
-  ColumnSelectFilter,
-  ColumnToggle,
-  DataTable,
-  DataTablePagination,
-  useTable,
-} from "@/components/Primitives/Table/index";
-import { ENDPOINT, typedFetch } from "@/utils/constants";
+  ColumnFiltersState,
+  getCoreRowModel,
+  getFilteredRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { LucideIcon } from "lucide-react";
+import { useState } from "react";
+import { ColumnSelectFilter, ColumnToggle, DataTable } from "@/components/Primitives/Table/index";
+import { SimLog } from "@/utils/fetchLog";
 import { columns } from "./columns";
 
-const LogTab = () => {
-  const logger = useMutation({
-    mutationKey: [ENDPOINT.logMock],
-    mutationFn: async () => await typedFetch<undefined, { list: Log[] }>(ENDPOINT.logMock),
-    onSuccess: data => console.log(data),
-  });
+interface Props {
+  data: SimLog[];
+}
+const LogTab = ({ data }: Props) => {
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
-  const { table } = useTable<Log>({
-    columns,
-    data: logger.data?.list ?? [],
-    childKey: "children",
+  const table = useReactTable({
+    data,
+    columns: columns,
+
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+
+    getCoreRowModel: getCoreRowModel(),
+
+    // getPaginationRowModel: getPaginationRowModel(),
+
+    state: { columnFilters },
   });
 
   const options: {
     label: string;
-    value: string;
+    value: SimLog["name"];
     icon?: LucideIcon;
   }[] = [
     { label: "Turn End", value: "TurnEnd" },
     { label: "Turn Reset", value: "TurnReset" },
-    { label: "SP Change", value: "SPChange" },
+    { label: "Battle Start", value: "BattleStart" },
   ];
 
   return (
     <>
-      <Button onClick={() => logger.mutate()}>Generate Log</Button>
       <div className="flex flex-col gap-4">
         <div className="flex items-center">
           <div className="flex items-center gap-4">
-            <ColumnFieldFilter column={table.getColumn("eventIndex")} />
-
             <ColumnSelectFilter
-              placeholder={"Select state"}
+              placeholder="Select Event"
               options={options}
-              column={table.getColumn("eventName")}
-              buttonPlaceholder="Event Name"
+              column={table.getColumn("name")}
+              buttonPlaceholder="Filter Event"
             />
 
             <div className="grow" />
@@ -60,7 +61,7 @@ const LogTab = () => {
 
         <DataTable table={table} className="bg-background" />
 
-        <DataTablePagination table={table} />
+        {/* <DataTablePagination table={table} /> */}
       </div>
     </>
   );

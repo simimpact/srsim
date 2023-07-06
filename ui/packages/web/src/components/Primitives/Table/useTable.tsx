@@ -14,7 +14,7 @@ type KeysOfType<T, V> = keyof {
   [P in keyof T as T[P] extends V ? P : never]: any;
 };
 interface Props<TData> {
-  columns: ColumnDef<TData>[];
+  columns: ColumnDef<TData, string>[]; // TODO: check if string is correct
   data: TData[];
   childKey?: KeysOfType<TData, any[]>;
 }

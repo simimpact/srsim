@@ -11,6 +11,7 @@ interface Props {
   name: string;
 }
 const MvpTab = ({ name }: Props) => {
+  console.log(name);
   // TODO: mutation
   const statMock = useMutation({
     mutationKey: [ENDPOINT.statMock],
