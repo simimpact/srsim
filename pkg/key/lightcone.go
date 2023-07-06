@@ -74,6 +74,7 @@ const (
 	PostOpConversation       LightCone = "post_op_conversation"
 	SharedFeeling            LightCone = "shared_feeling"
 	QuidProQuo               LightCone = "quid_pro_quo"
+	PerfectTiming            LightCone = "perfect_timing"
 )
 
 func (l LightCone) String() string {
