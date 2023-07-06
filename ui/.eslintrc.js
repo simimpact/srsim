@@ -11,8 +11,8 @@ module.exports = {
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
-    project: ["packages/*/tsconfig.json"],
-    tsconfigRootDir: "./",
+    project: ["packages/web/tsconfig.json"],
+    tsconfigRootDir: __dirname,
     createDefaultProgram: true,
   },
   ignorePatterns: ["**/dist/*", "**/protos.d.ts"],
@@ -37,7 +37,7 @@ module.exports = {
     },
     "import/resolver": {
       typescript: {
-        project: ["packages/web/tsconfig.json", "packages/types/tsconfig.json"],
+        project: ["packages/web/tsconfig.json"],
       },
     },
   },

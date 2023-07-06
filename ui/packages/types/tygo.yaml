@@ -32,7 +32,7 @@ packages:
     /* eslint-disable prettier/prettier */
 
 - path: "github.com/simimpact/srsim/pkg/engine/event"
-  output_path: "src/logs.ts"
+  output_path: "src/event.ts"
 
   type_mappings:
     # necessary since cant ignore generating these even though not used by UI

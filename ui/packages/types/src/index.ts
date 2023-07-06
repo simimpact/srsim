@@ -1,2 +1,2 @@
-export * from "./info";
-export * from "./logs";
+export * as info from "./info";
+export * as event from "./event";
