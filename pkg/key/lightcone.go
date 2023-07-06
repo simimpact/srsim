@@ -63,6 +63,7 @@ const (
 	TrendoftheUniversalMarket LightCone = "trend_of_the_universal_market"
 	Pioneering                LightCone = "pioneering"
 	WeAreWildfire             LightCone = "we_are_wildfire"
+	LandausChoice             LightCone = "landaus_choice"
 )
 
 // Abundance
