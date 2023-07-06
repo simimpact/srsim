@@ -15,10 +15,18 @@ import (
 // Targets with Aether Code receive 12% increased DMG for 1 turn.
 // Apparent mods : EHR, CRBoost, Aether Code implant (dmgTakenIncrease)
 
-// DM Listeners : OnBeforeHitAll = add CR, onAfterAttack = Retarget, 1 turn cooldown : AetherCode,
+// DM Listeners : OnBeforeHitAll = add CR, onAfterAttack = Retarget, choose 1, 100% base hitrate AetherCode,
 // OnBeforeSkillUse = set turn cooldown to 1, OnAfterSkillUse = apply AC if not yet have it.
 // => set turn cd to 0.
 // DmgTakenUp = OnStack, modifier, AllDmgTypeTakenRatio, stacking = replace, OnStart = AddModifier Main
+
+// Quick Imp Plan :
+// Modifiers :
+// - Crit Rate : Listener = OnBeforeHitAll, check each enemy if it has 3 debuffs => add critrate boost
+// - AetherCode : Listener = OnAfterAction, choose 1 among hit targets on last atk, AetherCode 100% BC
+//	 -> check first if target already have AC
+//	=> OnBeforeAction = set cd to 1
+//  => set AetherCode as enemy modifier DmgTakenUp.
 
 func init() {
 	lightcone.Register(key.IncessantRain, lightcone.Config{
