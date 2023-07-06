@@ -1,5 +1,7 @@
 import {
   ColumnFiltersState,
+  Row,
+  RowSelectionState,
   getCoreRowModel,
   getFilteredRowModel,
   useReactTable,
@@ -9,25 +11,32 @@ import { useState } from "react";
 import { ColumnSelectFilter, ColumnToggle, DataTable } from "@/components/Primitives/Table/index";
 import { SimLog } from "@/utils/fetchLog";
 import { columns } from "./columns";
+import { MultipleSelect } from "./MultipleSelect";
 
 interface Props {
   data: SimLog[];
 }
 const LogTab = ({ data }: Props) => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const table = useReactTable({
+    // INFO: data and column data of the table
     data,
     columns: columns,
 
-    onColumnFiltersChange: setColumnFilters,
+    // NOTE: all rows can be expanded, this might be the desired behaviour
+    // since we want full JSON data on all events
+    getRowCanExpand: () => true,
     getFilteredRowModel: getFilteredRowModel(),
-
     getCoreRowModel: getCoreRowModel(),
-
     // getPaginationRowModel: getPaginationRowModel(),
 
-    state: { columnFilters },
+    // pass state to let the hook manage
+    onColumnFiltersChange: setColumnFilters,
+    onRowSelectionChange: setRowSelection,
+
+    state: { columnFilters, rowSelection },
   });
 
   const options: {
@@ -51,6 +60,7 @@ const LogTab = ({ data }: Props) => {
               column={table.getColumn("name")}
               buttonPlaceholder="Filter Event"
             />
+            <MultipleSelect data={data} table={table} />
 
             <div className="grow" />
           </div>
@@ -59,11 +69,19 @@ const LogTab = ({ data }: Props) => {
           </div>
         </div>
 
-        <DataTable table={table} className="bg-background" />
+        <DataTable table={table} className="bg-background" renderSubComponent={ExpandComponent} />
 
         {/* <DataTablePagination table={table} /> */}
       </div>
     </>
+  );
+};
+
+const ExpandComponent = ({ row }: { row: Row<SimLog> }) => {
+  return (
+    <pre className="text-[16px] whitespace-pre-wrap">
+      <code>{JSON.stringify(row.original, null, 2)}</code>
+    </pre>
   );
 };
 

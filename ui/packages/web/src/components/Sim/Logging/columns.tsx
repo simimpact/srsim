@@ -1,6 +1,9 @@
 import { createColumnHelper } from "@tanstack/react-table";
+import { ChevronsDownUp, ChevronsUpDown } from "lucide-react";
 import { Badge } from "@/components/Primitives/Badge";
+import { Checkbox } from "@/components/Primitives/Checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/Primitives/Popover";
+import { Toggle } from "@/components/Primitives/Toggle";
 import { SimLog } from "@/utils/fetchLog";
 
 const columnHelper = createColumnHelper<SimLog>();
@@ -15,15 +18,48 @@ export const columns = [
     id: "index",
     cell: ({ row }) => row.index,
   }),
+  columnHelper.display({
+    id: "checkbox",
+    header: ({ table }) => (
+      <Checkbox
+        checked={table.getIsAllPageRowsSelected()}
+        onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={value => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  }),
+  columnHelper.display({
+    id: "expander",
+    header: () => null,
+    cell: ({ row }) =>
+      row.getCanExpand() && (
+        <Toggle
+          size="sm"
+          // careful of the double callback
+          onClick={row.getToggleExpandedHandler()}
+        >
+          {row.getIsExpanded() ? <ChevronsDownUp /> : <ChevronsUpDown />}
+        </Toggle>
+      ),
+  }),
   columnHelper.accessor(data => data.name, {
     id: "name",
-    filterFn: (row, id, value: SimLog["name"][]) => {
+    filterFn: (row, _id, value: SimLog["name"][]) => {
       // NOTE: value is `any` by default, console log to double check type
-      return value.includes(row.getValue(id));
+      return value.includes(row.original.name);
     },
-    cell: info => (
-      <Badge variant={info.row.getValue("name") === "TurnStart" ? "destructive" : "default"}>
-        {info.row.getValue("name")}
+    cell: ({ row }) => (
+      <Badge variant={row.original.name === "TurnStart" ? "destructive" : "default"}>
+        {row.getValue("name")}
       </Badge>
     ),
   }),

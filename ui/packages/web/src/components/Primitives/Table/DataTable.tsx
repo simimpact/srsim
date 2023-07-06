@@ -1,5 +1,5 @@
-import { Table as TableType, flexRender } from "@tanstack/react-table";
-import { ForwardedRef, HTMLAttributes, forwardRef } from "react";
+import { Row, Table as TableType, flexRender } from "@tanstack/react-table";
+import { ForwardedRef, Fragment, HTMLAttributes, forwardRef } from "react";
 import {
   Table,
   TableBody,
@@ -20,10 +20,11 @@ declare module "react" {
 
 interface Props<TData> extends HTMLAttributes<HTMLDivElement> {
   table: TableType<TData>;
+  renderSubComponent: (props: { row: Row<TData> }) => React.ReactElement;
 }
 
 function DataTableInner<TData>(
-  { table, className, ...props }: Props<TData>,
+  { table, renderSubComponent, className, ...props }: Props<TData>,
   ref: ForwardedRef<HTMLDivElement>
 ) {
   return (
@@ -47,13 +48,20 @@ function DataTableInner<TData>(
         <TableBody>
           {table.getRowModel().rows.length ? (
             table.getRowModel().rows.map(row => (
-              <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                {row.getVisibleCells().map(cell => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              <Fragment key={row.id}>
+                <TableRow data-state={row.getIsSelected() && "selected"}>
+                  {row.getVisibleCells().map(cell => (
+                    <TableCell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+                {row.getIsExpanded() && (
+                  <TableCell colSpan={row.getVisibleCells().length}>
+                    {renderSubComponent({ row })}
                   </TableCell>
-                ))}
-              </TableRow>
+                )}
+              </Fragment>
             ))
           ) : (
             <TableRow>

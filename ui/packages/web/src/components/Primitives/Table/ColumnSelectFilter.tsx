@@ -37,7 +37,7 @@ function ColumnSelectFilter<TData>({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="border-dashed">
+        <Button variant="secondary" size="sm">
           {buttonPlaceholder}
         </Button>
       </PopoverTrigger>
