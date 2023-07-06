@@ -43,7 +43,7 @@ function ColumnSelectFilter<TData>({
       </PopoverTrigger>
       <PopoverContent>
         <Command>
-          <CommandInput placeholder={placeholder} />
+          <CommandInput placeholder={placeholder} className="border-none" />
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup>
