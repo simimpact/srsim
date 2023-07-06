@@ -20,5 +20,5 @@ type Shield struct {
 	BaseShield ShieldMap
 
 	// Additional flat shield hp that can be added to the base heal amount.
-	ShieldValue float64
+	ShieldValue float64 `exhaustruct:"optional"`
 }

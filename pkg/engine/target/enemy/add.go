@@ -1,7 +1,6 @@
 package enemy
 
 import (
-	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/prop"
@@ -10,7 +9,6 @@ import (
 )
 
 func (mgr *Manager) AddEnemy(id key.TargetID, enemy *model.Enemy) error {
-
 	lvl := int(enemy.Level)
 
 	// TODO: placeholder. should generate curve from dm (leaving to whomever implements enemy)
@@ -20,7 +18,7 @@ func (mgr *Manager) AddEnemy(id key.TargetID, enemy *model.Enemy) error {
 
 	debuffRES := info.NewDebuffRESMap()
 	for _, res := range enemy.DebuffRes {
-		debuffRES.Modify(res.Stat, res.Amount)
+		debuffRES.Modify(res.Flag, res.Amount)
 	}
 
 	weakness := info.NewWeaknessMap()
@@ -53,12 +51,16 @@ func (mgr *Manager) AddEnemy(id key.TargetID, enemy *model.Enemy) error {
 		}
 	}
 
-	mgr.attr.AddTarget(id, attribute.BaseStats{
-		Level:     lvl,
-		MaxStance: enemy.Toughness,
-		Stats:     baseStats,
-		DebuffRES: debuffRES,
-		Weakness:  weakness,
+	mgr.attr.AddTarget(id, info.Attributes{
+		Level:         lvl,
+		Stance:        enemy.Toughness,
+		MaxStance:     enemy.Toughness,
+		BaseStats:     baseStats,
+		BaseDebuffRES: debuffRES,
+		Weakness:      weakness,
+		HPRatio:       1.0,
+		Energy:        0,
+		MaxEnergy:     0,
 	})
 
 	info := info.Enemy{
@@ -69,8 +71,8 @@ func (mgr *Manager) AddEnemy(id key.TargetID, enemy *model.Enemy) error {
 	}
 	mgr.info[id] = info
 
-	mgr.engine.Events().EnemyAdded.Emit(event.EnemyAddedEvent{
-		Id:   id,
+	mgr.engine.Events().EnemyAdded.Emit(event.EnemyAdded{
+		ID:   id,
 		Info: info,
 	})
 	return nil

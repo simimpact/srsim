@@ -25,7 +25,7 @@ const (
 func init() {
 	modifier.Register(A2, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHitAll: func(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+			OnBeforeHitAll: func(mod *modifier.Instance, e event.HitStart) {
 				if mod.Engine().ModifierCount(e.Hit.Defender.ID(), model.StatusType_STATUS_DEBUFF) >= 1 {
 					e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.2)
 				}
@@ -35,18 +35,27 @@ func init() {
 
 	modifier.Register(A4, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				mod.SetProperty(prop.EffectHitRate, 0.1)
+			},
+			OnBeforeDying: func(mod *modifier.Instance) {
+				if mod.Owner() == mod.Source() {
+					targets := mod.Engine().Characters()
+
+					for _, trg := range targets {
+						mod.Engine().RemoveModifier(trg, A4)
+					}
+				}
 			},
 		},
 	})
 
 	modifier.Register(A6, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHitAll: func(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+			OnBeforeHitAll: func(mod *modifier.Instance, e event.HitStart) {
 				e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.2)
 			},
-			OnAfterAttack: func(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
+			OnAfterAttack: func(mod *modifier.Instance, e event.AttackEnd) {
 				mod.RemoveSelf()
 			},
 		},
@@ -77,8 +86,8 @@ func (c *char) initTraces() {
 				Source: c.id,
 			})
 		}
-		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAddedEvent) {
-			c.engine.AddModifier(e.Id, info.Modifier{
+		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAdded) {
+			c.engine.AddModifier(e.ID, info.Modifier{
 				Name:   A4,
 				Source: c.id,
 			})

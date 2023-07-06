@@ -1,8 +1,6 @@
 // root package for all core logic that powers srsim
 package engine
 
-//go:generate mockgen -destination=../mock/mock_engine.go -package=mock github.com/simimpact/srsim/pkg/engine Engine
-
 // only event & info are allowed to be imported from engine here
 import (
 	"math/rand"
@@ -85,7 +83,7 @@ type Attribute interface {
 	// Gets the current energy amount of the target.
 	Energy(target key.TargetID) float64
 
-	//Gets the max energy amount of the target.
+	// Gets the max energy amount of the target.
 	MaxEnergy(target key.TargetID) float64
 
 	// Gets the current Energy ratio of the target (value between 0 and 1)
@@ -199,6 +197,10 @@ type Info interface {
 
 	// Metadata for the given enemy, such as their current level and weaknesses.
 	EnemyInfo(target key.TargetID) (info.Enemy, error)
+
+	// Check if the character can use the skill (enough Skill Points and not blocked by Skill.CanUse,
+	// see implementation of each character)
+	CanUseSkill(target key.TargetID) (bool, error)
 }
 
 type Target interface {

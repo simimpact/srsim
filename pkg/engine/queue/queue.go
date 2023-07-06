@@ -27,6 +27,7 @@ func New() *Handler {
 	heap := make(minHeap, 0, 10)
 	return &Handler{
 		actions: &heap,
+		counter: 0,
 	}
 }
 

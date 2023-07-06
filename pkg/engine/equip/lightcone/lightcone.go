@@ -61,7 +61,11 @@ func Get(key key.LightCone) (Config, error) {
 	return Config{}, fmt.Errorf("invalid lightcone: %v", key)
 }
 
-func (c Config) Ascension(maxLvl int) int {
+func (c Config) Ascension(maxLvl, lvl int) int {
+	if maxLvl <= 0 {
+		maxLvl = lvl
+	}
+
 	for i, promo := range c.Promotions {
 		if promo.MaxLevel >= maxLvl {
 			return i

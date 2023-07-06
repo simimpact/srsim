@@ -16,11 +16,10 @@ const (
 )
 
 func init() {
-
 	// A2 Register
 	modifier.Register(A2, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHit: func(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+			OnBeforeHit: func(mod *modifier.Instance, e event.HitStart) {
 				if e.Hit.AttackType == model.AttackType_NORMAL {
 					e.Hit.Attacker.AddProperty(prop.CritChance, 1)
 				}
@@ -32,7 +31,7 @@ func init() {
 	modifier.Register(A4, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				mod.SetProperty(prop.DEFPercent, 0.2)
 			},
 		},
@@ -42,15 +41,23 @@ func init() {
 	// A6 Register
 	modifier.Register(A6, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				mod.SetProperty(prop.AllDamagePercent, 0.1)
+			},
+			OnBeforeDying: func(mod *modifier.Instance) {
+				if mod.Owner() == mod.Source() {
+					targets := mod.Engine().Characters()
+
+					for _, trg := range targets {
+						mod.Engine().RemoveModifier(trg, A6)
+					}
+				}
 			},
 		},
 	})
 }
 
 func (c *char) initTraces() {
-
 	// A2
 	if c.info.Traces["1101101"] {
 		c.engine.AddModifier(c.id, info.Modifier{
@@ -70,8 +77,8 @@ func (c *char) initTraces() {
 			})
 		}
 
-		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAddedEvent) {
-			c.engine.AddModifier(e.Id, info.Modifier{
+		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAdded) {
+			c.engine.AddModifier(e.ID, info.Modifier{
 				Name:   A4,
 				Source: c.id,
 			})
@@ -89,8 +96,8 @@ func (c *char) initTraces() {
 			})
 		}
 
-		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAddedEvent) {
-			c.engine.AddModifier(e.Id, info.Modifier{
+		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAdded) {
+			c.engine.AddModifier(e.ID, info.Modifier{
 				Name:   A6,
 				Source: c.id,
 			})

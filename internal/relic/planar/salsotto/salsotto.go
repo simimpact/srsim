@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	mod = key.Modifier("inert-salsotto")
+	mod key.Modifier = "inert-salsotto"
 )
 
 // 2pc:
@@ -40,10 +40,9 @@ func init() {
 			OnBeforeHit: onBeforeHit,
 		},
 	})
-
 }
 
-func onBeforeHit(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+func onBeforeHit(mod *modifier.Instance, e event.HitStart) {
 	stats := mod.OwnerStats()
 	if stats.CritChance() >= 0.50 {
 		if e.Hit.AttackType == model.AttackType_ULT || e.Hit.AttackType == model.AttackType_INSERT {

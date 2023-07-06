@@ -9,8 +9,8 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
-	"github.com/simimpact/srsim/pkg/mock"
 	"github.com/simimpact/srsim/pkg/model"
+	"github.com/simimpact/srsim/tests/mock"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -21,8 +21,9 @@ func NewTestManagerForAdd(t *testing.T) (*Manager, *gomock.Controller) {
 	engine.EXPECT().IsValid(gomock.Any()).Return(true).AnyTimes()
 
 	manager := &Manager{
-		engine:  engine,
-		targets: make(map[key.TargetID]activeModifiers),
+		engine:    engine,
+		targets:   make(map[key.TargetID]activeModifiers),
+		turnCount: 0,
 	}
 	return manager, mockCtrl
 }
@@ -33,11 +34,11 @@ func TestIgnoreResist(t *testing.T) {
 
 	target := key.TargetID(1)
 	mod := info.Modifier{
-		Name: key.Modifier("Test"),
+		Name:   key.Modifier("Test"),
+		Source: target,
 	}
 
-	chance, resist, err := manager.attemptResist(target, mod, []model.BehaviorFlag{})
-	assert.NoError(t, err)
+	chance, resist := manager.attemptResist(target, mod, []model.BehaviorFlag{})
 	assert.Equal(t, -1.0, chance)
 	assert.False(t, resist)
 }
@@ -50,45 +51,44 @@ func TestResistModifier(t *testing.T) {
 	rand := rand.New(rand.NewSource(1))
 	engine.EXPECT().Rand().Return(rand).AnyTimes()
 
-	BChance := 0.05
-	EHR := 0.01
-	ERES := 0.3
-	DRES := 0.5
+	bChance := 0.05
+	ehr := 0.01
+	eres := 0.3
+	dres := 0.5
 	flags := []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL}
 
 	target := key.TargetID(1)
 	targetStats := mock.NewEmptyStats(target)
 	engine.EXPECT().Stats(gomock.Eq(target)).Return(targetStats).Times(1)
-	targetStats.AddProperty(prop.EffectRES, ERES)
-	targetStats.AddDebuffRES(model.BehaviorFlag_STAT_CTRL, DRES)
+	targetStats.AddProperty(prop.EffectRES, eres)
+	targetStats.AddDebuffRES(model.BehaviorFlag_STAT_CTRL, dres)
 
 	source := key.TargetID(2)
 	sourceStats := mock.NewEmptyStats(source)
-	sourceStats.AddProperty(prop.EffectHitRate, EHR)
+	sourceStats.AddProperty(prop.EffectHitRate, ehr)
 	engine.EXPECT().Stats(gomock.Eq(source)).Return(sourceStats).Times(1)
 
 	name := key.Modifier("TestResistModifier")
 	mod := info.Modifier{
 		Name:   name,
 		Source: source,
-		Chance: BChance,
+		Chance: bChance,
 	}
 
-	expectedChance := BChance * (1 + EHR) * (1 - ERES) * (1 - DRES)
+	expectedChance := bChance * (1 + ehr) * (1 - eres) * (1 - dres)
 
-	engine.Events().ModifierResisted.Subscribe(func(event event.ModifierResistedEvent) {
+	engine.Events().ModifierResisted.Subscribe(func(event event.ModifierResisted) {
 		assert.Equal(t, target, event.Target)
 		assert.Equal(t, source, event.Source)
 		assert.Equal(t, name, event.Modifier)
 		assert.Equal(t, expectedChance, event.Chance)
-		assert.Equal(t, BChance, event.BaseChance)
-		assert.Equal(t, EHR, event.EHR)
-		assert.Equal(t, ERES, event.EffectRES)
-		assert.Equal(t, DRES, event.DebuffRES)
+		assert.Equal(t, bChance, event.BaseChance)
+		assert.Equal(t, ehr, event.EHR)
+		assert.Equal(t, eres, event.EffectRES)
+		assert.Equal(t, dres, event.DebuffRES)
 	})
 
-	chance, resist, err := manager.attemptResist(target, mod, flags)
-	assert.NoError(t, err)
+	chance, resist := manager.attemptResist(target, mod, flags)
 	assert.Equal(t, expectedChance, chance)
 	assert.True(t, resist)
 }
@@ -101,38 +101,37 @@ func TestFailedResist(t *testing.T) {
 	rand := rand.New(rand.NewSource(1))
 	engine.EXPECT().Rand().Return(rand).AnyTimes()
 
-	BChance := 2.0
-	EHR := 0.01
-	ERES := 0.3
-	DRES := 0.5
+	bChance := 2.0
+	ehr := 0.01
+	eres := 0.3
+	dres := 0.5
 	flags := []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL}
 
 	target := key.TargetID(1)
 	targetStats := mock.NewEmptyStats(target)
 	engine.EXPECT().Stats(gomock.Eq(target)).Return(targetStats).Times(1)
-	targetStats.AddProperty(prop.EffectRES, ERES)
-	targetStats.AddDebuffRES(model.BehaviorFlag_STAT_CTRL, DRES)
+	targetStats.AddProperty(prop.EffectRES, eres)
+	targetStats.AddDebuffRES(model.BehaviorFlag_STAT_CTRL, dres)
 
 	source := key.TargetID(2)
 	sourceStats := mock.NewEmptyStats(source)
-	sourceStats.AddProperty(prop.EffectHitRate, EHR)
+	sourceStats.AddProperty(prop.EffectHitRate, ehr)
 	engine.EXPECT().Stats(gomock.Eq(source)).Return(sourceStats).Times(1)
 
 	name := key.Modifier("TestResistModifier")
 	mod := info.Modifier{
 		Name:   name,
 		Source: source,
-		Chance: BChance,
+		Chance: bChance,
 	}
 
-	expectedChance := BChance * (1 + EHR) * (1 - ERES) * (1 - DRES)
+	expectedChance := bChance * (1 + ehr) * (1 - eres) * (1 - dres)
 
-	engine.Events().ModifierResisted.Subscribe(func(event event.ModifierResistedEvent) {
+	engine.Events().ModifierResisted.Subscribe(func(event event.ModifierResisted) {
 		assert.Fail(t, "Event should never be emitted (modifier should not be resisted)")
 	})
 
-	chance, resist, err := manager.attemptResist(target, mod, flags)
-	assert.NoError(t, err)
+	chance, resist := manager.attemptResist(target, mod, flags)
 	assert.Equal(t, expectedChance, chance)
 	assert.False(t, resist)
 }
@@ -147,7 +146,8 @@ func TestAddInvalidTarget(t *testing.T) {
 	engine.EXPECT().IsValid(target).Return(false).AnyTimes()
 
 	mod := info.Modifier{
-		Name: key.Modifier("TestAddInvalidTarget"),
+		Name:   key.Modifier("TestAddInvalidTarget"),
+		Source: target,
 	}
 
 	added, err := manager.AddModifier(target, mod)
@@ -166,7 +166,8 @@ func TestAddInvalidSource(t *testing.T) {
 	engine.EXPECT().IsValid(key.TargetID(0)).Return(false).After(firstCheck)
 
 	mod := info.Modifier{
-		Name: key.Modifier("TestAddInvalidSource"),
+		Name:   key.Modifier("TestAddInvalidSource"),
+		Source: 0,
 	}
 
 	added, err := manager.AddModifier(target, mod)
@@ -197,7 +198,7 @@ func TestAddUnregistered(t *testing.T) {
 	}
 
 	called := 0
-	manager.engine.Events().ModifierAdded.Subscribe(func(event event.ModifierAddedEvent) {
+	manager.engine.Events().ModifierAdded.Subscribe(func(event event.ModifierAdded) {
 		state := event.Modifier.State.(state)
 
 		if called == 0 {
@@ -245,7 +246,7 @@ func TestAddMultiple(t *testing.T) {
 	})
 
 	called := 0
-	manager.engine.Events().ModifierAdded.Subscribe(func(event event.ModifierAddedEvent) {
+	manager.engine.Events().ModifierAdded.Subscribe(func(event event.ModifierAdded) {
 		state := event.Modifier.State.(state)
 
 		if called == 0 {
@@ -275,10 +276,12 @@ func TestAddRefresh(t *testing.T) {
 	name := key.Modifier("TestAddRefresh")
 	mod1 := info.Modifier{
 		Name:     name,
+		Source:   target,
 		Duration: 3,
 	}
 	mod2 := info.Modifier{
 		Name:     name,
+		Source:   target,
 		Duration: 5,
 	}
 
@@ -287,7 +290,7 @@ func TestAddRefresh(t *testing.T) {
 	})
 
 	addedCalls := 0
-	manager.engine.Events().ModifierAdded.Subscribe(func(event event.ModifierAddedEvent) {
+	manager.engine.Events().ModifierAdded.Subscribe(func(event event.ModifierAdded) {
 		if addedCalls == 0 {
 			assert.Equal(t, 3, event.Modifier.Duration)
 		}
@@ -295,7 +298,7 @@ func TestAddRefresh(t *testing.T) {
 	})
 
 	extendedCalls := 0
-	manager.engine.Events().ModifierExtendedDuration.Subscribe(func(event event.ModifierExtendedDurationEvent) {
+	manager.engine.Events().ModifierExtendedDuration.Subscribe(func(event event.ModifierExtendedDuration) {
 		if extendedCalls == 0 {
 			assert.Equal(t, 3, event.OldValue)
 			assert.Equal(t, 5, event.NewValue)
@@ -324,10 +327,12 @@ func TestAddProlong(t *testing.T) {
 	name := key.Modifier("TestAddProlong")
 	mod1 := info.Modifier{
 		Name:     name,
+		Source:   target,
 		Duration: 3,
 	}
 	mod2 := info.Modifier{
 		Name:     name,
+		Source:   target,
 		Duration: 5,
 	}
 
@@ -336,7 +341,7 @@ func TestAddProlong(t *testing.T) {
 	})
 
 	addedCalls := 0
-	manager.engine.Events().ModifierAdded.Subscribe(func(event event.ModifierAddedEvent) {
+	manager.engine.Events().ModifierAdded.Subscribe(func(event event.ModifierAdded) {
 		if addedCalls == 0 {
 			assert.Equal(t, 3, event.Modifier.Duration)
 		}
@@ -344,7 +349,7 @@ func TestAddProlong(t *testing.T) {
 	})
 
 	extendedCalls := 0
-	manager.engine.Events().ModifierExtendedDuration.Subscribe(func(event event.ModifierExtendedDurationEvent) {
+	manager.engine.Events().ModifierExtendedDuration.Subscribe(func(event event.ModifierExtendedDuration) {
 		if extendedCalls == 0 {
 			assert.Equal(t, 3, event.OldValue)
 			assert.Equal(t, 8, event.NewValue)

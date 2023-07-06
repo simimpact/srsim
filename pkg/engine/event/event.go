@@ -7,12 +7,11 @@ import "github.com/simimpact/srsim/pkg/engine/event/handler"
 type System struct {
 	Initialize  InitializeEventHandler
 	BattleStart BattleStartEventHandler
-	TurnEnd     TurnEndEventHandler
 	Termination TerminationEventHandler
+	TurnStart   TurnStartEventHandler
+	TurnEnd     TurnEndEventHandler
 	ActionStart ActionStartEventHandler
 	ActionEnd   ActionEndEventHandler
-	UltStart    UltStartEventHandler
-	UltEnd      UltEndEventHandler
 	InsertStart InsertStartEventHandler
 	InsertEnd   InsertEndEventHandler
 
@@ -36,17 +35,16 @@ type System struct {
 	ShieldRemoved ShieldRemovedEventHandler
 	ShieldChange  ShieldChangeEventHandler
 
-	HPChange       HPChangeEventHandler
-	LimboWaitHeal  LimboWaitHealEventHandler
-	TargetDeath    TargetDeathEventHandler
-	EnergyChange   EnergyChangeEventHandler
-	StanceChange   StanceChangeEventHandler
-	StanceBreak    StanceBreakEventHandler
-	StanceBreakEnd StanceBreakEndEventHandler
-	SPChange       SPChangeEventHandler
+	HPChange      HPChangeEventHandler
+	LimboWaitHeal LimboWaitHealEventHandler
+	TargetDeath   TargetDeathEventHandler
+	EnergyChange  EnergyChangeEventHandler
+	StanceChange  StanceChangeEventHandler
+	StanceBreak   StanceBreakEventHandler
+	StanceReset   StanceResetEventHandler
+	SPChange      SPChangeEventHandler
 
 	TurnTargetsAdded       TurnTargetsAddedEventHandler
-	TurnStart              TurnStartEventHandler
 	TurnReset              TurnResetEventHandler
 	GaugeChange            GaugeChangeEventHandler
 	CurrentGaugeCostChange CurrentGaugeCostChangeEventHandler

@@ -22,9 +22,9 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 }
 
 func (c *char) OnProjectileHit(target key.TargetID, stanceDamage float64) {
-	if c.info.Eidolon >= 4 && c.engine.HasBehaviorFlag(target, model.BehaviorFlag_STAT_DOT_POISON) {
-		//TODO: implement sampo E4
-	}
+	// if c.info.Eidolon >= 4 && c.engine.HasBehaviorFlag(target, model.BehaviorFlag_STAT_DOT_POISON) {
+	// 	//TODO: implement sampo E4
+	// }
 
 	targets := c.engine.Enemies()
 	c.engine.Attack(info.Attack{

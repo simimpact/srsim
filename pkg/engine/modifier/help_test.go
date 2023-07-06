@@ -5,7 +5,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/simimpact/srsim/pkg/key"
-	"github.com/simimpact/srsim/pkg/mock"
+	"github.com/simimpact/srsim/tests/mock"
 )
 
 func FailOnPanic(t *testing.T) {
@@ -16,24 +16,24 @@ func FailOnPanic(t *testing.T) {
 
 func NewTestManager(t *testing.T) (*Manager, *gomock.Controller) {
 	mockCtrl := gomock.NewController(t)
-	defer mockCtrl.Finish()
 	engine := mock.NewMockEngine(mockCtrl)
 
 	manager := &Manager{
-		engine:  engine,
-		targets: make(map[key.TargetID]activeModifiers),
+		engine:    engine,
+		targets:   make(map[key.TargetID]activeModifiers),
+		turnCount: 0,
 	}
 	return manager, mockCtrl
 }
 
 func NewTestManagerWithEvents(t *testing.T) (*Manager, *gomock.Controller) {
 	mockCtrl := gomock.NewController(t)
-	defer mockCtrl.Finish()
 	engine := mock.NewMockEngineWithEvents(mockCtrl)
 
 	manager := &Manager{
-		engine:  engine,
-		targets: make(map[key.TargetID]activeModifiers),
+		engine:    engine,
+		targets:   make(map[key.TargetID]activeModifiers),
+		turnCount: 0,
 	}
 	return manager, mockCtrl
 }

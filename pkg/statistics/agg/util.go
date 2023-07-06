@@ -84,11 +84,13 @@ func (h *LinearHist) bin(x float64) int {
 
 func (h *LinearHist) Add(x float64) {
 	bin := h.bin(x)
-	if bin < 0 {
+
+	switch {
+	case bin < 0:
 		h.low++
-	} else if bin >= len(h.bins) {
+	case bin >= len(h.bins):
 		h.high++
-	} else {
+	default:
 		h.bins[bin]++
 	}
 }

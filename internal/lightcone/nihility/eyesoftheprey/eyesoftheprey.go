@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	mod key.Modifier = "eyes_of_the_prey"
+	mod key.Modifier = "eyes-of-the-prey"
 )
 
 // Increases the wearer's Effect Hit Rate by 20%/25%/30%/35%/40% and increases DoT by 24%/30%/36%/42%/48%.
@@ -24,11 +24,11 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	ehr_amt := 0.15 + 0.05*float64(lc.Imposition)
-	dot_amt := 0.18 + 0.06*float64(lc.Imposition)
+	ehrAmt := 0.15 + 0.05*float64(lc.Imposition)
+	dotAmt := 0.18 + 0.06*float64(lc.Imposition)
 	engine.AddModifier(owner, info.Modifier{
 		Name:   mod,
 		Source: owner,
-		Stats:  info.PropMap{prop.EffectHitRate: ehr_amt, prop.DOTDamagePercent: dot_amt},
+		Stats:  info.PropMap{prop.EffectHitRate: ehrAmt, prop.DOTDamagePercent: dotAmt},
 	})
 }

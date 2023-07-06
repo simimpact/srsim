@@ -21,7 +21,7 @@ func init() {
 		StatusType: model.StatusType_STATUS_DEBUFF,
 		TickMoment: modifier.ModifierPhase1End,
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				mod.SetProperty(prop.EffectRES, -0.2)
 			},
 		},
@@ -33,7 +33,7 @@ func init() {
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_DEBUFF,
 		Listeners: modifier.Listeners{
-			OnBeforeHitAll: func(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+			OnBeforeHitAll: func(mod *modifier.Instance, e event.HitStart) {
 				debuffCount := mod.Engine().ModifierCount(e.Defender, model.StatusType_STATUS_DEBUFF)
 				if debuffCount > 5 {
 					debuffCount = 5
@@ -83,11 +83,21 @@ func (c *char) e4(target key.TargetID) {
 
 func (c *char) initEidolons() {
 	if c.info.Eidolon >= 2 {
-		c.engine.Events().EnemyAdded.Subscribe(func(e event.EnemyAddedEvent) {
-			c.engine.AddModifier(e.Id, info.Modifier{
+		c.engine.Events().EnemyAdded.Subscribe(func(e event.EnemyAdded) {
+			c.engine.AddModifier(e.ID, info.Modifier{
 				Name:   E2,
 				Source: c.id,
 			})
+		})
+
+		c.engine.Events().TargetDeath.Subscribe(func(event event.TargetDeath) {
+			if event.Target == c.id {
+				targets := c.engine.Enemies()
+
+				for _, trg := range targets {
+					c.engine.RemoveModifier(trg, E2)
+				}
+			}
 		})
 	}
 

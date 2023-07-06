@@ -9,7 +9,7 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-type AttributeGetter interface {
+type Getter interface {
 	Stats(target key.TargetID) *info.Stats
 	Stance(target key.TargetID) float64
 	Energy(target key.TargetID) float64
@@ -18,10 +18,10 @@ type AttributeGetter interface {
 	HPRatio(target key.TargetID) float64
 }
 
-type AttributeModifier interface {
-	AttributeGetter
+type Modifier interface {
+	Getter
 
-	AddTarget(target key.TargetID, base BaseStats) error
+	AddTarget(target key.TargetID, base info.Attributes) error
 
 	SetHP(target, source key.TargetID, amt float64, isDamage bool) error
 	ModifyHPByRatio(target, source key.TargetID, data info.ModifyHPByRatio, isDamage bool) error
@@ -37,11 +37,11 @@ type AttributeModifier interface {
 
 type Service struct {
 	event   *event.System
-	modEval modifier.ModifierEval
+	modEval modifier.Eval
 	targets map[key.TargetID]*info.Attributes
 }
 
-func New(event *event.System, modEval modifier.ModifierEval) *Service {
+func New(event *event.System, modEval modifier.Eval) *Service {
 	return &Service{
 		event:   event,
 		modEval: modEval,
@@ -53,7 +53,9 @@ func (s *Service) Stats(target key.TargetID) *info.Stats {
 	mods := s.modEval.EvalModifiers(target)
 	attr := s.targets[target]
 	if attr == nil {
-		attr = &info.Attributes{}
+		// default attribute instead of returning an error
+		attr = new(info.Attributes)
+		*attr = info.DefaultAttribute()
 	}
 	return info.NewStats(target, attr, mods)
 }

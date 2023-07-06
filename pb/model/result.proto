@@ -1,25 +1,63 @@
 syntax = "proto3";
 package model;
 option go_package = "github.com/simimpact/srsim/pkg/model";
+import "pb/model/sim.proto";
+
+// IMPORTANT NOTE:
+// By default all proto3 fields have "no presence". If the value is equal to the default value
+// then that field will be removed from the output. This is done to minimize data size, but may have
+// undesirable behaviors when reading from json. IE: for a numeric field, a 0 value will never
+// be emitted. In JS, this makes the null/undefined case equivalent to 0 (so stats with 0 values
+// get treated as a "data not found" case).
+//
+// This behavior can be removed by adding "optional" to the field, forcing "explicit presence". With
+// optional added, the field will only ever be omitted when it is unset (the value is null). This
+// should be used sparingly, as it increases the size of the generated code and overall data size.
+//
+// RECOMMENDATION: Only use "optional" when not emitting the default value is undesirable. This is
+// best limited to only boolean, numeric, and string/byte fields (map & list possible but unlikely).
+// Table of the default value for each type:
+//  ╔═══════╤════════════════════════════╗
+//  ║ JSON  │ Protobuf field             ║
+//  ╠═══════╪════════════════════════════╣
+//  ║ false │ proto3 boolean fields      ║
+//  ║ 0     │ proto3 numeric fields      ║
+//  ║ ""    │ proto3 string/bytes fields ║
+//  ║ null  │ message fields             ║
+//  ║ []    │ list fields                ║
+//  ║ {}    │ map fields                 ║
+//  ╚═══════╧════════════════════════════╝
+//
+// see: https://protobuf.dev/programming-guides/field_presence/
+// see: https://protobuf.dev/programming-guides/proto3/#json
+// see: https://pkg.go.dev/google.golang.org/protobuf/encoding/protojson#MarshalOptions
 
 message Version {
-  string major = 1 [ json_name = "major" ];
-  string minor = 2 [ json_name = "minor" ];
+  string major = 1;
+  string minor = 2;
 }
 
-message SimulationResult {
-  Version schema_version = 1 [ json_name = "schema_version" ];
-  optional string sim_version = 2 [ json_name = "sim_version" ];
-  optional bool modified = 3 [json_name="modified"];
-  string build_date = 4 [json_name="build_date"];
+message SimResult {
+  // required fields (should always be here regardless of schema version)
+  Version schema_version = 1;
+  optional string sim_version = 2;
+  optional bool modified = 3;
+  string build_date = 4;
+  string debug_seed = 5;
+
+  SimConfig config = 6;
+
+  // TODO: character details
+  // TODO: enemy details
+
+  Statistics statistics = 20;
+}
+
+message Statistics {
+
 }
 
 message IterationResult {
-  map<int32, string> target_id_mapping = 1 [json_name="target_id_mapping"];
-}
-
-message SimulationStatistics {
-
 }
 
 message OverviewStats {

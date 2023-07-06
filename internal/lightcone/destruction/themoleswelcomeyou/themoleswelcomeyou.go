@@ -60,7 +60,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 // after an attack, add 1 stack iff new attack type
-func onAfterAttack(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
+func onAfterAttack(mod *modifier.Instance, e event.AttackEnd) {
 	state := mod.State().(checkState)
 
 	// must be normal, skill, or ult
@@ -81,7 +81,7 @@ func onAfterAttack(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
 }
 
 // each stack increases by amt
-func buffOnAdd(mod *modifier.ModifierInstance) {
+func buffOnAdd(mod *modifier.Instance) {
 	amt := mod.State().(float64)
 	mod.AddProperty(prop.ATKPercent, amt*mod.Count())
 }

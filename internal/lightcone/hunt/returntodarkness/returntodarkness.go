@@ -56,7 +56,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func onAfterHitAll(mod *modifier.ModifierInstance, e event.HitEndEvent) {
+func onAfterHitAll(mod *modifier.Instance, e event.HitEnd) {
 	state := mod.State().(*State)
 
 	if e.IsCrit && !state.wasTriggered && rand.Float64() < state.chance {
@@ -69,6 +69,6 @@ func onAfterHitAll(mod *modifier.ModifierInstance, e event.HitEndEvent) {
 	}
 }
 
-func onAfterAttack(mod *modifier.ModifierInstance, e event.AttackEndEvent) {
+func onAfterAttack(mod *modifier.Instance, e event.AttackEnd) {
 	mod.State().(*State).wasTriggered = false
 }

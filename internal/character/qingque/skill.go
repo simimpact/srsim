@@ -57,10 +57,10 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	}
 	c.engine.InsertAction(c.id)
 }
-func skillOnAdd(mod *modifier.ModifierInstance) {
+func skillOnAdd(mod *modifier.Instance) {
 	state := mod.State().(skillState)
 	mod.AddProperty(prop.ATKPercent, mod.Count()*(state.damageBoost))
 }
-func skillOnPhase2(mod *modifier.ModifierInstance) {
+func skillOnPhase2(mod *modifier.Instance) {
 	mod.RemoveSelf()
 }

@@ -3,12 +3,12 @@ package simulation
 import (
 	"fmt"
 
-	actionPkg "github.com/simimpact/srsim/pkg/engine/action"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/queue"
 	"github.com/simimpact/srsim/pkg/engine/target"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/logic"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
@@ -62,7 +62,7 @@ func (sim *Simulation) ultCheck() error {
 				},
 				Execute: func() { sim.executeUlt(act) }, // TODO: error handling
 			})
-
+			sim.Attr.ModifyEnergy(act.Target, -sim.Attr.MaxEnergy(act.Target))
 		}
 	}
 	return nil
@@ -71,37 +71,37 @@ func (sim *Simulation) ultCheck() error {
 // execute everything on the queue. After queue execution is complete, return the next stateFn
 // as the next state to run. This logic will run the exitCheck on each execution. If an exit
 // condition is met, will return that state instead
-func (s *Simulation) executeQueue(phase info.BattlePhase, next stateFn) (stateFn, error) {
+func (sim *Simulation) executeQueue(phase info.BattlePhase, next stateFn) (stateFn, error) {
 	// always ult check when calling executeQueue
-	if err := s.ultCheck(); err != nil {
+	if err := sim.ultCheck(); err != nil {
 		return next, err
 	}
 
 	// if active is not a character, cannot prform any queue execution until after ActionEnd
-	if phase < info.ActionEnd && !s.IsCharacter(s.Active) {
-		return s.exitCheck(next)
+	if phase < info.ActionEnd && !sim.IsCharacter(sim.Active) {
+		return sim.exitCheck(next)
 	}
 
-	for !s.Queue.IsEmpty() {
-		insert := s.Queue.Pop()
+	for !sim.Queue.IsEmpty() {
+		insert := sim.Queue.Pop()
 
 		// if source has no HP, skip this insert
-		if s.Attr.HPRatio(insert.Source) <= 0 {
+		if sim.Attr.HPRatio(insert.Source) <= 0 {
 			continue
 		}
 
 		// if the source has an abort flag, skip this insert
-		if s.HasBehaviorFlag(insert.Source, insert.AbortFlags...) {
+		if sim.HasBehaviorFlag(insert.Source, insert.AbortFlags...) {
 			continue
 		}
 
 		insert.Execute()
 
 		// attempt to exit. If can exit, stop sim now
-		if next, err := s.exitCheck(next); next == nil || err != nil {
+		if next, err := sim.exitCheck(next); next == nil || err != nil {
 			return next, err
 		}
-		if err := s.ultCheck(); err != nil {
+		if err := sim.ultCheck(); err != nil {
 			return next, err
 		}
 	}
@@ -131,7 +131,7 @@ func (sim *Simulation) executeAction(id key.TargetID, isInsert bool) error {
 
 	sim.ModifySP(executable.SPDelta)
 	sim.clearActionTargets()
-	sim.Event.ActionStart.Emit(event.ActionEvent{
+	sim.Event.ActionStart.Emit(event.ActionStart{
 		Owner:      id,
 		AttackType: executable.AttackType,
 		IsInsert:   isInsert,
@@ -143,7 +143,7 @@ func (sim *Simulation) executeAction(id key.TargetID, isInsert bool) error {
 	// end attack if in one. no-op if not in an attack
 	// emit end events
 	sim.Combat.EndAttack()
-	sim.Event.ActionEnd.Emit(event.ActionEvent{
+	sim.Event.ActionEnd.Emit(event.ActionEnd{
 		Owner:      id,
 		Targets:    sim.ActionTargets,
 		AttackType: executable.AttackType,
@@ -152,7 +152,7 @@ func (sim *Simulation) executeAction(id key.TargetID, isInsert bool) error {
 	return nil
 }
 
-func (sim *Simulation) executeUlt(act actionPkg.Action) error {
+func (sim *Simulation) executeUlt(act logic.Action) error {
 	var executable target.ExecutableUlt
 	var err error
 
@@ -168,7 +168,7 @@ func (sim *Simulation) executeUlt(act actionPkg.Action) error {
 	}
 
 	sim.clearActionTargets()
-	sim.Event.UltStart.Emit(event.ActionEvent{
+	sim.Event.ActionStart.Emit(event.ActionStart{
 		Owner:      id,
 		AttackType: model.AttackType_ULT,
 		IsInsert:   true,
@@ -178,7 +178,7 @@ func (sim *Simulation) executeUlt(act actionPkg.Action) error {
 
 	// end attack if in one. no-op if not in an attack
 	sim.Combat.EndAttack()
-	sim.Event.UltEnd.Emit(event.ActionEvent{
+	sim.Event.ActionEnd.Emit(event.ActionEnd{
 		Owner:      id,
 		Targets:    sim.ActionTargets,
 		AttackType: model.AttackType_ULT,
@@ -189,7 +189,7 @@ func (sim *Simulation) executeUlt(act actionPkg.Action) error {
 
 func (sim *Simulation) executeInsert(i info.Insert) {
 	sim.clearActionTargets()
-	sim.Event.InsertStart.Emit(event.InsertEvent{
+	sim.Event.InsertStart.Emit(event.InsertStart{
 		Owner:      i.Source,
 		AbortFlags: i.AbortFlags,
 		Priority:   i.Priority,
@@ -200,7 +200,7 @@ func (sim *Simulation) executeInsert(i info.Insert) {
 
 	// end attack if in one. no-op if not in an attack
 	sim.Combat.EndAttack()
-	sim.Event.InsertEnd.Emit(event.InsertEvent{
+	sim.Event.InsertEnd.Emit(event.InsertEnd{
 		Owner:      i.Source,
 		Targets:    sim.ActionTargets,
 		AbortFlags: i.AbortFlags,
@@ -208,8 +208,8 @@ func (sim *Simulation) executeInsert(i info.Insert) {
 	})
 }
 
-func (s *Simulation) clearActionTargets() {
-	for k := range s.ActionTargets {
-		delete(s.ActionTargets, k)
+func (sim *Simulation) clearActionTargets() {
+	for k := range sim.ActionTargets {
+		delete(sim.ActionTargets, k)
 	}
 }

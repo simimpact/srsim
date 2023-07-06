@@ -6,20 +6,20 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-type activeShields map[key.Shield]*ShieldInstance
+type activeShields map[key.Shield]*Instance
 
-type ShieldAbsorb interface {
+type Absorb interface {
 	AbsorbDamage(target key.TargetID, damage float64) float64
 }
 
 type Manager struct {
 	event *event.System
-	attr  attribute.AttributeGetter
+	attr  attribute.Getter
 
 	targets map[key.TargetID]activeShields
 }
 
-func New(event *event.System, attr attribute.AttributeGetter) *Manager {
+func New(event *event.System, attr attribute.Getter) *Manager {
 	return &Manager{
 		event:   event,
 		attr:    attr,
