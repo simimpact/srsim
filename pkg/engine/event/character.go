@@ -8,6 +8,6 @@ import (
 
 type CharacterAddedEventHandler = handler.EventHandler[CharacterAdded]
 type CharacterAdded struct {
-	ID   key.TargetID
-	Info info.Character
+	ID   key.TargetID   `json:"id"`
+	Info info.Character `json:"info"`
 }

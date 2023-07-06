@@ -166,6 +166,7 @@ linters-settings:
 
   tagliatelle:
     case:
+      use-field-name: true
       rules:
         json: snake
 
