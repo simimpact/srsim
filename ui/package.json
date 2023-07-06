@@ -25,7 +25,9 @@
     "preview": "yarn run preview:web",
     "preview:web": "yarn workspace @srsim/web preview",
     "build": "yarn run build:web",
-    "build:web": "yarn workspace @srsim/web build"
+    "build:web": "yarn workspace @srsim/web build",
+    "build:types": "yarn workspace @srsim/types build",
+    "types:tygo": "yarn workspace @srsim/types tygo"
   },
   "devDependencies": {
     "@radix-ui/react-accordion": "^1.1.2",

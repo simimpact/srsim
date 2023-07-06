@@ -1,3 +1,4 @@
+/* eslint-disable */
 module.exports = {
   root: true,
   env: {
@@ -10,7 +11,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
-    project: ["packages/*/tsconfig.json"],
+    project: ["packages/web/tsconfig.json"],
     tsconfigRootDir: __dirname,
     createDefaultProgram: true,
   },

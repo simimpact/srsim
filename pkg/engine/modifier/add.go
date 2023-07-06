@@ -88,14 +88,14 @@ func (mgr *Manager) attemptResist(
 
 	// resisted, emit event
 	mgr.engine.Events().ModifierResisted.Emit(event.ModifierResisted{
-		Target:     target,
-		Source:     mod.Source,
-		Modifier:   mod.Name,
-		Chance:     chance,
-		BaseChance: mod.Chance,
-		EHR:        effectHitRate,
-		EffectRES:  effectRES,
-		DebuffRES:  debuffRES,
+		Target:        target,
+		Source:        mod.Source,
+		Modifier:      mod.Name,
+		Chance:        chance,
+		BaseChance:    mod.Chance,
+		EffectHitRate: effectHitRate,
+		EffectRES:     effectRES,
+		DebuffRES:     debuffRES,
 	})
 	return chance, true
 }

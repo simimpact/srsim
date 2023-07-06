@@ -9,67 +9,67 @@ import (
 
 type InitializeEventHandler = handler.EventHandler[Initialize]
 type Initialize struct {
-	Config *model.SimConfig
-	Seed   int64
+	Config *model.SimConfig `json:"config"`
+	Seed   int64            `json:"seed"`
 	// TODO: sim metadata (build date, commit hash, etc)?
 }
 
 type BattleStartEventHandler = handler.EventHandler[BattleStart]
 type BattleStart struct {
-	CharInfo     map[key.TargetID]info.Character
-	EnemyInfo    map[key.TargetID]info.Enemy
-	CharStats    []*info.Stats
-	EnemyStats   []*info.Stats
-	NeutralStats []*info.Stats
+	CharInfo     map[key.TargetID]info.Character `json:"char_info"`
+	EnemyInfo    map[key.TargetID]info.Enemy     `json:"enemy_info"`
+	CharStats    []*info.Stats                   `json:"char_stats"`
+	EnemyStats   []*info.Stats                   `json:"enemy_stats"`
+	NeutralStats []*info.Stats                   `json:"neutral_stats"`
 }
 
 type TurnStartEventHandler = handler.EventHandler[TurnStart]
 type TurnStart struct {
-	Active    key.TargetID
-	DeltaAV   float64
-	TotalAV   float64
-	TurnOrder []TurnStatus
+	Active    key.TargetID `json:"active"`
+	DeltaAV   float64      `json:"delta_av"`
+	TotalAV   float64      `json:"total_av"`
+	TurnOrder []TurnStatus `json:"turn_order"`
 }
 
 type TurnEndEventHandler = handler.EventHandler[TurnEnd]
 type TurnEnd struct {
-	Characters []*info.Stats
-	Enemies    []*info.Stats
-	Neutrals   []*info.Stats
+	Characters []*info.Stats `json:"characters"`
+	Enemies    []*info.Stats `json:"enemies"`
+	Neutrals   []*info.Stats `json:"neutrals"`
 }
 
 type TerminationEventHandler = handler.EventHandler[Termination]
 type Termination struct {
-	TotalAV float64
-	Reason  model.TerminationReason
+	TotalAV float64                 `json:"total_av"`
+	Reason  model.TerminationReason `json:"reason"`
 }
 
 type ActionStartEventHandler = handler.EventHandler[ActionStart]
 type ActionStart struct {
-	Owner      key.TargetID
-	AttackType model.AttackType
-	IsInsert   bool
+	Owner      key.TargetID     `json:"owner"`
+	AttackType model.AttackType `json:"attack_type"`
+	IsInsert   bool             `json:"is_insert"`
 }
 
 type ActionEndEventHandler = handler.EventHandler[ActionEnd]
 type ActionEnd struct {
-	Owner      key.TargetID
-	Targets    map[key.TargetID]bool
-	AttackType model.AttackType
-	IsInsert   bool
+	Owner      key.TargetID          `json:"owner"`
+	Targets    map[key.TargetID]bool `json:"targets"`
+	AttackType model.AttackType      `json:"attack_type"`
+	IsInsert   bool                  `json:"is_insert"`
 }
 
 type InsertStartEventHandler = handler.EventHandler[InsertStart]
 type InsertStart struct {
-	Owner      key.TargetID
-	AbortFlags []model.BehaviorFlag
-	Priority   info.InsertPriority
+	Owner      key.TargetID         `json:"owner"`
+	AbortFlags []model.BehaviorFlag `json:"abort_flags"`
+	Priority   info.InsertPriority  `json:"priority"`
 }
 
 type InsertEndEventHandler = handler.EventHandler[InsertEnd]
 type InsertEnd struct {
-	Owner      key.TargetID
-	Targets    map[key.TargetID]bool
-	AbortFlags []model.BehaviorFlag
-	Priority   info.InsertPriority
+	Owner      key.TargetID          `json:"owner"`
+	Targets    map[key.TargetID]bool `json:"targets"`
+	AbortFlags []model.BehaviorFlag  `json:"abort_flags"`
+	Priority   info.InsertPriority   `json:"priority"`
 }

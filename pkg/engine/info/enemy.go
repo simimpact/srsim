@@ -1,8 +1,8 @@
 package info
 
 type Enemy struct {
-	Level     int
-	MaxStance float64
-	Weakness  WeaknessMap
-	DebuffRES DebuffRESMap
+	Level     int          `json:"level"`
+	MaxStance float64      `json:"max_stance"`
+	Weakness  WeaknessMap  `json:"weakness"`
+	DebuffRES DebuffRESMap `json:"debuff_res"`
 }
