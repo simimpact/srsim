@@ -99,10 +99,11 @@ func applyDebuffOnce(mod *modifier.Instance, e event.AttackEnd) {
 		// choose one enemy, apply debuff to them.
 		chosenOne := validEnemyList[mod.Engine().Rand().Intn(len(validEnemyList))]
 		mod.Engine().AddModifier(chosenOne, info.Modifier{
-			Name:   aetherCodeDebuff,
-			Source: mod.Owner(),
-			Stats:  info.PropMap{prop.AllDamageTaken: dmgTakenAmt},
-			Chance: 1.0,
+			Name:     aetherCodeDebuff,
+			Source:   mod.Owner(),
+			Stats:    info.PropMap{prop.AllDamageTaken: dmgTakenAmt},
+			Chance:   1.0,
+			Duration: 1,
 		})
 	}
 }
