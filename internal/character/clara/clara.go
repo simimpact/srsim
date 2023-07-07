@@ -50,8 +50,10 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 		info:   charInfo,
 	}
 
-    // subscribe counter talen
-    engine.Events().AttackEnd.Subscribe(c.talentCounter)
+	// setup listener for talent counter
+	engine.Events().AttackEnd.Subscribe(c.talentActionEndListener)
+	c.initTalent()
+	c.initTraces()
 
 	return c
 }
