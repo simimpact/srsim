@@ -8,10 +8,14 @@ import {
 } from "@tanstack/react-table";
 import { LucideIcon } from "lucide-react";
 import { useState } from "react";
-import { ColumnSelectFilter, ColumnToggle, DataTable } from "@/components/Primitives/Table/index";
+import {
+  ColumnSelectFilter,
+  ColumnToggle,
+  DataTable,
+  MultipleSelect,
+} from "@/components/Primitives/Table/index";
 import { SimLog } from "@/utils/fetchLog";
 import { columns } from "./columns";
-import { MultipleSelect } from "./MultipleSelect";
 
 interface Props {
   data: SimLog[];
@@ -48,6 +52,7 @@ const LogTab = ({ data }: Props) => {
     { label: "Turn Reset", value: "TurnReset" },
     { label: "Battle Start", value: "BattleStart" },
   ];
+  const eventList = Array.from(new Set(data.map(event => event.name)));
 
   return (
     <>
@@ -60,7 +65,7 @@ const LogTab = ({ data }: Props) => {
               column={table.getColumn("name")}
               buttonPlaceholder="Filter Event"
             />
-            <MultipleSelect data={data} table={table} />
+            <MultipleSelect table={table} options={eventList} columnKey="name" />
 
             <div className="grow" />
           </div>

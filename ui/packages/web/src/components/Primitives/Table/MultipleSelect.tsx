@@ -12,17 +12,20 @@ import {
 } from "@/components/Primitives/Command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/Primitives/Popover";
 import { cn } from "@/utils/classname";
-import { SimLog } from "@/utils/fetchLog";
 
-// TODO: move event mapping to parent, making this component generic
-interface MultipleSelectProps {
-  data: SimLog[];
-  table: Table<SimLog>;
+interface Props<TData, TFilter extends string> {
+  table: Table<TData>;
+  options: TFilter[];
+  columnKey: string;
 }
-const MultipleSelect = ({ data, table }: MultipleSelectProps) => {
+function MultipleSelect<TData, TFilter extends string>({
+  table,
+  options,
+  columnKey,
+}: Props<TData, TFilter>) {
   // removes duplications
-  const options = Array.from(new Set(data.map(event => event.name)));
   const selectedEvents = table.getIsSomePageRowsSelected();
+  const { rows } = table.getRowModel();
 
   return (
     <Popover>
@@ -35,18 +38,18 @@ const MultipleSelect = ({ data, table }: MultipleSelectProps) => {
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup>
-              {options.map(eventName => {
-                const { rows } = table.getRowModel();
-
-                const rowsWithEventName = rows.filter(row => row.getValue("name") == eventName);
+              {options.map(option => {
+                const rowsWithEventName = rows.filter(row => row.getValue(columnKey) == option);
 
                 const isSelected = rowsWithEventName.every(row => row.getIsSelected());
 
                 return (
                   <CommandItem
-                    key={eventName}
+                    key={option as string}
                     onSelect={() => {
-                      const filtered = rows.filter(row => row.getValue("name") == eventName);
+                      // probably will need to pass this filterFn as props for
+                      // more complex selectors
+                      const filtered = rows.filter(row => row.getValue(columnKey) == option);
                       if (filtered.every(row => row.getIsSelected())) {
                         filtered.forEach(row => row.toggleSelected(false));
                       } else filtered.forEach(row => row.toggleSelected(true));
@@ -63,7 +66,7 @@ const MultipleSelect = ({ data, table }: MultipleSelectProps) => {
                       <Check className={cn("h-4 w-4")} />
                     </div>
                     {/* {option.icon && <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />} */}
-                    <span>{eventName}</span>
+                    <span>{option}</span>
                     {/* {facets?.get(option.value) && (
                       <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
                         {facets.get(option.value)}
@@ -91,5 +94,5 @@ const MultipleSelect = ({ data, table }: MultipleSelectProps) => {
       </PopoverContent>
     </Popover>
   );
-};
+}
 export { MultipleSelect };

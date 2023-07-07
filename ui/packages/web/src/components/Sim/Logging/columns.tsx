@@ -47,7 +47,11 @@ export const columns = [
           // careful of the double callback
           onClick={row.getToggleExpandedHandler()}
         >
-          {row.getIsExpanded() ? <ChevronsDownUp /> : <ChevronsUpDown />}
+          {row.getIsExpanded() ? (
+            <ChevronsDownUp className="w-4 h-4" />
+          ) : (
+            <ChevronsUpDown className="w-4 h-4" />
+          )}
         </Toggle>
       ),
   }),
@@ -58,25 +62,25 @@ export const columns = [
       return value.includes(row.original.name);
     },
     cell: ({ row }) => (
-      <Badge variant={row.original.name === "TurnStart" ? "destructive" : "default"}>
+      <Badge variant={row.getIsSelected() ? "destructive" : "default"}>
         {row.getValue("name")}
       </Badge>
     ),
   }),
   columnHelper.accessor(data => data, {
-    id: "event_0",
+    id: "event_key_0",
     cell: props => summarizeBy(props.getValue(), 0),
   }),
   columnHelper.accessor(data => data, {
-    id: "event_1",
+    id: "event_key_1",
     cell: props => summarizeBy(props.getValue(), 1),
   }),
   columnHelper.accessor(data => data, {
-    id: "event_2",
+    id: "event_key_2",
     cell: props => summarizeBy(props.getValue(), 2),
   }),
   columnHelper.accessor(data => data, {
-    id: "event_3",
+    id: "event_key_3",
     cell: props => summarizeBy(props.getValue(), 3),
   }),
 ];
