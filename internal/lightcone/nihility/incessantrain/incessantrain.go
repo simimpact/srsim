@@ -6,13 +6,15 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
-	CritRateMod key.Modifier = "incessant-rain-crit-rate"
-	AetherCode  key.Modifier = "incessant-rain-aether-code"
+	ehrNCritCheck key.Modifier = "incessant-rain-ehr-crit-check"
+	critMod       key.Modifier = "incessant-rain-crit-rate"
+	aetherCode    key.Modifier = "incessant-rain-aether-code"
 )
 
 // Desc : Increases the wearer's Effect Hit Rate by 24%.
@@ -26,10 +28,10 @@ const (
 // EHR perm buff : add it on create.
 // Modifiers :
 // - Crit Rate : Listener = OnBeforeHitAll, check each enemy if it has 3 debuffs => add critrate boost
-// - AetherCode : Listener = OnAfterAction, choose 1 among hit targets on last atk, AetherCode 100% BC
+// - aetherCode : Listener = OnAfterAction, choose 1 among hit targets on last atk, aetherCode 100% BC
 //	 -> check first if target already have AC
 //	=> OnBeforeAction = set cd to 1
-//  => set AetherCode as enemy modifier DmgTakenUp.
+//  => set aetherCode as enemy modifier DmgTakenUp.
 
 func init() {
 	lightcone.Register(key.IncessantRain, lightcone.Config{
@@ -38,34 +40,51 @@ func init() {
 		Path:          model.Path_NIHILITY,
 		Promotions:    promotions,
 	})
-	modifier.Register(CritRateMod, modifier.Config{
+	modifier.Register(ehrNCritCheck, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHitAll: ehrNCrBoost,
+			OnBeforeHitAll: critRateBoost,
 		},
 	})
-	modifier.Register(AetherCode, modifier.Config{
+	modifier.Register(aetherCode, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeAction: resetCooldown,
 			OnAfterAction:  applyDebuffOnce,
 		},
 	})
-}
-
-func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	engine.AddModifier(owner, info.Modifier{
-		Name:   CritRateMod,
-		Source: owner,
+	modifier.Register(critMod, modifier.Config{
+		StatusType: model.StatusType_STATUS_BUFF, // is this critrate boost a mod?
 	})
 }
 
-func ehrNCrBoost(mod *modifier.Instance, e event.HitStart) {
-
+func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
+	ehrAmt := 0.20 + 0.04*float64(lc.Imposition)
+	critAmt := 0.10 + 0.02*float64(lc.Imposition)
+	engine.AddModifier(owner, info.Modifier{
+		Name:   ehrNCritCheck,
+		Source: owner,
+		Stats:  info.PropMap{prop.EffectHitRate: ehrAmt},
+		State:  critAmt,
+	})
 }
 
+// boost CR if enemy has >=3 debuffs
+func critRateBoost(mod *modifier.Instance, e event.HitStart) {
+	debuffCount := float64(e.Hit.Defender.StatusCount(model.StatusType_STATUS_DEBUFF))
+	critRateAmt := mod.State().(float64)
+	if debuffCount >= 3 {
+		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
+			Name:   critMod,
+			Source: mod.Owner(),
+			Stats:  info.PropMap{prop.CritChance: critRateAmt},
+		})
+	}
+}
+// reset aethercode cooldown when char turn is up
 func resetCooldown(mod *modifier.Instance, e event.ActionStart) {
 
 }
 
+// retarget with 1 chosen(among non-AC-applied). apply dmgTakenUp with 100% basechance. cooldown tick.
 func applyDebuffOnce(mod *modifier.Instance, e event.ActionEnd) {
 
 }
