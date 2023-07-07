@@ -8,6 +8,7 @@ import {
 } from "@tanstack/react-table";
 import { LucideIcon } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@/components/Primitives/Button";
 import {
   ColumnSelectFilter,
   ColumnToggle,
@@ -66,6 +67,29 @@ const LogTab = ({ data }: Props) => {
               buttonPlaceholder="Filter Event"
             />
             <MultipleSelect table={table} options={eventList} columnKey="name" />
+
+            <Button
+              onClick={() =>
+                table.getSelectedRowModel().rows.forEach(row => row.toggleExpanded(true))
+              }
+            >
+              Expand Selected
+            </Button>
+            <Button
+              onClick={() =>
+                table.getSelectedRowModel().rows.forEach(row => row.toggleExpanded(false))
+              }
+            >
+              Collapse Selected
+            </Button>
+            <Button
+              onClick={() => {
+                table.toggleAllRowsExpanded(false);
+                table.toggleAllRowsSelected(false);
+              }}
+            >
+              Reset Selection & Expand
+            </Button>
 
             <div className="grow" />
           </div>
