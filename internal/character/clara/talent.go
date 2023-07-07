@@ -79,8 +79,8 @@ func (c *char) talentActionEndListener(e event.AttackEnd) {
 		return
 	}
 
-	if !c.canCounter(e) && c.info.Eidolon >= 4 {
-		c.e4()
+	if !c.canCounter(e) {
+		c.e6()
 	}
 
 	c.doCounter(attackerId)
@@ -119,7 +119,7 @@ func (c *char) doCounter(attackerId key.TargetID) {
 //
 // - if clara is not targeted -> no counter
 //
-// - clara targeted OR E4 + winning E4 50/50 -> counter
+// - clara targeted OR E6 + winning E6 50/50 -> counter
 func (c *char) canCounter(e event.AttackEnd) bool {
 	isClara := false
 	for _, target := range e.Targets {
@@ -127,7 +127,7 @@ func (c *char) canCounter(e event.AttackEnd) bool {
 			isClara = true
 		}
 	}
-	if isClara || (c.info.Eidolon >= 4 && c.engine.Rand().Float32() < 0.5) {
+	if isClara || (c.info.Eidolon == 6 && c.engine.Rand().Float32() < 0.5) {
 		return true
 	}
 	return false
