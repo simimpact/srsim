@@ -22,7 +22,7 @@ func init() {
 }
 
 func (c *char) a4() {
-	if c.info.Traces["1108102"] {
+	if c.info.Traces["102"] {
 		c.engine.ModifyEnergy(c.id, 10)
 	}
 }
@@ -34,7 +34,7 @@ func A6OnBeforeBeingHitAll(mod *modifier.Instance, e event.HitStart) {
 }
 
 func (c *char) initTraces() {
-	if c.info.Traces["1108103"] {
+	if c.info.Traces["103"] {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:   A6,
 			Source: c.id,

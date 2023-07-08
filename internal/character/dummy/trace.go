@@ -6,61 +6,61 @@ import (
 )
 
 var traces = character.TraceMap{
-	"1201101": {
+	"101": {
 		Ascension: 2,
 	},
-	"1201102": {
+	"102": {
 		Ascension: 4,
 	},
-	"1201103": {
+	"103": {
 		Ascension: 6,
 	},
-	"1201201": {
+	"201": {
 		Stat:   prop.ATKPercent,
 		Amount: 0.04,
 		Level:  1,
 	},
-	"1201202": {
+	"202": {
 		Stat:      prop.QuantumDamagePercent,
 		Amount:    0.032,
 		Ascension: 2,
 	},
-	"1201203": {
+	"203": {
 		Stat:      prop.ATKPercent,
 		Amount:    0.0400,
 		Ascension: 3,
 	},
-	"1201204": {
+	"204": {
 		Stat:      prop.DEFPercent,
 		Amount:    0.0500,
 		Ascension: 3,
 	},
-	"1201205": {
+	"205": {
 		Stat:      prop.ATKPercent,
 		Amount:    0.0600,
 		Ascension: 5,
 	},
-	"1201206": {
+	"206": {
 		Stat:      prop.QuantumDamagePercent,
 		Amount:    0.0480,
 		Ascension: 5,
 	},
-	"1201207": {
+	"207": {
 		Stat:      prop.ATKPercent,
 		Amount:    0.0600,
 		Ascension: 5,
 	},
-	"1201208": {
+	"208": {
 		Stat:      prop.DEFPercent,
 		Amount:    0.0750,
 		Ascension: 6,
 	},
-	"1201209": {
+	"209": {
 		Stat:   prop.QuantumDamagePercent,
 		Amount: 0.0640,
 		Level:  75,
 	},
-	"1201210": {
+	"210": {
 		Stat:   prop.ATKPercent,
 		Amount: 0.0800,
 		Level:  80,
@@ -68,19 +68,19 @@ var traces = character.TraceMap{
 }
 
 func (c *char) a2() {
-	if !c.info.Traces["1201101"] {
+	if !c.info.Traces["101"] {
 		return
 	}
 }
 
 func (c *char) a4() {
-	if !c.info.Traces["1201102"] {
+	if !c.info.Traces["102"] {
 		return
 	}
 }
 
 func (c *char) a6() {
-	if !c.info.Traces["1201103"] {
+	if !c.info.Traces["103"] {
 		return
 	}
 }
