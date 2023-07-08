@@ -165,7 +165,7 @@ func (mgr *Manager) subscribe() {
 }
 
 func (mgr *Manager) emitPropertyChange(target key.TargetID) {
-	for _, mod := range mgr.targets[target] {
+	for _, mod := range mgr.itr(target) {
 		f := mod.listeners.OnPropertyChange
 		if f != nil {
 			f(mod)
@@ -229,14 +229,14 @@ func (mgr *Manager) emitExtendCount(target key.TargetID, mod *Instance, old floa
 }
 
 func (mgr *Manager) attackStart(e event.AttackStart) {
-	for _, mod := range mgr.targets[e.Attacker] {
+	for _, mod := range mgr.itr(e.Attacker) {
 		f := mod.listeners.OnBeforeAttack
 		if f != nil {
 			f(mod, e)
 		}
 	}
 	for _, target := range e.Targets {
-		for _, mod := range mgr.targets[target] {
+		for _, mod := range mgr.itr(target) {
 			f := mod.listeners.OnBeforeBeingAttacked
 			if f != nil {
 				f(mod, e)
@@ -246,14 +246,14 @@ func (mgr *Manager) attackStart(e event.AttackStart) {
 }
 
 func (mgr *Manager) attackEnd(e event.AttackEnd) {
-	for _, mod := range mgr.targets[e.Attacker] {
+	for _, mod := range mgr.itr(e.Attacker) {
 		f := mod.listeners.OnAfterAttack
 		if f != nil {
 			f(mod, e)
 		}
 	}
 	for _, target := range e.Targets {
-		for _, mod := range mgr.targets[target] {
+		for _, mod := range mgr.itr(target) {
 			f := mod.listeners.OnAfterBeingAttacked
 			if f != nil {
 				f(mod, e)
@@ -266,7 +266,7 @@ func (mgr *Manager) hitStart(e event.HitStart) {
 	qualified := e.Hit.AttackType.IsQualified()
 	snapshot := e.Hit.UseSnapshot
 
-	for _, mod := range mgr.targets[e.Attacker] {
+	for _, mod := range mgr.itr(e.Attacker) {
 		if snapshot && !mod.modifySnapshot {
 			continue
 		}
@@ -282,7 +282,7 @@ func (mgr *Manager) hitStart(e event.HitStart) {
 		}
 	}
 
-	for _, mod := range mgr.targets[e.Defender] {
+	for _, mod := range mgr.itr(e.Defender) {
 		if snapshot && !mod.modifySnapshot {
 			continue
 		}
@@ -303,7 +303,7 @@ func (mgr *Manager) hitEnd(e event.HitEnd) {
 	qualified := e.AttackType.IsQualified()
 	snapshot := e.UseSnapshot
 
-	for _, mod := range mgr.targets[e.Attacker] {
+	for _, mod := range mgr.itr(e.Attacker) {
 		if snapshot && !mod.modifySnapshot {
 			continue
 		}
@@ -319,7 +319,7 @@ func (mgr *Manager) hitEnd(e event.HitEnd) {
 		}
 	}
 
-	for _, mod := range mgr.targets[e.Defender] {
+	for _, mod := range mgr.itr(e.Defender) {
 		if snapshot && !mod.modifySnapshot {
 			continue
 		}
@@ -339,7 +339,7 @@ func (mgr *Manager) hitEnd(e event.HitEnd) {
 func (mgr *Manager) healStart(e *event.HealStart) {
 	snapshot := e.UseSnapshot
 
-	for _, mod := range mgr.targets[e.Healer.ID()] {
+	for _, mod := range mgr.itr(e.Healer.ID()) {
 		if snapshot && !mod.modifySnapshot {
 			continue
 		}
@@ -350,7 +350,7 @@ func (mgr *Manager) healStart(e *event.HealStart) {
 		}
 	}
 
-	for _, mod := range mgr.targets[e.Target.ID()] {
+	for _, mod := range mgr.itr(e.Target.ID()) {
 		if snapshot && !mod.modifySnapshot {
 			continue
 		}
@@ -365,7 +365,7 @@ func (mgr *Manager) healStart(e *event.HealStart) {
 func (mgr *Manager) healEnd(e event.HealEnd) {
 	snapshot := e.UseSnapshot
 
-	for _, mod := range mgr.targets[e.Healer] {
+	for _, mod := range mgr.itr(e.Healer) {
 		if snapshot && !mod.modifySnapshot {
 			continue
 		}
@@ -376,7 +376,7 @@ func (mgr *Manager) healEnd(e event.HealEnd) {
 		}
 	}
 
-	for _, mod := range mgr.targets[e.Target] {
+	for _, mod := range mgr.itr(e.Target) {
 		if snapshot && !mod.modifySnapshot {
 			continue
 		}
@@ -389,7 +389,7 @@ func (mgr *Manager) healEnd(e event.HealEnd) {
 }
 
 func (mgr *Manager) hpChange(e event.HPChange) {
-	for _, mod := range mgr.targets[e.Target] {
+	for _, mod := range mgr.itr(e.Target) {
 		f := mod.listeners.OnHPChange
 		if f != nil {
 			f(mod, e)
@@ -398,7 +398,7 @@ func (mgr *Manager) hpChange(e event.HPChange) {
 }
 
 func (mgr *Manager) limboWaitHeal(e event.LimboWaitHeal) bool {
-	for _, mod := range mgr.targets[e.Target] {
+	for _, mod := range mgr.itr(e.Target) {
 		f := mod.listeners.OnLimboWaitHeal
 		if f != nil {
 			result := f(mod)
@@ -411,14 +411,14 @@ func (mgr *Manager) limboWaitHeal(e event.LimboWaitHeal) bool {
 }
 
 func (mgr *Manager) targetDeath(e event.TargetDeath) {
-	for _, mod := range mgr.targets[e.Target] {
+	for _, mod := range mgr.itr(e.Target) {
 		f := mod.listeners.OnBeforeDying
 		if f != nil {
 			f(mod)
 		}
 	}
 
-	for _, mod := range mgr.targets[e.Killer] {
+	for _, mod := range mgr.itr(e.Killer) {
 		f := mod.listeners.OnTriggerDeath
 		if f != nil {
 			f(mod, e.Target)
@@ -427,7 +427,7 @@ func (mgr *Manager) targetDeath(e event.TargetDeath) {
 }
 
 func (mgr *Manager) energyChange(e event.EnergyChange) {
-	for _, mod := range mgr.targets[e.Target] {
+	for _, mod := range mgr.itr(e.Target) {
 		f := mod.listeners.OnEnergyChange
 		if f != nil {
 			f(mod, e)
@@ -436,7 +436,7 @@ func (mgr *Manager) energyChange(e event.EnergyChange) {
 }
 
 func (mgr *Manager) stanceChange(e event.StanceChange) {
-	for _, mod := range mgr.targets[e.Target] {
+	for _, mod := range mgr.itr(e.Target) {
 		f := mod.listeners.OnStanceChange
 		if f != nil {
 			f(mod, e)
@@ -445,13 +445,13 @@ func (mgr *Manager) stanceChange(e event.StanceChange) {
 }
 
 func (mgr *Manager) stanceBreak(e event.StanceBreak) {
-	for _, mod := range mgr.targets[e.Source] {
+	for _, mod := range mgr.itr(e.Source) {
 		f := mod.listeners.OnTriggerBreak
 		if f != nil {
 			f(mod, e.Target)
 		}
 	}
-	for _, mod := range mgr.targets[e.Target] {
+	for _, mod := range mgr.itr(e.Target) {
 		f := mod.listeners.OnBeingBreak
 		if f != nil {
 			f(mod)
@@ -460,7 +460,7 @@ func (mgr *Manager) stanceBreak(e event.StanceBreak) {
 }
 
 func (mgr *Manager) stanceBreakEnd(e event.StanceReset) {
-	for _, mod := range mgr.targets[e.Target] {
+	for _, mod := range mgr.itr(e.Target) {
 		f := mod.listeners.OnEndBreak
 		if f != nil {
 			f(mod)
@@ -469,7 +469,7 @@ func (mgr *Manager) stanceBreakEnd(e event.StanceReset) {
 }
 
 func (mgr *Manager) actionStart(e event.ActionStart) {
-	for _, mod := range mgr.targets[e.Owner] {
+	for _, mod := range mgr.itr(e.Owner) {
 		f := mod.listeners.OnBeforeAction
 		if f != nil {
 			f(mod, e)
@@ -478,7 +478,7 @@ func (mgr *Manager) actionStart(e event.ActionStart) {
 }
 
 func (mgr *Manager) actionEnd(e event.ActionEnd) {
-	for _, mod := range mgr.targets[e.Owner] {
+	for _, mod := range mgr.itr(e.Owner) {
 		f := mod.listeners.OnAfterAction
 		if f != nil {
 			f(mod, e)
@@ -487,7 +487,7 @@ func (mgr *Manager) actionEnd(e event.ActionEnd) {
 }
 
 func (mgr *Manager) shieldAdded(e event.ShieldAdded) {
-	for _, mod := range mgr.targets[e.Info.Target] {
+	for _, mod := range mgr.itr(e.Info.Target) {
 		f := mod.listeners.OnShieldAdded
 		if f != nil {
 			f(mod, e)
@@ -496,7 +496,7 @@ func (mgr *Manager) shieldAdded(e event.ShieldAdded) {
 }
 
 func (mgr *Manager) shieldRemoved(e event.ShieldRemoved) {
-	for _, mod := range mgr.targets[e.Target] {
+	for _, mod := range mgr.itr(e.Target) {
 		f := mod.listeners.OnShieldRemoved
 		if f != nil {
 			f(mod, e)

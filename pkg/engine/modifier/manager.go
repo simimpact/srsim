@@ -63,3 +63,10 @@ func (mgr *Manager) GetModifiers(target key.TargetID, name key.Modifier) []info.
 	}
 	return out
 }
+
+// makes a copy for safe iteration
+func (mgr *Manager) itr(target key.TargetID) activeModifiers {
+	out := make(activeModifiers, len(mgr.targets[target]))
+	copy(out, mgr.targets[target])
+	return out
+}
