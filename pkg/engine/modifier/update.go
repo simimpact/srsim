@@ -5,7 +5,7 @@ import (
 )
 
 func (mgr *Manager) ExtendDuration(target key.TargetID, modifier key.Modifier, amt int) {
-	for _, mod := range mgr.targets[target] {
+	for _, mod := range mgr.itr(target) {
 		if mod.name == modifier {
 			old := mod.duration
 			mod.duration += amt
@@ -15,12 +15,9 @@ func (mgr *Manager) ExtendDuration(target key.TargetID, modifier key.Modifier, a
 }
 
 func (mgr *Manager) ExtendCount(target key.TargetID, modifier key.Modifier, amt float64) {
-	i := 0
-	var removedMods []*Instance
+	// update counts
 	for _, mod := range mgr.targets[target] {
 		if mod.name != modifier {
-			mgr.targets[target][i] = mod
-			i++
 			continue
 		}
 
@@ -30,8 +27,13 @@ func (mgr *Manager) ExtendCount(target key.TargetID, modifier key.Modifier, amt 
 			mod.count = mod.maxCount
 		}
 		mgr.emitExtendCount(target, mod, old)
+	}
 
-		if mod.count <= 0 {
+	// remove any updated that have 0 counts
+	i := 0
+	var removedMods []*Instance
+	for _, mod := range mgr.targets[target] {
+		if mod.name == modifier && mod.count <= 0 {
 			removedMods = append(removedMods, mod)
 		} else {
 			mgr.targets[target][i] = mod
