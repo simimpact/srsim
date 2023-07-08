@@ -116,7 +116,6 @@ func (mgr *Manager) replaceBySource(target key.TargetID, instance *Instance) *In
 			// replace means this added instance is the new instance (can have new param values)
 			instance.count = stackCount(instance, mod.count)
 			mgr.targets[target][i] = instance
-			mgr.emitRemove(target, []*Instance{mod})
 			return instance
 		}
 	}
@@ -131,7 +130,6 @@ func (mgr *Manager) replace(target key.TargetID, instance *Instance) *Instance {
 			// replace means this added instance is the new instance (can have new param values)
 			instance.count = stackCount(instance, mod.count)
 			mgr.targets[target][i] = instance
-			mgr.emitRemove(target, []*Instance{mod})
 			return instance
 		}
 	}
