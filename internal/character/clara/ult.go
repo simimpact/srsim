@@ -14,7 +14,7 @@ const (
 	UltCounter key.Modifier = "clara-ult-enhanced-counter"
 )
 
-type ultCounterNum (int)
+type ultCounterNum int
 
 func init() {
 	modifier.Register(Ult, modifier.Config{
@@ -26,7 +26,7 @@ func init() {
 				state := mod.State().(State)
 
 				// extra res
-				mod.AddProperty(prop.AllDamageReduce, ult_cut[state.ultLevelIndex])
+				mod.AddProperty(prop.AllDamageReduce, ultCut[state.ultLevelIndex])
 				// extra aggro
 				mod.AddProperty(prop.AggroPercent, 5)
 
@@ -36,8 +36,9 @@ func init() {
 				}
 
 				mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-					Name:  UltCounter,
-					State: ultCounterNum(amt),
+					Name:   UltCounter,
+					Source: mod.Owner(),
+					State:  ultCounterNum(amt),
 				})
 			},
 		},

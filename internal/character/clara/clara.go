@@ -58,6 +58,7 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 	// setup listener for talent counter
 	engine.Events().AttackEnd.Subscribe(c.talentActionEndListener)
 	c.initTalent()
+	c.initEidolons()
 	c.initTraces()
 
 	return c

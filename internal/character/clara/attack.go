@@ -10,6 +10,7 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 	c.engine.Attack(info.Attack{
 		Source:     c.id,
 		Targets:    []key.TargetID{target},
+		AttackType: model.AttackType_NORMAL,
 		DamageType: model.DamageType_PHYSICAL,
 		BaseDamage: info.DamageMap{
 			model.DamageFormula_BY_ATK: atk[c.info.AttackLevelIndex()],

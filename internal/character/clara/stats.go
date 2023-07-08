@@ -48,7 +48,7 @@ var (
 		1.5,
 	}
 
-	ult_dmg_boost = []float64{
+	ultDmgBoost = []float64{
 		0.96,
 		1.024,
 		1.088,
@@ -66,7 +66,7 @@ var (
 		1.92,
 	}
 
-	ult_cut = []float64{
+	ultCut = []float64{
 		0.15,
 		0.16,
 		0.17,
