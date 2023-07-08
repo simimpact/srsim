@@ -12,8 +12,7 @@ import (
 )
 
 const (
-	ehrNCritCheck    key.Modifier = "incessant-rain-ehr-crit-check"
-	critMod          key.Modifier = "incessant-rain-crit-rate"
+	rain             key.Modifier = "incessant-rain"
 	aetherCodeApply  key.Modifier = "incessant-rain-aether-code-applier"
 	aetherCodeDebuff key.Modifier = "incessant-rain-aether-code-debuff"
 )
@@ -31,13 +30,10 @@ func init() {
 		Path:          model.Path_NIHILITY,
 		Promotions:    promotions,
 	})
-	modifier.Register(ehrNCritCheck, modifier.Config{
+	modifier.Register(rain, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: critRateBoost,
 		},
-	})
-	modifier.Register(critMod, modifier.Config{
-		StatusType: model.StatusType_STATUS_BUFF, // is this critrate boost a "real buff"?
 	})
 	modifier.Register(aetherCodeApply, modifier.Config{
 		Listeners: modifier.Listeners{
@@ -54,7 +50,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	ehrAmt := 0.20 + 0.04*float64(lc.Imposition)
 	critAmt := 0.10 + 0.02*float64(lc.Imposition)
 	engine.AddModifier(owner, info.Modifier{
-		Name:   ehrNCritCheck,
+		Name:   rain,
 		Source: owner,
 		Stats:  info.PropMap{prop.EffectHitRate: ehrAmt},
 		State:  critAmt,
@@ -73,11 +69,7 @@ func critRateBoost(mod *modifier.Instance, e event.HitStart) {
 	debuffCount := float64(e.Hit.Defender.StatusCount(model.StatusType_STATUS_DEBUFF))
 	critRateAmt := mod.State().(float64)
 	if debuffCount >= 3 {
-		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-			Name:   critMod,
-			Source: mod.Owner(),
-			Stats:  info.PropMap{prop.CritChance: critRateAmt},
-		})
+		e.Hit.Defender.AddProperty(prop.CritChance, critRateAmt)
 	}
 }
 
