@@ -43,6 +43,11 @@ type char struct {
 	info   info.Character
 }
 
+type State struct {
+	skillLevelIndex int
+	ultLevelIndex   int
+}
+
 func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character) info.CharInstance {
 	c := &char{
 		engine: engine,

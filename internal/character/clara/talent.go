@@ -26,15 +26,6 @@ const (
 //
 // onAfterAttack: + follow-up attack
 func init() {
-	modifier.Register(TalentRes, modifier.Config{
-		Listeners: modifier.Listeners{
-			// damage reduction
-			OnAdd: func(mod *modifier.Instance) {
-				mod.AddProperty(prop.AllDamageReduce, 0.1)
-			},
-		},
-	})
-
 	modifier.Register(TalentCounter, modifier.Config{
 		Listeners: modifier.Listeners{
 			// add marker modifier on attacker enemy
@@ -79,29 +70,56 @@ func (c *char) talentActionEndListener(e event.AttackEnd) {
 		return
 	}
 
-	if !c.canCounter(e) {
-		c.e6()
+	if c.canCounter(e) {
+		c.doCounter(attackerId)
 	}
-
-	c.doCounter(attackerId)
 }
 
-// executes the follow-up attack, this is the same follow-up attack for both
-// talent and e4
+// executes the follow-up attack,
+// NOTE: follow-up attack is same for both talent and e6
 func (c *char) doCounter(attackerId key.TargetID) {
 	c.engine.InsertAbility(info.Insert{
 		Execute: func() {
+			// DamageMaps
+			normalDamage := info.DamageMap{
+				model.DamageFormula_BY_ATK: talent[c.info.TalentLevelIndex()],
+			}
+			enhancedDamage := info.DamageMap{
+				model.DamageFormula_BY_ATK: talent[c.info.TalentLevelIndex()] +
+					ult_dmg_boost[c.info.UltLevelIndex()],
+			}
+			mainTargetDamage := normalDamage
+
+			if c.engine.HasModifier(c.id, UltCounter) {
+				mainTargetDamage = enhancedDamage
+			}
+
+			// normal counter, damage
 			c.engine.Attack(info.Attack{
-				Source:     c.id,
-				Targets:    []key.TargetID{attackerId},
-				DamageType: model.DamageType_PHYSICAL,
-				AttackType: model.AttackType_INSERT,
-				BaseDamage: info.DamageMap{
-					model.DamageFormula_BY_ATK: talent[c.info.TalentLevelIndex()],
-				},
+				Source:       c.id,
+				Targets:      []key.TargetID{attackerId},
+				DamageType:   model.DamageType_PHYSICAL,
+				AttackType:   model.AttackType_INSERT,
+				BaseDamage:   mainTargetDamage,
 				StanceDamage: 30.0,
 				EnergyGain:   5.0,
 			})
+
+			// enhanced counter, damage to adjacent
+			// NOTE: in-game wording = damage value is based on main target's def
+			// mhy memes ?
+			if c.engine.HasModifier(c.id, UltCounter) {
+				splashDamage := info.DamageMap{model.DamageFormula_BY_ATK: (talent[c.info.TalentLevelIndex()] + ult_dmg_boost[c.info.UltLevelIndex()]) * 0.5}
+
+				c.engine.Attack(info.Attack{
+					Source:       c.id,
+					Targets:      c.engine.AdjacentTo(attackerId),
+					DamageType:   model.DamageType_PHYSICAL,
+					AttackType:   model.AttackType_INSERT,
+					BaseDamage:   splashDamage,
+					StanceDamage: 30.0,
+				})
+			}
 		},
 		Source:     c.id,
 		Priority:   info.CharInsertAttackSelf,
@@ -112,12 +130,31 @@ func (c *char) doCounter(attackerId key.TargetID) {
 	c.engine.AddModifier(attackerId, info.Modifier{
 		Name:   TalentMark,
 		Source: c.id,
+		State:  State{skillLevelIndex: c.info.SkillLevelIndex()},
 	})
+}
+
+func enemyBeingAttacked(mod *modifier.Instance, e event.AttackEnd) {
+	state := mod.State().(State)
+	// clara is the source of TalentMark
+	clara := mod.Source()
+	// attacked by clara's skill
+	if e.AttackType == model.AttackType_SKILL && e.Attacker == clara {
+		mod.Engine().Attack(info.Attack{
+			Source:     clara,
+			Targets:    []key.TargetID{mod.Owner()},
+			DamageType: model.DamageType_PHYSICAL,
+			AttackType: model.AttackType_PURSUED,
+			BaseDamage: info.DamageMap{
+				model.DamageFormula_BY_ATK: skill[state.skillLevelIndex],
+			},
+		})
+	}
 }
 
 // helper fn to see if a counter is eligible
 //
-// - if clara is not targeted -> no counter
+// - if clara is not targeted AND < E6 -> no counter
 //
 // - clara targeted OR E6 + winning E6 50/50 -> counter
 func (c *char) canCounter(e event.AttackEnd) bool {
@@ -127,7 +164,7 @@ func (c *char) canCounter(e event.AttackEnd) bool {
 			isClara = true
 		}
 	}
-	if isClara || (c.info.Eidolon == 6 && c.engine.Rand().Float32() < 0.5) {
+	if isClara || (c.engine.HasModifier(c.id, E6) && c.engine.Rand().Float32() < 0.5) {
 		return true
 	}
 	return false
