@@ -102,61 +102,61 @@ var promotions = []character.PromotionData{
 }
 
 var traces = character.TraceMap{
-	"1106101": {
+	"101": {
 		Ascension: 2,
 	},
-	"1106102": {
+	"102": {
 		Ascension: 4,
 	},
-	"1106103": {
+	"103": {
 		Ascension: 6,
 	},
-	"1106201": {
+	"201": {
 		Stat: prop.IceDamagePercent,
 		Amount: 0.031999999890103936,
 		Level: 1,
 	},
-	"1106202": {
+	"202": {
 		Stat: prop.ATKPercent,
 		Amount: 0.0400000000372529,
 		Ascension: 2,
 	},
-	"1106203": {
+	"203": {
 		Stat: prop.IceDamagePercent,
 		Amount: 0.031999999890103936,
 		Ascension: 3,
 	},
-	"1106204": {
+	"204": {
 		Stat: prop.EffectHitRate,
 		Amount: 0.0400000000372529,
 		Ascension: 3,
 	},
-	"1106205": {
+	"205": {
 		Stat: prop.IceDamagePercent,
 		Amount: 0.04799999948590994,
 		Ascension: 4,
 	},
-	"1106206": {
+	"206": {
 		Stat: prop.ATKPercent,
 		Amount: 0.060000000055879354,
 		Ascension: 5,
 	},
-	"1106207": {
+	"207": {
 		Stat: prop.IceDamagePercent,
 		Amount: 0.04799999948590994,
 		Ascension: 5,
 	},
-	"1106208": {
+	"208": {
 		Stat: prop.EffectHitRate,
 		Amount: 0.060000000055879354,
 		Ascension: 6,
 	},
-	"1106209": {
+	"209": {
 		Stat: prop.ATKPercent,
 		Amount: 0.0800000000745058,
 		Level: 75,
 	},
-	"1106210": {
+	"210": {
 		Stat: prop.IceDamagePercent,
 		Amount: 0.06399999978020787,
 		Level: 80,
