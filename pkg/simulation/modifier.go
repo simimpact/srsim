@@ -40,7 +40,7 @@ func (sim *Simulation) HasModifier(target key.TargetID, modifier key.Modifier) b
 	return sim.Modifier.HasModifier(target, modifier)
 }
 
-func (sim *Simulation) ModifierCount(target key.TargetID, statusType model.StatusType) int {
+func (sim *Simulation) ModifierStatusCount(target key.TargetID, statusType model.StatusType) int {
 	state := sim.Modifier.EvalModifiers(target)
 	return state.Counts[statusType]
 }
@@ -51,4 +51,8 @@ func (sim *Simulation) HasBehaviorFlag(target key.TargetID, flags ...model.Behav
 
 func (sim *Simulation) GetModifiers(target key.TargetID, modifier key.Modifier) []info.Modifier {
 	return sim.Modifier.GetModifiers(target, modifier)
+}
+
+func (sim *Simulation) ModifierStackCount(opts info.ModifierStackCount) float64 {
+	return sim.Modifier.ModifierStackCount(opts)
 }

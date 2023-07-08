@@ -64,6 +64,16 @@ func (mgr *Manager) GetModifiers(target key.TargetID, name key.Modifier) []info.
 	return out
 }
 
+func (mgr *Manager) ModifierStackCount(opts info.ModifierStackCount) float64 {
+	count := 0.0
+	for _, mod := range mgr.targets[opts.Target] {
+		if mod.name == opts.Modifier && mod.source == opts.Source {
+			count += mod.count
+		}
+	}
+	return count
+}
+
 // makes a copy for safe iteration
 func (mgr *Manager) itr(target key.TargetID) activeModifiers {
 	out := make(activeModifiers, len(mgr.targets[target]))

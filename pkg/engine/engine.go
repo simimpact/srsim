@@ -61,7 +61,11 @@ type Modifier interface {
 	HasModifier(target key.TargetID, modifier key.Modifier) bool
 
 	// Returns the total count of modifiers that are of the given StatusType (Buff or Debuff)
-	ModifierCount(target key.TargetID, statusType model.StatusType) int
+	ModifierStatusCount(target key.TargetID, statusType model.StatusType) int
+
+	// Returns the number of stacks for a given modifier that was from the given source. This should
+	// only be used when accessing the modifier from outside the instance.
+	ModifierStackCount(opts info.ModifierStackCount) float64
 
 	// Returns true if the target has the given behavior flag from an attached modifier. If multiple
 	// flags are passed, will return true if at least one is attached

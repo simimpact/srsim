@@ -63,6 +63,17 @@ type Modifier struct {
 	Weakness WeaknessMap `exhaustruct:"optional" json:"weakness"`
 }
 
+type ModifierStackCount struct {
+	// Modifier to count the stacks of
+	Modifier key.Modifier `json:"modifier"`
+
+	// Target to read stack counts from
+	Target key.TargetID `json:"target"`
+
+	// The source of the modifier to get counts of
+	Source key.TargetID `json:"source"`
+}
+
 type Dispel struct {
 	// what type of modifiers should be dispelled (BUFF, DEBUFF, or OTHER)
 	Status model.StatusType `json:"status"`
