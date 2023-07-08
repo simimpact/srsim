@@ -57,13 +57,10 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		Stats:  info.PropMap{prop.EffectHitRate: ehrAmt},
 		State:  critAmt,
 	})
-	// Aether Code applier
+	// Aether Code state setter
 	dmgTakenAmt := 0.10 + 0.02*float64(lc.Imposition)
-	engine.AddModifier(owner, info.Modifier{
-		Name:   code,
-		Source: owner,
-		State:  dmgTakenAmt,
-	})
+	state.amt = dmgTakenAmt
+	state.targets = nil
 }
 
 // boost CR on current hit if enemy has >=3 debuffs
