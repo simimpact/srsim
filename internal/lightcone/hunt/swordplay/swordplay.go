@@ -60,11 +60,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 
 func onBeforeHit(mod *modifier.Instance, e event.HitStart) {
 	if !mod.Engine().HasModifierFromSource(e.Defender, mod.Owner(), Target) {
-		stacks := mod.Engine().ModifierStackCount(info.ModifierStackCount{
-			Target:   mod.Owner(),
-			Source:   mod.Owner(),
-			Modifier: Buff,
-		})
+		stacks := mod.Engine().ModifierStackCount(mod.Owner(), mod.Owner(), Buff)
 		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, -mod.State().(float64)*stacks)
 		mod.Engine().RemoveModifier(mod.Owner(), Buff)
 
@@ -80,12 +76,7 @@ func onBeforeHit(mod *modifier.Instance, e event.HitStart) {
 }
 
 func onAfterHit(mod *modifier.Instance, e event.HitEnd) {
-	stacks := mod.Engine().ModifierStackCount(info.ModifierStackCount{
-		Target:   mod.Owner(),
-		Source:   mod.Owner(),
-		Modifier: Buff,
-	})
-	if stacks == 5 {
+	if mod.Engine().ModifierStackCount(mod.Owner(), mod.Owner(), Buff) == 5 {
 		return
 	}
 

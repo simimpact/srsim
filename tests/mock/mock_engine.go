@@ -479,17 +479,17 @@ func (mr *MockEngineMockRecorder) MaxEnergy(arg0 interface{}) *gomock.Call {
 }
 
 // ModifierStackCount mocks base method.
-func (m *MockEngine) ModifierStackCount(arg0 info.ModifierStackCount) float64 {
+func (m *MockEngine) ModifierStackCount(arg0, arg1 key.TargetID, arg2 key.Modifier) float64 {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ModifierStackCount", arg0)
+	ret := m.ctrl.Call(m, "ModifierStackCount", arg0, arg1, arg2)
 	ret0, _ := ret[0].(float64)
 	return ret0
 }
 
 // ModifierStackCount indicates an expected call of ModifierStackCount.
-func (mr *MockEngineMockRecorder) ModifierStackCount(arg0 interface{}) *gomock.Call {
+func (mr *MockEngineMockRecorder) ModifierStackCount(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifierStackCount", reflect.TypeOf((*MockEngine)(nil).ModifierStackCount), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifierStackCount", reflect.TypeOf((*MockEngine)(nil).ModifierStackCount), arg0, arg1, arg2)
 }
 
 // ModifierStatusCount mocks base method.

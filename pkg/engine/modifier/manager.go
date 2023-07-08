@@ -73,10 +73,10 @@ func (mgr *Manager) GetModifiers(target key.TargetID, name key.Modifier) []info.
 	return out
 }
 
-func (mgr *Manager) ModifierStackCount(opts info.ModifierStackCount) float64 {
+func (mgr *Manager) ModifierStackCount(target, source key.TargetID, modifier key.Modifier) float64 {
 	count := 0.0
-	for _, mod := range mgr.targets[opts.Target] {
-		if mod.name == opts.Modifier && mod.source == opts.Source {
+	for _, mod := range mgr.targets[target] {
+		if mod.name == modifier && mod.source == source {
 			count += mod.count
 		}
 	}

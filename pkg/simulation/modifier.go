@@ -57,6 +57,6 @@ func (sim *Simulation) GetModifiers(target key.TargetID, modifier key.Modifier) 
 	return sim.Modifier.GetModifiers(target, modifier)
 }
 
-func (sim *Simulation) ModifierStackCount(opts info.ModifierStackCount) float64 {
-	return sim.Modifier.ModifierStackCount(opts)
+func (sim *Simulation) ModifierStackCount(target, source key.TargetID, modifier key.Modifier) float64 {
+	return sim.Modifier.ModifierStackCount(target, source, modifier)
 }

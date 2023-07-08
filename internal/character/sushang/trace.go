@@ -85,13 +85,7 @@ func a4OnBeforeHitAll(mod *modifier.Instance, e event.HitStart) {
 }
 
 func (c *char) a4AddStack() {
-	stacks := c.engine.ModifierStackCount(info.ModifierStackCount{
-		Target:   c.id,
-		Source:   c.id,
-		Modifier: A4Buff,
-	})
-
-	if stacks == 10 {
+	if c.engine.ModifierStackCount(c.id, c.id, A4Buff) == 10 {
 		return
 	}
 
