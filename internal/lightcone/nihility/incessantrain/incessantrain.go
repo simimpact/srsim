@@ -12,9 +12,14 @@ import (
 )
 
 const (
-	rain    key.Modifier = "incessant-rain"
-	code	key.Modifier = "aether-code"
+	rain key.Modifier = "incessant-rain"
+	code key.Modifier = "aether-code"
 )
+
+type state struct {
+	amt     float64
+	targets []key.TargetID // set to nil in Create
+}
 
 // Desc : Increases the wearer's Effect Hit Rate by 24%.
 // When the wearer deals DMG to an enemy that currently has 3 or more debuffs,
@@ -32,13 +37,13 @@ func init() {
 	modifier.Register(rain, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: critRateBoost,
-			OnAfterAttack: fetchHitEnemies,
-			OnAfterAction: applyDebuffOnce,
+			OnAfterAttack:  fetchHitEnemies,
+			OnAfterAction:  applyDebuffOnce,
 		},
 	})
 	modifier.Register(code, modifier.Config{
 		StatusType: model.StatusType_STATUS_DEBUFF,
-		Stacking: modifier.Replace,
+		Stacking:   modifier.Replace,
 	})
 }
 
@@ -61,7 +66,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-// boost CR if enemy has >=3 debuffs
+// boost CR on current hit if enemy has >=3 debuffs
 func critRateBoost(mod *modifier.Instance, e event.HitStart) {
 	debuffCount := float64(e.Hit.Defender.StatusCount(model.StatusType_STATUS_DEBUFF))
 	critRateAmt := mod.State().(float64)
@@ -70,34 +75,35 @@ func critRateBoost(mod *modifier.Instance, e event.HitStart) {
 	}
 }
 
-// fetch the list of all hit enemies by this attack
+// fetch the list of all enemies hit by this attack
 func fetchHitEnemies(mod *modifier.Instance, e event.AttackEnd) {
-
+	state := mod.State().(*state)
+	state.targets = e.Targets
 }
 
 // retarget with 1 chosen(among non-AC-applied). apply dmgTakenUp with 100% basechance. cooldown tick.
-func applyDebuffOnce(mod *modifier.Instance, e event.AttackEnd) {
-	// fetch enemy list hit by this attack
-	enemyList := e.Targets
-	dmgTakenAmt := mod.State().(float64)
-	var validEnemyList []key.TargetID
+func applyDebuffOnce(mod *modifier.Instance, e event.ActionEnd) {
+	state := mod.State().(*state)
 
-	// validEnemyList should only contain non-dead, non-implanted enemies
-	for _, enemy := range enemyList {
-		// is enemy alive and does enemy not have aether code yet. if so, append.
-		if mod.Engine().HPRatio(enemy) > 0 && !mod.Engine().HasModifier(enemy, code) {
-			validEnemyList = append(validEnemyList, enemy)
+	// make new array for possible targets, loop through state.targets to filter
+	validEnemies := make([]key.TargetID, 0, len(state.targets))
+	for _, t := range state.targets {
+		if mod.Engine().HPRatio(t) > 0 && !mod.Engine().HasModifier(t, code) {
+			validEnemies = append(validEnemies, t)
 		}
 	}
-	if validEnemyList != nil {
+
+	if validEnemies != nil {
 		// choose one enemy, apply debuff to them.
-		chosenOne := validEnemyList[mod.Engine().Rand().Intn(len(validEnemyList))]
+		chosenOne := validEnemies[mod.Engine().Rand().Intn(len(validEnemies))]
 		mod.Engine().AddModifier(chosenOne, info.Modifier{
 			Name:     code,
 			Source:   mod.Owner(),
-			Stats:    info.PropMap{prop.AllDamageTaken: dmgTakenAmt},
+			Stats:    info.PropMap{prop.AllDamageTaken: state.amt},
 			Chance:   1.0,
 			Duration: 1,
 		})
 	}
+	// set targets to nil at end to reset
+	state.targets = nil
 }
