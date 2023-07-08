@@ -90,8 +90,8 @@ func applyDebuffOnce(mod *modifier.Instance, e event.AttackEnd) {
 
 	// validEnemyList should only contain non-dead, non-implanted enemies
 	for _, enemy := range enemyList {
-		// is enemy alive and does enemy not have aether code yet. if so, append. (how to do alive check?)
-		if mod.Engine().IsValid(enemy) && !mod.Engine().HasModifier(enemy, aetherCodeDebuff) {
+		// is enemy alive and does enemy not have aether code yet. if so, append.
+		if mod.Engine().HPRatio(enemy) > 0 && !mod.Engine().HasModifier(enemy, aetherCodeDebuff) {
 			validEnemyList = append(validEnemyList, enemy)
 		}
 	}
