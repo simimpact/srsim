@@ -12,9 +12,8 @@ import (
 )
 
 const (
-	rain             key.Modifier = "incessant-rain"
-	aetherCodeApply  key.Modifier = "incessant-rain-aether-code-applier"
-	aetherCodeDebuff key.Modifier = "incessant-rain-aether-code-debuff"
+	rain    key.Modifier = "incessant-rain"
+	code	key.Modifier = "aether-code"
 )
 
 // Desc : Increases the wearer's Effect Hit Rate by 24%.
@@ -33,15 +32,13 @@ func init() {
 	modifier.Register(rain, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: critRateBoost,
+			OnAfterAttack: fetchHitEnemies,
+			OnAfterAction: applyDebuffOnce,
 		},
 	})
-	modifier.Register(aetherCodeApply, modifier.Config{
-		Listeners: modifier.Listeners{
-			OnAfterAttack: applyDebuffOnce,
-		},
-	})
-	modifier.Register(aetherCodeDebuff, modifier.Config{
+	modifier.Register(code, modifier.Config{
 		StatusType: model.StatusType_STATUS_DEBUFF,
+		Stacking: modifier.Replace,
 	})
 }
 
@@ -58,7 +55,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	// Aether Code applier
 	dmgTakenAmt := 0.10 + 0.02*float64(lc.Imposition)
 	engine.AddModifier(owner, info.Modifier{
-		Name:   aetherCodeApply,
+		Name:   code,
 		Source: owner,
 		State:  dmgTakenAmt,
 	})
@@ -73,6 +70,11 @@ func critRateBoost(mod *modifier.Instance, e event.HitStart) {
 	}
 }
 
+// fetch the list of all hit enemies by this attack
+func fetchHitEnemies(mod *modifier.Instance, e event.AttackEnd) {
+
+}
+
 // retarget with 1 chosen(among non-AC-applied). apply dmgTakenUp with 100% basechance. cooldown tick.
 func applyDebuffOnce(mod *modifier.Instance, e event.AttackEnd) {
 	// fetch enemy list hit by this attack
@@ -83,7 +85,7 @@ func applyDebuffOnce(mod *modifier.Instance, e event.AttackEnd) {
 	// validEnemyList should only contain non-dead, non-implanted enemies
 	for _, enemy := range enemyList {
 		// is enemy alive and does enemy not have aether code yet. if so, append.
-		if mod.Engine().HPRatio(enemy) > 0 && !mod.Engine().HasModifier(enemy, aetherCodeDebuff) {
+		if mod.Engine().HPRatio(enemy) > 0 && !mod.Engine().HasModifier(enemy, code) {
 			validEnemyList = append(validEnemyList, enemy)
 		}
 	}
@@ -91,7 +93,7 @@ func applyDebuffOnce(mod *modifier.Instance, e event.AttackEnd) {
 		// choose one enemy, apply debuff to them.
 		chosenOne := validEnemyList[mod.Engine().Rand().Intn(len(validEnemyList))]
 		mod.Engine().AddModifier(chosenOne, info.Modifier{
-			Name:     aetherCodeDebuff,
+			Name:     code,
 			Source:   mod.Owner(),
 			Stats:    info.PropMap{prop.AllDamageTaken: dmgTakenAmt},
 			Chance:   1.0,
