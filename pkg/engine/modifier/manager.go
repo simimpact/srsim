@@ -54,6 +54,15 @@ func (mgr *Manager) HasModifier(target key.TargetID, name key.Modifier) bool {
 	return false
 }
 
+func (mgr *Manager) HasModifierFromSource(target, source key.TargetID, name key.Modifier) bool {
+	for _, mod := range mgr.targets[target] {
+		if mod.name == name && mod.source == source {
+			return true
+		}
+	}
+	return false
+}
+
 func (mgr *Manager) GetModifiers(target key.TargetID, name key.Modifier) []info.Modifier {
 	out := make([]info.Modifier, 0, 5)
 	for _, mod := range mgr.targets[target] {

@@ -344,6 +344,20 @@ func (mr *MockEngineMockRecorder) HasModifier(arg0, arg1 interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HasModifier", reflect.TypeOf((*MockEngine)(nil).HasModifier), arg0, arg1)
 }
 
+// HasModifierFromSource mocks base method.
+func (m *MockEngine) HasModifierFromSource(arg0, arg1 key.TargetID, arg2 key.Modifier) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "HasModifierFromSource", arg0, arg1, arg2)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// HasModifierFromSource indicates an expected call of HasModifierFromSource.
+func (mr *MockEngineMockRecorder) HasModifierFromSource(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HasModifierFromSource", reflect.TypeOf((*MockEngine)(nil).HasModifierFromSource), arg0, arg1, arg2)
+}
+
 // HasShield mocks base method.
 func (m *MockEngine) HasShield(arg0 key.TargetID, arg1 key.Shield) bool {
 	m.ctrl.T.Helper()

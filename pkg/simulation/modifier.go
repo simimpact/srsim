@@ -40,6 +40,10 @@ func (sim *Simulation) HasModifier(target key.TargetID, modifier key.Modifier) b
 	return sim.Modifier.HasModifier(target, modifier)
 }
 
+func (sim *Simulation) HasModifierFromSource(target, source key.TargetID, modifier key.Modifier) bool {
+	return sim.Modifier.HasModifierFromSource(target, source, modifier)
+}
+
 func (sim *Simulation) ModifierStatusCount(target key.TargetID, statusType model.StatusType) int {
 	state := sim.Modifier.EvalModifiers(target)
 	return state.Counts[statusType]
