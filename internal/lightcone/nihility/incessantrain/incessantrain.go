@@ -17,8 +17,9 @@ const (
 )
 
 type state struct {
-	amt     float64
-	targets []key.TargetID // set to nil in Create
+	critAmt     float64
+	dmgTakenAmt float64
+	targets     []key.TargetID // set to nil in Create
 }
 
 // Desc : Increases the wearer's Effect Hit Rate by 24%.
@@ -48,27 +49,27 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	// ehr constant + crit with condition
 	ehrAmt := 0.20 + 0.04*float64(lc.Imposition)
-	critAmt := 0.10 + 0.02*float64(lc.Imposition)
+	// initialize and set values for a state struct instance
+	modState := state{
+		critAmt:     0.10 + 0.02*float64(lc.Imposition),
+		dmgTakenAmt: 0.10 + 0.02*float64(lc.Imposition),
+		targets:     nil,
+	}
 	engine.AddModifier(owner, info.Modifier{
 		Name:   rain,
 		Source: owner,
 		Stats:  info.PropMap{prop.EffectHitRate: ehrAmt},
-		State:  critAmt,
+		State:  modState,
 	})
-	// Aether Code state setter
-	dmgTakenAmt := 0.10 + 0.02*float64(lc.Imposition)
-	state.amt = dmgTakenAmt
-	state.targets = nil
 }
 
 // boost CR on current hit if enemy has >=3 debuffs
 func critRateBoost(mod *modifier.Instance, e event.HitStart) {
+	state := mod.State().(*state)
 	debuffCount := float64(e.Hit.Defender.StatusCount(model.StatusType_STATUS_DEBUFF))
-	critRateAmt := mod.State().(float64)
 	if debuffCount >= 3 {
-		e.Hit.Defender.AddProperty(prop.CritChance, critRateAmt)
+		e.Hit.Defender.AddProperty(prop.CritChance, state.critAmt)
 	}
 }
 
@@ -78,7 +79,7 @@ func fetchHitEnemies(mod *modifier.Instance, e event.AttackEnd) {
 	state.targets = e.Targets
 }
 
-// retarget with 1 chosen(among non-AC-applied). apply dmgTakenUp with 100% basechance. cooldown tick.
+// retarget with 1 chosen(among non-AC-applied). apply dmgTakenUp with 100% basechance.
 func applyDebuffOnce(mod *modifier.Instance, e event.ActionEnd) {
 	state := mod.State().(*state)
 
@@ -96,7 +97,7 @@ func applyDebuffOnce(mod *modifier.Instance, e event.ActionEnd) {
 		mod.Engine().AddModifier(chosenOne, info.Modifier{
 			Name:     code,
 			Source:   mod.Owner(),
-			Stats:    info.PropMap{prop.AllDamageTaken: state.amt},
+			Stats:    info.PropMap{prop.AllDamageTaken: state.dmgTakenAmt},
 			Chance:   1.0,
 			Duration: 1,
 		})
