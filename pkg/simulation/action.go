@@ -55,7 +55,7 @@ func (sim *Simulation) ultCheck() error {
 		if sim.Attr.FullEnergy(act.Target) {
 			sim.Queue.Insert(queue.Task{
 				Source:   act.Target,
-				Priority: info.CharInsertUlt,
+				Priority: info.CharInsertAction,
 				AbortFlags: []model.BehaviorFlag{
 					model.BehaviorFlag_STAT_CTRL,
 					model.BehaviorFlag_DISABLE_ACTION,
