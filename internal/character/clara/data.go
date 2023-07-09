@@ -102,61 +102,61 @@ var promotions = []character.PromotionData{
 }
 
 var traces = character.TraceMap{
-	"1107101": {
+	"101": {
 		Ascension: 2,
 	},
-	"1107102": {
+	"102": {
 		Ascension: 4,
 	},
-	"1107103": {
+	"103": {
 		Ascension: 6,
 	},
-	"1107201": {
+	"201": {
 		Stat: prop.ATKPercent,
 		Amount: 0.0400000000372529,
 		Level: 1,
 	},
-	"1107202": {
+	"202": {
 		Stat: prop.PhysicalDamagePercent,
 		Amount: 0.031999999890103936,
 		Ascension: 2,
 	},
-	"1107203": {
+	"203": {
 		Stat: prop.ATKPercent,
 		Amount: 0.0400000000372529,
 		Ascension: 3,
 	},
-	"1107204": {
+	"204": {
 		Stat: prop.HPPercent,
 		Amount: 0.0400000000372529,
 		Ascension: 3,
 	},
-	"1107205": {
+	"205": {
 		Stat: prop.ATKPercent,
 		Amount: 0.060000000055879354,
 		Ascension: 4,
 	},
-	"1107206": {
+	"206": {
 		Stat: prop.PhysicalDamagePercent,
 		Amount: 0.04799999948590994,
 		Ascension: 5,
 	},
-	"1107207": {
+	"207": {
 		Stat: prop.ATKPercent,
 		Amount: 0.060000000055879354,
 		Ascension: 5,
 	},
-	"1107208": {
+	"208": {
 		Stat: prop.HPPercent,
 		Amount: 0.060000000055879354,
 		Ascension: 6,
 	},
-	"1107209": {
+	"209": {
 		Stat: prop.PhysicalDamagePercent,
 		Amount: 0.06399999978020787,
 		Level: 75,
 	},
-	"1107210": {
+	"210": {
 		Stat: prop.ATKPercent,
 		Amount: 0.0800000000745058,
 		Level: 80,
