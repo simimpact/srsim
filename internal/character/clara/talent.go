@@ -88,18 +88,11 @@ func (c *char) talentActionEndListener(e event.AttackEnd) {
 func (c *char) doCounter(attackerID key.TargetID) {
 	c.engine.InsertAbility(info.Insert{
 		Execute: func() {
-			// DamageMaps
-			normalDamage := info.DamageMap{
-				model.DamageFormula_BY_ATK: talent[c.info.TalentLevelIndex()],
-			}
-			enhancedDamage := info.DamageMap{
-				model.DamageFormula_BY_ATK: talent[c.info.TalentLevelIndex()] +
-					ultDmgBoost[c.info.UltLevelIndex()],
-			}
-			mainTargetDamage := normalDamage
+			hasUlt := c.engine.HasModifier(c.id, UltCounter)
 
-			if c.engine.HasModifier(c.id, UltCounter) {
-				mainTargetDamage = enhancedDamage
+			percent := talent[c.info.TalentLevelIndex()]
+			if hasUlt {
+				percent += ultDmgBoost[c.info.UltLevelIndex()]
 			}
 
 			// normal counter, damage
@@ -108,7 +101,7 @@ func (c *char) doCounter(attackerID key.TargetID) {
 				Targets:      []key.TargetID{attackerID},
 				DamageType:   model.DamageType_PHYSICAL,
 				AttackType:   model.AttackType_INSERT,
-				BaseDamage:   mainTargetDamage,
+				BaseDamage:   info.DamageMap{model.DamageFormula_BY_ATK: percent},
 				StanceDamage: 30.0,
 				EnergyGain:   5.0,
 			})
@@ -116,15 +109,13 @@ func (c *char) doCounter(attackerID key.TargetID) {
 			// enhanced counter, damage to adjacent
 			// NOTE: in-game wording = damage value is based on main target's def
 			// mhy memes ?
-			if c.engine.HasModifier(c.id, UltCounter) {
-				splashDamage := info.DamageMap{model.DamageFormula_BY_ATK: (talent[c.info.TalentLevelIndex()] + ultDmgBoost[c.info.UltLevelIndex()]) * 0.5}
-
+			if hasUlt {
 				c.engine.Attack(info.Attack{
 					Source:       c.id,
 					Targets:      c.engine.AdjacentTo(attackerID),
 					DamageType:   model.DamageType_PHYSICAL,
 					AttackType:   model.AttackType_INSERT,
-					BaseDamage:   splashDamage,
+					BaseDamage:   info.DamageMap{model.DamageFormula_BY_ATK: percent * 0.5},
 					StanceDamage: 30.0,
 				})
 
