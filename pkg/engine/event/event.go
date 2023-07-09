@@ -14,6 +14,7 @@ type System struct {
 	ActionEnd   ActionEndEventHandler
 	InsertStart InsertStartEventHandler
 	InsertEnd   InsertEndEventHandler
+	TargetDeath TargetDeathEventHandler
 
 	AttackStart AttackStartEventHandler
 	AttackEnd   AttackEndEventHandler
@@ -37,7 +38,6 @@ type System struct {
 
 	HPChange      HPChangeEventHandler
 	LimboWaitHeal LimboWaitHealEventHandler
-	TargetDeath   TargetDeathEventHandler
 	EnergyChange  EnergyChangeEventHandler
 	StanceChange  StanceChangeEventHandler
 	StanceBreak   StanceBreakEventHandler

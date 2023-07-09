@@ -142,6 +142,7 @@ func beginTurn(sim *Simulation) (stateFn, error) {
 func phase1(sim *Simulation) (stateFn, error) {
 	// tick any modifiers that listen for phase1 (primarily dots)
 	sim.Modifier.Tick(sim.Active, info.ModifierPhase1)
+	sim.deathCheck(false)
 
 	// skip the action if this target has the DISABLE_ACTION flag
 	if sim.HasBehaviorFlag(sim.Active, model.BehaviorFlag_DISABLE_ACTION) {
@@ -167,6 +168,7 @@ func action(sim *Simulation) (stateFn, error) {
 	if err := sim.executeAction(sim.Active, false); err != nil {
 		return nil, fmt.Errorf("unknown error executing action %w", err)
 	}
+	sim.deathCheck(false)
 	return phase2, nil
 }
 
@@ -190,9 +192,7 @@ func phase2(sim *Simulation) (stateFn, error) {
 
 // finalize that this is the end of the turn. Mainly just emitting the turn end event
 func endTurn(sim *Simulation) (stateFn, error) {
-	// check for special case where a target was supposed to be revived but never did (reviver died?)
-	sim.deathCheck(sim.characters)
-	sim.deathCheck(sim.enemies)
+	sim.deathCheck(true) // treat limbo'd targets as dead for edge case
 
 	// emit TurnEnd event to log the current state of all remaining targets
 	snap := sim.createSnapshot()

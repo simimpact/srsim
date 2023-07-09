@@ -11,6 +11,10 @@ func (s *Service) emitHPChangeEvents(
 		return nil
 	}
 
+	if isDamage {
+		s.targets[target].lastAttacker = source
+	}
+
 	s.event.HPChange.Emit(event.HPChange{
 		Target:             target,
 		OldHPRatio:         oldRatio,
@@ -21,18 +25,14 @@ func (s *Service) emitHPChangeEvents(
 	})
 
 	if newRatio > 0 {
+		s.targets[target].state = Alive
 		return nil
 	}
 
-	// if event gets canceled, do not want to emit the death event
+	s.targets[target].state = Dead
 	if s.event.LimboWaitHeal.Emit(event.LimboWaitHeal{Target: target}) {
-		return nil
+		s.targets[target].state = Limbo
 	}
-
-	s.event.TargetDeath.Emit(event.TargetDeath{
-		Target: target,
-		Killer: source,
-	})
 	return nil
 }
 

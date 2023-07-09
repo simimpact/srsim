@@ -96,6 +96,7 @@ func (sim *Simulation) executeQueue(phase info.BattlePhase, next stateFn) (state
 		}
 
 		insert.Execute()
+		sim.deathCheck(false)
 
 		// attempt to exit. If can exit, stop sim now
 		if next, err := sim.exitCheck(next); next == nil || err != nil {
