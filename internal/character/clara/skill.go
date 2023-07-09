@@ -7,6 +7,25 @@ import (
 )
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
+	// marked enemy attack instance
+	markedEnemies := make([]key.TargetID, 0, 5)
+	for _, enemy := range c.engine.Enemies() {
+		if c.engine.HasModifier(enemy, TalentMark) {
+			markedEnemies = append(markedEnemies, enemy)
+		}
+	}
+
+	c.engine.Attack(info.Attack{
+		Source:     c.id,
+		Targets:    markedEnemies,
+		DamageType: model.DamageType_PHYSICAL,
+		AttackType: model.AttackType_SKILL,
+		BaseDamage: info.DamageMap{
+			model.DamageFormula_BY_ATK: skill[c.info.SkillLevelIndex()],
+		},
+	})
+
+	// usual skill attack
 	c.engine.Attack(info.Attack{
 		Source:     c.id,
 		Targets:    c.engine.Enemies(),
