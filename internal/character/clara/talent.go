@@ -128,7 +128,7 @@ func (c *char) canCounter(e event.AttackEnd) bool {
 func (c *char) canMark(e event.AttackEnd) bool {
 	for _, target := range e.Targets {
 		// clara or E6 + ally
-		if c.id == target || (c.info.Eidolon >= 6 && !c.engine.IsCharacter(target)) {
+		if c.id == target || (c.info.Eidolon >= 6 && c.engine.IsCharacter(target)) {
 			return true
 		}
 	}
