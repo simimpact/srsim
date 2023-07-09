@@ -70,15 +70,15 @@ func (c *char) talentActionEndListener(e event.AttackEnd) {
 		return
 	}
 
-	// add marker modifier on enemy attacker
-	c.engine.AddModifier(attackerID, info.Modifier{
-		Name:   TalentMark,
-		Source: c.id,
-		State:  State{skillLevelIndex: c.info.SkillLevelIndex(), ultLevelIndex: c.info.UltLevelIndex()},
-	})
-
 	// canCounter (clara targeted or e6 + an ally winning 50/50)
 	if c.canCounter(e) {
+		// add marker modifier on enemy attacker
+		c.engine.AddModifier(attackerID, info.Modifier{
+			Name:   TalentMark,
+			Source: c.id,
+			State:  State{skillLevelIndex: c.info.SkillLevelIndex(), ultLevelIndex: c.info.UltLevelIndex()},
+		})
+
 		c.doCounter(attackerID)
 	}
 }
