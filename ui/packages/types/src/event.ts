@@ -55,6 +55,7 @@ export interface SPChange {
 
 export type AttackStartEventHandler = Handler<AttackStart>;
 export interface AttackStart {
+  key: string;
   attacker: string;
   targets: string[];
   attack_type: string;
@@ -62,6 +63,7 @@ export interface AttackStart {
 }
 export type AttackEndEventHandler = Handler<AttackEnd>;
 export interface AttackEnd {
+  key: string;
   attacker: string;
   targets: string[];
   attack_type: string;
@@ -75,6 +77,8 @@ export interface HitStart {
 }
 export type HitEndEventHandler = Handler<HitEnd>;
 export interface HitEnd {
+  key: string;
+  hit_index: number /* int */;
   attacker: string;
   defender: string;
   attack_type: string;
@@ -97,6 +101,7 @@ export interface HitEnd {
 }
 export type HealStartEventHandler = Handler<HealStart>;
 export interface HealStart {
+  key: string;
   target?: info.StatsEncoded;
   healer?: info.StatsEncoded;
   base_heal: info.HealMap;
@@ -105,6 +110,7 @@ export interface HealStart {
 }
 export type HealEndEventHandler = Handler<HealEnd>;
 export interface HealEnd {
+  key: string;
   target: string;
   healer: string;
   heal_amount: number /* float64 */;
@@ -252,12 +258,14 @@ export interface ActionEnd {
 }
 export type InsertStartEventHandler = Handler<InsertStart>;
 export interface InsertStart {
+  key: string;
   owner: string;
   abort_flags: string[];
   priority: info.InsertPriority;
 }
 export type InsertEndEventHandler = Handler<InsertEnd>;
 export interface InsertEnd {
+  key: string;
   owner: string;
   targets: { [key: string]: boolean};
   abort_flags: string[];
