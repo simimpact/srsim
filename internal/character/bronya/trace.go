@@ -68,39 +68,25 @@ func (c *char) initTraces() {
 
 	// A4
 	if c.info.Traces["102"] {
-		targets := c.engine.Characters()
-
-		for _, trg := range targets {
-			c.engine.AddModifier(trg, info.Modifier{
-				Name:   A4,
-				Source: c.id,
-			})
-		}
-
-		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAdded) {
-			c.engine.AddModifier(e.ID, info.Modifier{
-				Name:   A4,
-				Source: c.id,
-			})
+		c.engine.Events().CharactersAdded.Subscribe(func(e event.CharactersAdded) {
+			for _, char := range e.Characters {
+				c.engine.AddModifier(char.ID, info.Modifier{
+					Name:   A4,
+					Source: c.id,
+				})
+			}
 		})
 	}
 
 	// A6
 	if c.info.Traces["103"] {
-		targets := c.engine.Characters()
-
-		for _, trg := range targets {
-			c.engine.AddModifier(trg, info.Modifier{
-				Name:   A6,
-				Source: c.id,
-			})
-		}
-
-		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAdded) {
-			c.engine.AddModifier(e.ID, info.Modifier{
-				Name:   A6,
-				Source: c.id,
-			})
+		c.engine.Events().CharactersAdded.Subscribe(func(e event.CharactersAdded) {
+			for _, char := range e.Characters {
+				c.engine.AddModifier(char.ID, info.Modifier{
+					Name:   A6,
+					Source: c.id,
+				})
+			}
 		})
 	}
 }

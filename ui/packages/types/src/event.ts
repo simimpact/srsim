@@ -23,11 +23,6 @@ export interface LimboWaitHeal {
   target: string;
   is_cancelled: boolean;
 }
-export type TargetDeathEventHandler = Handler<TargetDeath>;
-export interface TargetDeath {
-  target: string;
-  killer: string;
-}
 export type EnergyChangeEventHandler = Handler<EnergyChange>;
 export interface EnergyChange {
   target: string;
@@ -53,15 +48,6 @@ export type SPChangeEventHandler = Handler<SPChange>;
 export interface SPChange {
   old_sp: number /* int */;
   new_sp: number /* int */;
-}
-
-//////////
-// source: character.go
-
-export type CharacterAddedEventHandler = Handler<CharacterAdded>;
-export interface CharacterAdded {
-  id: string;
-  info: info.Character;
 }
 
 //////////
@@ -124,15 +110,6 @@ export interface HealEnd {
   heal_amount: number /* float64 */;
   overflow_heal_amount: number /* float64 */;
   use_snapshot: boolean;
-}
-
-//////////
-// source: enemy.go
-
-export type EnemyAddedEventHandler = Handler<EnemyAdded>;
-export interface EnemyAdded {
-  id: string;
-  info: info.Enemy;
 }
 
 //////////
@@ -205,6 +182,22 @@ export interface Initialize {
   config?: any /* model.SimConfig */;
   seed: number /* int64 */;
 }
+export type CharactersAddedEventHandler = Handler<CharactersAdded>;
+export interface CharactersAdded {
+  characters: CharInfo[];
+}
+export interface CharInfo {
+  id: string;
+  info?: info.Character;
+}
+export type EnemiesAddedEventHandler = Handler<EnemiesAdded>;
+export interface EnemiesAdded {
+  enemies: EnemyInfo[];
+}
+export interface EnemyInfo {
+  id: string;
+  info?: info.Enemy;
+}
 export type BattleStartEventHandler = Handler<BattleStart>;
 export interface BattleStart {
   char_info: { [key: string]: info.Character};
@@ -213,9 +206,22 @@ export interface BattleStart {
   enemy_stats: (info.StatsEncoded | undefined)[];
   neutral_stats: (info.StatsEncoded | undefined)[];
 }
+export type Phase1StartEventHandler = Handler<Phase1Start>;
+export interface Phase1Start {
+}
+export type Phase1EndEventHandler = Handler<Phase1End>;
+export interface Phase1End {
+}
+export type Phase2StartEventHandler = Handler<Phase2Start>;
+export interface Phase2Start {
+}
+export type Phase2EndEventHandler = Handler<Phase2End>;
+export interface Phase2End {
+}
 export type TurnStartEventHandler = Handler<TurnStart>;
 export interface TurnStart {
   active: string;
+  target_type: string;
   delta_av: number /* float64 */;
   total_av: number /* float64 */;
   turn_order: TurnStatus[];
@@ -256,6 +262,11 @@ export interface InsertEnd {
   targets: { [key: string]: boolean};
   abort_flags: string[];
   priority: info.InsertPriority;
+}
+export type TargetDeathEventHandler = Handler<TargetDeath>;
+export interface TargetDeath {
+  target: string;
+  killer: string;
 }
 
 //////////

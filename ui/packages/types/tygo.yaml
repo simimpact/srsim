@@ -49,6 +49,7 @@ packages:
     info.Modifier: info.Modifier
     info.Shield: info.Shield
     info.InsertPriority: info.InsertPriority
+    info.TargetClass: string
 
     # special internal types
     key.TargetID: string

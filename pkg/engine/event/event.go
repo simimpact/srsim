@@ -8,6 +8,10 @@ type System struct {
 	Initialize  InitializeEventHandler
 	BattleStart BattleStartEventHandler
 	Termination TerminationEventHandler
+	Phase1Start Phase1StartEventHandler
+	Phase1End   Phase1EndEventHandler
+	Phase2Start Phase2StartEventHandler
+	Phase2End   Phase2EndEventHandler
 	TurnStart   TurnStartEventHandler
 	TurnEnd     TurnEndEventHandler
 	ActionStart ActionStartEventHandler
@@ -23,8 +27,8 @@ type System struct {
 	HealStart   HealStartEventHandler
 	HealEnd     HealEndEventHandler
 
-	CharacterAdded CharacterAddedEventHandler
-	EnemyAdded     EnemyAddedEventHandler
+	CharactersAdded CharactersAddedEventHandler
+	EnemiesAdded    EnemiesAddedEventHandler
 
 	ModifierAdded            ModifierAddedEventHandler
 	ModifierResisted         ModifierResistedEventHandler
