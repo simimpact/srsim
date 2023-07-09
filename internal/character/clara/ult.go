@@ -1,7 +1,6 @@
 package clara
 
 import (
-	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
@@ -11,53 +10,25 @@ import (
 
 const (
 	Ult        key.Modifier = "clara-ult" // MAvatar_Klara_00_Ultra_WarriorMode
+	UltBuff    key.Modifier = "clara-ult-buff"
 	UltCounter key.Modifier = "clara-ult-enhanced-counter"
 )
-
-type ultCounterNum int
 
 func init() {
 	modifier.Register(Ult, modifier.Config{
 		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_BURST},
 		Stacking:      modifier.Refresh,
 		Duration:      2,
-		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.Instance) {
-				state := mod.State().(State)
-
-				// extra res
-				mod.AddProperty(prop.AllDamageReduce, ultCut[state.ultLevelIndex])
-				// extra aggro
-				mod.AddProperty(prop.AggroPercent, 5)
-
-				amt := 2
-				if mod.Engine().HasModifier(mod.Owner(), E6) {
-					amt = 3
-				}
-
-				mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-					Name:   UltCounter,
-					Source: mod.Owner(),
-					State:  ultCounterNum(amt),
-				})
-			},
-		},
 	})
 
-	// mod check in talent.go
+	modifier.Register(UltBuff, modifier.Config{
+		StatusType: model.StatusType_STATUS_BUFF,
+		Duration:   2,
+	})
+
+	// stack count is managed in talent.go
 	modifier.Register(UltCounter, modifier.Config{
-		Listeners: modifier.Listeners{
-			OnAfterHit: func(mod *modifier.Instance, e event.HitEnd) {
-				// after counter
-				if e.AttackType == model.AttackType_INSERT {
-					remaining := mod.State().(ultCounterNum)
-					remaining -= 1
-					if remaining <= 0 { // executes 2 counters
-						mod.RemoveSelf()
-					}
-				}
-			},
-		},
+		Stacking: modifier.ReplaceBySource,
 	})
 }
 
@@ -68,12 +39,35 @@ func init() {
 // increases by *%. Enemies adjacent to it take 50% of the DMG dealt to the
 // target enemy. Enhanced Counter(s) can take effect 2 time(s).
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
+	c.e2()
+
 	c.engine.AddModifier(c.id, info.Modifier{
-		Name:   Ult,
-		Source: c.id,
+		Name:            Ult,
+		Source:          c.id,
+		Duration:        2,
+		TickImmediately: true,
+		Stats:           info.PropMap{prop.AggroPercent: 5},
 	})
 
-	c.e2()
+	c.engine.AddModifier(c.id, info.Modifier{
+		Name:            UltBuff,
+		Source:          c.id,
+		Duration:        2,
+		TickImmediately: true,
+		Stats:           info.PropMap{prop.AllDamageReduce: ultCut[c.info.UltLevelIndex()]},
+	})
+
+	enhanceCounterNum := 2.0
+	if c.info.Eidolon >= 6 {
+		enhanceCounterNum = 3.0
+	}
+
+	c.engine.AddModifier(c.id, info.Modifier{
+		Name:     UltCounter,
+		Source:   c.id,
+		Count:    enhanceCounterNum,
+		MaxCount: 3,
+	})
 
 	c.engine.ModifyEnergy(c.id, 5.0)
 }

@@ -19,8 +19,12 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		EnergyGain:   30,
 	})
 
-	// E1 check
-	c.e1()
-
 	state.EndAttack()
+
+	// E1: Using Skill will not remove Marks of Counter on the enemy.
+	if c.info.Eidolon == 0 {
+		for _, enemy := range c.engine.Enemies() {
+			c.engine.RemoveModifier(enemy, TalentMark)
+		}
+	}
 }
