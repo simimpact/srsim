@@ -14,6 +14,26 @@ type Initialize struct {
 	// TODO: sim metadata (build date, commit hash, etc)?
 }
 
+type CharactersAddedEventHandler = handler.EventHandler[CharactersAdded]
+type CharactersAdded struct {
+	Characters []CharInfo `json:"characters"`
+}
+
+type CharInfo struct {
+	ID   key.TargetID    `json:"id"`
+	Info *info.Character `json:"info"`
+}
+
+type EnemiesAddedEventHandler = handler.EventHandler[EnemiesAdded]
+type EnemiesAdded struct {
+	Enemies []EnemyInfo `json:"enemies"`
+}
+
+type EnemyInfo struct {
+	ID   key.TargetID `json:"id"`
+	Info *info.Enemy  `json:"info"`
+}
+
 type BattleStartEventHandler = handler.EventHandler[BattleStart]
 type BattleStart struct {
 	CharInfo     map[key.TargetID]info.Character `json:"char_info"`

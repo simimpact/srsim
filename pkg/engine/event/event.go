@@ -27,8 +27,8 @@ type System struct {
 	HealStart   HealStartEventHandler
 	HealEnd     HealEndEventHandler
 
-	CharacterAdded CharacterAddedEventHandler
-	EnemyAdded     EnemyAddedEventHandler
+	CharactersAdded CharactersAddedEventHandler
+	EnemiesAdded    EnemiesAddedEventHandler
 
 	ModifierAdded            ModifierAddedEventHandler
 	ModifierResisted         ModifierResistedEventHandler

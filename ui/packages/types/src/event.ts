@@ -51,15 +51,6 @@ export interface SPChange {
 }
 
 //////////
-// source: character.go
-
-export type CharacterAddedEventHandler = Handler<CharacterAdded>;
-export interface CharacterAdded {
-  id: string;
-  info: info.Character;
-}
-
-//////////
 // source: combat.go
 
 export type AttackStartEventHandler = Handler<AttackStart>;
@@ -119,15 +110,6 @@ export interface HealEnd {
   heal_amount: number /* float64 */;
   overflow_heal_amount: number /* float64 */;
   use_snapshot: boolean;
-}
-
-//////////
-// source: enemy.go
-
-export type EnemyAddedEventHandler = Handler<EnemyAdded>;
-export interface EnemyAdded {
-  id: string;
-  info: info.Enemy;
 }
 
 //////////
@@ -199,6 +181,22 @@ export type InitializeEventHandler = Handler<Initialize>;
 export interface Initialize {
   config?: any /* model.SimConfig */;
   seed: number /* int64 */;
+}
+export type CharactersAddedEventHandler = Handler<CharactersAdded>;
+export interface CharactersAdded {
+  characters: CharInfo[];
+}
+export interface CharInfo {
+  id: string;
+  info?: info.Character;
+}
+export type EnemiesAddedEventHandler = Handler<EnemiesAdded>;
+export interface EnemiesAdded {
+  enemies: EnemyInfo[];
+}
+export interface EnemyInfo {
+  id: string;
+  info?: info.Enemy;
 }
 export type BattleStartEventHandler = Handler<BattleStart>;
 export interface BattleStart {

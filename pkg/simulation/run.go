@@ -59,6 +59,19 @@ func initialize(sim *Simulation) (stateFn, error) {
 		}
 	}
 
+	// emit event saying that all characters are initialized
+	chars := make([]event.CharInfo, 0, len(sim.characters))
+	for _, id := range sim.characters {
+		info, _ := sim.Char.Info(id)
+		chars = append(chars, event.CharInfo{
+			ID:   id,
+			Info: &info,
+		})
+	}
+	sim.Event.CharactersAdded.Emit(event.CharactersAdded{
+		Characters: chars,
+	})
+
 	// run the script to register callbacks
 	if err := sim.eval.Init(sim); err != nil {
 		return nil, err
@@ -76,13 +89,26 @@ func initialize(sim *Simulation) (stateFn, error) {
 func startBattle(sim *Simulation) (stateFn, error) {
 	for _, enemy := range sim.cfg.Enemies {
 		id := sim.IDGen.New()
+		sim.Targets[id] = info.ClassEnemy
+		sim.enemies = append(sim.enemies, id)
+
 		if err := sim.Enemy.AddEnemy(id, enemy); err != nil {
 			return nil, fmt.Errorf("error initializing enemy %w", err)
 		}
-
-		sim.Targets[id] = info.ClassEnemy
-		sim.enemies = append(sim.enemies, id)
 	}
+
+	// emit event saying that all enemies are initialized
+	enemies := make([]event.EnemyInfo, 0, len(sim.enemies))
+	for _, id := range sim.enemies {
+		info, _ := sim.Enemy.Info(id)
+		enemies = append(enemies, event.EnemyInfo{
+			ID:   id,
+			Info: &info,
+		})
+	}
+	sim.Event.EnemiesAdded.Emit(event.EnemiesAdded{
+		Enemies: enemies,
+	})
 
 	// add all the targets to the turn order at once. Big a mega array to accomplish this
 	// the order of the copies matter (want characters > neutrals > enemies for cases of ties)

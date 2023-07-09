@@ -83,18 +83,18 @@ func (c *char) e4(target key.TargetID) {
 
 func (c *char) initEidolons() {
 	if c.info.Eidolon >= 2 {
-		c.engine.Events().EnemyAdded.Subscribe(func(e event.EnemyAdded) {
-			c.engine.AddModifier(e.ID, info.Modifier{
-				Name:   E2,
-				Source: c.id,
-			})
+		c.engine.Events().EnemiesAdded.Subscribe(func(e event.EnemiesAdded) {
+			for _, enemy := range e.Enemies {
+				c.engine.AddModifier(enemy.ID, info.Modifier{
+					Name:   E2,
+					Source: c.id,
+				})
+			}
 		})
 
 		c.engine.Events().TargetDeath.Subscribe(func(event event.TargetDeath) {
 			if event.Target == c.id {
-				targets := c.engine.Enemies()
-
-				for _, trg := range targets {
+				for _, trg := range c.engine.Enemies() {
 					c.engine.RemoveModifier(trg, E2)
 				}
 			}
