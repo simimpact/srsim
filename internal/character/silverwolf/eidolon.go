@@ -34,7 +34,7 @@ func init() {
 		StatusType: model.StatusType_STATUS_DEBUFF,
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: func(mod *modifier.Instance, e event.HitStart) {
-				debuffCount := mod.Engine().ModifierCount(e.Defender, model.StatusType_STATUS_DEBUFF)
+				debuffCount := mod.Engine().ModifierStatusCount(e.Defender, model.StatusType_STATUS_DEBUFF)
 				if debuffCount > 5 {
 					debuffCount = 5
 				}
@@ -49,7 +49,7 @@ func init() {
 // can be triggered up to 5 time(s) in each use of her Ultimate.
 func (c *char) e1(target key.TargetID) {
 	if c.info.Eidolon >= 1 {
-		debuffCount := c.engine.ModifierCount(target, model.StatusType_STATUS_DEBUFF)
+		debuffCount := c.engine.ModifierStatusCount(target, model.StatusType_STATUS_DEBUFF)
 		if debuffCount > 5 {
 			debuffCount = 5
 		}
@@ -63,7 +63,7 @@ func (c *char) e1(target key.TargetID) {
 // each use of her Ultimate.
 func (c *char) e4(target key.TargetID) {
 	if c.info.Eidolon >= 4 {
-		debuffCount := c.engine.ModifierCount(target, model.StatusType_STATUS_DEBUFF)
+		debuffCount := c.engine.ModifierStatusCount(target, model.StatusType_STATUS_DEBUFF)
 		if debuffCount > 5 {
 			debuffCount = 5
 		}

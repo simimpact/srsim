@@ -26,7 +26,7 @@ func init() {
 	modifier.Register(A2, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: func(mod *modifier.Instance, e event.HitStart) {
-				if mod.Engine().ModifierCount(e.Hit.Defender.ID(), model.StatusType_STATUS_DEBUFF) >= 1 {
+				if mod.Engine().ModifierStatusCount(e.Hit.Defender.ID(), model.StatusType_STATUS_DEBUFF) >= 1 {
 					e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.2)
 				}
 			},
