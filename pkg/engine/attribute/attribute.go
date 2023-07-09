@@ -16,6 +16,7 @@ type Getter interface {
 	MaxEnergy(target key.TargetID) float64
 	EnergyRatio(target key.TargetID) float64
 	HPRatio(target key.TargetID) float64
+	IsAlive(target key.TargetID) bool
 }
 
 type Modifier interface {
@@ -111,6 +112,10 @@ func (s *Service) State(target key.TargetID) TargetState {
 		return t.state
 	}
 	return Invalid
+}
+
+func (s *Service) IsAlive(target key.TargetID) bool {
+	return s.State(target) == Alive
 }
 
 func (s *Service) LastAttacker(target key.TargetID) key.TargetID {
