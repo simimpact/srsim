@@ -70,6 +70,14 @@ func (c *char) talentActionEndListener(e event.AttackEnd) {
 		return
 	}
 
+	// add marker modifier on enemy attacker
+	c.engine.AddModifier(attackerID, info.Modifier{
+		Name:   TalentMark,
+		Source: c.id,
+		State:  State{skillLevelIndex: c.info.SkillLevelIndex(), ultLevelIndex: c.info.UltLevelIndex()},
+	})
+
+	// canCounter (clara targeted or e6 + an ally winning 50/50)
 	if c.canCounter(e) {
 		c.doCounter(attackerID)
 	}
@@ -119,35 +127,36 @@ func (c *char) doCounter(attackerID key.TargetID) {
 					BaseDamage:   splashDamage,
 					StanceDamage: 30.0,
 				})
+
+				// counter done, decrease counter stack
+				c.engine.ExtendModifierCount(c.id, UltCounter, -1.0)
 			}
 		},
 		Source:     c.id,
 		Priority:   info.CharInsertAttackSelf,
 		AbortFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL, model.BehaviorFlag_DISABLE_ACTION},
 	})
-
-	// add marker modifier on enemy attacker
-	c.engine.AddModifier(attackerID, info.Modifier{
-		Name:   TalentMark,
-		Source: c.id,
-		State:  State{skillLevelIndex: c.info.SkillLevelIndex(), ultLevelIndex: c.info.UltLevelIndex()},
-	})
 }
 
-// helper fn to see if a counter is eligible
-//
-// - if clara is not targeted AND < E6 -> no counter
-//
-// - clara targeted OR E6 + winning E6 50/50 -> counter
 func (c *char) canCounter(e event.AttackEnd) bool {
-	isClara := false
+	// clara has ult counter stacks left
+	hasUlt := c.engine.HasModifier(c.id, UltCounter) && c.engine.ModifierStackCount(c.id, c.id, UltCounter) > 0
+
+	// attack targets clara's ally, 50/50 roll for each ally to counter
 	for _, target := range e.Targets {
-		if target == c.id {
-			isClara = true
+		if !c.engine.IsCharacter(target) {
+			// only select allies
+			continue
 		}
-	}
-	if isClara || (c.engine.HasModifier(c.id, E6) && c.engine.Rand().Float32() < 0.5) {
-		return true
+		// attack targets clara, guarantees a counter
+		isClara := target == c.id
+
+		// attack targets ally and winning the 50% fixed
+		allyRoll := c.info.Eidolon >= 6 && c.engine.Rand().Float32() < 0.5
+
+		if isClara || hasUlt || allyRoll {
+			return true
+		}
 	}
 	return false
 }
