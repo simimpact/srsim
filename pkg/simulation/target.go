@@ -100,10 +100,12 @@ func (sim *Simulation) Retarget(data info.Retarget) []key.TargetID {
 		}
 	}
 
-	// filter function. if not provided, bypass
+	// filter targetList. assign to validTargets. if not provided, bypass
 	var validTargets []key.TargetID
 	if data.Filter != nil {
-		validTargets = data.Filter(validTargets)
+		validTargets = data.Filter(targetList)
+	} else {
+		validTargets = targetList
 	}
 
 	// NOTE : handle cases when len(validTargets) == 0 (target list empty after filter).
