@@ -10,7 +10,6 @@ import (
 
 const (
 	Ult        key.Modifier = "clara-ult" // MAvatar_Klara_00_Ultra_WarriorMode
-	UltBuff    key.Modifier = "clara-ult-buff"
 	UltCounter key.Modifier = "clara-ult-enhanced-counter"
 )
 
@@ -18,12 +17,8 @@ func init() {
 	modifier.Register(Ult, modifier.Config{
 		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_BURST},
 		Stacking:      modifier.Refresh,
+		StatusType:    model.StatusType_STATUS_BUFF,
 		Duration:      2,
-	})
-
-	modifier.Register(UltBuff, modifier.Config{
-		StatusType: model.StatusType_STATUS_BUFF,
-		Duration:   2,
 	})
 
 	// stack count is managed in talent.go
@@ -46,15 +41,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		Source:          c.id,
 		Duration:        2,
 		TickImmediately: true,
-		Stats:           info.PropMap{prop.AggroPercent: 5},
-	})
-
-	c.engine.AddModifier(c.id, info.Modifier{
-		Name:            UltBuff,
-		Source:          c.id,
-		Duration:        2,
-		TickImmediately: true,
-		Stats:           info.PropMap{prop.AllDamageReduce: ultCut[c.info.UltLevelIndex()]},
+		Stats:           info.PropMap{prop.AggroPercent: 5, prop.AllDamageReduce: ultCut[c.info.UltLevelIndex()]},
 	})
 
 	enhanceCounterNum := 2.0

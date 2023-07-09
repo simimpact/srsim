@@ -3,55 +3,21 @@ package clara
 import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
-	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
-	TalentCounter key.Modifier = "clara-talent-counter"
-	TalentMark    key.Modifier = "clara-talent-mark"    // MAvatar_Klara_00_PassiveATK_Mark for BPSkill_Revenge
-	TalentRes     key.Modifier = "clara-talent-dmg-res" // MAvatar_Klara_00_Passive_DamageReduce
+	TalentMark key.Modifier = "clara-talent-mark"    // MAvatar_Klara_00_PassiveATK_Mark for BPSkill_Revenge
+	TalentRes  key.Modifier = "clara-talent-dmg-res" // MAvatar_Klara_00_Passive_DamageReduce
 )
 
 // Under the protection of Svarog, DMG taken by Clara when hit by enemy
 // attacks is reduced by 10%. Svarog will mark enemies who attack Clara with
 // his Mark of Counter and retaliate with a Counter, dealing Physical DMG
 // equal to *% of Clara's ATK.
-//
-// flow:
-//
-// onBeforeBeingAttacked: + TalentMark, + TalentRes
-//
-// onAfterAttack: + follow-up attack
-func init() {
-	modifier.Register(TalentCounter, modifier.Config{
-		Listeners: modifier.Listeners{
-			// add marker modifier on attacker enemy
-			OnBeforeBeingAttacked: func(mod *modifier.Instance, e event.AttackStart) {
-				mod.Engine().AddModifier(e.Attacker, info.Modifier{
-					Name:   TalentMark,
-					Source: mod.Source(),
-				})
-			},
-
-			// remove marker modifier on all enemies when clara dies
-			OnBeforeDying: func(mod *modifier.Instance) {
-				for _, enemyID := range mod.Engine().Enemies() {
-					mod.Engine().RemoveModifier(enemyID, TalentMark)
-				}
-			},
-		},
-	})
-}
-
 func (c *char) initTalent() {
-	c.engine.AddModifier(c.id, info.Modifier{
-		Name:   TalentCounter,
-		Source: c.id,
-	})
-
 	c.engine.AddModifier(c.id, info.Modifier{
 		Name:   TalentRes,
 		Source: c.id,
@@ -70,15 +36,19 @@ func (c *char) talentActionEndListener(e event.AttackEnd) {
 		return
 	}
 
-	// canCounter (clara targeted or e6 + an ally winning 50/50)
-	if c.canCounter(e) {
+	// check for mark actually disregards the 50% fixed chance at E6, meaning
+	// at E6 it's guaranteed any ally is hit, hence we can't use this in
+	// canCounter block
+	if c.canMark(e) {
 		// add marker modifier on enemy attacker
 		c.engine.AddModifier(attackerID, info.Modifier{
 			Name:   TalentMark,
 			Source: c.id,
-			State:  State{skillLevelIndex: c.info.SkillLevelIndex(), ultLevelIndex: c.info.UltLevelIndex()},
 		})
+	}
 
+	// canCounter (clara targeted or e6 + an ally winning 50/50)
+	if c.canCounter(e) {
 		c.doCounter(attackerID)
 	}
 }
@@ -131,7 +101,7 @@ func (c *char) doCounter(attackerID key.TargetID) {
 
 func (c *char) canCounter(e event.AttackEnd) bool {
 	// clara has ult counter stacks left
-	hasUlt := c.engine.HasModifier(c.id, UltCounter) && c.engine.ModifierStackCount(c.id, c.id, UltCounter) > 0
+	hasUlt := c.engine.HasModifier(c.id, UltCounter)
 
 	// attack targets clara's ally, 50/50 roll for each ally to counter
 	for _, target := range e.Targets {
@@ -146,6 +116,19 @@ func (c *char) canCounter(e event.AttackEnd) bool {
 		allyRoll := c.info.Eidolon >= 6 && c.engine.Rand().Float32() < 0.5
 
 		if isClara || hasUlt || allyRoll {
+			return true
+		}
+	}
+	return false
+}
+
+// helper method to decide if it's eligible to add talent marker, being either:
+// 1. clara is included in the attack
+// 2. E6 and any ally is attacked
+func (c *char) canMark(e event.AttackEnd) bool {
+	for _, target := range e.Targets {
+		// clara or E6 + ally
+		if c.id == target || (c.info.Eidolon >= 6 && !c.engine.IsCharacter(target)) {
 			return true
 		}
 	}
