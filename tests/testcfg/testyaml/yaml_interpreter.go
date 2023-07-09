@@ -48,13 +48,14 @@ func ParseConfig(path string) (*model.SimConfig, *eval.Eval, error) {
 		return nil, nil, err
 	}
 
+	// parse eval function
 	var e *eval.Eval
 	switch logic := result.Logic.(type) {
 	case *model.SimConfig_Gcsl:
 		p := parse.New(logic.Gcsl)
 		list, err := p.Parse()
 		if err != nil {
-			return nil, nil, fmt.Errorf("ActionList parse error: %v", err)
+			return nil, nil, fmt.Errorf("ActionList parse error: %w", err)
 		}
 		e = eval.New(context.TODO(), list.Program)
 	default:
