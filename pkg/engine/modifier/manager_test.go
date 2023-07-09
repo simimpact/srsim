@@ -268,3 +268,76 @@ func TestTickImmediatelyAfterAction(t *testing.T) {
 	mods = manager.EvalModifiers(target)
 	assert.Equal(t, expectedProps, mods.Props)
 }
+
+func TestModifierRemovesInListener(t *testing.T) {
+	// 1. add modifier a
+	// 2. add modifier b
+	// 3. add modiifer c
+	// 4. a, b, and c listen for the same event
+	// 5. a removes b
+	// 6. assert that a and c are called
+	manager, mockCtrl := NewTestManager(t)
+	defer mockCtrl.Finish()
+
+	modA := key.Modifier("TestModifierRemovesInListener-A")
+	modB := key.Modifier("TestModifierRemovesInListener-B")
+	modC := key.Modifier("TestModifierRemovesInListener-C")
+	target := key.TargetID(1)
+
+	calls := make(map[key.Modifier]int, 3)
+
+	listener := func(mod *modifier.Instance) {
+		calls[mod.Name()] += 1
+		if mod.Name() == modA {
+			manager.RemoveModifier(target, modB)
+		}
+	}
+
+	// register mods w/ listener
+	modifier.Register(modA, modifier.Config{
+		Listeners: modifier.Listeners{
+			OnPhase1: listener,
+		},
+	})
+	modifier.Register(modB, modifier.Config{
+		Listeners: modifier.Listeners{
+			OnPhase1: listener,
+		},
+	})
+	modifier.Register(modC, modifier.Config{
+		Listeners: modifier.Listeners{
+			OnPhase1: listener,
+		},
+	})
+
+	// add A
+	manager.AddModifier(target, info.Modifier{
+		Name:   modA,
+		Source: target,
+	})
+
+	// add B
+	manager.AddModifier(target, info.Modifier{
+		Name:   modB,
+		Source: target,
+	})
+
+	// add C
+	manager.AddModifier(target, info.Modifier{
+		Name:   modC,
+		Source: target,
+	})
+
+	manager.Tick(target, info.ModifierPhase1)
+
+	expectedCalls := map[key.Modifier]int{
+		modA: 1,
+		modB: 1,
+		modC: 1,
+	}
+	expectedRemaining := []key.Modifier{modA, modC}
+	state := manager.EvalModifiers(target)
+
+	assert.Equal(t, expectedCalls, calls)
+	assert.ElementsMatch(t, expectedRemaining, state.Modifiers)
+}

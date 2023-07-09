@@ -62,16 +62,11 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 
 func ssHit(c *char, target key.TargetID, isExtra bool) {
 	// handle a4 buff
-	if c.info.Traces["1206102"] {
-		stacks := 0.0
-		if c.engine.HasModifier(c.id, A4Buff) {
-			stacks = c.engine.GetModifiers(c.id, A4Buff)[0].Count
-		}
-
+	if c.info.Traces["102"] {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:   A4Mod,
 			Source: c.id,
-			State:  stacks,
+			State:  c.engine.ModifierStackCount(c.id, c.id, A4Buff),
 		})
 	}
 
@@ -95,7 +90,7 @@ func ssHit(c *char, target key.TargetID, isExtra bool) {
 
 	c.e2()
 
-	if c.info.Traces["1206102"] {
+	if c.info.Traces["102"] {
 		c.engine.RemoveModifier(c.id, A4Mod)
 		c.a4AddStack()
 	}

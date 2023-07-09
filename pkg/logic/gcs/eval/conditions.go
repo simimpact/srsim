@@ -104,7 +104,7 @@ func (e *Eval) modifierCount(c *ast.CallExpr, env *Env) (Obj, error) {
 	if !e.engine.IsValid(target) {
 		return nil, fmt.Errorf("target %d is invalid", target)
 	}
-	return &number{ival: int64(e.engine.ModifierCount(target, status))}, nil
+	return &number{ival: int64(e.engine.ModifierStatusCount(target, status))}, nil
 }
 
 // attribute
