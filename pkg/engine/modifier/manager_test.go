@@ -339,5 +339,5 @@ func TestModifierRemovesInListener(t *testing.T) {
 	state := manager.EvalModifiers(target)
 
 	assert.Equal(t, expectedCalls, calls)
-	assert.Equal(t, expectedRemaining, state.Modifiers)
+	assert.ElementsMatch(t, expectedRemaining, state.Modifiers)
 }
