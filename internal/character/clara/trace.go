@@ -36,6 +36,16 @@ func init() {
 			},
 		},
 	})
+
+	modifier.Register(A6, modifier.Config{
+		Listeners: modifier.Listeners{
+			OnBeforeHit: func(mod *modifier.Instance, e event.HitStart) {
+				if e.Hit.AttackType == model.AttackType_INSERT {
+					e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.3)
+				}
+			},
+		},
+	})
 }
 
 func (c *char) initTraces() {
@@ -54,11 +64,10 @@ func (c *char) initTraces() {
 		})
 	}
 
-	if c.info.Traces["102"] {
+	if c.info.Traces["103"] {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:   A6,
 			Source: c.id,
-			Stats:  info.PropMap{prop.AllDamagePercent: 0.3},
 		})
 	}
 }
