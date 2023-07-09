@@ -128,10 +128,11 @@ func beginTurn(sim *Simulation) (stateFn, error) {
 	sim.TotalAV += av
 
 	sim.Event.TurnStart.Emit(event.TurnStart{
-		Active:    next,
-		DeltaAV:   av,
-		TotalAV:   sim.TotalAV,
-		TurnOrder: turnOrder, // TODO: populate
+		Active:     next,
+		TargetType: sim.Targets[next],
+		DeltaAV:    av,
+		TotalAV:    sim.TotalAV,
+		TurnOrder:  turnOrder,
 	})
 	sim.Modifier.Tick(sim.Active, info.TurnStart)
 	return phase1, nil
@@ -140,6 +141,8 @@ func beginTurn(sim *Simulation) (stateFn, error) {
 // phase1 is the time between the start of the turn and the action being performed. This is when
 // stuff like dots deal damage, stance gets reset, and any bursts happen prior to the action.
 func phase1(sim *Simulation) (stateFn, error) {
+	sim.Event.Phase1Start.Emit(event.Phase1Start{})
+
 	// tick any modifiers that listen for phase1 (primarily dots)
 	sim.Modifier.Tick(sim.Active, info.ModifierPhase1)
 	sim.deathCheck(false)
@@ -160,7 +163,11 @@ func phase1(sim *Simulation) (stateFn, error) {
 		}
 	}
 
-	return sim.executeQueue(info.InsertAbilityPhase1, action)
+	next, err := sim.executeQueue(info.InsertAbilityPhase1, action)
+	if err == nil {
+		sim.Event.Phase1End.Emit(event.Phase1End{})
+	}
+	return next, err
 }
 
 // actually execute the action for this turn and then move on to phase2 once done
@@ -179,6 +186,7 @@ func phase2(sim *Simulation) (stateFn, error) {
 	// inside of action for the cases where the action was skipped.
 	sim.Turn.ResetTurn()
 	sim.Modifier.Tick(sim.Active, info.ActionEnd)
+	sim.Event.Phase2Start.Emit(event.Phase2Start{})
 
 	// execute anything that is in the execution queue. any follow ups, bursts, etc.
 	if next, err := sim.executeQueue(info.InsertAbilityPhase2, endTurn); next == nil || err != nil {
@@ -187,6 +195,7 @@ func phase2(sim *Simulation) (stateFn, error) {
 
 	// tick all phase2 modifiers before finally ending the turn
 	sim.Modifier.Tick(sim.Active, info.ModifierPhase2)
+	sim.Event.Phase2End.Emit(event.Phase2End{})
 	return endTurn, nil
 }
 

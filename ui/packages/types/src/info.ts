@@ -378,6 +378,10 @@ export const CharHealOthers: InsertPriority = 58;
 /**
  * TODO: specific insert priorities for specific casses (IE: himiko vs herta, clara vs march)
  */
+export const CharBuffSelf: InsertPriority = 65;
+/**
+ * TODO: specific insert priorities for specific casses (IE: himiko vs herta, clara vs march)
+ */
 export const CharInsertAttackSelf: InsertPriority = 75;
 /**
  * TODO: specific insert priorities for specific casses (IE: himiko vs herta, clara vs march)
@@ -402,6 +406,10 @@ export const EnemyHealOthers: InsertPriority = 158;
 /**
  * TODO: specific insert priorities for specific casses (IE: himiko vs herta, clara vs march)
  */
+export const EnemyBuffSelf: InsertPriority = 165;
+/**
+ * TODO: specific insert priorities for specific casses (IE: himiko vs herta, clara vs march)
+ */
 export const EnemyInsertAttackSelf: InsertPriority = 175;
 /**
  * TODO: specific insert priorities for specific casses (IE: himiko vs herta, clara vs march)
@@ -410,19 +418,11 @@ export const EnemyInsertAttackOthers: InsertPriority = 215;
 /**
  * TODO: specific insert priorities for specific casses (IE: himiko vs herta, clara vs march)
  */
-export const CharInsertUlt: InsertPriority = 500;
+export const CharInsertAction: InsertPriority = 500;
 /**
  * TODO: specific insert priorities for specific casses (IE: himiko vs herta, clara vs march)
  */
-export const CharInsertAction: InsertPriority = 800;
-/**
- * TODO: specific insert priorities for specific casses (IE: himiko vs herta, clara vs march)
- */
-export const EnemyInsertUlt: InsertPriority = 1000;
-/**
- * TODO: specific insert priorities for specific casses (IE: himiko vs herta, clara vs march)
- */
-export const EnemyInsertAction: InsertPriority = 1300;
+export const EnemyInsertAction: InsertPriority = 1000;
 
 //////////
 // source: shield.go

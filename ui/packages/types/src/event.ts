@@ -23,11 +23,6 @@ export interface LimboWaitHeal {
   target: string;
   is_cancelled: boolean;
 }
-export type TargetDeathEventHandler = Handler<TargetDeath>;
-export interface TargetDeath {
-  target: string;
-  killer: string;
-}
 export type EnergyChangeEventHandler = Handler<EnergyChange>;
 export interface EnergyChange {
   target: string;
@@ -213,9 +208,22 @@ export interface BattleStart {
   enemy_stats: (info.StatsEncoded | undefined)[];
   neutral_stats: (info.StatsEncoded | undefined)[];
 }
+export type Phase1StartEventHandler = Handler<Phase1Start>;
+export interface Phase1Start {
+}
+export type Phase1EndEventHandler = Handler<Phase1End>;
+export interface Phase1End {
+}
+export type Phase2StartEventHandler = Handler<Phase2Start>;
+export interface Phase2Start {
+}
+export type Phase2EndEventHandler = Handler<Phase2End>;
+export interface Phase2End {
+}
 export type TurnStartEventHandler = Handler<TurnStart>;
 export interface TurnStart {
   active: string;
+  target_type: string;
   delta_av: number /* float64 */;
   total_av: number /* float64 */;
   turn_order: TurnStatus[];
@@ -256,6 +264,11 @@ export interface InsertEnd {
   targets: { [key: string]: boolean};
   abort_flags: string[];
   priority: info.InsertPriority;
+}
+export type TargetDeathEventHandler = Handler<TargetDeath>;
+export interface TargetDeath {
+  target: string;
+  killer: string;
 }
 
 //////////

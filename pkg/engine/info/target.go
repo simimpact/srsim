@@ -1,10 +1,10 @@
 package info
 
-type TargetClass int
+type TargetClass string
 
 const (
-	ClassInvalid TargetClass = iota
-	ClassCharacter
-	ClassEnemy
-	ClassNeutral
+	ClassInvalid   TargetClass = "INVALID"
+	ClassCharacter TargetClass = "CHARACTER"
+	ClassEnemy     TargetClass = "ENEMY"
+	ClassNeutral   TargetClass = "NEUTRAL"
 )

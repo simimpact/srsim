@@ -23,12 +23,25 @@ type BattleStart struct {
 	NeutralStats []*info.Stats                   `json:"neutral_stats"`
 }
 
+type Phase1StartEventHandler = handler.EventHandler[Phase1Start]
+type Phase1Start struct{}
+
+type Phase1EndEventHandler = handler.EventHandler[Phase1End]
+type Phase1End struct{}
+
+type Phase2StartEventHandler = handler.EventHandler[Phase2Start]
+type Phase2Start struct{}
+
+type Phase2EndEventHandler = handler.EventHandler[Phase2End]
+type Phase2End struct{}
+
 type TurnStartEventHandler = handler.EventHandler[TurnStart]
 type TurnStart struct {
-	Active    key.TargetID `json:"active"`
-	DeltaAV   float64      `json:"delta_av"`
-	TotalAV   float64      `json:"total_av"`
-	TurnOrder []TurnStatus `json:"turn_order"`
+	Active     key.TargetID     `json:"active"`
+	TargetType info.TargetClass `json:"target_type"`
+	DeltaAV    float64          `json:"delta_av"`
+	TotalAV    float64          `json:"total_av"`
+	TurnOrder  []TurnStatus     `json:"turn_order"`
 }
 
 type TurnEndEventHandler = handler.EventHandler[TurnEnd]
