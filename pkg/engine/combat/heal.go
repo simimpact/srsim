@@ -23,6 +23,7 @@ func (mgr *Manager) Heal(heal info.Heal) {
 		}
 
 		e := &event.HealStart{
+			Key:         heal.Key,
 			Target:      target,
 			Healer:      source,
 			BaseHeal:    baseHeal,
@@ -62,6 +63,7 @@ func (mgr *Manager) Heal(heal info.Heal) {
 		mgr.attr.ModifyHPByAmount(t, heal.Source, healAmount, false)
 
 		mgr.event.HealEnd.Emit(event.HealEnd{
+			Key:                heal.Key,
 			Target:             t,
 			Healer:             heal.Source,
 			HealAmount:         healAmount,

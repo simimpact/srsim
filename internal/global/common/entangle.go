@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	Entanglement      key.Modifier = "common_entanglement"
-	BreakEntanglement key.Modifier = "break_entanglement"
+	Entanglement      = "common-entanglement"
+	BreakEntanglement = "break-entanglement"
 )
 
 type EntangleState struct {
@@ -66,6 +66,7 @@ func entanglePhase1(mod *modifier.Instance) {
 
 	// perform quantum damage
 	mod.Engine().Attack(info.Attack{
+		Key:        Entanglement,
 		Source:     mod.Source(),
 		Targets:    []key.TargetID{mod.Owner()},
 		AttackType: model.AttackType_PURSUED,

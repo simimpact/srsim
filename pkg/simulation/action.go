@@ -198,6 +198,7 @@ func (sim *Simulation) executeUlt(act logic.Action) error {
 func (sim *Simulation) executeInsert(i info.Insert) {
 	sim.clearActionTargets()
 	sim.Event.InsertStart.Emit(event.InsertStart{
+		Key:        i.Key,
 		Owner:      i.Source,
 		AbortFlags: i.AbortFlags,
 		Priority:   i.Priority,
@@ -209,6 +210,7 @@ func (sim *Simulation) executeInsert(i info.Insert) {
 	// end attack if in one. no-op if not in an attack
 	sim.Combat.EndAttack()
 	sim.Event.InsertEnd.Emit(event.InsertEnd{
+		Key:        i.Key,
 		Owner:      i.Source,
 		Targets:    sim.ActionTargets,
 		AbortFlags: i.AbortFlags,

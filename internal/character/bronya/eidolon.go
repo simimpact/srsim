@@ -14,6 +14,7 @@ const (
 	E2Hover    key.Modifier = "bronya-e2-hover"
 	E2Buff     key.Modifier = "bronya-e2-buff"
 	E4Cooldown key.Modifier = "bronya-e4-buff"
+	Insert                  = "bronya-follow-up"
 )
 
 func init() {
@@ -102,6 +103,7 @@ func (c *char) e4Listener(e event.AttackEnd) {
 	c.engine.InsertAbility(info.Insert{
 		Execute: func() {
 			c.engine.Attack(info.Attack{
+				Key:        Insert,
 				Source:     c.id,
 				Targets:    []key.TargetID{target},
 				DamageType: model.DamageType_WIND,
@@ -113,6 +115,7 @@ func (c *char) e4Listener(e event.AttackEnd) {
 				EnergyGain:   5.0,
 			})
 		},
+		Key:        Insert,
 		Source:     c.id,
 		Priority:   info.CharInsertAttackOthers,
 		AbortFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL, model.BehaviorFlag_DISABLE_ACTION},

@@ -12,6 +12,7 @@ import (
 const (
 	SkillCritCheck key.Modifier = "dan-heng-skill-crit-check"
 	SkillSpeedDown key.Modifier = "dan-heng-skill-speed-down"
+	SkillAttack    key.Attack   = "dan-heng-skill"
 )
 
 func init() {
@@ -54,8 +55,10 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	})
 
 	// 4 hits
-	for _, hitRatio := range skillHits {
+	for i, hitRatio := range skillHits {
 		c.engine.Attack(info.Attack{
+			Key:        SkillAttack,
+			HitIndex:   i,
 			Source:     c.id,
 			Targets:    []key.TargetID{target},
 			DamageType: model.DamageType_WIND,

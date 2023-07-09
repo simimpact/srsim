@@ -6,14 +6,21 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
+const (
+	UltPrimary  key.Attack = "arlan-ult-primary"
+	UltAdjacent key.Attack = "alarn-ult-adjacent"
+)
+
 var ultHits = []float64{0.3, 0.1, 0.6}
 
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	c.e2()
 
-	for _, hitRatio := range ultHits {
+	for i, hitRatio := range ultHits {
 		// Primary Target
 		c.engine.Attack(info.Attack{
+			Key:        UltPrimary,
+			HitIndex:   i,
 			Source:     c.id,
 			Targets:    []key.TargetID{target},
 			DamageType: model.DamageType_THUNDER,
@@ -34,6 +41,8 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		}
 
 		c.engine.Attack(info.Attack{
+			Key:        UltAdjacent,
+			HitIndex:   i,
 			Source:     c.id,
 			Targets:    c.engine.AdjacentTo(target),
 			DamageType: model.DamageType_THUNDER,

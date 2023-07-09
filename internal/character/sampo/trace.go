@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	A6 key.Modifier = "Sampo_A6"
+	A6 key.Modifier = "sampo-a6"
 )
 
 func init() {

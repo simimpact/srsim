@@ -6,6 +6,8 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
+const Skill key.Attack = "pela-skill"
+
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	oldModCount := c.engine.ModifierStatusCount(target, model.StatusType_STATUS_BUFF)
 
@@ -18,6 +20,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	c.e4(target)
 
 	c.engine.Attack(info.Attack{
+		Key:        Skill,
 		Source:     c.id,
 		Targets:    []key.TargetID{target},
 		DamageType: model.DamageType_ICE,

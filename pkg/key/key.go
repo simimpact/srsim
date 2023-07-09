@@ -2,4 +2,6 @@ package key
 
 type Modifier string
 type Shield string
-type TargetEvaluator TargetID
+type Attack string
+type Heal string
+type Insert string

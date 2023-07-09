@@ -10,7 +10,8 @@ import (
 )
 
 const (
-	SampoDOTTaken key.Modifier = "sampo_dot_taken"
+	SampoDOTTaken key.Modifier = "sampo-dot-taken"
+	Ult           key.Attack   = "sampo-ult"
 )
 
 func init() {
@@ -26,8 +27,10 @@ func init() {
 var ultHits = []float64{0.25, 0.25, 0.25, 0.25}
 
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
-	for _, hitRatio := range ultHits {
+	for i, hitRatio := range ultHits {
 		c.engine.Attack(info.Attack{
+			Key:        Ult,
+			HitIndex:   i,
 			Source:     c.id,
 			Targets:    c.engine.Enemies(),
 			DamageType: model.DamageType_WIND,

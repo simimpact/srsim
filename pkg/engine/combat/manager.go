@@ -25,6 +25,7 @@ type Manager struct {
 }
 
 type attackInfo struct {
+	key        key.Attack
 	attacker   key.TargetID
 	targets    []key.TargetID
 	attackType model.AttackType

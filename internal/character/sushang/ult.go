@@ -9,7 +9,8 @@ import (
 )
 
 const (
-	UltBuff key.Modifier = "sushang_ult_buff"
+	UltBuff key.Modifier = "sushang-ult-buff"
+	UltAtk  key.Attack   = "sushang-ult"
 )
 
 func init() {
@@ -21,6 +22,7 @@ func init() {
 
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	c.engine.Attack(info.Attack{
+		Key:        UltAtk,
 		Source:     c.id,
 		Targets:    []key.TargetID{target},
 		DamageType: model.DamageType_PHYSICAL,
