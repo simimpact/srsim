@@ -10,10 +10,11 @@ import (
 )
 
 func (s *Service) SetHP(target, source key.TargetID, amt float64, isDamage bool) error {
-	attr, ok := s.targets[target]
+	t, ok := s.targets[target]
 	if !ok {
 		return fmt.Errorf("unknown target: %v", target)
 	}
+	attr := t.attributes
 
 	oldRatio := attr.HPRatio
 	stats := s.Stats(target)
@@ -30,10 +31,11 @@ func (s *Service) SetHP(target, source key.TargetID, amt float64, isDamage bool)
 }
 
 func (s *Service) ModifyHPByAmount(target, source key.TargetID, amt float64, isDamage bool) error {
-	attr, ok := s.targets[target]
+	t, ok := s.targets[target]
 	if !ok {
 		return fmt.Errorf("unknown target: %v", target)
 	}
+	attr := t.attributes
 
 	oldRatio := attr.HPRatio
 	stats := s.Stats(target)
@@ -52,10 +54,11 @@ func (s *Service) ModifyHPByAmount(target, source key.TargetID, amt float64, isD
 }
 
 func (s *Service) ModifyHPByRatio(target, source key.TargetID, data info.ModifyHPByRatio, isDamage bool) error {
-	attr, ok := s.targets[target]
+	t, ok := s.targets[target]
 	if !ok {
 		return fmt.Errorf("unknown target: %v", target)
 	}
+	attr := t.attributes
 
 	oldRatio := attr.HPRatio
 
@@ -82,10 +85,11 @@ func (s *Service) ModifyHPByRatio(target, source key.TargetID, data info.ModifyH
 }
 
 func (s *Service) SetStance(target, source key.TargetID, amt float64) error {
-	attr, ok := s.targets[target]
+	t, ok := s.targets[target]
 	if !ok {
 		return fmt.Errorf("unknown target: %v", target)
 	}
+	attr := t.attributes
 
 	prev := attr.Stance
 	attr.Stance = amt
@@ -99,10 +103,11 @@ func (s *Service) SetStance(target, source key.TargetID, amt float64) error {
 }
 
 func (s *Service) ModifyStance(target, source key.TargetID, amt float64) error {
-	attr, ok := s.targets[target]
+	t, ok := s.targets[target]
 	if !ok {
 		return fmt.Errorf("unknown target: %v", target)
 	}
+	attr := t.attributes
 
 	stats := s.Stats(target)
 	newStance := attr.Stance + amt*(1+stats.GetProperty(prop.AllStanceDMGPercent))
@@ -110,10 +115,11 @@ func (s *Service) ModifyStance(target, source key.TargetID, amt float64) error {
 }
 
 func (s *Service) SetEnergy(target key.TargetID, amt float64) error {
-	attr, ok := s.targets[target]
+	t, ok := s.targets[target]
 	if !ok {
 		return fmt.Errorf("unknown target: %v", target)
 	}
+	attr := t.attributes
 
 	prev := attr.Energy
 	attr.Energy = amt
@@ -127,19 +133,20 @@ func (s *Service) SetEnergy(target key.TargetID, amt float64) error {
 }
 
 func (s *Service) ModifyEnergy(target key.TargetID, amt float64) error {
-	attr, ok := s.targets[target]
+	t, ok := s.targets[target]
 	if !ok {
 		return fmt.Errorf("unknown target: %v", target)
 	}
+	attr := t.attributes
 
 	stats := s.Stats(target)
 	return s.SetEnergy(target, attr.Energy+amt*(1+stats.EnergyRegen()))
 }
 
 func (s *Service) ModifyEnergyFixed(target key.TargetID, amt float64) error {
-	attr, ok := s.targets[target]
+	t, ok := s.targets[target]
 	if !ok {
 		return fmt.Errorf("unknown target: %v", target)
 	}
-	return s.SetEnergy(target, attr.Energy+amt)
+	return s.SetEnergy(target, t.attributes.Energy+amt)
 }

@@ -73,3 +73,9 @@ type InsertEnd struct {
 	AbortFlags []model.BehaviorFlag  `json:"abort_flags"`
 	Priority   info.InsertPriority   `json:"priority"`
 }
+
+type TargetDeathEventHandler = handler.EventHandler[TargetDeath]
+type TargetDeath struct {
+	Target key.TargetID `json:"target"`
+	Killer key.TargetID `json:"killer"`
+}

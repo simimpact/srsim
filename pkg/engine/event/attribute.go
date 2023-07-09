@@ -26,12 +26,6 @@ func (e LimboWaitHeal) Cancelled() handler.CancellableEvent {
 	return e
 }
 
-type TargetDeathEventHandler = handler.EventHandler[TargetDeath]
-type TargetDeath struct {
-	Target key.TargetID `json:"target"`
-	Killer key.TargetID `json:"killer"`
-}
-
 type EnergyChangeEventHandler = handler.EventHandler[EnergyChange]
 type EnergyChange struct {
 	Target    key.TargetID `json:"target"`

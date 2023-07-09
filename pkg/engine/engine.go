@@ -84,6 +84,9 @@ type Attribute interface {
 	// only be applied to the snapshot.
 	Stats(target key.TargetID) *info.Stats
 
+	// Returns true if this target is alive. Will return false if the target is in limbo
+	IsAlive(target key.TargetID) bool
+
 	// Gets the current stance amount of the target.
 	Stance(target key.TargetID) float64
 

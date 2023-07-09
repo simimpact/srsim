@@ -76,13 +76,19 @@ func (sim *Simulation) AdjacentTo(target key.TargetID) []key.TargetID {
 }
 
 func (sim *Simulation) Characters() []key.TargetID {
-	return sim.characters
+	out := make([]key.TargetID, len(sim.characters))
+	copy(out, sim.characters)
+	return out
 }
 
 func (sim *Simulation) Enemies() []key.TargetID {
-	return sim.enemies
+	out := make([]key.TargetID, len(sim.enemies))
+	copy(out, sim.enemies)
+	return out
 }
 
 func (sim *Simulation) Neutrals() []key.TargetID {
-	return sim.neutrals
+	out := make([]key.TargetID, len(sim.neutrals))
+	copy(out, sim.neutrals)
+	return out
 }
