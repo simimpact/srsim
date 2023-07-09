@@ -1,6 +1,8 @@
 package simulation
 
 import (
+	"math/rand"
+
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 )
@@ -85,4 +87,46 @@ func (sim *Simulation) Enemies() []key.TargetID {
 
 func (sim *Simulation) Neutrals() []key.TargetID {
 	return sim.neutrals
+}
+
+func (sim *Simulation) Retarget(data info.Retarget) []key.TargetID {
+	// first filter out all <= 0 HP targets IF includeLimbo is FALSE or default(which is also FALSE).
+	targetList := data.Targets
+	if !data.IncludeLimbo {
+		for _, target := range targetList {
+			if sim.HPRatio(target) <= 0 {
+				targetList = remove(targetList, target)
+			}
+		}
+	}
+
+	// filter function. if not provided, bypass
+	var validTargets []key.TargetID
+	if data.Filter != nil {
+		validTargets = data.Filter(validTargets)
+	}
+
+	// NOTE : handle cases when len(validTargets) == 0 (target list empty after filter).
+	if len(validTargets) == 0 {
+		return validTargets
+	}
+
+	// choose Max amount of targets from valid candidates.
+	// deal with edge cases
+	if data.Max == 0 {
+		data.Max = 1
+	} else if data.Max > len(validTargets) {
+		data.Max = len(validTargets)
+	}
+
+	// shuffle list indexes randomly
+	rand.Shuffle(len(validTargets), func(i, j int) {
+		validTargets[i], validTargets[j] = validTargets[j], validTargets[i]
+	})
+
+	// choose max amt of targets
+	chosenOnes := validTargets[0:data.Max]
+
+	// return filtered list
+	return chosenOnes
 }
