@@ -5,6 +5,7 @@ type Character string
 const (
 	Arlan          Character = "arlan"
 	Bronya         Character = "bronya"
+	Clara          Character = "clara"
 	DanHeng        Character = "danheng"
 	Gepard         Character = "gepard"
 	Pela           Character = "pela"
