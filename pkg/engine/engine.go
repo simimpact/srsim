@@ -229,4 +229,8 @@ type Target interface {
 	AddNeutralTarget() key.TargetID
 
 	RemoveNeutralTarget(id key.TargetID)
+
+	// returns a list of filtered target ids based on a filter func and max amount of targets chosen
+	// (option to include targets in Limbo (0 HP)). used as an implementation of Retarget() method in DM
+	Retarget(data info.Retarget)
 }
