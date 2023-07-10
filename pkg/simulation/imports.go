@@ -21,6 +21,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/abundance/postopconversation"
 	_ "github.com/simimpact/srsim/internal/lightcone/abundance/quidproquo"
 	_ "github.com/simimpact/srsim/internal/lightcone/abundance/sharedfeeling"
+	_ "github.com/simimpact/srsim/internal/lightcone/abundance/timewaitsfornoone"
 	_ "github.com/simimpact/srsim/internal/lightcone/abundance/warmthshortenscoldnights"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/asecretvow"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/collapsingsky"
