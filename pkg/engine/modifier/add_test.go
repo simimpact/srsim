@@ -19,7 +19,6 @@ func NewTestManagerForAdd(t *testing.T) (*Manager, *gomock.Controller) {
 	defer mockCtrl.Finish()
 	engine := mock.NewMockEngineWithEvents(mockCtrl)
 	engine.EXPECT().IsValid(gomock.Any()).Return(true).AnyTimes()
-
 	manager := &Manager{
 		engine:    engine,
 		targets:   make(map[key.TargetID]activeModifiers),

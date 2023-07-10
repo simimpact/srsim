@@ -1,6 +1,8 @@
 // root package for all core logic that powers srsim
 package engine
 
+//go:generate mockgen -destination=../mock/mock_engine.go -package=mock github.com/simimpact/srsim/pkg/engine Engine
+
 // only event & info are allowed to be imported from engine here
 import (
 	"math/rand"
@@ -232,5 +234,5 @@ type Target interface {
 
 	// returns a list of filtered target ids based on a filter func and max amount of targets chosen
 	// (option to include targets in Limbo (0 HP)). used as an implementation of Retarget() method in DM
-	Retarget(data info.Retarget)
+	Retarget(data info.Retarget) []key.TargetID
 }
