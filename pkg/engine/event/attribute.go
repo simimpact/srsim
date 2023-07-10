@@ -7,18 +7,18 @@ import (
 
 type HPChangeEventHandler = handler.EventHandler[HPChange]
 type HPChange struct {
-	Target             key.TargetID
-	OldHPRatio         float64
-	NewHPRatio         float64
-	OldHP              float64
-	NewHP              float64
-	IsHPChangeByDamage bool
+	Target             key.TargetID `json:"target"`
+	OldHPRatio         float64      `json:"old_hp_ratio"`
+	NewHPRatio         float64      `json:"new_hp_ratio"`
+	OldHP              float64      `json:"old_hp"`
+	NewHP              float64      `json:"new_hp"`
+	IsHPChangeByDamage bool         `json:"is_hp_change_by_damage"`
 }
 
 type LimboWaitHealEventHandler = handler.CancelableEventHandler[LimboWaitHeal]
 type LimboWaitHeal struct {
-	Target      key.TargetID
-	IsCancelled bool `exhaustruct:"optional"`
+	Target      key.TargetID `json:"target"`
+	IsCancelled bool         `exhaustruct:"optional" json:"is_cancelled"`
 }
 
 func (e LimboWaitHeal) Cancelled() handler.CancellableEvent {
@@ -26,39 +26,33 @@ func (e LimboWaitHeal) Cancelled() handler.CancellableEvent {
 	return e
 }
 
-type TargetDeathEventHandler = handler.EventHandler[TargetDeath]
-type TargetDeath struct {
-	Target key.TargetID
-	Killer key.TargetID
-}
-
 type EnergyChangeEventHandler = handler.EventHandler[EnergyChange]
 type EnergyChange struct {
-	Target    key.TargetID
-	OldEnergy float64
-	NewEnergy float64
+	Target    key.TargetID `json:"target"`
+	OldEnergy float64      `json:"old_energy"`
+	NewEnergy float64      `json:"new_energy"`
 }
 
 type StanceChangeEventHandler = handler.EventHandler[StanceChange]
 type StanceChange struct {
-	Target    key.TargetID
-	OldStance float64
-	NewStance float64
+	Target    key.TargetID `json:"target"`
+	OldStance float64      `json:"old_stance"`
+	NewStance float64      `json:"new_stance"`
 }
 
 type StanceBreakEventHandler = handler.EventHandler[StanceBreak]
 type StanceBreak struct {
-	Target key.TargetID
-	Source key.TargetID
+	Target key.TargetID `json:"target"`
+	Source key.TargetID `json:"source"`
 }
 
 type StanceResetEventHandler = handler.EventHandler[StanceReset]
 type StanceReset struct {
-	Target key.TargetID
+	Target key.TargetID `json:"target"`
 }
 
 type SPChangeEventHandler = handler.EventHandler[SPChange]
 type SPChange struct {
-	OldSP int
-	NewSP int
+	OldSP int `json:"old_sp"`
+	NewSP int `json:"new_sp"`
 }

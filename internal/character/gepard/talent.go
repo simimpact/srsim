@@ -71,7 +71,7 @@ func (c *char) talent() {
 		Source: c.id,
 		State: talentState{
 			revivePerc: revivePerc,
-			a4Active:   c.info.Traces["1104102"],
+			a4Active:   c.info.Traces["102"],
 			e6Active:   c.info.Eidolon >= 6,
 		},
 	})

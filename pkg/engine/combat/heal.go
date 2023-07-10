@@ -8,6 +8,10 @@ import (
 )
 
 func (mgr *Manager) Heal(heal info.Heal) {
+	if len(heal.Targets) == 0 || !mgr.attr.IsAlive(heal.Source) {
+		return
+	}
+
 	for _, t := range heal.Targets {
 		source := mgr.attr.Stats(heal.Source)
 		target := mgr.attr.Stats(t)

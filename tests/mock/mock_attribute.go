@@ -91,6 +91,20 @@ func (mr *MockAttributeMockRecorder) HPRatio(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HPRatio", reflect.TypeOf((*MockAttribute)(nil).HPRatio), arg0)
 }
 
+// IsAlive mocks base method.
+func (m *MockAttribute) IsAlive(arg0 key.TargetID) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsAlive", arg0)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// IsAlive indicates an expected call of IsAlive.
+func (mr *MockAttributeMockRecorder) IsAlive(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsAlive", reflect.TypeOf((*MockAttribute)(nil).IsAlive), arg0)
+}
+
 // MaxEnergy mocks base method.
 func (m *MockAttribute) MaxEnergy(arg0 key.TargetID) float64 {
 	m.ctrl.T.Helper()

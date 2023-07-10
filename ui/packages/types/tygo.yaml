@@ -1,0 +1,81 @@
+packages:
+- path: "github.com/simimpact/srsim/pkg/engine/info"
+  output_path: "src/info.ts"
+
+  exclude_files:
+  - "phase.go"
+  - "target.go"
+  - "interface.go"
+
+  type_mappings:
+    key.TargetID: string
+    key.Relic: string
+    key.Character: string
+    key.LightCone: string
+    key.Modifier: string
+    prop.Property: string
+
+    model.DamageFormula: string
+    model.HealFormula: string
+    model.ShieldFormula: string
+    model.BehaviorFlag: string
+    model.DamageType: string
+    model.StatusType: string
+    model.ModifyHPRatioType: string
+    model.Path: string
+    model.AttackType: string
+    model.DispelOrder: string
+
+  frontmatter: |
+    /* eslint-disable @typescript-eslint/consistent-type-definitions */
+    /* eslint-disable @typescript-eslint/consistent-indexed-object-style */
+    /* eslint-disable prettier/prettier */
+
+- path: "github.com/simimpact/srsim/pkg/engine/event"
+  output_path: "src/event.ts"
+
+  type_mappings:
+    # necessary since cant ignore generating these even though not used by UI
+    handler.EventHandler: Handler
+    handler.CancelableEventHandler: Handler
+    handler.MutableEventHandler: Handler
+    
+    # info cases
+    info.Character: info.Character
+    info.Hit: info.Hit
+    info.Stats: info.StatsEncoded
+    info.HealMap: info.HealMap
+    info.Enemy: info.Enemy
+    info.Modifier: info.Modifier
+    info.Shield: info.Shield
+    info.InsertPriority: info.InsertPriority
+    info.TargetClass: string
+
+    # special internal types
+    key.TargetID: string
+    key.Relic: string
+    key.Character: string
+    key.Modifier: string
+    key.Shield: string
+    prop.Property: string
+
+    # TODO: placeholder, need to do proto generation
+    model.DamageFormula: string
+    model.HealFormula: string
+    model.ShieldFormula: string
+    model.BehaviorFlag: string
+    model.DamageType: string
+    model.StatusType: string
+    model.AttackType: string
+    model.TerminationReason: string
+
+  frontmatter: |
+    /* eslint-disable @typescript-eslint/consistent-type-definitions */
+    /* eslint-disable @typescript-eslint/consistent-indexed-object-style */
+    /* eslint-disable prettier/prettier */
+
+    import { Handler } from "./handler";
+    import * as info from "./info";
+
+  exclude_files:
+  - "event.go"

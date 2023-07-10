@@ -35,7 +35,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	atkAmt := 0.12 + 0.04*float64(lc.Imposition)
 	crAmt := 0.09 + 0.03*float64(lc.Imposition)
 
-	engine.Events().EnemyAdded.Subscribe(func(e event.EnemyAdded) {
+	engine.Events().EnemiesAdded.Subscribe(func(e event.EnemiesAdded) {
 		updateCRBuff(engine, owner, crAmt)
 	})
 

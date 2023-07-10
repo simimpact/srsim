@@ -2,7 +2,7 @@ package info
 
 import "github.com/simimpact/srsim/pkg/key"
 
-type TargetClass int
+type TargetClass string
 
 type Retarget struct {
 	// List of all targets to be filtered from
@@ -19,8 +19,8 @@ type Retarget struct {
 }
 
 const (
-	ClassInvalid TargetClass = iota
-	ClassCharacter
-	ClassEnemy
-	ClassNeutral
+	ClassInvalid   TargetClass = "INVALID"
+	ClassCharacter TargetClass = "CHARACTER"
+	ClassEnemy     TargetClass = "ENEMY"
+	ClassNeutral   TargetClass = "NEUTRAL"
 )

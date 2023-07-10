@@ -1,7 +1,6 @@
 package enemy
 
 import (
-	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
@@ -70,10 +69,5 @@ func (mgr *Manager) AddEnemy(id key.TargetID, enemy *model.Enemy) error {
 		DebuffRES: debuffRES,
 	}
 	mgr.info[id] = info
-
-	mgr.engine.Events().EnemyAdded.Emit(event.EnemyAdded{
-		ID:   id,
-		Info: info,
-	})
 	return nil
 }

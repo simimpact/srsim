@@ -35,6 +35,7 @@ const (
 	Fermata               LightCone = "fermata"
 	EyesofthePrey         LightCone = "eyes_of_the_prey"
 	GoodNightandSleepWell LightCone = "good_night_and_sleep_well"
+	IncessantRain         LightCone = "incessant_rain"
 )
 
 // Erudition
@@ -63,6 +64,7 @@ const (
 	TrendoftheUniversalMarket LightCone = "trend_of_the_universal_market"
 	Pioneering                LightCone = "pioneering"
 	WeAreWildfire             LightCone = "we_are_wildfire"
+	LandausChoice             LightCone = "landaus_choice"
 )
 
 // Abundance

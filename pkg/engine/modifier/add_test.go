@@ -82,7 +82,7 @@ func TestResistModifier(t *testing.T) {
 		assert.Equal(t, name, event.Modifier)
 		assert.Equal(t, expectedChance, event.Chance)
 		assert.Equal(t, bChance, event.BaseChance)
-		assert.Equal(t, ehr, event.EHR)
+		assert.Equal(t, ehr, event.EffectHitRate)
 		assert.Equal(t, eres, event.EffectRES)
 		assert.Equal(t, dres, event.DebuffRES)
 	})

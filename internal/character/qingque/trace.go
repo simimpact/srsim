@@ -34,7 +34,7 @@ func init() {
 }
 
 func (c *char) initTraces() {
-	if c.info.Traces["1201101"] {
+	if c.info.Traces["101"] {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:   A2,
 			Source: c.id,
@@ -50,7 +50,7 @@ func A2ActionEndListener(mod *modifier.Instance, e event.ActionEnd) {
 }
 
 func (c *char) a6() {
-	if c.info.Traces["1201103"] {
+	if c.info.Traces["103"] {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:     A6,
 			Source:   c.id,
