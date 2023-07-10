@@ -56,7 +56,7 @@ func (s *Stub) SetupTest() {
 
 func (s *Stub) TearDownTest() {
 	fmt.Println("Test Finished")
-	logging.Singleton = logging.NewNilLogger()
+	logging.InitLoggers()
 	select {
 	case <-s.eventPipe:
 		s.haltSignaller <- struct{}{}
@@ -70,8 +70,7 @@ func (s *Stub) TearDownTest() {
 // StartSimulation handles the setup for starting the asynchronous sim run.
 // Call this once you finish setting up test parameters.
 func (s *Stub) StartSimulation() {
-	l := NewTestLogger(s.eventPipe, s.haltSignaller)
-	logging.InitLogger(l)
+	logging.InitLoggers(NewTestLogger(s.eventPipe, s.haltSignaller))
 	// if no chars are provided, we will add a dummy char
 	if len(s.cfg.Characters) == 0 {
 		s.Characters.AddCharacter(testchar.DummyChar())

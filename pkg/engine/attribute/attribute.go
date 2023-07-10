@@ -2,8 +2,6 @@
 // character stats
 package attribute
 
-//go:generate mockgen -destination=../../mock/mock_attribute.go -package=mock -mock_names Modifier=MockAttribute github.com/simimpact/srsim/pkg/engine/attribute Modifier
-
 import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
@@ -18,6 +16,7 @@ type Getter interface {
 	MaxEnergy(target key.TargetID) float64
 	EnergyRatio(target key.TargetID) float64
 	HPRatio(target key.TargetID) float64
+	IsAlive(target key.TargetID) bool
 }
 
 type Modifier interface {
@@ -40,49 +39,88 @@ type Modifier interface {
 type Service struct {
 	event   *event.System
 	modEval modifier.Eval
-	targets map[key.TargetID]*info.Attributes
+	targets map[key.TargetID]*attrTarget
 }
 
 func New(event *event.System, modEval modifier.Eval) *Service {
 	return &Service{
 		event:   event,
 		modEval: modEval,
-		targets: make(map[key.TargetID]*info.Attributes, 10),
+		targets: make(map[key.TargetID]*attrTarget, 10),
 	}
 }
 
 func (s *Service) Stats(target key.TargetID) *info.Stats {
 	mods := s.modEval.EvalModifiers(target)
-	attr := s.targets[target]
-	if attr == nil {
+
+	var attr *info.Attributes
+	if t, ok := s.targets[target]; ok {
+		attr = t.attributes
+	} else {
 		// default attribute instead of returning an error
 		attr = new(info.Attributes)
 		*attr = info.DefaultAttribute()
 	}
+
 	return info.NewStats(target, attr, mods)
 }
 
 func (s *Service) HPRatio(target key.TargetID) float64 {
-	return s.targets[target].HPRatio
+	if t, ok := s.targets[target]; ok {
+		return t.attributes.HPRatio
+	}
+	return 0.0
 }
 
 func (s *Service) Energy(target key.TargetID) float64 {
-	return s.targets[target].Energy
+	if t, ok := s.targets[target]; ok {
+		return t.attributes.Energy
+	}
+	return 0.0
 }
 
 func (s *Service) FullEnergy(target key.TargetID) bool {
-	attr := s.targets[target]
-	return attr.Energy >= attr.MaxEnergy
+	if t, ok := s.targets[target]; ok {
+		return t.attributes.Energy >= t.attributes.MaxEnergy
+	}
+	return false
 }
 
 func (s *Service) MaxEnergy(target key.TargetID) float64 {
-	return s.targets[target].MaxEnergy
+	if t, ok := s.targets[target]; ok {
+		return t.attributes.MaxEnergy
+	}
+	return 0.0
 }
 
 func (s *Service) EnergyRatio(target key.TargetID) float64 {
-	return s.targets[target].Energy / s.targets[target].MaxEnergy
+	if t, ok := s.targets[target]; ok {
+		return t.attributes.Energy / t.attributes.MaxEnergy
+	}
+	return 0.0
 }
 
 func (s *Service) Stance(target key.TargetID) float64 {
-	return s.targets[target].Stance
+	if t, ok := s.targets[target]; ok {
+		return t.attributes.Stance
+	}
+	return 0.0
+}
+
+func (s *Service) State(target key.TargetID) TargetState {
+	if t, ok := s.targets[target]; ok {
+		return t.state
+	}
+	return Invalid
+}
+
+func (s *Service) IsAlive(target key.TargetID) bool {
+	return s.State(target) == Alive
+}
+
+func (s *Service) LastAttacker(target key.TargetID) key.TargetID {
+	if t, ok := s.targets[target]; ok {
+		return t.lastAttacker
+	}
+	return target
 }

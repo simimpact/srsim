@@ -59,6 +59,19 @@ func initialize(sim *Simulation) (stateFn, error) {
 		}
 	}
 
+	// emit event saying that all characters are initialized
+	chars := make([]event.CharInfo, 0, len(sim.characters))
+	for _, id := range sim.characters {
+		info, _ := sim.Char.Info(id)
+		chars = append(chars, event.CharInfo{
+			ID:   id,
+			Info: &info,
+		})
+	}
+	sim.Event.CharactersAdded.Emit(event.CharactersAdded{
+		Characters: chars,
+	})
+
 	// run the script to register callbacks
 	if err := sim.eval.Init(sim); err != nil {
 		return nil, err
@@ -76,13 +89,26 @@ func initialize(sim *Simulation) (stateFn, error) {
 func startBattle(sim *Simulation) (stateFn, error) {
 	for _, enemy := range sim.cfg.Enemies {
 		id := sim.IDGen.New()
+		sim.Targets[id] = info.ClassEnemy
+		sim.enemies = append(sim.enemies, id)
+
 		if err := sim.Enemy.AddEnemy(id, enemy); err != nil {
 			return nil, fmt.Errorf("error initializing enemy %w", err)
 		}
-
-		sim.Targets[id] = info.ClassEnemy
-		sim.enemies = append(sim.enemies, id)
 	}
+
+	// emit event saying that all enemies are initialized
+	enemies := make([]event.EnemyInfo, 0, len(sim.enemies))
+	for _, id := range sim.enemies {
+		info, _ := sim.Enemy.Info(id)
+		enemies = append(enemies, event.EnemyInfo{
+			ID:   id,
+			Info: &info,
+		})
+	}
+	sim.Event.EnemiesAdded.Emit(event.EnemiesAdded{
+		Enemies: enemies,
+	})
 
 	// add all the targets to the turn order at once. Big a mega array to accomplish this
 	// the order of the copies matter (want characters > neutrals > enemies for cases of ties)
@@ -128,10 +154,11 @@ func beginTurn(sim *Simulation) (stateFn, error) {
 	sim.TotalAV += av
 
 	sim.Event.TurnStart.Emit(event.TurnStart{
-		Active:    next,
-		DeltaAV:   av,
-		TotalAV:   sim.TotalAV,
-		TurnOrder: turnOrder, // TODO: populate
+		Active:     next,
+		TargetType: sim.Targets[next],
+		DeltaAV:    av,
+		TotalAV:    sim.TotalAV,
+		TurnOrder:  turnOrder,
 	})
 	sim.Modifier.Tick(sim.Active, info.TurnStart)
 	return phase1, nil
@@ -140,8 +167,11 @@ func beginTurn(sim *Simulation) (stateFn, error) {
 // phase1 is the time between the start of the turn and the action being performed. This is when
 // stuff like dots deal damage, stance gets reset, and any bursts happen prior to the action.
 func phase1(sim *Simulation) (stateFn, error) {
+	sim.Event.Phase1Start.Emit(event.Phase1Start{})
+
 	// tick any modifiers that listen for phase1 (primarily dots)
 	sim.Modifier.Tick(sim.Active, info.ModifierPhase1)
+	sim.deathCheck(false)
 
 	// skip the action if this target has the DISABLE_ACTION flag
 	if sim.HasBehaviorFlag(sim.Active, model.BehaviorFlag_DISABLE_ACTION) {
@@ -159,7 +189,11 @@ func phase1(sim *Simulation) (stateFn, error) {
 		}
 	}
 
-	return sim.executeQueue(info.InsertAbilityPhase1, action)
+	next, err := sim.executeQueue(info.InsertAbilityPhase1, action)
+	if err == nil {
+		sim.Event.Phase1End.Emit(event.Phase1End{})
+	}
+	return next, err
 }
 
 // actually execute the action for this turn and then move on to phase2 once done
@@ -167,6 +201,7 @@ func action(sim *Simulation) (stateFn, error) {
 	if err := sim.executeAction(sim.Active, false); err != nil {
 		return nil, fmt.Errorf("unknown error executing action %w", err)
 	}
+	sim.deathCheck(false)
 	return phase2, nil
 }
 
@@ -177,6 +212,7 @@ func phase2(sim *Simulation) (stateFn, error) {
 	// inside of action for the cases where the action was skipped.
 	sim.Turn.ResetTurn()
 	sim.Modifier.Tick(sim.Active, info.ActionEnd)
+	sim.Event.Phase2Start.Emit(event.Phase2Start{})
 
 	// execute anything that is in the execution queue. any follow ups, bursts, etc.
 	if next, err := sim.executeQueue(info.InsertAbilityPhase2, endTurn); next == nil || err != nil {
@@ -185,14 +221,13 @@ func phase2(sim *Simulation) (stateFn, error) {
 
 	// tick all phase2 modifiers before finally ending the turn
 	sim.Modifier.Tick(sim.Active, info.ModifierPhase2)
+	sim.Event.Phase2End.Emit(event.Phase2End{})
 	return endTurn, nil
 }
 
 // finalize that this is the end of the turn. Mainly just emitting the turn end event
 func endTurn(sim *Simulation) (stateFn, error) {
-	// check for special case where a target was supposed to be revived but never did (reviver died?)
-	sim.deathCheck(sim.characters)
-	sim.deathCheck(sim.enemies)
+	sim.deathCheck(true) // treat limbo'd targets as dead for edge case
 
 	// emit TurnEnd event to log the current state of all remaining targets
 	snap := sim.createSnapshot()

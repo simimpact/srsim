@@ -17,15 +17,23 @@ const contentVariants = cva(
 const headerVariants = cva("flex flex-col space-y-1.5 text-center sm:text-left");
 
 const footerVariants = cva("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2");
+
 const titleVariants = cva("text-lg font-semibold leading-none tracking-tight");
+
 const descriptionVariants = cva("text-sm text-muted-foreground");
 
 const Dialog = DialogPrimitive.Root;
 
 const DialogTrigger = DialogPrimitive.Trigger;
 
+const portalVariants = cva("fixed inset-0 z-50 flex items-start justify-center sm:items-center");
+
+const closeVariants = cva(
+  "absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+);
+
 const DialogPortal = ({ className, ...props }: DialogPrimitive.DialogPortalProps) => (
-  <DialogPrimitive.Portal className={cn(className)} {...props} />
+  <DialogPrimitive.Portal className={cn(portalVariants({ className }))} {...props} />
 );
 DialogPortal.displayName = DialogPrimitive.Portal.displayName;
 
@@ -45,7 +53,7 @@ const DialogContent = React.forwardRef<
     <DialogOverlay />
     <DialogPrimitive.Content ref={ref} className={cn(contentVariants({ className }))} {...props}>
       {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+      <DialogPrimitive.Close className={closeVariants()}>
         <X className="h-4 w-4" />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>

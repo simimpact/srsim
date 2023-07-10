@@ -9,8 +9,8 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
-	"github.com/simimpact/srsim/pkg/mock"
 	"github.com/simimpact/srsim/pkg/model"
+	"github.com/simimpact/srsim/tests/mock"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -83,7 +83,7 @@ func TestResistModifier(t *testing.T) {
 		assert.Equal(t, name, event.Modifier)
 		assert.Equal(t, expectedChance, event.Chance)
 		assert.Equal(t, bChance, event.BaseChance)
-		assert.Equal(t, ehr, event.EHR)
+		assert.Equal(t, ehr, event.EffectHitRate)
 		assert.Equal(t, eres, event.EffectRES)
 		assert.Equal(t, dres, event.DebuffRES)
 	})

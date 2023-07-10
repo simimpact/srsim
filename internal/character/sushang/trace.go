@@ -59,7 +59,7 @@ func init() {
 
 // add A2 on init
 func (c *char) initTraces() {
-	if c.info.Traces["1206101"] {
+	if c.info.Traces["101"] {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:   A2Check,
 			Source: c.id,
@@ -85,11 +85,8 @@ func a4OnBeforeHitAll(mod *modifier.Instance, e event.HitStart) {
 }
 
 func (c *char) a4AddStack() {
-	if c.engine.HasModifier(c.id, A4Buff) {
-		stacks := c.engine.GetModifiers(c.id, A4Buff)[0].Count
-		if stacks == 10 {
-			return
-		}
+	if c.engine.ModifierStackCount(c.id, c.id, A4Buff) == 10 {
+		return
 	}
 
 	c.engine.AddModifier(c.id, info.Modifier{
@@ -99,7 +96,7 @@ func (c *char) a4AddStack() {
 }
 
 func (c *char) a6() {
-	if c.info.Traces["1206103"] {
+	if c.info.Traces["103"] {
 		for _, enemy := range c.engine.Enemies() {
 			if c.engine.Stats(enemy).Stance() == 0 {
 				c.engine.ModifyCurrentGaugeCost(-0.15)

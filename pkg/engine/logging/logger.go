@@ -1,19 +1,34 @@
 package logging
 
-var Singleton Logger
+import (
+	"fmt"
+	"strings"
+)
+
+var loggers []Logger
 
 type Logger interface {
-	Log(e interface{})
+	Log(e any)
 }
 
-func init() {
-	Singleton = &nilLogger{}
+type LogWrapper struct {
+	Name  string `json:"name"`
+	Event any    `json:"event"`
 }
 
-func InitLogger(l Logger) {
-	Singleton = l
+func InitLoggers(ls ...Logger) {
+	loggers = ls
 }
 
-func Log(e interface{}) {
-	Singleton.Log(e)
+func Log(e any) {
+	for _, l := range loggers {
+		l.Log(e)
+	}
+}
+
+func Wrap(e any) *LogWrapper {
+	return &LogWrapper{
+		Name:  strings.TrimPrefix(fmt.Sprintf("%T", e), "event."),
+		Event: e,
+	}
 }

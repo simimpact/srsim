@@ -1,8 +1,6 @@
 // root package for all core logic that powers srsim
 package engine
 
-//go:generate mockgen -destination=../mock/mock_engine.go -package=mock github.com/simimpact/srsim/pkg/engine Engine
-
 // only event & info are allowed to be imported from engine here
 import (
 	"math/rand"
@@ -62,8 +60,15 @@ type Modifier interface {
 	// Returns true if the target has at least one instance of the modifier
 	HasModifier(target key.TargetID, modifier key.Modifier) bool
 
+	// Returns true if the target has at least once instance of the modifier from the given source
+	HasModifierFromSource(target, source key.TargetID, modifier key.Modifier) bool
+
 	// Returns the total count of modifiers that are of the given StatusType (Buff or Debuff)
-	ModifierCount(target key.TargetID, statusType model.StatusType) int
+	ModifierStatusCount(target key.TargetID, statusType model.StatusType) int
+
+	// Returns the number of stacks for a given modifier that was from the given source. This should
+	// only be used when accessing the modifier from outside the instance.
+	ModifierStackCount(target, source key.TargetID, modifier key.Modifier) float64
 
 	// Returns true if the target has the given behavior flag from an attached modifier. If multiple
 	// flags are passed, will return true if at least one is attached
@@ -78,6 +83,9 @@ type Attribute interface {
 	// Gets a snapshot of the current target's stats. Any modifications to these stats will
 	// only be applied to the snapshot.
 	Stats(target key.TargetID) *info.Stats
+
+	// Returns true if this target is alive. Will return false if the target is in limbo
+	IsAlive(target key.TargetID) bool
 
 	// Gets the current stance amount of the target.
 	Stance(target key.TargetID) float64

@@ -76,14 +76,20 @@ linters-settings:
 
   exhaustruct:
     exclude:
+    ## sim code
     - 'github\.com/simimpact/srsim/pkg/engine/modifier\.Config'
     - 'github\.com/simimpact/srsim/pkg/engine/modifier\.Listeners'
     - 'github\.com/simimpact/srsim/pkg/engine/modifier\.Instance'
     - 'github\.com/simimpact/srsim/pkg/engine/event\.System'
     - 'github\.com/simimpact/srsim/pkg/logic/gcs'
-    - 'github\.com/simimpact/srsim/pkg/model'
+    - 'github\.com/simimpact/srsim/pkg/model' # TODO: remove
     - 'github\.com/simimpact/srsim/pkg/simulation'
     - 'github\.com/simimpact/srsim/scripts'
+
+    ## dependencies
+    - 'net/http'
+    - 'github\.com/urfave/cli/v2'
+    - 'google\.golang\.org/protobuf/encoding/protojson'
 
   funlen:
     lines: 100
@@ -160,6 +166,7 @@ linters-settings:
 
   tagliatelle:
     case:
+      use-field-name: true
       rules:
         json: snake
 

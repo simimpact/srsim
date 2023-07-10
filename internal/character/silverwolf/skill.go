@@ -78,7 +78,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	//	used, then the Skill decreases the enemy's All-Type RES by an additional
 	//	3%.
 	allDamageDown := -skillResDown[c.info.SkillLevelIndex()]
-	if c.info.Traces["1006103"] && c.engine.ModifierCount(target, model.StatusType_STATUS_DEBUFF) >= 3 {
+	if c.info.Traces["103"] && c.engine.ModifierStatusCount(target, model.StatusType_STATUS_DEBUFF) >= 3 {
 		allDamageDown -= 0.03
 	}
 	c.engine.AddModifier(target, info.Modifier{
@@ -93,7 +93,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	//	The duration of the Weakness implanted by Silver Wolf's Skill increases
 	//	by 1 turn(s).
 	duration := 2
-	if c.info.Traces["1006102"] {
+	if c.info.Traces["102"] {
 		duration += 1
 	}
 	c.engine.AddModifier(target, info.Modifier{

@@ -3,6 +3,7 @@ package simulation
 import (
 	"fmt"
 
+	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/queue"
@@ -55,13 +56,14 @@ func (sim *Simulation) ultCheck() error {
 		if sim.Attr.FullEnergy(act.Target) {
 			sim.Queue.Insert(queue.Task{
 				Source:   act.Target,
-				Priority: info.CharInsertUlt,
+				Priority: info.CharInsertAction,
 				AbortFlags: []model.BehaviorFlag{
 					model.BehaviorFlag_STAT_CTRL,
 					model.BehaviorFlag_DISABLE_ACTION,
 				},
 				Execute: func() { sim.executeUlt(act) }, // TODO: error handling
 			})
+			sim.Attr.ModifyEnergy(act.Target, -sim.Attr.MaxEnergy(act.Target))
 		}
 	}
 	return nil
@@ -84,8 +86,9 @@ func (sim *Simulation) executeQueue(phase info.BattlePhase, next stateFn) (state
 	for !sim.Queue.IsEmpty() {
 		insert := sim.Queue.Pop()
 
-		// if source has no HP, skip this insert
-		if sim.Attr.HPRatio(insert.Source) <= 0 {
+		// if source is dead, skip this insert (limbo okay for case of revives)
+		// TODO: make this behavior change based off current insert priority?
+		if sim.Attr.State(insert.Source) == attribute.Dead {
 			continue
 		}
 
@@ -95,6 +98,7 @@ func (sim *Simulation) executeQueue(phase info.BattlePhase, next stateFn) (state
 		}
 
 		insert.Execute()
+		sim.deathCheck(false)
 
 		// attempt to exit. If can exit, stop sim now
 		if next, err := sim.exitCheck(next); next == nil || err != nil {
@@ -110,6 +114,11 @@ func (sim *Simulation) executeQueue(phase info.BattlePhase, next stateFn) (state
 func (sim *Simulation) executeAction(id key.TargetID, isInsert bool) error {
 	var executable target.ExecutableAction
 	var err error
+
+	// actions can only be executed while alive (skip if dead or limbo)
+	if sim.Attr.State(id) != attribute.Alive {
+		return nil
+	}
 
 	switch sim.Targets[id] {
 	case info.ClassCharacter:

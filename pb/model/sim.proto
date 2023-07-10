@@ -4,65 +4,78 @@ option go_package = "github.com/simimpact/srsim/pkg/model";
 import "pb/model/enum.proto";
 
 message SimConfig {
-    int32 iterations = 1 [json_name="iterations"];
-    int32 worker_count = 2 [json_name="worker_count"];
-    SimulatorSettings settings = 3 [json_name="settings"];
+  SimulatorSettings settings = 1;
 
-    repeated Character characters = 4 [json_name="characters"];
-    repeated Enemy enemies = 5 [json_name="enemies"];
+  repeated Character characters = 2;
+  repeated Enemy enemies = 3; // TODO: waves
+  reserved 4, 5; // TODO: blessings, curious
+
+  Engage engage = 6;
+
+  oneof logic {
+    string gcsl = 7;
+  }
 }
 
 message SimulatorSettings {
-    int32 cycle_limit = 1 [json_name="cycle_limit"];
-    bool ttk_mode = 2 [json_name="ttk_mode"];
-}
-
-message Relic {
-    string key = 1 [ json_name = "key" ];
-    RelicStat main_stat = 2 [json_name = "main_stat" ];
-    repeated RelicStat sub_stats = 3 [ json_name = "sub_stats"];
-}
-
-message RelicStat {
-    Property stat = 1 [ json_name = "stat" ];
-    double amount = 2 [ json_name = "amount" ];
-}
-
-message LightCone {
-    string key = 1 [ json_name = "key" ];
-    uint32 level = 2 [ json_name = "level" ];
-    uint32 max_level = 3 [ json_name = "max_level" ];
-    uint32 imposition = 4 [ json_name = "imposition" ];
+  uint32 cycle_limit = 1;
 }
 
 message Character {
-    string key = 1 [ json_name = "key" ];
-    uint32 level = 2 [ json_name = "level" ];
-    uint32 max_level = 3 [ json_name = "max_level" ];
-    uint32 eidols = 4 [ json_name = "eidols" ];
-    repeated string traces = 5 [json_name = "traces" ];
-    repeated uint32 talents = 6 [ json_name = "talents" ]; // [attack, skill, ultimate, talent]
-    LightCone cone = 7 [ json_name = "cone" ];
-    repeated Relic relics = 8 [ json_name = "relics" ];
-    double start_energy = 9 [ json_name = "start_energy" ]; 
+  string key = 1;
+  uint32 level = 2;
+  uint32 max_level = 3;
+  uint32 eidols = 4;
+  repeated string traces = 5;
+  Abilities abilities = 6;
+  LightCone light_cone = 7;
+  repeated Relic relics = 8;
+  double start_energy = 9;
+  double start_hp = 10;
+}
+
+message Wave {
+  repeated Enemy enemies = 1;
 }
 
 message Enemy {
-    uint32 level = 2 [ json_name = "level" ];
-    double hp = 3 [ json_name = "hp" ];
-    double toughness = 4 [ json_name = "toughness" ];
-    repeated DamageType weaknesses = 5 [ json_name = "weaknesses" ];
-    repeated DebuffRES debuff_res = 6 [ json_name = "debuff_res" ];
+  uint32 level = 2;
+  double hp = 3;
+  double toughness = 4;
+  repeated DamageType weaknesses = 5;
+  repeated DebuffRES debuff_res = 6;
+}
+
+message Engage {
+  bool ambush = 1;
+}
+
+message Abilities {
+  uint32 attack = 1;
+  uint32 skill = 2;
+  uint32 ult = 3;
+  uint32 talent = 4;
+}
+
+message Relic {
+  string key = 1;
+  RelicStat main_stat = 2;
+  repeated RelicStat sub_stats = 3;
+}
+
+message RelicStat {
+  Property stat = 1;
+  double amount = 2;
+}
+
+message LightCone {
+  string key = 1;
+  uint32 level = 2;
+  uint32 max_level = 3;
+  uint32 imposition = 4;
 }
 
 message DebuffRES {
-    BehaviorFlag stat = 1 [ json_name = "stat" ];
-    double amount = 2 [ json_name = "amount" ];
-}
-
-enum TerminationReason {
-    INVALID_TERMINATION = 0;
-    BATTLE_LOSS = 1;
-    BATTLE_WIN = 2;
-    TIMEOUT = 3;
+  BehaviorFlag flag = 1;
+  double amount = 2;
 }

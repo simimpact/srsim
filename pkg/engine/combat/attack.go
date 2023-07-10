@@ -6,7 +6,7 @@ import (
 )
 
 func (mgr *Manager) Attack(atk info.Attack) {
-	if len(atk.Targets) == 0 || mgr.attr.HPRatio(atk.Source) == 0 {
+	if len(atk.Targets) == 0 || !mgr.attr.IsAlive(atk.Source) {
 		return
 	}
 

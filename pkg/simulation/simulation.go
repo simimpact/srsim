@@ -21,6 +21,13 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
+type RunOpts struct {
+	Config  *model.SimConfig
+	Eval    logic.Eval
+	Seed    int64
+	Loggers []logging.Logger `exhaustruct:"optional"`
+}
+
 type Simulation struct {
 	cfg  *model.SimConfig
 	eval logic.Eval
@@ -51,14 +58,9 @@ type Simulation struct {
 	ActionTargets map[key.TargetID]bool
 }
 
-func RunWithLog(logger logging.Logger, cfg *model.SimConfig, eval logic.Eval, seed int64) (*model.IterationResult, error) {
-	logging.InitLogger(logger)
-	return Run(cfg, eval, seed)
-}
-
-func Run(cfg *model.SimConfig, eval logic.Eval, seed int64) (*model.IterationResult, error) {
-	s := NewSimulation(cfg, eval, seed)
-	return s.Run()
+func Run(opts *RunOpts) (*model.IterationResult, error) {
+	logging.InitLoggers(opts.Loggers...)
+	return NewSimulation(opts.Config, opts.Eval, opts.Seed).Run()
 }
 
 func NewSimulation(cfg *model.SimConfig, eval logic.Eval, seed int64) *Simulation {
@@ -94,7 +96,8 @@ func NewSimulation(cfg *model.SimConfig, eval logic.Eval, seed int64) *Simulatio
 	// game logic
 	s.Turn = turn.New(s.Event, s.Attr)
 	s.Shield = shield.New(s.Event, s.Attr)
-	s.Combat = combat.New(s.Event, s.Attr, s.Shield)
+	s.Combat = combat.New(s.Event, s.Attr, s.Shield, s, s.Random)
+
 	return s
 }
 

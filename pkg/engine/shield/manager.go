@@ -1,7 +1,5 @@
 package shield
 
-//go:generate mockgen -destination=../../mock/mock_shield.go -package=mock -mock_names Absorb=MockShield github.com/simimpact/srsim/pkg/engine/shield Absorb
-
 import (
 	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/event"
