@@ -720,6 +720,20 @@ func (mr *MockEngineMockRecorder) RemoveShield(arg0, arg1 interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveShield", reflect.TypeOf((*MockEngine)(nil).RemoveShield), arg0, arg1)
 }
 
+// Retarget mocks base method.
+func (m *MockEngine) Retarget(arg0 info.Retarget) []key.TargetID {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Retarget", arg0)
+	ret0, _ := ret[0].([]key.TargetID)
+	return ret0
+}
+
+// Retarget indicates an expected call of Retarget.
+func (mr *MockEngineMockRecorder) Retarget(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Retarget", reflect.TypeOf((*MockEngine)(nil).Retarget), arg0)
+}
+
 // SP mocks base method.
 func (m *MockEngine) SP() int {
 	m.ctrl.T.Helper()
