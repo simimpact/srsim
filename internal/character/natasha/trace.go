@@ -31,11 +31,13 @@ func init() {
 	})
 
 	//A4 outgoing heal buff
-	modifier.Register(A4, modifier.Config{})
+	modifier.Register(A4, modifier.Config{
+		StatusType: model.StatusType_STATUS_BUFF,
+	})
 
 }
 
-func initTraces(c *char) {
+func (c *char) initTraces() {
 
 	//A2
 	if c.info.Traces["1101101"] {
@@ -54,7 +56,7 @@ func initTraces(c *char) {
 		})
 	}
 
-	//if we have A6
+	//A6
 	if c.info.Traces["1101103"] {
 		c.engine.ExtendModifierDuration(c.id, Skill, 1)
 	}
