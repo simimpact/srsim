@@ -3,9 +3,16 @@ package timewaitsfornoone
 import (
 	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/equip/lightcone"
+	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
+)
+
+const (
+	time     key.Modifier = "time-waits-for-no-one"
+	extraDmg key.Modifier = "time-waits-for-no-one-extra-damage"
 )
 
 // Desc : Increases the wearer's Max HP by 18% and Outgoing Healing by 12%.
@@ -36,7 +43,7 @@ import (
 // NOTE : do we need to add _Sub as separate mod?
 // -> OnPhase1 : refresh cooldown
 // -> OnAfterAttack : if cooldown = 1 : Retarget(). apply dmg to chosen target. ele = holder ele.
-// type pursued (how about the flags?)
+// type pursued (how about the flags?), byPureDmg
 // -> OnSnapshotCreate (?)
 // OnAfterDealHeal : record heal value (read incessant rain impl.)
 
@@ -47,8 +54,27 @@ func init() {
 		Path:          model.Path_ABUNDANCE,
 		Promotions:    promotions,
 	})
+	modifier.Register(time, modifier.Config{
+		Listeners: modifier.Listeners{
+			OnPhase1:        refreshCD,
+			OnAfterAttack:   applyExtraDmg,
+			OnAfterDealHeal: recordHealAmt,
+		},
+	})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
+
+}
+
+func refreshCD(mod *modifier.Instance) {
+
+}
+
+func applyExtraDmg(mod *modifier.Instance, e event.AttackEnd) {
+
+}
+
+func recordHealAmt(mod *modifier.Instance, e event.HealEnd) {
 
 }
