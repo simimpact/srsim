@@ -21,6 +21,25 @@ import (
 // OnAfterAttack -> pick random 1 enemy, apply x% dmg based on healAmt + element same as holder
 // 1 time per turn -> onBeforeTurn : refresh, pass 1 turn to struct or inherent duration?
 
+// Datamine analysis :
+// OnPhase1 : refresh 1-time-per-turn dmg adds
+// onStack : add _Sub modifier on owner
+// OnListenAfterAttack : if cooldown == 1 = call Retarget() : DamageByAttackProperty
+// DamageTypeFromAttacker = T, indirect, attacktype pursued, byPureDmg, canTriggerLastKill
+// -> set cooldown to 0.
+// OnSnapshotCreate : add _Sub modifier (duplicate?)
+// _Sub def : OnAfterDealHeal : store heal value
+// OnStart : add _Main mod
+
+// Conclusion on impl. :
+// create base modifier. add hp and healboost. add listeners :
+// NOTE : do we need to add _Sub as separate mod?
+// -> OnPhase1 : refresh cooldown
+// -> OnAfterAttack : if cooldown = 1 : Retarget(). apply dmg to chosen target. ele = holder ele.
+// type pursued (how about the flags?)
+// -> OnSnapshotCreate (?)
+// OnAfterDealHeal : record heal value (read incessant rain impl.)
+
 func init() {
 	lightcone.Register(key.TimeWaitsforNoOne, lightcone.Config{
 		CreatePassive: Create,
