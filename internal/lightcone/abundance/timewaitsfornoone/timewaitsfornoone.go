@@ -6,6 +6,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -14,6 +15,11 @@ const (
 	time     key.Modifier = "time-waits-for-no-one"
 	extraDmg key.Modifier = "time-waits-for-no-one-extra-damage"
 )
+
+type extraDamage struct {
+	cooldown    int
+	lastHealAmt float64
+}
 
 // Desc : Increases the wearer's Max HP by 18% and Outgoing Healing by 12%.
 // When the wearer heals allies, record the amount of Outgoing Healing.
@@ -64,17 +70,33 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-
+	// initialize extraDamage struct.
+	extraDmg := new(extraDamage)
+	// add in the HP + out. heal buffs. add struct pointer as state
+	hpBuffAmt := 0.15 + 0.03*float64(lc.Imposition)
+	outHealAmt := 0.10 + 0.02*float64(lc.Imposition)
+	engine.AddModifier(owner, info.Modifier{
+		Name:   time,
+		Source: owner,
+		Stats: info.PropMap{
+			prop.HPPercent: hpBuffAmt,
+			prop.HealBoost: outHealAmt,
+		},
+		State: &extraDmg,
+	})
 }
 
+// take struct pointer, modify cooldown value
 func refreshCD(mod *modifier.Instance) {
 
 }
 
+// if cooldown = 1, Retarget(1 target), add dmg type pursued, byPureDamage(?), ele same as holder
 func applyExtraDmg(mod *modifier.Instance, e event.AttackEnd) {
 
 }
 
+// take struct pointer, modify lastHealAmt value.
 func recordHealAmt(mod *modifier.Instance, e event.HealEnd) {
 
 }
