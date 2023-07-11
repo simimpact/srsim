@@ -15,16 +15,26 @@ const (
 
 func init() {
 	modifier.Register(technique, modifier.Config{
-		StatusType: model.StatusType_STATUS_DEBUFF,
-		Duration:   1,
-		TickMoment: modifier.ModifierPhase1End,
+		StatusType:    model.StatusType_STATUS_DEBUFF,
+		Duration:      1,
+		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_FATIGUE},
+		Stacking:      modifier.ReplaceBySource,
 	})
 }
 
 func (c *char) Technique(target key.TargetID, state info.ActionState) {
 	targets := c.engine.Enemies()
+
+	randomTarget := c.engine.Retarget(info.Retarget{
+		Targets: targets,
+		Max:     1,
+		Filter: func(target key.TargetID) bool {
+			return true
+		},
+	})
+
 	c.engine.Attack(info.Attack{
-		Targets:    targets,
+		Targets:    randomTarget,
 		Source:     c.id,
 		AttackType: model.AttackType_MAZE,
 		DamageType: model.DamageType_PHYSICAL,
@@ -32,12 +42,14 @@ func (c *char) Technique(target key.TargetID, state info.ActionState) {
 			model.DamageFormula_BY_ATK: techniqueScalePercentage,
 		},
 	})
+	c.engine.EndAttack()
+
 	for _, trg := range targets {
 		c.engine.AddModifier(trg, info.Modifier{
 			Name:   technique,
 			Source: c.id,
 			Chance: 1,
-			Stats:  info.PropMap{prop.AllDamageReduce: 0.30},
+			Stats:  info.PropMap{prop.Fatigue: 0.30},
 		})
 	}
 }
