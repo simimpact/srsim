@@ -6,7 +6,6 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
-	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
@@ -17,7 +16,6 @@ const (
 func init() {
 	modifier.Register(Talent,
 		modifier.Config{
-			StatusType:        model.StatusType_STATUS_BUFF,
 			CanModifySnapshot: true,
 			Listeners: modifier.Listeners{
 				OnBeforeDealHeal: talentHealListener,
