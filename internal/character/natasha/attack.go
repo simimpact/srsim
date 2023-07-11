@@ -21,4 +21,6 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 
 	// If nat is e6, creates another attack instance.
 	c.e6(target)
+
+	c.engine.EndAttack()
 }
