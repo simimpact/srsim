@@ -21,7 +21,7 @@ const (
 )
 
 func init() {
-	// Self heal if hp lower than 30% after gettting hit : Eidolon 1
+	// Register E1
 	modifier.Register(E1, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAfterBeingAttacked: e1SelfHeal,
@@ -92,6 +92,7 @@ func e1SelfHeal(mod *modifier.Instance, e event.AttackEnd) {
 					},
 					HealValue: E1HealFlat,
 				})
+				mod.Engine().RemoveModifier(selfHealer, mod.Name())
 			},
 			Source: selfHealer,
 			AbortFlags: []model.BehaviorFlag{
@@ -99,7 +100,6 @@ func e1SelfHeal(mod *modifier.Instance, e event.AttackEnd) {
 				model.BehaviorFlag_DISABLE_ACTION},
 			Priority: info.CharHealSelf,
 		})
-		mod.Engine().RemoveModifier(selfHealer, mod.Name())
 	}
 }
 
@@ -121,7 +121,7 @@ func (c *char) e2(targets []key.TargetID) {
 	}
 }
 
-// Create an extra attack instance of type pursued, only called by nat basic attack
+// Create an extra attack instance, only called by nat basic attack
 func (c *char) e6(target key.TargetID) {
 	if c.info.Eidolon >= 6 {
 		c.engine.Attack(info.Attack{
