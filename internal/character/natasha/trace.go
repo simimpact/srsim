@@ -30,34 +30,17 @@ func init() {
 		},
 	})
 
-	//A4 outgoing heal buff
-	modifier.Register(A4, modifier.Config{
-		StatusType: model.StatusType_STATUS_BUFF,
-	})
-
 }
 
 func (c *char) initTraces() {
-
-	//A2
-	if c.info.Traces["1101101"] {
-		c.engine.AddModifier(c.id, info.Modifier{
-			Name:   A2,
-			Source: c.id,
-		})
-	}
 
 	//A4
 	if c.info.Traces["1101102"] {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:   A4,
 			Source: c.id,
-			State:  info.PropMap{prop.HealBoost: 0.1},
+			Stats:  info.PropMap{prop.HealBoost: 0.1},
 		})
 	}
 
-	//A6
-	if c.info.Traces["1101103"] {
-		c.engine.ExtendModifierDuration(c.id, Skill, 1)
-	}
 }

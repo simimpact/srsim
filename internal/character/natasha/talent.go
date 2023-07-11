@@ -20,12 +20,7 @@ func init() {
 			StatusType:        model.StatusType_STATUS_BUFF,
 			CanModifySnapshot: true,
 			Listeners: modifier.Listeners{
-				OnBeforeDealHeal: func(mod *modifier.Instance, e *event.HealStart) {
-					char, _ := mod.Engine().CharacterInfo(mod.Owner())
-					if e.Target.CurrentHPRatio() <= talentHpThresholdPercentage {
-						mod.AddProperty(prop.HealBoost, talent[char.TalentLevelIndex()])
-					}
-				},
+				OnBeforeDealHeal: talentHealListener,
 			},
 		},
 	)
@@ -36,4 +31,11 @@ func (c *char) initTalent() {
 		Name:   Talent,
 		Source: c.id,
 	})
+}
+
+// Listens to any heals done by nat to see if the target qualifies for the talent boost, including HOT
+func talentHealListener(mod *modifier.Instance, e *event.HealStart) {
+	if e.Target.CurrentHPRatio() <= talentHpThresholdPercentage {
+		e.Healer.AddProperty(prop.HealBoost, 0.5)
+	}
 }
