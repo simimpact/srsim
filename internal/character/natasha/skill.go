@@ -13,7 +13,7 @@ const (
 
 func init() {
 
-	//Nat HOT from skill
+	// Nat HOT from skill
 	modifier.Register(
 		Skill,
 		modifier.Config{
@@ -32,7 +32,7 @@ func init() {
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
 
-	//Nat dispel (Checks if nat is A2)
+	// Nat dispel (Checks if nat is A2)
 	if c.info.Traces["1101101"] {
 		c.engine.DispelStatus(target, info.Dispel{
 			Status: model.StatusType_STATUS_DEBUFF,
@@ -41,7 +41,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		})
 	}
 
-	//Stats of the heal
+	// Stats of the heal
 	heal := info.Heal{
 		Targets: []key.TargetID{target},
 		Source:  c.id,
@@ -52,7 +52,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		UseSnapshot: true,
 	}
 
-	//The actual act of healing
+	// The actual act of healing
 	c.engine.Heal(heal)
 
 	hotDuration := 2
@@ -62,7 +62,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		hotDuration = 3
 	}
 
-	//Create the continuous heal modification
+	// Create the continuous heal modification
 	c.engine.AddModifier(target, info.Modifier{
 		Name:     Skill,
 		Source:   c.id,

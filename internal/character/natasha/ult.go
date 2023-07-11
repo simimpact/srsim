@@ -9,7 +9,7 @@ import (
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	targets := c.engine.Characters()
 
-	//If eidolon 2 or above, will attempt to apply HOT.
+	// If eidolon 2 or above, will attempt to apply HOT.
 	c.e2(targets)
 
 	c.engine.Heal(info.Heal{

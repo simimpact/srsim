@@ -17,7 +17,7 @@ const (
 
 func init() {
 
-	//A2 dispel
+	// A2 dispel
 	modifier.Register(A2, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeBeingHeal: func(mod *modifier.Instance, e *event.HealStart) {
@@ -34,7 +34,7 @@ func init() {
 
 func (c *char) initTraces() {
 
-	//A4
+	// A4
 	if c.info.Traces["102"] {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:   A4,

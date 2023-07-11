@@ -20,7 +20,7 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 		EnergyGain:   20.0,
 	})
 
-	//If nat is e6, creates another attack instance.
+	// If nat is e6, creates another attack instance.
 	c.e6(target)
 
 }

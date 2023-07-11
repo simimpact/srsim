@@ -22,7 +22,7 @@ const (
 
 func init() {
 
-	//Self heal if hp lower than 30% after gettting hit : Eidolon 1
+	// Self heal if hp lower than 30% after gettting hit : Eidolon 1
 	modifier.Register(E1, modifier.Config{
 		//Refactor into own method maybe?
 		Listeners: modifier.Listeners{
@@ -30,7 +30,7 @@ func init() {
 		},
 	})
 
-	//Register E2
+	// Register E2
 	modifier.Register(E2, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnPhase1: func(mod *modifier.Instance) {
@@ -49,7 +49,7 @@ func init() {
 		StatusType: model.StatusType_STATUS_BUFF,
 	})
 
-	//Register E4
+	// Register E4
 	modifier.Register(E4, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAfterBeingAttacked: func(mod *modifier.Instance, e event.AttackEnd) {
@@ -70,7 +70,7 @@ func (c *char) initEidolons() {
 			})
 	}
 
-	//Extra 5 energy on being hit
+	// Extra 5 energy on being hit
 	if c.info.Eidolon >= 4 {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:   E4,
