@@ -21,7 +21,6 @@ const (
 )
 
 func init() {
-
 	// Self heal if hp lower than 30% after gettting hit : Eidolon 1
 	modifier.Register(E1, modifier.Config{
 		//Refactor into own method maybe?
@@ -103,7 +102,6 @@ func e1SelfHeal(mod *modifier.Instance, e event.AttackEnd) {
 		})
 		mod.Engine().RemoveModifier(selfHealer, mod.Name())
 	}
-
 }
 
 // Add a HOT if heal target is 30% hp or lower when healed
@@ -137,5 +135,4 @@ func (c *char) e6(target key.TargetID) {
 			},
 		})
 	}
-
 }

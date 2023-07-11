@@ -12,7 +12,6 @@ const (
 )
 
 func init() {
-
 	// Nat HOT from skill
 	modifier.Register(
 		Skill,
@@ -27,11 +26,9 @@ func init() {
 			TickMoment: modifier.ModifierPhase1End,
 		},
 	)
-
 }
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
-
 	// Nat dispel (Checks if nat is A2)
 	if c.info.Traces["1101101"] {
 		c.engine.DispelStatus(target, info.Dispel{

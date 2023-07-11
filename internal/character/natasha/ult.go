@@ -22,5 +22,4 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	})
 
 	c.engine.ModifyEnergy(c.id, 5)
-
 }

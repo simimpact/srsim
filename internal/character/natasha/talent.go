@@ -36,6 +36,7 @@ func (c *char) initTalent() {
 // Listens to any heals done by nat to see if the target qualifies for the talent boost, including HOT
 func talentHealListener(mod *modifier.Instance, e *event.HealStart) {
 	if e.Target.CurrentHPRatio() <= talentHpThresholdPercentage {
-		e.Healer.AddProperty(prop.HealBoost, 0.5)
+		healer, _ := mod.Engine().CharacterInfo(e.Healer.ID())
+		e.Healer.AddProperty(prop.HealBoost, talent[healer.TalentLevelIndex()])
 	}
 }
