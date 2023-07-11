@@ -14,7 +14,7 @@ import (
 type Characters struct {
 	cfg             *model.SimConfig
 	characters      []key.TargetID
-	attributes      *attribute.Service
+	attributes      attribute.Manager
 	customFunctions []testeval.ActionEval
 }
 

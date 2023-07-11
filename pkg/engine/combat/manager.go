@@ -15,7 +15,7 @@ import (
 
 type Manager struct {
 	event  *event.System
-	attr   attribute.Modifier
+	attr   attribute.Manager
 	shld   shield.Absorb
 	target engine.Target
 	rdm    *rand.Rand
@@ -31,7 +31,7 @@ type attackInfo struct {
 	damageType model.DamageType
 }
 
-func New(event *event.System, attr attribute.Modifier, shld shield.Absorb, target engine.Target, rdm *rand.Rand) *Manager {
+func New(event *event.System, attr attribute.Manager, shld shield.Absorb, target engine.Target, rdm *rand.Rand) *Manager {
 	return &Manager{
 		event:  event,
 		attr:   attr,

@@ -1,8 +1,6 @@
 package simulation
 
 import (
-	"math/rand"
-
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 )
@@ -109,7 +107,7 @@ func (sim *Simulation) Retarget(data info.Retarget) []key.TargetID {
 
 	// shuffle data.Targets IF data.DisableRandom is false
 	if !data.DisableRandom {
-		rand.Shuffle(len(data.Targets), func(i, j int) {
+		sim.Rand().Shuffle(len(data.Targets), func(i, j int) {
 			data.Targets[i], data.Targets[j] = data.Targets[j], data.Targets[i]
 		})
 	}
