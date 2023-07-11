@@ -96,45 +96,27 @@ func (sim *Simulation) Neutrals() []key.TargetID {
 }
 
 func (sim *Simulation) Retarget(data info.Retarget) []key.TargetID {
-	// first filter out all <= 0 HP targets IF includeLimbo is FALSE or default(which is also FALSE).
-	targetList := data.Targets
-	if !data.IncludeLimbo {
-		for _, target := range targetList {
-			if sim.HPRatio(target) <= 0 {
-				targetList = remove(targetList, target)
-			}
+	// merged removal of filtered targets and targets in limbo into 1 loop.
+	i := 0
+	for _, target := range data.Targets {
+		if (data.IncludeLimbo || sim.Attr.HPRatio(target) > 0) && data.Filter(target) {
+			data.Targets[i] = target
+			i++
 		}
 	}
 
-	// filter targetList. assign to validTargets. if not provided, bypass
-	var validTargets []key.TargetID
-	if data.Filter != nil {
-		validTargets = data.Filter(targetList)
-	} else {
-		validTargets = targetList
+	// shuffle data.Targets IF data.DisableRandom is false
+	if !data.DisableRandom {
+		rand.Shuffle(len(data.Targets), func(i, j int) {
+			data.Targets[i], data.Targets[j] = data.Targets[j], data.Targets[i]
+		})
 	}
 
-	// NOTE : handle cases when len(validTargets) == 0 (target list empty after filter).
-	if len(validTargets) == 0 {
-		return validTargets
+	// truncate if data.Max specified and len(data.Targets) > data.Max
+	if data.Max != 0 && len(data.Targets) > data.Max {
+		data.Targets = data.Targets[0:data.Max]
 	}
-
-	// choose Max amount of targets from valid candidates.
-	// deal with edge cases
-	if data.Max == 0 {
-		data.Max = 1
-	} else if data.Max > len(validTargets) {
-		data.Max = len(validTargets)
-	}
-
-	// shuffle list indexes randomly
-	rand.Shuffle(len(validTargets), func(i, j int) {
-		validTargets[i], validTargets[j] = validTargets[j], validTargets[i]
-	})
-
-	// choose max amt of targets
-	chosenOnes := validTargets[0:data.Max]
 
 	// return filtered list
-	return chosenOnes
+	return data.Targets
 }
