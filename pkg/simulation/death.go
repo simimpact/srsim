@@ -1,8 +1,8 @@
 package simulation
 
 import (
-	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/event"
+	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 )
 
@@ -34,9 +34,9 @@ func (sim *Simulation) deathCheck(killLimbo bool) {
 func (sim *Simulation) kill(target key.TargetID, killLimbo bool) bool {
 	state := sim.Attr.State(target)
 	switch {
-	case state == attribute.Alive:
+	case state == info.Alive:
 		return false
-	case state == attribute.Limbo:
+	case state == info.Limbo:
 		return killLimbo
 	default:
 		return true

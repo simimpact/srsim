@@ -39,3 +39,12 @@ func DefaultAttribute() Attributes {
 		MaxStance:     0,
 	}
 }
+
+type TargetState int
+
+const (
+	Invalid TargetState = 0
+	Dead    TargetState = 1
+	Limbo   TargetState = 2
+	Alive   TargetState = 3
+)

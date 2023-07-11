@@ -107,15 +107,15 @@ func (s *Service) Stance(target key.TargetID) float64 {
 	return 0.0
 }
 
-func (s *Service) State(target key.TargetID) TargetState {
+func (s *Service) State(target key.TargetID) info.TargetState {
 	if t, ok := s.targets[target]; ok {
 		return t.state
 	}
-	return Invalid
+	return info.Invalid
 }
 
 func (s *Service) IsAlive(target key.TargetID) bool {
-	return s.State(target) == Alive
+	return s.State(target) == info.Alive
 }
 
 func (s *Service) LastAttacker(target key.TargetID) key.TargetID {
