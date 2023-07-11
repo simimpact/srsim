@@ -23,7 +23,6 @@ const (
 func init() {
 	// Self heal if hp lower than 30% after gettting hit : Eidolon 1
 	modifier.Register(E1, modifier.Config{
-		//Refactor into own method maybe?
 		Listeners: modifier.Listeners{
 			OnAfterBeingAttacked: e1SelfHeal,
 		},
@@ -60,7 +59,7 @@ func init() {
 
 // Called when a character calls NewInstance
 func (c *char) initEidolons() {
-	//Self heal if hp lower than 30% after gettting hit
+	// Self heal if hp lower than 30% after gettting hit
 	if c.info.Eidolon >= 1 {
 		c.engine.AddModifier(c.id,
 			info.Modifier{

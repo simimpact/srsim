@@ -1,8 +1,6 @@
 package natasha
 
 var (
-
-	//Basic atk
 	atk = []float64{
 		0.5,
 		0.6,

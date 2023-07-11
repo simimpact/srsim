@@ -54,7 +54,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 
 	hotDuration := 2
 
-	//A6
+	// A6
 	if c.info.Traces["1101103"] {
 		hotDuration = 3
 	}
