@@ -39,7 +39,7 @@ type Simulation struct {
 	Event    *event.System
 	Queue    *queue.Handler
 	Modifier *modifier.Manager
-	Attr     *attribute.Service
+	Attr     attribute.Manager
 	Char     *character.Manager
 	Enemy    *enemy.Manager
 	Turn     turn.Manager

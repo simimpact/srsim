@@ -17,9 +17,12 @@ type Getter interface {
 	EnergyRatio(target key.TargetID) float64
 	HPRatio(target key.TargetID) float64
 	IsAlive(target key.TargetID) bool
+	State(target key.TargetID) info.TargetState
+	FullEnergy(target key.TargetID) bool
+	LastAttacker(target key.TargetID) key.TargetID
 }
 
-type Modifier interface {
+type Manager interface {
 	Getter
 
 	AddTarget(target key.TargetID, base info.Attributes) error
@@ -42,7 +45,7 @@ type Service struct {
 	targets map[key.TargetID]*attrTarget
 }
 
-func New(event *event.System, modEval modifier.Eval) *Service {
+func New(event *event.System, modEval modifier.Eval) Manager {
 	return &Service{
 		event:   event,
 		modEval: modEval,
