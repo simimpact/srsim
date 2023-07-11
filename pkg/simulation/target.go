@@ -104,6 +104,8 @@ func (sim *Simulation) Retarget(data info.Retarget) []key.TargetID {
 			i++
 		}
 	}
+	// truncate to safely remove unqualified targets.
+	data.Targets = data.Targets[:i]
 
 	// shuffle data.Targets IF data.DisableRandom is false
 	if !data.DisableRandom {
@@ -113,8 +115,8 @@ func (sim *Simulation) Retarget(data info.Retarget) []key.TargetID {
 	}
 
 	// truncate if data.Max specified and len(data.Targets) > data.Max
-	if data.Max != 0 && len(data.Targets) > data.Max {
-		data.Targets = data.Targets[0:data.Max]
+	if data.Max <= 0 && len(data.Targets) > data.Max {
+		data.Targets = data.Targets[:data.Max]
 	}
 
 	// return filtered list
