@@ -30,7 +30,7 @@ func init() {
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	// Nat dispel (Checks if nat is A2)
-	if c.info.Traces["1101101"] {
+	if c.info.Traces["101"] {
 		c.engine.DispelStatus(target, info.Dispel{
 			Status: model.StatusType_STATUS_DEBUFF,
 			Order:  model.DispelOrder_LAST_ADDED,
@@ -38,8 +38,8 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		})
 	}
 
-	// Stats of the heal
-	heal := info.Heal{
+	// The actual act of healing
+	c.engine.Heal(info.Heal{
 		Targets: []key.TargetID{target},
 		Source:  c.id,
 		BaseHeal: info.HealMap{
@@ -47,15 +47,11 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		},
 		HealValue:   skillFlatHeal[c.info.SkillLevelIndex()],
 		UseSnapshot: true,
-	}
-
-	// The actual act of healing
-	c.engine.Heal(heal)
-
-	hotDuration := 2
+	})
 
 	// A6
-	if c.info.Traces["1101103"] {
+	hotDuration := 2
+	if c.info.Traces["103"] {
 		hotDuration = 3
 	}
 
