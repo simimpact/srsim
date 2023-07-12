@@ -8,7 +8,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
-	"github.com/simimpact/srsim/pkg/mock"
+	"github.com/simimpact/srsim/tests/mock"
 	"github.com/stretchr/testify/assert"
 )
 
