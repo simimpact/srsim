@@ -25,10 +25,7 @@ func NewSim(t *testing.T, seed int64) (*simulation.Simulation, *mock.MockAttribu
 
 // test var : Targets list
 func TestRetargetEmptyTargets(t *testing.T) {
-	sim, attr := NewSim(t, 1)
-
-	// for all targets, return full health in this test
-	attr.EXPECT().HPRatio(gomock.Any()).Return(1.0).AnyTimes()
+	sim, _ := NewSim(t, 1)
 
 	result := sim.Retarget(info.Retarget{
 		Targets: []key.TargetID{},
@@ -36,7 +33,7 @@ func TestRetargetEmptyTargets(t *testing.T) {
 		Max:     3,
 	})
 
-	assert.Equal(t, []key.TargetID{}, result)
+	assert.Empty(t, result)
 }
 
 // test var : Filter func
@@ -66,7 +63,8 @@ func TestRetargetEmptyFiltered(t *testing.T) {
 		Max:     3,
 	})
 
-	assert.Equal(t, []key.TargetID{}, result)
+	// assert.Equal(t, []key.TargetID{}, result)
+	assert.Empty(t, result)
 }
 
 // test variable : Max
@@ -111,7 +109,7 @@ func TestRetargetMaxLow(t *testing.T) {
 		Max:     3,
 	})
 
-	assert.Exactly(t, []key.TargetID{5, 2, 4}, result)
+	assert.Equal(t, []key.TargetID{5, 2, 4}, result)
 }
 
 // test var : no random
