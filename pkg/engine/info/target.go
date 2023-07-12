@@ -9,7 +9,7 @@ type Retarget struct {
 	Targets []key.TargetID
 
 	// Filter function. Used to filter Targets based on some condition(s).
-	Filter func(target key.TargetID) bool
+	Filter func(target key.TargetID) bool `exhaustruct:"optional"`
 
 	// Maximum amount of targets to select from the filtered target list.
 	// Defaults to the size of filtered list

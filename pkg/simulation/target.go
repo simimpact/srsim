@@ -94,6 +94,10 @@ func (sim *Simulation) Neutrals() []key.TargetID {
 }
 
 func (sim *Simulation) Retarget(data info.Retarget) []key.TargetID {
+	// if filter is empty, add in bypass func.
+	if data.Filter == nil {
+		data.Filter = func(key.TargetID) bool { return true }
+	}
 	// merged removal of filtered targets and targets in limbo into 1 loop.
 	i := 0
 	for _, target := range data.Targets {
@@ -113,7 +117,7 @@ func (sim *Simulation) Retarget(data info.Retarget) []key.TargetID {
 	}
 
 	// truncate if data.Max specified and len(data.Targets) > data.Max
-	if data.Max <= 0 && len(data.Targets) > data.Max {
+	if data.Max > 0 && len(data.Targets) > data.Max {
 		data.Targets = data.Targets[:data.Max]
 	}
 
