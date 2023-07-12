@@ -3,7 +3,6 @@ package simulation
 import (
 	"fmt"
 
-	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/queue"
@@ -88,7 +87,7 @@ func (sim *Simulation) executeQueue(phase info.BattlePhase, next stateFn) (state
 
 		// if source is dead, skip this insert (limbo okay for case of revives)
 		// TODO: make this behavior change based off current insert priority?
-		if sim.Attr.State(insert.Source) == attribute.Dead {
+		if sim.Attr.State(insert.Source) == info.Dead {
 			continue
 		}
 
@@ -116,7 +115,7 @@ func (sim *Simulation) executeAction(id key.TargetID, isInsert bool) error {
 	var err error
 
 	// actions can only be executed while alive (skip if dead or limbo)
-	if sim.Attr.State(id) != attribute.Alive {
+	if sim.Attr.State(id) != info.Alive {
 		return nil
 	}
 

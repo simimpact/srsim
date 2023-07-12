@@ -31,7 +31,7 @@ func (s *Service) AddTarget(target key.TargetID, attr info.Attributes) error {
 
 	s.targets[target] = &attrTarget{
 		attributes:   &attr,
-		state:        Alive,
+		state:        info.Alive,
 		lastAttacker: target,
 	}
 	return nil

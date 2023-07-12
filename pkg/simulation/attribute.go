@@ -1,7 +1,6 @@
 package simulation
 
 import (
-	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
@@ -59,7 +58,7 @@ func (sim *Simulation) Stats(target key.TargetID) *info.Stats {
 }
 
 func (sim *Simulation) IsAlive(target key.TargetID) bool {
-	return sim.Attr.State(target) == attribute.Alive
+	return sim.Attr.State(target) == info.Alive
 }
 
 func (sim *Simulation) Stance(target key.TargetID) float64 {

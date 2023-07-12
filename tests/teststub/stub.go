@@ -6,6 +6,8 @@ import (
 
 	"github.com/simimpact/srsim/pkg/engine/event/handler"
 	"github.com/simimpact/srsim/pkg/engine/logging"
+	"github.com/simimpact/srsim/pkg/logic"
+	"github.com/simimpact/srsim/pkg/logic/gcs/eval"
 	"github.com/simimpact/srsim/pkg/model"
 	"github.com/simimpact/srsim/pkg/simulation"
 	"github.com/simimpact/srsim/tests/eventchecker"
@@ -13,6 +15,7 @@ import (
 	"github.com/simimpact/srsim/tests/testcfg"
 	"github.com/simimpact/srsim/tests/testcfg/testchar"
 	"github.com/simimpact/srsim/tests/testcfg/testeval"
+	"github.com/simimpact/srsim/tests/testcfg/testyaml"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -23,6 +26,7 @@ type Stub struct {
 	autoContinue  bool
 	eventPipe     chan handler.Event
 	haltSignaller chan struct{}
+	isExpecting   bool // deadlock prevention for s.Continue
 
 	// AutoRun determines if simulation will automatically run.
 	// When disabled, you must call s.NextTurn() to queue the next TurnStart event.
@@ -31,6 +35,7 @@ type Stub struct {
 
 	// cfg and evaluator are used to start a normal run
 	cfg       *model.SimConfig
+	cfgEval   *eval.Eval
 	evaluator *evaluator
 	simulator *simulation.Simulation
 
@@ -75,7 +80,13 @@ func (s *Stub) StartSimulation() {
 	if len(s.cfg.Characters) == 0 {
 		s.Characters.AddCharacter(testchar.DummyChar())
 	}
-	s.simulator = simulation.NewSimulation(s.cfg, s.evaluator, 0)
+	var evalToUse logic.Eval
+	if s.cfgEval != nil {
+		evalToUse = s.cfgEval
+	} else {
+		evalToUse = s.evaluator
+	}
+	s.simulator = simulation.NewSimulation(s.cfg, evalToUse, 0)
 	if !s.autoRun {
 		s.simulator.Turn = newMockManager(s.turnPipe)
 	}
@@ -87,13 +98,14 @@ func (s *Stub) StartSimulation() {
 		}
 		fmt.Println(itres)
 	}()
-	// start sim logic, fast-forward sim to BattleStart state
+	// start sim logic, fast-forward sim to BattleStart state, so we can initialize the remaining helper stuff
 	s.Expect(battlestart.ExpectFor())
 	// initialize the evaluator and Character based on current state
 	s.Characters.characters = s.simulator.Characters()
 	s.initEval()
 
 	if !s.autoContinue {
+		s.isExpecting = true
 		s.Continue()
 	}
 }
@@ -124,6 +136,8 @@ func (s *Stub) Expect(checkers ...eventchecker.EventChecker) {
 			LogExpectSuccess("%#+v", e)
 			if s.autoContinue {
 				s.haltSignaller <- struct{}{}
+			} else {
+				s.isExpecting = true
 			}
 			return
 		}
@@ -139,6 +153,15 @@ func (s *Stub) initEval() {
 		if eval == nil {
 			eval = testeval.Default()
 		}
-		s.evaluator.registerAction(s.Characters.GetCharacterID(i), eval)
+		s.evaluator.registerAction(s.Characters.GetCharacterTargetID(i), eval)
+	}
+}
+
+func (s *Stub) LoadYamlCfg(filepath string) {
+	var err error
+	s.cfg, s.cfgEval, err = testyaml.ParseConfig(filepath)
+	s.Characters.cfg = s.cfg
+	if err != nil {
+		s.FailNow("Yaml unmarshal fail", err)
 	}
 }

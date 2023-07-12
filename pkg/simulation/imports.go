@@ -3,9 +3,11 @@ package simulation
 import (
 	_ "github.com/simimpact/srsim/internal/character/arlan"
 	_ "github.com/simimpact/srsim/internal/character/bronya"
+	_ "github.com/simimpact/srsim/internal/character/clara"
 	_ "github.com/simimpact/srsim/internal/character/danheng"
 	_ "github.com/simimpact/srsim/internal/character/dummy"
 	_ "github.com/simimpact/srsim/internal/character/gepard"
+	_ "github.com/simimpact/srsim/internal/character/natasha"
 	_ "github.com/simimpact/srsim/internal/character/pela"
 	_ "github.com/simimpact/srsim/internal/character/qingque"
 	_ "github.com/simimpact/srsim/internal/character/sampo"

@@ -14,7 +14,7 @@ import (
 type Characters struct {
 	cfg             *model.SimConfig
 	characters      []key.TargetID
-	attributes      *attribute.Service
+	attributes      attribute.Manager
 	customFunctions []testeval.ActionEval
 }
 
@@ -38,7 +38,9 @@ func (s *Characters) AddCharacterEval(eval testeval.ActionEval, idx int) {
 	s.customFunctions[idx] = eval
 }
 
-func (s *Characters) GetCharacterID(idx int) key.TargetID {
+// GetCharacterTargetID fetches the key.TargetID value for the character at idx that the Sim is using.
+// This is used for most state checks
+func (s *Characters) GetCharacterTargetID(idx int) key.TargetID {
 	if idx >= len(s.characters) {
 		LogError("invalid idx %d, insufficient characters", idx)
 		panic("Invalid index")
@@ -46,6 +48,19 @@ func (s *Characters) GetCharacterID(idx int) key.TargetID {
 	return s.characters[idx]
 }
 
+// CharacterIdx fetches the index of the first character with the given key. This is useful for adding clarity
+// or todo: cases where the character is added post-combat start
+func (s *Characters) CharacterIdx(key key.Character) int {
+	for i, v := range s.cfg.Characters {
+		if v.Key == key.String() {
+			return i
+		}
+	}
+	LogError("Character Key %s is not in the SimConfig", key.String())
+	return -1
+}
+
+// GetCharacterInfo fetches the info.Stats value for the character at idx. Useful for verifying energy state etc.
 func (s *Characters) GetCharacterInfo(idx int) *info.Stats {
 	if idx >= len(s.characters) {
 		LogError("invalid idx %d, insufficient characters", idx)

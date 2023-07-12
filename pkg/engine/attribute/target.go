@@ -8,14 +8,5 @@ import (
 type attrTarget struct {
 	attributes   *info.Attributes
 	lastAttacker key.TargetID
-	state        TargetState
+	state        info.TargetState
 }
-
-type TargetState int
-
-const (
-	Invalid TargetState = 0
-	Dead    TargetState = 1
-	Limbo   TargetState = 2
-	Alive   TargetState = 3
-)

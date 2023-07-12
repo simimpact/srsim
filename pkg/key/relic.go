@@ -19,3 +19,7 @@ const (
 	SprightlyVonwacq       Relic = "sprightly_vonwacq"
 	PanGalactic            Relic = "pan_galactic"
 )
+
+func (r Relic) String() string {
+	return string(r)
+}

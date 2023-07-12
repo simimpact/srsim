@@ -3,6 +3,7 @@ package testchar
 import (
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
+	"github.com/simimpact/srsim/tests/testcfg/testcone"
 )
 
 func DanHung() *model.Character {
@@ -18,12 +19,7 @@ func DanHung() *model.Character {
 			Ult:    1,
 			Talent: 1,
 		},
-		LightCone: &model.LightCone{
-			Key:        key.OnlySilenceRemains.String(),
-			Level:      80,
-			MaxLevel:   80,
-			Imposition: 1,
-		},
+		LightCone:   testcone.OnlySilenceRemains(),
 		Relics:      nil,
 		StartEnergy: 0,
 	}
