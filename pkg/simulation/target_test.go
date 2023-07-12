@@ -171,9 +171,9 @@ func TestRetargetIncludeLimbo(t *testing.T) {
 	// target 1, 0 HP
 	// target 2, 0.5 HP
 	// target 3, 1.0 HP
-	attr.EXPECT().HPRatio(targets[0]).Return(0.0)
-	attr.EXPECT().HPRatio(targets[1]).Return(0.5)
-	attr.EXPECT().HPRatio(targets[2]).Return(1.0)
+	attr.EXPECT().HPRatio(targets[0]).Return(0.0).AnyTimes()
+	attr.EXPECT().HPRatio(targets[1]).Return(0.5).AnyTimes()
+	attr.EXPECT().HPRatio(targets[2]).Return(1.0).AnyTimes()
 
 	result := sim.Retarget(info.Retarget{
 		Targets:      []key.TargetID{1, 2, 3},
@@ -183,9 +183,4 @@ func TestRetargetIncludeLimbo(t *testing.T) {
 
 	// need to use ElementsMatch since order not guaranteed with random
 	assert.ElementsMatch(t, []key.TargetID{1, 2, 3}, result)
-	// NOTE : FOUND BUG :
-	// test fails if : assert got passed in things other than {2, 3}
-	// tried debug :
-	// -> deleting sim.Attr.HPRatio check in logic. not fixed
-	// temp conclusion : attr.Expect is not set well for this test
 }
