@@ -170,3 +170,22 @@ func TestRetargetIncludeLimbo(t *testing.T) {
 	// need to use ElementsMatch since order not guaranteed with random
 	assert.ElementsMatch(t, []key.TargetID{1, 2, 3}, result)
 }
+
+func TestRetargetNoFilterNoLimbo(t *testing.T) {
+	sim, attr := NewSim(t, 125)
+	targets := []key.TargetID{1, 2, 3}
+
+	// target 1, 1.0 HP
+	// target 2, 0 HP
+	// target 3, 0.5 HP
+	attr.EXPECT().HPRatio(targets[0]).Return(1.0)
+	attr.EXPECT().HPRatio(targets[1]).Return(0.0)
+	attr.EXPECT().HPRatio(targets[2]).Return(0.5)
+
+	result := sim.Retarget(info.Retarget{
+		Targets: []key.TargetID{1, 2, 3},
+	})
+
+	// need to use ElementsMatch since order not guaranteed with random
+	assert.ElementsMatch(t, []key.TargetID{1, 3}, result)
+}

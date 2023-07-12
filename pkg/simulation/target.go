@@ -94,19 +94,20 @@ func (sim *Simulation) Neutrals() []key.TargetID {
 }
 
 func (sim *Simulation) Retarget(data info.Retarget) []key.TargetID {
-	// filter Targets only if Filter is specified.
-	if data.Filter != nil {
-		// merged removal of filtered targets and targets in limbo into 1 loop.
-		i := 0
-		for _, target := range data.Targets {
-			if (data.IncludeLimbo || sim.Attr.HPRatio(target) > 0) && data.Filter(target) {
-				data.Targets[i] = target
-				i++
-			}
-		}
-		// truncate to safely remove unqualified targets.
-		data.Targets = data.Targets[:i]
+	// if filter is empty, add in bypass func.
+	if data.Filter == nil {
+		data.Filter = func(key.TargetID) bool { return true }
 	}
+	// merged removal of filtered targets and targets in limbo into 1 loop.
+	i := 0
+	for _, target := range data.Targets {
+		if (data.IncludeLimbo || sim.Attr.HPRatio(target) > 0) && data.Filter(target) {
+			data.Targets[i] = target
+			i++
+		}
+	}
+	// truncate to safely remove unqualified targets.
+	data.Targets = data.Targets[:i]
 
 	// shuffle data.Targets IF data.DisableRandom is false
 	if !data.DisableRandom {
