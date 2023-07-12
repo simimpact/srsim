@@ -113,7 +113,7 @@ func (sim *Simulation) Retarget(data info.Retarget) []key.TargetID {
 	}
 
 	// truncate if data.Max specified and len(data.Targets) > data.Max
-	if data.Max <= 0 && len(data.Targets) > data.Max {
+	if data.Max > 0 && len(data.Targets) > data.Max {
 		data.Targets = data.Targets[:data.Max]
 	}
 
