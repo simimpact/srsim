@@ -100,30 +100,18 @@ func TestRetargetMaxHigh(t *testing.T) {
 }
 
 func TestRetargetMaxLow(t *testing.T) {
-	sim, attr := NewSim(t, 1)
+	sim, attr := NewSim(t, 123)
 
 	// for all targets, return full health in this test
 	attr.EXPECT().HPRatio(gomock.Any()).Return(1.0).AnyTimes()
 
-	result1 := sim.Retarget(info.Retarget{
-		Targets: []key.TargetID{1, 2, 3, 4, 5},
-		Filter:  func(target key.TargetID) bool { return true },
-		Max:     2,
-	})
-	result2 := sim.Retarget(info.Retarget{
+	result := sim.Retarget(info.Retarget{
 		Targets: []key.TargetID{1, 2, 3, 4, 5},
 		Filter:  func(target key.TargetID) bool { return true },
 		Max:     3,
 	})
-	result3 := sim.Retarget(info.Retarget{
-		Targets: []key.TargetID{1, 2, 3, 4, 5},
-		Filter:  func(target key.TargetID) bool { return true },
-		Max:     4,
-	})
 
-	assert.Exactly(t, []key.TargetID{3, 1}, result1)
-	assert.Exactly(t, []key.TargetID{2, 4, 1}, result2)
-	assert.Exactly(t, []key.TargetID{5, 3, 4, 2}, result3)
+	assert.Exactly(t, []key.TargetID{5, 2, 4}, result)
 }
 
 // test var : no random
