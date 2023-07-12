@@ -8,7 +8,8 @@ import (
 )
 
 const (
-	Skill key.Modifier = "natasha-skill"
+	Skill    = "natasha-skill"
+	SkillHOT = "natasha-skill-hot"
 )
 
 func init() {
@@ -40,6 +41,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 
 	// The actual act of healing
 	c.engine.Heal(info.Heal{
+		Key:     Skill,
 		Targets: []key.TargetID{target},
 		Source:  c.id,
 		BaseHeal: info.HealMap{
@@ -68,6 +70,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 func natHot(mod *modifier.Instance) {
 	char, _ := mod.Engine().CharacterInfo(mod.Source())
 	mod.Engine().Heal(info.Heal{
+		Key:       SkillHOT,
 		Source:    mod.Source(),
 		Targets:   []key.TargetID{mod.Owner()},
 		BaseHeal:  info.HealMap{model.HealFormula_BY_HEALER_MAX_HP: skillContinuous[char.SkillLevelIndex()]},

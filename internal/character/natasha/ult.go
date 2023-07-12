@@ -6,6 +6,8 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
+const Ult key.Heal = "natasha-ult"
+
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	targets := c.engine.Characters()
 
@@ -13,6 +15,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	c.e2(targets)
 
 	c.engine.Heal(info.Heal{
+		Key:     Ult,
 		Targets: targets,
 		Source:  c.id,
 		BaseHeal: info.HealMap{

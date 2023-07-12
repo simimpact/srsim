@@ -6,8 +6,11 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
+const Normal key.Attack = "clara-normal"
+
 func (c *char) Attack(target key.TargetID, state info.ActionState) {
 	c.engine.Attack(info.Attack{
+		Key:        Normal,
 		Source:     c.id,
 		Targets:    []key.TargetID{target},
 		AttackType: model.AttackType_NORMAL,

@@ -9,12 +9,12 @@ import (
 )
 
 const (
-	technique                key.Modifier = "natasha-technique"
-	techniqueScalePercentage float64      = 0.80
+	Technique                        = "natasha-technique"
+	techniqueScalePercentage float64 = 0.80
 )
 
 func init() {
-	modifier.Register(technique, modifier.Config{
+	modifier.Register(Technique, modifier.Config{
 		StatusType:    model.StatusType_STATUS_DEBUFF,
 		Duration:      1,
 		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_FATIGUE},
@@ -25,16 +25,9 @@ func init() {
 func (c *char) Technique(target key.TargetID, state info.ActionState) {
 	targets := c.engine.Enemies()
 
-	randomTarget := c.engine.Retarget(info.Retarget{
-		Targets: targets,
-		Max:     1,
-		Filter: func(target key.TargetID) bool {
-			return true
-		},
-	})
-
 	c.engine.Attack(info.Attack{
-		Targets:    randomTarget,
+		Key:        Technique,
+		Targets:    c.engine.Retarget(info.Retarget{Targets: targets, Max: 1}),
 		Source:     c.id,
 		AttackType: model.AttackType_MAZE,
 		DamageType: model.DamageType_PHYSICAL,
@@ -46,7 +39,7 @@ func (c *char) Technique(target key.TargetID, state info.ActionState) {
 
 	for _, trg := range targets {
 		c.engine.AddModifier(trg, info.Modifier{
-			Name:   technique,
+			Name:   Technique,
 			Source: c.id,
 			Chance: 1,
 			Stats:  info.PropMap{prop.Fatigue: 0.30},
