@@ -39,6 +39,20 @@ func TestRetargetEmptyTargets(t *testing.T) {
 	assert.Equal(t, []key.TargetID{}, result)
 }
 
+func TestRetargetNoFilterFunc(t *testing.T) {
+	sim, attr := NewSim(t, 100)
+
+	// for all targets, return full health in this test
+	attr.EXPECT().HPRatio(gomock.Any()).Return(1.0).AnyTimes()
+
+	result := sim.Retarget(info.Retarget{
+		Targets: []key.TargetID{1, 2, 3, 4},
+	})
+
+	// need to use ElementsMatch since order not guaranteed with random
+	assert.ElementsMatch(t, []key.TargetID{1, 2, 3, 4}, result)
+}
+
 func TestRetargetEmptyFiltered(t *testing.T) {
 	sim, attr := NewSim(t, 1)
 
