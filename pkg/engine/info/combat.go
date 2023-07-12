@@ -9,6 +9,12 @@ type DamageMap map[model.DamageFormula]float64
 type HealMap map[model.HealFormula]float64
 
 type Attack struct {
+	// A unique identifier for this attack instance
+	Key key.Attack `json:"key"`
+
+	// Optional. Specify when an attack is split into multiple hits
+	HitIndex int `exhaustruct:"optional" json:"hit_index"`
+
 	// List of targets to perform this attack against (will perform 1 hit per target)
 	Targets []key.TargetID `json:"targets"`
 
@@ -60,6 +66,12 @@ type Attack struct {
 }
 
 type Hit struct {
+	// The unique identifier of the source attack
+	Key key.Attack `json:"key"`
+
+	// The index of this hit
+	HitIndex int `json:"hit_index"`
+
 	// The stats of the attacker of this hit. These stats are a snapshot of the target's state and
 	// can be modified
 	Attacker *Stats `json:"attacker"`
@@ -113,6 +125,9 @@ type Hit struct {
 }
 
 type Heal struct {
+	// A unique identifier of this heal instance
+	Key key.Heal `json:"key"`
+
 	// The targets that the healer is healing
 	Targets []key.TargetID `json:"targets"`
 

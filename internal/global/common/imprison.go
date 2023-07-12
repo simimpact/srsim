@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	Imprisonment      key.Modifier = "common_imprisonment"
-	BreakImprisonment key.Modifier = "break_imprisonment"
+	Imprisonment      key.Modifier = "common-imprisonment"
+	BreakImprisonment key.Modifier = "break-imprisonment"
 )
 
 type ImprisonState struct {

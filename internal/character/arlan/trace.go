@@ -16,7 +16,7 @@ import (
 //	Upon entering battle, if Arlan's HP is less than or equal to 50%, he can nullify all DMG received except for DoTs until he is attacked.
 
 const (
-	A2 key.Modifier = "arlan-a2"
+	A2              = "arlan-a2"
 	A4 key.Modifier = "arlan-a4"
 	A6 key.Modifier = "arlan-a6"
 )
@@ -28,6 +28,7 @@ func init() {
 			OnTriggerDeath: func(mod *modifier.Instance, target key.TargetID) {
 				if mod.Engine().HPRatio(mod.Owner()) <= 0.3 {
 					mod.Engine().Heal(info.Heal{
+						Key:      A2,
 						Targets:  []key.TargetID{mod.Owner()},
 						Source:   mod.Owner(),
 						BaseHeal: info.HealMap{model.HealFormula_BY_TARGET_MAX_HP: 0.2},

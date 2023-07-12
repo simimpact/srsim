@@ -6,6 +6,11 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
+const (
+	Skill  key.Attack = "clara-skill"
+	Marked key.Attack = "clara-skill-marked"
+)
+
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	// marked enemy attack instance
 	markedEnemies := make([]key.TargetID, 0, 5)
@@ -16,6 +21,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	}
 
 	c.engine.Attack(info.Attack{
+		Key:        Marked,
 		Source:     c.id,
 		Targets:    markedEnemies,
 		DamageType: model.DamageType_PHYSICAL,
@@ -27,6 +33,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 
 	// usual skill attack
 	c.engine.Attack(info.Attack{
+		Key:        Skill,
 		Source:     c.id,
 		Targets:    c.engine.Enemies(),
 		DamageType: model.DamageType_PHYSICAL,

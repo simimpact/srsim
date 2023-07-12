@@ -9,6 +9,7 @@ import (
 
 type AttackStartEventHandler = handler.EventHandler[AttackStart]
 type AttackStart struct {
+	Key        key.Attack       `json:"key"`
 	Attacker   key.TargetID     `json:"attacker"`
 	Targets    []key.TargetID   `json:"targets"`
 	AttackType model.AttackType `json:"attack_type"`
@@ -17,6 +18,7 @@ type AttackStart struct {
 
 type AttackEndEventHandler = handler.EventHandler[AttackEnd]
 type AttackEnd struct {
+	Key        key.Attack       `json:"key"`
 	Attacker   key.TargetID     `json:"attacker"`
 	Targets    []key.TargetID   `json:"targets"`
 	AttackType model.AttackType `json:"attack_type"`
@@ -32,6 +34,8 @@ type HitStart struct {
 
 type HitEndEventHandler = handler.EventHandler[HitEnd]
 type HitEnd struct {
+	Key                 key.Attack       `json:"key"`
+	HitIndex            int              `json:"hit_index"`
 	Attacker            key.TargetID     `json:"attacker"`
 	Defender            key.TargetID     `json:"defender"`
 	AttackType          model.AttackType `json:"attack_type"`
@@ -55,6 +59,7 @@ type HitEnd struct {
 
 type HealStartEventHandler = handler.MutableEventHandler[HealStart]
 type HealStart struct {
+	Key         key.Heal     `json:"key"`
 	Target      *info.Stats  `json:"target"`
 	Healer      *info.Stats  `json:"healer"`
 	BaseHeal    info.HealMap `json:"base_heal"`
@@ -64,6 +69,7 @@ type HealStart struct {
 
 type HealEndEventHandler = handler.EventHandler[HealEnd]
 type HealEnd struct {
+	Key                key.Heal     `json:"key"`
 	Target             key.TargetID `json:"target"`
 	Healer             key.TargetID `json:"healer"`
 	HealAmount         float64      `json:"heal_amount"`

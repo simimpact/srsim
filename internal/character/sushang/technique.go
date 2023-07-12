@@ -6,8 +6,11 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
+const Technique key.Attack = "sushang-technique"
+
 func (c *char) Technique(target key.TargetID, state info.ActionState) {
 	c.engine.Attack(info.Attack{
+		Key:        Technique,
 		Source:     c.id,
 		Targets:    c.engine.Enemies(),
 		DamageType: model.DamageType_PHYSICAL,

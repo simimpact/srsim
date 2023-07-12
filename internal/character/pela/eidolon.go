@@ -13,7 +13,7 @@ const (
 	E1 key.Modifier = "pela-e1"
 	E2 key.Modifier = "pela-e2"
 	E4 key.Modifier = "pela-e4"
-	E6 key.Modifier = "pela-e6"
+	E6              = "pela-e6"
 )
 
 func init() {
@@ -51,6 +51,7 @@ func init() {
 				for _, trg := range e.Targets {
 					if mod.Engine().ModifierStatusCount(trg, model.StatusType_STATUS_DEBUFF) >= 1 {
 						mod.Engine().Attack(info.Attack{
+							Key:        E6,
 							Source:     mod.Owner(),
 							Targets:    []key.TargetID{trg},
 							DamageType: model.DamageType_ICE,

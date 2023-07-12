@@ -46,6 +46,8 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 	}
 
 	mgr.event.HitEnd.Emit(event.HitEnd{
+		Key:                 hit.Key,
+		HitIndex:            hit.HitIndex,
 		Attacker:            hit.Attacker.ID(),
 		Defender:            hit.Defender.ID(),
 		AttackType:          hit.AttackType,
@@ -82,6 +84,8 @@ func (mgr *Manager) newHit(target key.TargetID, atk info.Attack) *info.Hit {
 	}
 
 	return &info.Hit{
+		Key:          atk.Key,
+		HitIndex:     atk.HitIndex,
 		Attacker:     mgr.attr.Stats(atk.Source),
 		Defender:     mgr.attr.Stats(target),
 		AttackType:   atk.AttackType,

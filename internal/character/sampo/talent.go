@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	WindTornDagger key.Modifier = "sampo_talent"
+	WindTornDagger key.Modifier = "sampo-talent"
 )
 
 func init() {

@@ -6,6 +6,8 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
+const Skill key.Attack = "arlan-skill"
+
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	c.engine.ModifyHPByRatio(c.id, c.id, info.ModifyHPByRatio{
 		Ratio:     -0.15,
@@ -16,6 +18,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	c.e2()
 
 	c.engine.Attack(info.Attack{
+		Key:        Skill,
 		Source:     c.id,
 		Targets:    []key.TargetID{target},
 		DamageType: model.DamageType_THUNDER,

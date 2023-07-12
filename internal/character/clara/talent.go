@@ -9,8 +9,11 @@ import (
 )
 
 const (
-	TalentMark key.Modifier = "clara-talent-mark"    // MAvatar_Klara_00_PassiveATK_Mark for BPSkill_Revenge
-	TalentRes  key.Modifier = "clara-talent-dmg-res" // MAvatar_Klara_00_Passive_DamageReduce
+	TalentMark    key.Modifier = "clara-talent-mark"    // MAvatar_Klara_00_PassiveATK_Mark for BPSkill_Revenge
+	TalentRes     key.Modifier = "clara-talent-dmg-res" // MAvatar_Klara_00_Passive_DamageReduce
+	CounterInsert key.Insert   = "clara-counter"
+	CounterNormal key.Attack   = "clara-counter-normal"
+	CounterUlt    key.Attack   = "clara-counter-ult"
 )
 
 // Under the protection of Svarog, DMG taken by Clara when hit by enemy
@@ -61,12 +64,17 @@ func (c *char) doCounter(attackerID key.TargetID) {
 			hasUlt := c.engine.HasModifier(c.id, UltCounter)
 
 			percent := talent[c.info.TalentLevelIndex()]
+			k := CounterNormal
+
 			if hasUlt {
 				percent += ultDmgBoost[c.info.UltLevelIndex()]
+				k = CounterUlt
 			}
 
 			// normal counter, damage
 			c.engine.Attack(info.Attack{
+				Key:          k,
+				HitIndex:     0,
 				Source:       c.id,
 				Targets:      []key.TargetID{attackerID},
 				DamageType:   model.DamageType_PHYSICAL,
@@ -81,6 +89,8 @@ func (c *char) doCounter(attackerID key.TargetID) {
 			// mhy memes ?
 			if hasUlt {
 				c.engine.Attack(info.Attack{
+					Key:          k,
+					HitIndex:     1,
 					Source:       c.id,
 					Targets:      c.engine.AdjacentTo(attackerID),
 					DamageType:   model.DamageType_PHYSICAL,
@@ -93,6 +103,7 @@ func (c *char) doCounter(attackerID key.TargetID) {
 				c.engine.ExtendModifierCount(c.id, UltCounter, -1.0)
 			}
 		},
+		Key:        CounterInsert,
 		Source:     c.id,
 		Priority:   info.CharInsertAttackSelf,
 		AbortFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL, model.BehaviorFlag_DISABLE_ACTION},

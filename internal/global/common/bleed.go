@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	Bleed      key.Modifier = "common_bleed"
-	BreakBleed key.Modifier = "break_bleed"
+	Bleed      = "common-bleed"
+	BreakBleed = "break-bleed"
 )
 
 type BleedState struct {
@@ -44,6 +44,7 @@ func bleedPhase1(mod *modifier.Instance) {
 	}
 
 	mod.Engine().Attack(info.Attack{
+		Key:        Bleed,
 		Source:     mod.Source(),
 		Targets:    []key.TargetID{mod.Owner()},
 		AttackType: model.AttackType_DOT,

@@ -10,6 +10,7 @@ import (
 
 const (
 	UltDefDown key.Modifier = "silverwolf-ult-def-down"
+	Ult        key.Attack   = "silverwolf-ult"
 )
 
 func init() {
@@ -32,6 +33,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	})
 
 	c.engine.Attack(info.Attack{
+		Key:        Ult,
 		Source:     c.id,
 		Targets:    []key.TargetID{target},
 		DamageType: model.DamageType_QUANTUM,

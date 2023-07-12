@@ -94,6 +94,7 @@ type ActionEnd struct {
 
 type InsertStartEventHandler = handler.EventHandler[InsertStart]
 type InsertStart struct {
+	Key        key.Insert           `json:"key"`
 	Owner      key.TargetID         `json:"owner"`
 	AbortFlags []model.BehaviorFlag `json:"abort_flags"`
 	Priority   info.InsertPriority  `json:"priority"`
@@ -101,6 +102,7 @@ type InsertStart struct {
 
 type InsertEndEventHandler = handler.EventHandler[InsertEnd]
 type InsertEnd struct {
+	Key        key.Insert            `json:"key"`
 	Owner      key.TargetID          `json:"owner"`
 	Targets    map[key.TargetID]bool `json:"targets"`
 	AbortFlags []model.BehaviorFlag  `json:"abort_flags"`

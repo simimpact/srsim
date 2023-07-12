@@ -10,6 +10,7 @@ import (
 
 const (
 	UltDefDown key.Modifier = "pela-ult-def-down"
+	Ult        key.Attack   = "pela-ult"
 )
 
 func init() {
@@ -34,6 +35,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	}
 
 	c.engine.Attack(info.Attack{
+		Key:        Ult,
 		Source:     c.id,
 		Targets:    targets,
 		DamageType: model.DamageType_ICE,

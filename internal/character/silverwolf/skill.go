@@ -24,6 +24,8 @@ var damageTypeToResProperty = map[model.DamageType]prop.Property{
 	model.DamageType_IMAGINARY: prop.ImaginaryDamageRES,
 }
 
+const Skill key.Attack = "silverwolf-skill"
+
 func init() {
 	modifier.Register(SkillResDown, modifier.Config{
 		TickMoment: modifier.ModifierPhase1End,
@@ -104,6 +106,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	})
 
 	c.engine.Attack(info.Attack{
+		Key:        Skill,
 		Source:     c.id,
 		Targets:    []key.TargetID{target},
 		DamageType: model.DamageType_QUANTUM,

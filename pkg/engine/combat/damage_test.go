@@ -13,6 +13,8 @@ import (
 
 func TestBaseDamageByATK(t *testing.T) {
 	hit := &info.Hit{
+		Key:        "tst",
+		HitIndex:   0,
 		Attacker:   mock.NewEmptyStats(1),
 		Defender:   mock.NewEmptyStats(2),
 		BaseDamage: info.DamageMap{model.DamageFormula_BY_ATK: 0.5},
@@ -30,6 +32,8 @@ func TestBaseDamageByATK(t *testing.T) {
 func TestCritCheckNormal(t *testing.T) {
 	rdm := rand.New(rand.NewSource(1))
 	hit := &info.Hit{
+		Key:        "tst",
+		HitIndex:   0,
 		Attacker:   mock.NewEmptyStats(1),
 		Defender:   mock.NewEmptyStats(2),
 		AttackType: model.AttackType_NORMAL,
@@ -45,6 +49,8 @@ func TestCritCheckNormal(t *testing.T) {
 func TestCritCheckPureDamage(t *testing.T) {
 	rdm := rand.New(rand.NewSource(1))
 	hit := &info.Hit{
+		Key:          "tst",
+		HitIndex:     0,
 		Attacker:     mock.NewEmptyStats(1),
 		Defender:     mock.NewEmptyStats(2),
 		AttackType:   model.AttackType_NORMAL,

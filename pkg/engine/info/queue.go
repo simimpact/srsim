@@ -9,6 +9,9 @@ import (
 
 // metadata on what is being inserted into the turn queue
 type Insert struct {
+	// Unique identifier for this insert
+	Key key.Insert
+
 	// The logic to run when this insert is executed during the turn
 	Execute func()
 

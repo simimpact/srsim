@@ -69,6 +69,14 @@ export type DamageMap = { [key: string]: number /* float64 */};
 export type HealMap = { [key: string]: number /* float64 */};
 export interface Attack {
   /**
+   * A unique identifier for this attack instance
+   */
+  key: string;
+  /**
+   * Optional. Specify when an attack is split into multiple hits
+   */
+  hit_index: number /* int */;
+  /**
    * List of targets to perform this attack against (will perform 1 hit per target)
    */
   targets: string[];
@@ -127,6 +135,14 @@ export interface Attack {
   use_snapshot: boolean;
 }
 export interface Hit {
+  /**
+   * The unique identifier of the source attack
+   */
+  key: string;
+  /**
+   * The index of this hit
+   */
+  hit_index: number /* int */;
   /**
    * The stats of the attacker of this hit. These stats are a snapshot of the target's state and
    * can be modified
@@ -188,6 +204,10 @@ export interface Hit {
   use_snapshot: boolean;
 }
 export interface Heal {
+  /**
+   * A unique identifier of this heal instance
+   */
+  key: string;
   /**
    * The targets that the healer is healing
    */
@@ -340,6 +360,10 @@ export interface ModifierState {
  * metadata on what is being inserted into the turn queue
  */
 export interface Insert {
+  /**
+   * Unique identifier for this insert
+   */
+  Key: string;
   /**
    * The logic to run when this insert is executed during the turn
    */

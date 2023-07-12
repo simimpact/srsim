@@ -11,6 +11,7 @@ import (
 
 const (
 	E2 key.Modifier = "silverwolf-e2"
+	E4 key.Attack   = "silverwolf-e4"
 	E6 key.Modifier = "silverwolf-e6"
 )
 
@@ -69,6 +70,8 @@ func (c *char) e4(target key.TargetID) {
 		}
 		for i := 0; i < debuffCount; i++ {
 			c.engine.Attack(info.Attack{
+				Key:        E4,
+				HitIndex:   i,
 				Source:     c.id,
 				Targets:    []key.TargetID{target},
 				DamageType: model.DamageType_QUANTUM,

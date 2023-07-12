@@ -9,6 +9,7 @@ import (
 
 const (
 	Talent key.Modifier = "gepard-talent"
+	Revive key.Insert   = "gepard-revive"
 )
 
 type talentState struct {
@@ -51,6 +52,7 @@ func talentRevive(mod *modifier.Instance) bool {
 
 			mod.RemoveSelf()
 		},
+		Key:        Revive,
 		Source:     mod.Owner(),
 		Priority:   info.CharReviveSelf,
 		AbortFlags: nil,

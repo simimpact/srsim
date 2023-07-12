@@ -9,15 +9,16 @@ import (
 )
 
 const (
-	E1                    key.Modifier = "natasha-e1-autoheal"
+	E1                                 = "natasha-e1"
 	E1PercentThreshold    float64      = 0.30
 	E1HealScale           float64      = 0.15
 	E1HealFlat            float64      = 400
-	E2                    key.Modifier = "natasha-e2"
+	E2                                 = "natasha-e2"
 	E2ThresholdPercentage float64      = 0.30
 	E2PercentageHOT       float64      = 0.06
 	E2FlatHOT             float64      = 160
 	E4                    key.Modifier = "natasha-e4"
+	E6                    key.Attack   = "natasha-e6"
 )
 
 func init() {
@@ -33,6 +34,7 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnPhase1: func(mod *modifier.Instance) {
 				mod.Engine().Heal(info.Heal{
+					Key:     E2,
 					Targets: []key.TargetID{mod.Owner()},
 					Source:  mod.Source(),
 					BaseHeal: info.HealMap{
@@ -85,6 +87,7 @@ func e1SelfHeal(mod *modifier.Instance, e event.AttackEnd) {
 		mod.Engine().InsertAbility(info.Insert{
 			Execute: func() {
 				mod.Engine().Heal(info.Heal{
+					Key:     E1,
 					Targets: []key.TargetID{selfHealer},
 					Source:  selfHealer,
 					BaseHeal: info.HealMap{
@@ -94,6 +97,7 @@ func e1SelfHeal(mod *modifier.Instance, e event.AttackEnd) {
 				})
 				mod.Engine().RemoveModifier(selfHealer, mod.Name())
 			},
+			Key:    E1,
 			Source: selfHealer,
 			AbortFlags: []model.BehaviorFlag{
 				model.BehaviorFlag_STAT_CTRL,
@@ -125,6 +129,7 @@ func (c *char) e2(targets []key.TargetID) {
 func (c *char) e6(target key.TargetID) {
 	if c.info.Eidolon >= 6 {
 		c.engine.Attack(info.Attack{
+			Key:        E6,
 			Targets:    []key.TargetID{target},
 			Source:     c.id,
 			DamageType: model.DamageType_PHYSICAL,
