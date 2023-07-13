@@ -32,6 +32,11 @@ export interface ModifyHPByRatio {
    */
   Floor: number /* float64 */;
 }
+export type TargetState = number /* int */;
+export const Invalid: TargetState = 0;
+export const Dead: TargetState = 1;
+export const Limbo: TargetState = 2;
+export const Alive: TargetState = 3;
 
 //////////
 // source: character.go
