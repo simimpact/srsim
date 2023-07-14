@@ -18,12 +18,6 @@ const (
 // Increases the wearer's Effect Hit Rate by 20%.
 // When the wearer attacks DEF-reduced enemies, regenerates 4 Energy.
 
-// DM :
-// OnAfterAttack : retarget() wtf? byContainBehaviorFLag : stat_defenceDown, includeLimbo
-// max : 1
-// -> TaskList : modifySPNew (wtf?) add value by some dynamic amt -> SkillTreeParam : ""(nil)
-// OnStart : add _Main mod
-
 func init() {
 	lightcone.Register(key.BeforetheTutorialMissionStarts, lightcone.Config{
 		CreatePassive: Create,
