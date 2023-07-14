@@ -47,6 +47,15 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func dmgBoostOnBurnBleed(mod *modifier.Instance, e event.HitStart) {
+var triggerFlags = []model.BehaviorFlag{
+	model.BehaviorFlag_STAT_DOT_BURN,
+	model.BehaviorFlag_STAT_DOT_BLEED,
+}
 
+func dmgBoostOnBurnBleed(mod *modifier.Instance, e event.HitStart) {
+	dmgBoostAmt := mod.State().(float64)
+
+	if mod.Engine().HasBehaviorFlag(e.Defender, triggerFlags...) {
+		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, dmgBoostAmt)
+	}
 }
