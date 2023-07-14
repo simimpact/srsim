@@ -23,6 +23,8 @@ func TestPerformHitWithShield(t *testing.T) {
 	mgr := New(&event.System{}, attr, shld, target, rdm)
 
 	hit := &info.Hit{
+		Key:          "tst",
+		HitIndex:     0,
 		Attacker:     mock.NewEmptyStats(1),
 		Defender:     mock.NewEmptyStats(2),
 		BaseDamage:   info.DamageMap{model.DamageFormula_BY_ATK: 0.5},

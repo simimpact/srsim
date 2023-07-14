@@ -6,15 +6,24 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
+const (
+	NormalBasic            key.Attack = "qingque-normal-basic"
+	NormalEnhancedPrimary  key.Attack = "qingque-normal-enhanced-primary"
+	NormalEnchangeAdjacent key.Attack = "qingque-normal-enhanced-adjacent"
+	Insert                 key.Insert = "qingque-follow-up"
+)
+
 func (c *char) Attack(target key.TargetID, state info.ActionState) {
 	atk := c.getAttack()
 	atk(target, false)
 	if c.tiles[0] == 4 {
 		c.engine.RemoveModifier(c.id, Talent)
 	}
+
 	if c.engine.HasModifier(c.id, Autarky) {
 		c.engine.InsertAbility(info.Insert{
 			Execute:  func() { atk(target, true) },
+			Key:      Insert,
 			Source:   c.id,
 			Priority: info.CharInsertAttackSelf,
 			AbortFlags: []model.BehaviorFlag{
@@ -24,6 +33,7 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 		})
 		c.engine.RemoveModifier(c.id, Autarky)
 	}
+
 	if c.tiles[0] == 4 {
 		c.tiles = []int{0, 0, 0}
 		c.suits[0] = ""
@@ -53,7 +63,9 @@ func (c *char) basicAttack(target key.TargetID, isInsert bool) {
 		aType = model.AttackType_INSERT
 		energy = 0.0
 	}
+
 	c.engine.Attack(info.Attack{
+		Key:        NormalBasic,
 		Source:     c.id,
 		Targets:    []key.TargetID{target},
 		DamageType: model.DamageType_QUANTUM,
@@ -73,7 +85,9 @@ func (c *char) enhancedAttack(target key.TargetID, isInsert bool) {
 		aType = model.AttackType_INSERT
 		energy = 0.0
 	}
+
 	c.engine.Attack(info.Attack{
+		Key:        NormalEnhancedPrimary,
 		Source:     c.id,
 		Targets:    []key.TargetID{target},
 		DamageType: model.DamageType_QUANTUM,
@@ -84,7 +98,9 @@ func (c *char) enhancedAttack(target key.TargetID, isInsert bool) {
 		StanceDamage: 60.0,
 		EnergyGain:   energy,
 	})
+
 	c.engine.Attack(info.Attack{
+		Key:        NormalEnchangeAdjacent,
 		Source:     c.id,
 		Targets:    c.engine.AdjacentTo(target),
 		DamageType: model.DamageType_QUANTUM,

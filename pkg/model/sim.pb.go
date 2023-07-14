@@ -27,7 +27,7 @@ type SimConfig struct {
 
 	Settings   *SimulatorSettings `protobuf:"bytes,1,opt,name=settings,proto3" json:"settings,omitempty"`
 	Characters []*Character       `protobuf:"bytes,2,rep,name=characters,proto3" json:"characters,omitempty"`
-	Enemies    []*Enemy           `protobuf:"bytes,3,rep,name=enemies,proto3" json:"enemies,omitempty"`
+	Enemies    []*Enemy           `protobuf:"bytes,3,rep,name=enemies,proto3" json:"enemies,omitempty"` // TODO: waves
 	Engage     *Engage            `protobuf:"bytes,6,opt,name=engage,proto3" json:"engage,omitempty"`
 	// Types that are assignable to Logic:
 	//
@@ -285,6 +285,53 @@ func (x *Character) GetStartHp() float64 {
 	return 0
 }
 
+type Wave struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Enemies []*Enemy `protobuf:"bytes,1,rep,name=enemies,proto3" json:"enemies,omitempty"`
+}
+
+func (x *Wave) Reset() {
+	*x = Wave{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_pb_model_sim_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Wave) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Wave) ProtoMessage() {}
+
+func (x *Wave) ProtoReflect() protoreflect.Message {
+	mi := &file_pb_model_sim_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Wave.ProtoReflect.Descriptor instead.
+func (*Wave) Descriptor() ([]byte, []int) {
+	return file_pb_model_sim_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *Wave) GetEnemies() []*Enemy {
+	if x != nil {
+		return x.Enemies
+	}
+	return nil
+}
+
 type Enemy struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -300,7 +347,7 @@ type Enemy struct {
 func (x *Enemy) Reset() {
 	*x = Enemy{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pb_model_sim_proto_msgTypes[3]
+		mi := &file_pb_model_sim_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -313,7 +360,7 @@ func (x *Enemy) String() string {
 func (*Enemy) ProtoMessage() {}
 
 func (x *Enemy) ProtoReflect() protoreflect.Message {
-	mi := &file_pb_model_sim_proto_msgTypes[3]
+	mi := &file_pb_model_sim_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -326,7 +373,7 @@ func (x *Enemy) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Enemy.ProtoReflect.Descriptor instead.
 func (*Enemy) Descriptor() ([]byte, []int) {
-	return file_pb_model_sim_proto_rawDescGZIP(), []int{3}
+	return file_pb_model_sim_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *Enemy) GetLevel() uint32 {
@@ -375,7 +422,7 @@ type Engage struct {
 func (x *Engage) Reset() {
 	*x = Engage{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pb_model_sim_proto_msgTypes[4]
+		mi := &file_pb_model_sim_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -388,7 +435,7 @@ func (x *Engage) String() string {
 func (*Engage) ProtoMessage() {}
 
 func (x *Engage) ProtoReflect() protoreflect.Message {
-	mi := &file_pb_model_sim_proto_msgTypes[4]
+	mi := &file_pb_model_sim_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -401,7 +448,7 @@ func (x *Engage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Engage.ProtoReflect.Descriptor instead.
 func (*Engage) Descriptor() ([]byte, []int) {
-	return file_pb_model_sim_proto_rawDescGZIP(), []int{4}
+	return file_pb_model_sim_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *Engage) GetAmbush() bool {
@@ -425,7 +472,7 @@ type Abilities struct {
 func (x *Abilities) Reset() {
 	*x = Abilities{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pb_model_sim_proto_msgTypes[5]
+		mi := &file_pb_model_sim_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -438,7 +485,7 @@ func (x *Abilities) String() string {
 func (*Abilities) ProtoMessage() {}
 
 func (x *Abilities) ProtoReflect() protoreflect.Message {
-	mi := &file_pb_model_sim_proto_msgTypes[5]
+	mi := &file_pb_model_sim_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -451,7 +498,7 @@ func (x *Abilities) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Abilities.ProtoReflect.Descriptor instead.
 func (*Abilities) Descriptor() ([]byte, []int) {
-	return file_pb_model_sim_proto_rawDescGZIP(), []int{5}
+	return file_pb_model_sim_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *Abilities) GetAttack() uint32 {
@@ -495,7 +542,7 @@ type Relic struct {
 func (x *Relic) Reset() {
 	*x = Relic{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pb_model_sim_proto_msgTypes[6]
+		mi := &file_pb_model_sim_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -508,7 +555,7 @@ func (x *Relic) String() string {
 func (*Relic) ProtoMessage() {}
 
 func (x *Relic) ProtoReflect() protoreflect.Message {
-	mi := &file_pb_model_sim_proto_msgTypes[6]
+	mi := &file_pb_model_sim_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -521,7 +568,7 @@ func (x *Relic) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Relic.ProtoReflect.Descriptor instead.
 func (*Relic) Descriptor() ([]byte, []int) {
-	return file_pb_model_sim_proto_rawDescGZIP(), []int{6}
+	return file_pb_model_sim_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *Relic) GetKey() string {
@@ -557,7 +604,7 @@ type RelicStat struct {
 func (x *RelicStat) Reset() {
 	*x = RelicStat{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pb_model_sim_proto_msgTypes[7]
+		mi := &file_pb_model_sim_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -570,7 +617,7 @@ func (x *RelicStat) String() string {
 func (*RelicStat) ProtoMessage() {}
 
 func (x *RelicStat) ProtoReflect() protoreflect.Message {
-	mi := &file_pb_model_sim_proto_msgTypes[7]
+	mi := &file_pb_model_sim_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -583,7 +630,7 @@ func (x *RelicStat) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RelicStat.ProtoReflect.Descriptor instead.
 func (*RelicStat) Descriptor() ([]byte, []int) {
-	return file_pb_model_sim_proto_rawDescGZIP(), []int{7}
+	return file_pb_model_sim_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *RelicStat) GetStat() Property {
@@ -614,7 +661,7 @@ type LightCone struct {
 func (x *LightCone) Reset() {
 	*x = LightCone{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pb_model_sim_proto_msgTypes[8]
+		mi := &file_pb_model_sim_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -627,7 +674,7 @@ func (x *LightCone) String() string {
 func (*LightCone) ProtoMessage() {}
 
 func (x *LightCone) ProtoReflect() protoreflect.Message {
-	mi := &file_pb_model_sim_proto_msgTypes[8]
+	mi := &file_pb_model_sim_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -640,7 +687,7 @@ func (x *LightCone) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LightCone.ProtoReflect.Descriptor instead.
 func (*LightCone) Descriptor() ([]byte, []int) {
-	return file_pb_model_sim_proto_rawDescGZIP(), []int{8}
+	return file_pb_model_sim_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *LightCone) GetKey() string {
@@ -683,7 +730,7 @@ type DebuffRES struct {
 func (x *DebuffRES) Reset() {
 	*x = DebuffRES{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_pb_model_sim_proto_msgTypes[9]
+		mi := &file_pb_model_sim_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -696,7 +743,7 @@ func (x *DebuffRES) String() string {
 func (*DebuffRES) ProtoMessage() {}
 
 func (x *DebuffRES) ProtoReflect() protoreflect.Message {
-	mi := &file_pb_model_sim_proto_msgTypes[9]
+	mi := &file_pb_model_sim_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -709,7 +756,7 @@ func (x *DebuffRES) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DebuffRES.ProtoReflect.Descriptor instead.
 func (*DebuffRES) Descriptor() ([]byte, []int) {
-	return file_pb_model_sim_proto_rawDescGZIP(), []int{9}
+	return file_pb_model_sim_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *DebuffRES) GetFlag() BehaviorFlag {
@@ -770,7 +817,10 @@ var file_pb_model_sim_proto_rawDesc = []byte{
 	0x12, 0x21, 0x0a, 0x0c, 0x73, 0x74, 0x61, 0x72, 0x74, 0x5f, 0x65, 0x6e, 0x65, 0x72, 0x67, 0x79,
 	0x18, 0x09, 0x20, 0x01, 0x28, 0x01, 0x52, 0x0b, 0x73, 0x74, 0x61, 0x72, 0x74, 0x45, 0x6e, 0x65,
 	0x72, 0x67, 0x79, 0x12, 0x19, 0x0a, 0x08, 0x73, 0x74, 0x61, 0x72, 0x74, 0x5f, 0x68, 0x70, 0x18,
-	0x0a, 0x20, 0x01, 0x28, 0x01, 0x52, 0x07, 0x73, 0x74, 0x61, 0x72, 0x74, 0x48, 0x70, 0x22, 0xaf,
+	0x0a, 0x20, 0x01, 0x28, 0x01, 0x52, 0x07, 0x73, 0x74, 0x61, 0x72, 0x74, 0x48, 0x70, 0x22, 0x2e,
+	0x0a, 0x04, 0x57, 0x61, 0x76, 0x65, 0x12, 0x26, 0x0a, 0x07, 0x65, 0x6e, 0x65, 0x6d, 0x69, 0x65,
+	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x2e,
+	0x45, 0x6e, 0x65, 0x6d, 0x79, 0x52, 0x07, 0x65, 0x6e, 0x65, 0x6d, 0x69, 0x65, 0x73, 0x22, 0xaf,
 	0x01, 0x0a, 0x05, 0x45, 0x6e, 0x65, 0x6d, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x6c, 0x65, 0x76, 0x65,
 	0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x05, 0x6c, 0x65, 0x76, 0x65, 0x6c, 0x12, 0x0e,
 	0x0a, 0x02, 0x68, 0x70, 0x18, 0x03, 0x20, 0x01, 0x28, 0x01, 0x52, 0x02, 0x68, 0x70, 0x12, 0x1c,
@@ -832,41 +882,43 @@ func file_pb_model_sim_proto_rawDescGZIP() []byte {
 	return file_pb_model_sim_proto_rawDescData
 }
 
-var file_pb_model_sim_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_pb_model_sim_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_pb_model_sim_proto_goTypes = []interface{}{
 	(*SimConfig)(nil),         // 0: model.SimConfig
 	(*SimulatorSettings)(nil), // 1: model.SimulatorSettings
 	(*Character)(nil),         // 2: model.Character
-	(*Enemy)(nil),             // 3: model.Enemy
-	(*Engage)(nil),            // 4: model.Engage
-	(*Abilities)(nil),         // 5: model.Abilities
-	(*Relic)(nil),             // 6: model.Relic
-	(*RelicStat)(nil),         // 7: model.RelicStat
-	(*LightCone)(nil),         // 8: model.LightCone
-	(*DebuffRES)(nil),         // 9: model.DebuffRES
-	(DamageType)(0),           // 10: model.DamageType
-	(Property)(0),             // 11: model.Property
-	(BehaviorFlag)(0),         // 12: model.BehaviorFlag
+	(*Wave)(nil),              // 3: model.Wave
+	(*Enemy)(nil),             // 4: model.Enemy
+	(*Engage)(nil),            // 5: model.Engage
+	(*Abilities)(nil),         // 6: model.Abilities
+	(*Relic)(nil),             // 7: model.Relic
+	(*RelicStat)(nil),         // 8: model.RelicStat
+	(*LightCone)(nil),         // 9: model.LightCone
+	(*DebuffRES)(nil),         // 10: model.DebuffRES
+	(DamageType)(0),           // 11: model.DamageType
+	(Property)(0),             // 12: model.Property
+	(BehaviorFlag)(0),         // 13: model.BehaviorFlag
 }
 var file_pb_model_sim_proto_depIdxs = []int32{
 	1,  // 0: model.SimConfig.settings:type_name -> model.SimulatorSettings
 	2,  // 1: model.SimConfig.characters:type_name -> model.Character
-	3,  // 2: model.SimConfig.enemies:type_name -> model.Enemy
-	4,  // 3: model.SimConfig.engage:type_name -> model.Engage
-	5,  // 4: model.Character.abilities:type_name -> model.Abilities
-	8,  // 5: model.Character.light_cone:type_name -> model.LightCone
-	6,  // 6: model.Character.relics:type_name -> model.Relic
-	10, // 7: model.Enemy.weaknesses:type_name -> model.DamageType
-	9,  // 8: model.Enemy.debuff_res:type_name -> model.DebuffRES
-	7,  // 9: model.Relic.main_stat:type_name -> model.RelicStat
-	7,  // 10: model.Relic.sub_stats:type_name -> model.RelicStat
-	11, // 11: model.RelicStat.stat:type_name -> model.Property
-	12, // 12: model.DebuffRES.flag:type_name -> model.BehaviorFlag
-	13, // [13:13] is the sub-list for method output_type
-	13, // [13:13] is the sub-list for method input_type
-	13, // [13:13] is the sub-list for extension type_name
-	13, // [13:13] is the sub-list for extension extendee
-	0,  // [0:13] is the sub-list for field type_name
+	4,  // 2: model.SimConfig.enemies:type_name -> model.Enemy
+	5,  // 3: model.SimConfig.engage:type_name -> model.Engage
+	6,  // 4: model.Character.abilities:type_name -> model.Abilities
+	9,  // 5: model.Character.light_cone:type_name -> model.LightCone
+	7,  // 6: model.Character.relics:type_name -> model.Relic
+	4,  // 7: model.Wave.enemies:type_name -> model.Enemy
+	11, // 8: model.Enemy.weaknesses:type_name -> model.DamageType
+	10, // 9: model.Enemy.debuff_res:type_name -> model.DebuffRES
+	8,  // 10: model.Relic.main_stat:type_name -> model.RelicStat
+	8,  // 11: model.Relic.sub_stats:type_name -> model.RelicStat
+	12, // 12: model.RelicStat.stat:type_name -> model.Property
+	13, // 13: model.DebuffRES.flag:type_name -> model.BehaviorFlag
+	14, // [14:14] is the sub-list for method output_type
+	14, // [14:14] is the sub-list for method input_type
+	14, // [14:14] is the sub-list for extension type_name
+	14, // [14:14] is the sub-list for extension extendee
+	0,  // [0:14] is the sub-list for field type_name
 }
 
 func init() { file_pb_model_sim_proto_init() }
@@ -913,7 +965,7 @@ func file_pb_model_sim_proto_init() {
 			}
 		}
 		file_pb_model_sim_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Enemy); i {
+			switch v := v.(*Wave); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -925,7 +977,7 @@ func file_pb_model_sim_proto_init() {
 			}
 		}
 		file_pb_model_sim_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Engage); i {
+			switch v := v.(*Enemy); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -937,7 +989,7 @@ func file_pb_model_sim_proto_init() {
 			}
 		}
 		file_pb_model_sim_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Abilities); i {
+			switch v := v.(*Engage); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -949,7 +1001,7 @@ func file_pb_model_sim_proto_init() {
 			}
 		}
 		file_pb_model_sim_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Relic); i {
+			switch v := v.(*Abilities); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -961,7 +1013,7 @@ func file_pb_model_sim_proto_init() {
 			}
 		}
 		file_pb_model_sim_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RelicStat); i {
+			switch v := v.(*Relic); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -973,7 +1025,7 @@ func file_pb_model_sim_proto_init() {
 			}
 		}
 		file_pb_model_sim_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LightCone); i {
+			switch v := v.(*RelicStat); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -985,6 +1037,18 @@ func file_pb_model_sim_proto_init() {
 			}
 		}
 		file_pb_model_sim_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*LightCone); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_pb_model_sim_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*DebuffRES); i {
 			case 0:
 				return &v.state
@@ -1006,7 +1070,7 @@ func file_pb_model_sim_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_pb_model_sim_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

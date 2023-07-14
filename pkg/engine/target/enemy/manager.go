@@ -11,11 +11,11 @@ import (
 
 type Manager struct {
 	engine engine.Engine
-	attr   attribute.Modifier
+	attr   attribute.Manager
 	info   map[key.TargetID]info.Enemy
 }
 
-func New(engine engine.Engine, attr attribute.Modifier) *Manager {
+func New(engine engine.Engine, attr attribute.Manager) *Manager {
 	return &Manager{
 		engine: engine,
 		attr:   attr,

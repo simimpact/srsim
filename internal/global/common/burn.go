@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	Burn      key.Modifier = "common_burn"
-	BreakBurn key.Modifier = "break_burn"
+	Burn      = "common-burn"
+	BreakBurn = "break-burn"
 )
 
 type BurnState struct {
@@ -46,6 +46,7 @@ func burnPhase1(mod *modifier.Instance) {
 
 	// perform burn damage
 	mod.Engine().Attack(info.Attack{
+		Key:        Burn,
 		Source:     mod.Source(),
 		Targets:    []key.TargetID{mod.Owner()},
 		AttackType: model.AttackType_DOT,

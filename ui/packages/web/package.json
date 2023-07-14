@@ -31,6 +31,7 @@
   "dependencies": {
     "@headlessui/react": "^1.7.14",
     "@headlessui/tailwindcss": "^0.1.3",
+    "@srsim/types": "workspace:^",
     "@visx/annotation": "^3.0.1",
     "@visx/axis": "^3.1.0",
     "@visx/curve": "^3.0.0",
@@ -44,6 +45,7 @@
     "@visx/stats": "^3.0.0",
     "@visx/text": "^3.0.0",
     "@visx/tooltip": "^3.1.2",
+    "@visx/xychart": "^3.1.2",
     "axios": "^1.4.0",
     "i18next": "^22.4.15",
     "i18next-browser-languagedetector": "^7.0.1",

@@ -6,6 +6,8 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
+const Ult key.Attack = "dan-heng-ult"
+
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	if c.info.Eidolon >= 4 {
 		c.engine.AddModifier(c.id, info.Modifier{
@@ -21,6 +23,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	}
 
 	c.engine.Attack(info.Attack{
+		Key:        Ult,
 		Source:     c.id,
 		Targets:    []key.TargetID{target},
 		DamageType: model.DamageType_WIND,

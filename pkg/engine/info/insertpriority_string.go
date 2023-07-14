@@ -12,39 +12,39 @@ func _() {
 	_ = x[CharHealSelf-48]
 	_ = x[CharReviveOthers-55]
 	_ = x[CharHealOthers-58]
+	_ = x[CharBuffSelf-65]
 	_ = x[CharInsertAttackSelf-75]
 	_ = x[CharInsertAttackOthers-115]
 	_ = x[EnemyReviveSelf-145]
 	_ = x[EnemyHealSelf-148]
 	_ = x[EnemyReviveOthers-155]
 	_ = x[EnemyHealOthers-158]
+	_ = x[EnemyBuffSelf-165]
 	_ = x[EnemyInsertAttackSelf-175]
 	_ = x[EnemyInsertAttackOthers-215]
-	_ = x[CharInsertUlt-500]
-	_ = x[CharInsertAction-800]
-	_ = x[EnemyInsertUlt-1000]
-	_ = x[EnemyInsertAction-1300]
+	_ = x[CharInsertAction-500]
+	_ = x[EnemyInsertAction-1000]
 }
 
-const _InsertPriority_name = "CharReviveSelfCharHealSelfCharReviveOthersCharHealOthersCharInsertAttackSelfCharInsertAttackOthersEnemyReviveSelfEnemyHealSelfEnemyReviveOthersEnemyHealOthersEnemyInsertAttackSelfEnemyInsertAttackOthersCharInsertUltCharInsertActionEnemyInsertUltEnemyInsertAction"
+const _InsertPriority_name = "CharReviveSelfCharHealSelfCharReviveOthersCharHealOthersCharBuffSelfCharInsertAttackSelfCharInsertAttackOthersEnemyReviveSelfEnemyHealSelfEnemyReviveOthersEnemyHealOthersEnemyBuffSelfEnemyInsertAttackSelfEnemyInsertAttackOthersCharInsertActionEnemyInsertAction"
 
 var _InsertPriority_map = map[InsertPriority]string{
 	45:   _InsertPriority_name[0:14],
 	48:   _InsertPriority_name[14:26],
 	55:   _InsertPriority_name[26:42],
 	58:   _InsertPriority_name[42:56],
-	75:   _InsertPriority_name[56:76],
-	115:  _InsertPriority_name[76:98],
-	145:  _InsertPriority_name[98:113],
-	148:  _InsertPriority_name[113:126],
-	155:  _InsertPriority_name[126:143],
-	158:  _InsertPriority_name[143:158],
-	175:  _InsertPriority_name[158:179],
-	215:  _InsertPriority_name[179:202],
-	500:  _InsertPriority_name[202:215],
-	800:  _InsertPriority_name[215:231],
-	1000: _InsertPriority_name[231:245],
-	1300: _InsertPriority_name[245:262],
+	65:   _InsertPriority_name[56:68],
+	75:   _InsertPriority_name[68:88],
+	115:  _InsertPriority_name[88:110],
+	145:  _InsertPriority_name[110:125],
+	148:  _InsertPriority_name[125:138],
+	155:  _InsertPriority_name[138:155],
+	158:  _InsertPriority_name[155:170],
+	165:  _InsertPriority_name[170:183],
+	175:  _InsertPriority_name[183:204],
+	215:  _InsertPriority_name[204:227],
+	500:  _InsertPriority_name[227:243],
+	1000: _InsertPriority_name[243:260],
 }
 
 func (i InsertPriority) String() string {

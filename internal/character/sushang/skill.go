@@ -6,6 +6,11 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
+const (
+	Skill       key.Attack = "sushang-skill"
+	SwordStance key.Attack = "sword-stance"
+)
+
 var skillHits = []float64{0.3, 0.7}
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
@@ -13,8 +18,10 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	isBroken := c.engine.Stats(target).Stance() == 0
 
 	// 2 hits
-	for _, hitRatio := range skillHits {
+	for i, hitRatio := range skillHits {
 		c.engine.Attack(info.Attack{
+			Key:        Skill,
+			HitIndex:   i,
 			Source:     c.id,
 			Targets:    []key.TargetID{target},
 			DamageType: model.DamageType_PHYSICAL,
@@ -47,7 +54,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 
 	for i, chance := range chances {
 		if chance {
-			ssHit(c, target, i != 2)
+			ssHit(c, target, i)
 		}
 	}
 
@@ -60,27 +67,24 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	c.a6()
 }
 
-func ssHit(c *char, target key.TargetID, isExtra bool) {
+func ssHit(c *char, target key.TargetID, index int) {
 	// handle a4 buff
-	if c.info.Traces["1206102"] {
-		stacks := 0.0
-		if c.engine.HasModifier(c.id, A4Buff) {
-			stacks = c.engine.GetModifiers(c.id, A4Buff)[0].Count
-		}
-
+	if c.info.Traces["102"] {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:   A4Mod,
 			Source: c.id,
-			State:  stacks,
+			State:  c.engine.ModifierStackCount(c.id, c.id, A4Buff),
 		})
 	}
 
 	hitRatio := 1.0
-	if isExtra {
+	if index != 2 {
 		hitRatio = 0.5
 	}
 
 	c.engine.Attack(info.Attack{
+		Key:        SwordStance,
+		HitIndex:   index,
 		Source:     c.id,
 		Targets:    []key.TargetID{target},
 		DamageType: model.DamageType_PHYSICAL,
@@ -95,7 +99,7 @@ func ssHit(c *char, target key.TargetID, isExtra bool) {
 
 	c.e2()
 
-	if c.info.Traces["1206102"] {
+	if c.info.Traces["102"] {
 		c.engine.RemoveModifier(c.id, A4Mod)
 		c.a4AddStack()
 	}

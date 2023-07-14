@@ -12,8 +12,8 @@ type Logger interface {
 }
 
 type LogWrapper struct {
-	EventName string `json:"name"`
-	Data      any    `json:"event"`
+	Name  string `json:"name"`
+	Event any    `json:"event"`
 }
 
 func InitLoggers(ls ...Logger) {
@@ -28,7 +28,7 @@ func Log(e any) {
 
 func Wrap(e any) *LogWrapper {
 	return &LogWrapper{
-		EventName: strings.TrimPrefix(fmt.Sprintf("%T", e), "event."),
-		Data:      e,
+		Name:  strings.TrimPrefix(fmt.Sprintf("%T", e), "event."),
+		Event: e,
 	}
 }

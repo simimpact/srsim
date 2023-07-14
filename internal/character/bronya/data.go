@@ -102,61 +102,61 @@ var promotions = []character.PromotionData{
 }
 
 var traces = character.TraceMap{
-	"1101101": {
+	"101": {
 		Ascension: 2,
 	},
-	"1101102": {
+	"102": {
 		Ascension: 4,
 	},
-	"1101103": {
+	"103": {
 		Ascension: 6,
 	},
-	"1101201": {
+	"201": {
 		Stat: prop.WindDamagePercent,
 		Amount: 0.031999999890103936,
 		Level: 1,
 	},
-	"1101202": {
+	"202": {
 		Stat: prop.CritDMG,
 		Amount: 0.05299999983981252,
 		Ascension: 2,
 	},
-	"1101203": {
+	"203": {
 		Stat: prop.WindDamagePercent,
 		Amount: 0.031999999890103936,
 		Ascension: 3,
 	},
-	"1101204": {
+	"204": {
 		Stat: prop.EffectRES,
 		Amount: 0.0400000000372529,
 		Ascension: 3,
 	},
-	"1101205": {
+	"205": {
 		Stat: prop.WindDamagePercent,
 		Amount: 0.04799999948590994,
 		Ascension: 4,
 	},
-	"1101206": {
+	"206": {
 		Stat: prop.CritDMG,
 		Amount: 0.0800000000745058,
 		Ascension: 5,
 	},
-	"1101207": {
+	"207": {
 		Stat: prop.WindDamagePercent,
 		Amount: 0.04799999948590994,
 		Ascension: 5,
 	},
-	"1101208": {
+	"208": {
 		Stat: prop.EffectRES,
 		Amount: 0.060000000055879354,
 		Ascension: 6,
 	},
-	"1101209": {
+	"209": {
 		Stat: prop.CritDMG,
 		Amount: 0.10699999961070716,
 		Level: 75,
 	},
-	"1101210": {
+	"210": {
 		Stat: prop.WindDamagePercent,
 		Amount: 0.06399999978020787,
 		Level: 80,

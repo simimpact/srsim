@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	NowheretoRun key.Modifier = "nowhere-to-run"
+	Name = "nowhere-to-run"
 )
 
 // Increases the wearer's ATK by 24%/30%/36%/42%/48%.
@@ -25,7 +25,7 @@ func init() {
 		Promotions:    promotions,
 	})
 
-	modifier.Register(NowheretoRun, modifier.Config{
+	modifier.Register(Name, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnTriggerDeath: onTriggerDeath,
 		},
@@ -37,7 +37,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	amtHeal := 0.09 + 0.03*float64(lc.Imposition)
 
 	engine.AddModifier(owner, info.Modifier{
-		Name:   NowheretoRun,
+		Name:   Name,
 		Source: owner,
 		Stats:  info.PropMap{prop.ATKPercent: amtATKPercent},
 		State:  amtHeal,
@@ -46,6 +46,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 
 func onTriggerDeath(mod *modifier.Instance, target key.TargetID) {
 	mod.Engine().Heal(info.Heal{
+		Key:      Name,
 		Targets:  []key.TargetID{mod.Owner()},
 		Source:   mod.Owner(),
 		BaseHeal: info.HealMap{model.HealFormula_BY_HEALER_ATK: mod.State().(float64)},

@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	mod key.Modifier = "pioneering"
+	name = "pioneering"
 )
 
 // When the wearer Breaks an enemy's Weakness, the wearer restores HP by
@@ -23,7 +23,7 @@ func init() {
 		Promotions:    promotions,
 	})
 
-	modifier.Register(mod, modifier.Config{
+	modifier.Register(name, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnTriggerBreak: onTriggerBreak,
 		},
@@ -34,7 +34,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	healAmt := 0.1 + 0.02*float64(lc.Imposition)
 
 	engine.AddModifier(owner, info.Modifier{
-		Name:   mod,
+		Name:   name,
 		Source: owner,
 		State:  healAmt,
 	})
@@ -43,6 +43,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 func onTriggerBreak(mod *modifier.Instance, target key.TargetID) {
 	healAmt := mod.State().(float64)
 	mod.Engine().Heal(info.Heal{
+		Key:      name,
 		Targets:  []key.TargetID{mod.Owner()},
 		Source:   mod.Owner(),
 		BaseHeal: info.HealMap{model.HealFormula_BY_TARGET_MAX_HP: healAmt},

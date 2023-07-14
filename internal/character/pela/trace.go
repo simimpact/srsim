@@ -26,7 +26,7 @@ func init() {
 	modifier.Register(A2, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: func(mod *modifier.Instance, e event.HitStart) {
-				if mod.Engine().ModifierCount(e.Hit.Defender.ID(), model.StatusType_STATUS_DEBUFF) >= 1 {
+				if mod.Engine().ModifierStatusCount(e.Hit.Defender.ID(), model.StatusType_STATUS_DEBUFF) >= 1 {
 					e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.2)
 				}
 			},
@@ -63,7 +63,7 @@ func init() {
 }
 
 func (c *char) a6() {
-	if c.info.Traces["1106103"] {
+	if c.info.Traces["103"] {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:   A6,
 			Source: c.id,
@@ -72,25 +72,21 @@ func (c *char) a6() {
 }
 
 func (c *char) initTraces() {
-	if c.info.Traces["1106101"] {
+	if c.info.Traces["101"] {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:   A2,
 			Source: c.id,
 		})
 	}
 
-	if c.info.Traces["1106102"] {
-		for _, char := range c.engine.Characters() {
-			c.engine.AddModifier(char, info.Modifier{
-				Name:   A4,
-				Source: c.id,
-			})
-		}
-		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAdded) {
-			c.engine.AddModifier(e.ID, info.Modifier{
-				Name:   A4,
-				Source: c.id,
-			})
+	if c.info.Traces["102"] {
+		c.engine.Events().CharactersAdded.Subscribe(func(e event.CharactersAdded) {
+			for _, char := range e.Characters {
+				c.engine.AddModifier(char.ID, info.Modifier{
+					Name:   A4,
+					Source: c.id,
+				})
+			}
 		})
 	}
 }

@@ -2,6 +2,7 @@ package attribute
 
 import (
 	"github.com/simimpact/srsim/pkg/engine/event"
+	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 )
 
@@ -9,6 +10,10 @@ func (s *Service) emitHPChangeEvents(
 	target, source key.TargetID, oldRatio, newRatio, maxHP float64, isDamage bool) error {
 	if oldRatio == newRatio {
 		return nil
+	}
+
+	if isDamage {
+		s.targets[target].lastAttacker = source
 	}
 
 	s.event.HPChange.Emit(event.HPChange{
@@ -21,18 +26,14 @@ func (s *Service) emitHPChangeEvents(
 	})
 
 	if newRatio > 0 {
+		s.targets[target].state = info.Alive
 		return nil
 	}
 
-	// if event gets canceled, do not want to emit the death event
+	s.targets[target].state = info.Dead
 	if s.event.LimboWaitHeal.Emit(event.LimboWaitHeal{Target: target}) {
-		return nil
+		s.targets[target].state = info.Limbo
 	}
-
-	s.event.TargetDeath.Emit(event.TargetDeath{
-		Target: target,
-		Killer: source,
-	})
 	return nil
 }
 

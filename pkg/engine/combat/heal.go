@@ -8,6 +8,10 @@ import (
 )
 
 func (mgr *Manager) Heal(heal info.Heal) {
+	if len(heal.Targets) == 0 || !mgr.attr.IsAlive(heal.Source) {
+		return
+	}
+
 	for _, t := range heal.Targets {
 		source := mgr.attr.Stats(heal.Source)
 		target := mgr.attr.Stats(t)
@@ -19,6 +23,7 @@ func (mgr *Manager) Heal(heal info.Heal) {
 		}
 
 		e := &event.HealStart{
+			Key:         heal.Key,
 			Target:      target,
 			Healer:      source,
 			BaseHeal:    baseHeal,
@@ -58,6 +63,7 @@ func (mgr *Manager) Heal(heal info.Heal) {
 		mgr.attr.ModifyHPByAmount(t, heal.Source, healAmount, false)
 
 		mgr.event.HealEnd.Emit(event.HealEnd{
+			Key:                heal.Key,
 			Target:             t,
 			Healer:             heal.Source,
 			HealAmount:         healAmount,

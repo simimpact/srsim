@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	WindShear      key.Modifier = "common_wind_shear"
-	BreakWindShear key.Modifier = "break_wind_shear"
+	WindShear      = "common-wind-shear"
+	BreakWindShear = "break-wind-shear"
 )
 
 type WindShearState struct {
@@ -43,6 +43,7 @@ func windShearPhase1(mod *modifier.Instance) {
 
 	// perform wind shear damage
 	mod.Engine().Attack(info.Attack{
+		Key:        WindShear,
 		Source:     mod.Source(),
 		Targets:    []key.TargetID{mod.Owner()},
 		AttackType: model.AttackType_DOT,

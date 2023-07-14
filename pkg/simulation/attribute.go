@@ -6,6 +6,32 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
+type snapshot struct {
+	characters []*info.Stats
+	enemies    []*info.Stats
+	neutrals   []*info.Stats
+}
+
+func (sim *Simulation) createSnapshot() snapshot {
+	charStats := make([]*info.Stats, len(sim.characters))
+	for i, t := range sim.characters {
+		charStats[i] = sim.Attr.Stats(t)
+	}
+	enemyStats := make([]*info.Stats, len(sim.enemies))
+	for i, t := range sim.enemies {
+		enemyStats[i] = sim.Attr.Stats(t)
+	}
+	neutralStats := make([]*info.Stats, len(sim.neutrals))
+	for i, t := range sim.neutrals {
+		neutralStats[i] = sim.Attr.Stats(t)
+	}
+	return snapshot{
+		characters: charStats,
+		enemies:    enemyStats,
+		neutrals:   neutralStats,
+	}
+}
+
 // TODO: move this to attr service?
 func (sim *Simulation) ModifySP(amt int) int {
 	old := sim.Sp
@@ -29,6 +55,10 @@ func (sim *Simulation) SP() int {
 
 func (sim *Simulation) Stats(target key.TargetID) *info.Stats {
 	return sim.Attr.Stats(target)
+}
+
+func (sim *Simulation) IsAlive(target key.TargetID) bool {
+	return sim.Attr.State(target) == info.Alive
 }
 
 func (sim *Simulation) Stance(target key.TargetID) float64 {

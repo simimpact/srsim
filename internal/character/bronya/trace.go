@@ -59,7 +59,7 @@ func init() {
 
 func (c *char) initTraces() {
 	// A2
-	if c.info.Traces["1101101"] {
+	if c.info.Traces["101"] {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:   A2,
 			Source: c.id,
@@ -67,40 +67,26 @@ func (c *char) initTraces() {
 	}
 
 	// A4
-	if c.info.Traces["1101102"] {
-		targets := c.engine.Characters()
-
-		for _, trg := range targets {
-			c.engine.AddModifier(trg, info.Modifier{
-				Name:   A4,
-				Source: c.id,
-			})
-		}
-
-		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAdded) {
-			c.engine.AddModifier(e.ID, info.Modifier{
-				Name:   A4,
-				Source: c.id,
-			})
+	if c.info.Traces["102"] {
+		c.engine.Events().CharactersAdded.Subscribe(func(e event.CharactersAdded) {
+			for _, char := range e.Characters {
+				c.engine.AddModifier(char.ID, info.Modifier{
+					Name:   A4,
+					Source: c.id,
+				})
+			}
 		})
 	}
 
 	// A6
-	if c.info.Traces["1101103"] {
-		targets := c.engine.Characters()
-
-		for _, trg := range targets {
-			c.engine.AddModifier(trg, info.Modifier{
-				Name:   A6,
-				Source: c.id,
-			})
-		}
-
-		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAdded) {
-			c.engine.AddModifier(e.ID, info.Modifier{
-				Name:   A6,
-				Source: c.id,
-			})
+	if c.info.Traces["103"] {
+		c.engine.Events().CharactersAdded.Subscribe(func(e event.CharactersAdded) {
+			for _, char := range e.Characters {
+				c.engine.AddModifier(char.ID, info.Modifier{
+					Name:   A6,
+					Source: c.id,
+				})
+			}
 		})
 	}
 }

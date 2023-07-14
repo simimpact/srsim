@@ -10,7 +10,8 @@ import (
 )
 
 const (
-	Talent key.Modifier = "arlan-talent"
+	Talent     key.Modifier = "arlan-talent"
+	TalentBuff key.Modifier = "arlan-talent-buff"
 )
 
 type talentState struct {
@@ -19,22 +20,41 @@ type talentState struct {
 
 func init() {
 	modifier.Register(Talent, modifier.Config{
-		Stacking:   modifier.ReplaceBySource,
-		StatusType: model.StatusType_STATUS_BUFF,
 		Listeners: modifier.Listeners{
-			// set bonus damage on combat start
-			OnAdd: func(mod *modifier.Instance) {
-				addedBonusDamage := (1 - mod.Engine().HPRatio(mod.Owner())) * mod.State().(talentState).maxBonusDamage
-				mod.SetProperty(prop.AllDamagePercent, addedBonusDamage)
-			},
-
-			// update bonus damage based on new HP
+			OnAdd: addRemoveCheck,
 			OnHPChange: func(mod *modifier.Instance, e event.HPChange) {
-				addedBonusDamage := (1 - mod.Engine().HPRatio(mod.Owner())) * mod.State().(talentState).maxBonusDamage
-				mod.SetProperty(prop.AllDamagePercent, addedBonusDamage)
+				addRemoveCheck(mod)
 			},
 		},
 	})
+
+	modifier.Register(TalentBuff, modifier.Config{
+		StatusType: model.StatusType_STATUS_BUFF,
+		Listeners: modifier.Listeners{
+			OnAdd: buffUpdate,
+			OnHPChange: func(mod *modifier.Instance, e event.HPChange) {
+				buffUpdate(mod)
+			},
+		},
+	})
+}
+
+func addRemoveCheck(mod *modifier.Instance) {
+	hp := mod.Engine().HPRatio(mod.Owner())
+	if hp >= 1.0 {
+		mod.Engine().RemoveModifier(mod.Owner(), TalentBuff)
+	} else {
+		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
+			Name:   TalentBuff,
+			Source: mod.Owner(),
+			State:  mod.State(),
+		})
+	}
+}
+
+func buffUpdate(mod *modifier.Instance) {
+	addedBonusDamage := (1 - mod.Engine().HPRatio(mod.Owner())) * mod.State().(talentState).maxBonusDamage
+	mod.SetProperty(prop.AllDamagePercent, addedBonusDamage)
 }
 
 func (c *char) addTalentMod() {

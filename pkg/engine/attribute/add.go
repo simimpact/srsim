@@ -29,6 +29,10 @@ func (s *Service) AddTarget(target key.TargetID, attr info.Attributes) error {
 		attr.HPRatio = 1.0
 	}
 
-	s.targets[target] = &attr
+	s.targets[target] = &attrTarget{
+		attributes:   &attr,
+		state:        info.Alive,
+		lastAttacker: target,
+	}
 	return nil
 }

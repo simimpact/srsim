@@ -19,7 +19,6 @@ func NewTestManagerForAdd(t *testing.T) (*Manager, *gomock.Controller) {
 	defer mockCtrl.Finish()
 	engine := mock.NewMockEngineWithEvents(mockCtrl)
 	engine.EXPECT().IsValid(gomock.Any()).Return(true).AnyTimes()
-
 	manager := &Manager{
 		engine:    engine,
 		targets:   make(map[key.TargetID]activeModifiers),
@@ -83,7 +82,7 @@ func TestResistModifier(t *testing.T) {
 		assert.Equal(t, name, event.Modifier)
 		assert.Equal(t, expectedChance, event.Chance)
 		assert.Equal(t, bChance, event.BaseChance)
-		assert.Equal(t, ehr, event.EHR)
+		assert.Equal(t, ehr, event.EffectHitRate)
 		assert.Equal(t, eres, event.EffectRES)
 		assert.Equal(t, dres, event.DebuffRES)
 	})

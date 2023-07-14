@@ -344,6 +344,20 @@ func (mr *MockEngineMockRecorder) HasModifier(arg0, arg1 interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HasModifier", reflect.TypeOf((*MockEngine)(nil).HasModifier), arg0, arg1)
 }
 
+// HasModifierFromSource mocks base method.
+func (m *MockEngine) HasModifierFromSource(arg0, arg1 key.TargetID, arg2 key.Modifier) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "HasModifierFromSource", arg0, arg1, arg2)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// HasModifierFromSource indicates an expected call of HasModifierFromSource.
+func (mr *MockEngineMockRecorder) HasModifierFromSource(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HasModifierFromSource", reflect.TypeOf((*MockEngine)(nil).HasModifierFromSource), arg0, arg1, arg2)
+}
+
 // HasShield mocks base method.
 func (m *MockEngine) HasShield(arg0 key.TargetID, arg1 key.Shield) bool {
 	m.ctrl.T.Helper()
@@ -392,6 +406,20 @@ func (m *MockEngine) InsertAction(arg0 key.TargetID) {
 func (mr *MockEngineMockRecorder) InsertAction(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertAction", reflect.TypeOf((*MockEngine)(nil).InsertAction), arg0)
+}
+
+// IsAlive mocks base method.
+func (m *MockEngine) IsAlive(arg0 key.TargetID) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsAlive", arg0)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// IsAlive indicates an expected call of IsAlive.
+func (mr *MockEngineMockRecorder) IsAlive(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsAlive", reflect.TypeOf((*MockEngine)(nil).IsAlive), arg0)
 }
 
 // IsCharacter mocks base method.
@@ -464,18 +492,32 @@ func (mr *MockEngineMockRecorder) MaxEnergy(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MaxEnergy", reflect.TypeOf((*MockEngine)(nil).MaxEnergy), arg0)
 }
 
-// ModifierCount mocks base method.
-func (m *MockEngine) ModifierCount(arg0 key.TargetID, arg1 model.StatusType) int {
+// ModifierStackCount mocks base method.
+func (m *MockEngine) ModifierStackCount(arg0, arg1 key.TargetID, arg2 key.Modifier) float64 {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ModifierCount", arg0, arg1)
+	ret := m.ctrl.Call(m, "ModifierStackCount", arg0, arg1, arg2)
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// ModifierStackCount indicates an expected call of ModifierStackCount.
+func (mr *MockEngineMockRecorder) ModifierStackCount(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifierStackCount", reflect.TypeOf((*MockEngine)(nil).ModifierStackCount), arg0, arg1, arg2)
+}
+
+// ModifierStatusCount mocks base method.
+func (m *MockEngine) ModifierStatusCount(arg0 key.TargetID, arg1 model.StatusType) int {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ModifierStatusCount", arg0, arg1)
 	ret0, _ := ret[0].(int)
 	return ret0
 }
 
-// ModifierCount indicates an expected call of ModifierCount.
-func (mr *MockEngineMockRecorder) ModifierCount(arg0, arg1 interface{}) *gomock.Call {
+// ModifierStatusCount indicates an expected call of ModifierStatusCount.
+func (mr *MockEngineMockRecorder) ModifierStatusCount(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifierCount", reflect.TypeOf((*MockEngine)(nil).ModifierCount), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifierStatusCount", reflect.TypeOf((*MockEngine)(nil).ModifierStatusCount), arg0, arg1)
 }
 
 // ModifyCurrentGaugeCost mocks base method.
@@ -676,6 +718,20 @@ func (m *MockEngine) RemoveShield(arg0 key.Shield, arg1 key.TargetID) {
 func (mr *MockEngineMockRecorder) RemoveShield(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveShield", reflect.TypeOf((*MockEngine)(nil).RemoveShield), arg0, arg1)
+}
+
+// Retarget mocks base method.
+func (m *MockEngine) Retarget(arg0 info.Retarget) []key.TargetID {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Retarget", arg0)
+	ret0, _ := ret[0].([]key.TargetID)
+	return ret0
+}
+
+// Retarget indicates an expected call of Retarget.
+func (mr *MockEngineMockRecorder) Retarget(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Retarget", reflect.TypeOf((*MockEngine)(nil).Retarget), arg0)
 }
 
 // SP mocks base method.

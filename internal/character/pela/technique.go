@@ -10,6 +10,7 @@ import (
 
 const (
 	TechniqueDefDown key.Modifier = "pela-technique-def-down"
+	TechniqueAtk     key.Attack   = "pela-technique"
 )
 
 func init() {
@@ -24,6 +25,7 @@ func init() {
 func (c *char) Technique(target key.TargetID, state info.ActionState) {
 	targets := c.engine.Enemies()
 	c.engine.Attack(info.Attack{
+		Key:        TechniqueAtk,
 		Source:     c.id,
 		Targets:    []key.TargetID{targets[c.engine.Rand().Intn(len(targets))]},
 		DamageType: model.DamageType_ICE,
