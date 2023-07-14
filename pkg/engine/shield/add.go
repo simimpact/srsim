@@ -10,30 +10,30 @@ import (
 func (mgr *Manager) AddShield(id key.Shield, shield info.Shield) {
 	// TODO: LOGIC FOR ADDING A SHIELD
 	// 1. Check if the target already has this shield, if so remove old (mgr.RemoveShield)
-	if mgr.HasShield(shield.Target, id) == true {
+	if mgr.HasShield(shield.Target, id) {
 		mgr.RemoveShield(id, shield.Target)
 	}
 
 	// 2. Get the stats for the source and target
 	// 3. Compute shield HP/create ShieldInstance given the add params
-	ShieldHP := 0.0
+	shieldHP := 0.0
 
 	for k, v := range shield.BaseShield {
 		switch k {
 		case model.ShieldFormula_SHIELD_BY_SHIELDER_ATK:
-			ShieldHP += v * mgr.attr.Stats(shield.Source).ATK()
+			shieldHP += v * mgr.attr.Stats(shield.Source).ATK()
 		case model.ShieldFormula_SHIELD_BY_SHIELDER_DEF:
-			ShieldHP += v * mgr.attr.Stats(shield.Source).DEF()
+			shieldHP += v * mgr.attr.Stats(shield.Source).DEF()
 		case model.ShieldFormula_SHIELD_BY_SHIELDER_MAX_HP:
-			ShieldHP += v * mgr.attr.Stats(shield.Source).HP()
+			shieldHP += v * mgr.attr.Stats(shield.Source).HP()
 		case model.ShieldFormula_SHIELD_BY_TARGET_MAX_HP:
-			ShieldHP += v * mgr.attr.Stats(shield.Target).HP()
+			shieldHP += v * mgr.attr.Stats(shield.Target).HP()
 		case model.ShieldFormula_SHIELD_BY_SHIELDER_TOTAL_SHIELD:
-			ShieldHP += shield.ShieldValue
+			shieldHP += shield.ShieldValue
 		}
 	}
 
-	newInstance := &Instance{name: id, HP: ShieldHP}
+	newInstance := &Instance{name: id, HP: shieldHP}
 
 	// 4. add shield to mgr.targets[shield.target]
 	mgr.targets[shield.Target] = append(mgr.targets[shield.Target], newInstance)
@@ -44,6 +44,6 @@ func (mgr *Manager) AddShield(id key.Shield, shield info.Shield) {
 	mgr.event.ShieldAdded.Emit(event.ShieldAdded{
 		ID:           id,
 		Info:         shield,
-		ShieldHealth: ShieldHP,
+		ShieldHealth: shieldHP,
 	})
 }
