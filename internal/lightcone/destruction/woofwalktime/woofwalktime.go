@@ -3,7 +3,9 @@ package woofwalktime
 import (
 	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/equip/lightcone"
+	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -24,8 +26,18 @@ func init() {
 		Path:          model.Path_DESTRUCTION,
 		Promotions:    promotions,
 	})
+	modifier.Register(mod, modifier.Config{
+		CanModifySnapshot: true,
+		Listeners: modifier.Listeners{
+			OnBeforeHitAll: dmgBoostOnBurnBleed,
+		},
+	})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
+
+}
+
+func dmgBoostOnBurnBleed(mod *modifier.Instance, e event.HitStart) {
 
 }
