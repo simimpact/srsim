@@ -33,10 +33,7 @@ func (mgr *Manager) AddShield(id key.Shield, shield info.Shield) {
 		}
 	}
 
-	var newInstance *Instance
-
-	newInstance.name = id
-	newInstance.HP = ShieldHP
+	newInstance := &Instance{name: id, HP: ShieldHP}
 
 	// 4. add shield to mgr.targets[shield.target]
 	mgr.targets[shield.Target] = append(mgr.targets[shield.Target], newInstance)
