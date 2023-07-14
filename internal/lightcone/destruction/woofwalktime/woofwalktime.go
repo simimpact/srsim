@@ -8,6 +8,15 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
+const (
+	mod key.Modifier = "woof-walk-time"
+)
+
+// Increases the wearer's ATK by 10%, and increases their DMG to enemies
+// afflicted with Burn or Bleed by 16%. This also applies to DoT.
+
+// impl note : literally same as fermata. diff DoT check and initial buff
+
 func init() {
 	lightcone.Register(key.WoofWalkTime, lightcone.Config{
 		CreatePassive: Create,
