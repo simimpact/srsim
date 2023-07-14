@@ -6,6 +6,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -38,9 +39,33 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
+	ehrAmt := 0.15 + 0.05*float64(lc.Imposition)
+	energyAmt := 3.0 + float64(lc.Imposition)
+	engine.AddModifier(owner, info.Modifier{
+		Name:   mod,
+		Source: owner,
+		Stats:  info.PropMap{prop.EffectHitRate: ehrAmt},
+		State:  energyAmt,
+	})
+}
 
+var triggerFlags = []model.BehaviorFlag{
+	model.BehaviorFlag_STAT_DEF_DOWN,
 }
 
 func addEnergy(mod *modifier.Instance, e event.AttackEnd) {
-
+	energyAmt := mod.State().(float64)
+	// Retarget : filter : has def down behavior flag, Max 1, includeLimbo
+	qualified := mod.Engine().Retarget(info.Retarget{
+		Targets: e.Targets,
+		Filter: func(target key.TargetID) bool {
+			// returns true if target has triggerFlags, otherwise false
+			return mod.Engine().HasBehaviorFlag(target, triggerFlags...)
+		},
+		Max:          1,
+		IncludeLimbo: true,
+	})
+	if len(qualified) > 0 {
+		mod.Engine().ModifyEnergy(mod.Owner(), energyAmt)
+	}
 }
