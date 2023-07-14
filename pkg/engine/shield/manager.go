@@ -6,7 +6,7 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-type activeShields map[key.Shield]*Instance
+type activeShields []*Instance
 
 type Absorb interface {
 	AbsorbDamage(target key.TargetID, damage float64) float64
@@ -28,9 +28,10 @@ func New(event *event.System, attr attribute.Getter) *Manager {
 }
 
 func (mgr *Manager) HasShield(target key.TargetID, shield key.Shield) bool {
-	if shields, ok := mgr.targets[target]; ok {
-		_, ok := shields[shield]
-		return ok
+	for _, shields := range mgr.targets[target] {
+		if shields.name == shield {
+			return true
+		}
 	}
 	return false
 }

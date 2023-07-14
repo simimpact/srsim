@@ -15,21 +15,26 @@ func (mgr *Manager) AbsorbDamage(target key.TargetID, damage float64) float64 {
 	// 6. remaining state should be only shields that starting HP > damage
 
 	// placeholder just for some basic event emission
-	for id, shield := range mgr.targets[target] {
+	for _, shield := range mgr.targets[target] {
 		prevHP := shield.HP
 		shield.HP -= damage
 		if shield.HP < 0 {
 			shield.HP = 0
 		}
 		mgr.event.ShieldChange.Emit(event.ShieldChange{
-			ID:     id,
+			ID:     shield.name,
 			Target: target,
 			OldHP:  prevHP,
 			NewHP:  shield.HP,
 		})
 
 		if shield.HP == 0 {
-			mgr.RemoveShield(id, target)
+			mgr.RemoveShield(shield.name, target)
+			damage -= prevHP
+		}
+
+		if shield.HP != 0 {
+			damage = 0
 		}
 	}
 
