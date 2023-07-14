@@ -12,8 +12,9 @@ import (
 )
 
 const (
-	time     key.Modifier = "time-waits-for-no-one"
-	extraDmg key.Modifier = "time-waits-for-no-one-extra-damage"
+	time key.Modifier = "time-waits-for-no-one"
+	// key for extra dmg attack, not for modifier.
+	extraDmg key.Attack = "time-waits-for-no-one-extra-damage"
 )
 
 type healRecorder struct {
@@ -27,22 +28,6 @@ type healRecorder struct {
 // equal to 36% of the recorded Outgoing Healing value.
 // The type of this Additional DMG is of the same Type as the wearer's.
 // This Additional DMG is not affected by other buffs, and can only occur 1 time per turn.
-
-// Apparent modifiers :
-// HP buff and outgoing healing -> on Create. add static
-// OnAfterHeal -> record heal amt (pass it to a struct w/ pointer?)
-// OnAfterAttack -> pick random 1 enemy, apply x% dmg based on healAmt + element same as holder
-// 1 time per turn -> onBeforeTurn : refresh, pass 1 turn to struct or inherent duration?
-
-// Datamine analysis :
-// OnPhase1 : refresh 1-time-per-turn dmg adds
-// onStack : add _Sub modifier on owner
-// OnListenAfterAttack : if cooldown == 1 = call Retarget() : DamageByAttackProperty
-// DamageTypeFromAttacker = T, indirect, attacktype pursued, byPureDmg, canTriggerLastKill
-// -> set cooldown to 0.
-// OnSnapshotCreate : add _Sub modifier (duplicate?)
-// _Sub def : OnAfterDealHeal : store heal value
-// OnStart : add _Main mod
 
 func init() {
 	lightcone.Register(key.TimeWaitsforNoOne, lightcone.Config{
@@ -64,7 +49,7 @@ func init() {
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	// initialize healRecorder struct.
 	modState := healRecorder{
-		cooldown: 1,
+		cooldown:    1,
 		lastHealAmt: 0,
 	}
 	// add in the HP + out. heal buffs. add struct pointer as state
@@ -83,15 +68,46 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 
 // take struct pointer, modify cooldown value
 func refreshCD(mod *modifier.Instance) {
-	cd := mod.State().(*healRecorder)
+	state := mod.State().(*healRecorder)
+	state.cooldown = 1
 }
 
-// if cooldown = 1, Retarget(1 target), add dmg type pursued, byPureDamage(?), ele same as holder
+// if cooldown = 1, Retarget(1 target), add dmg type pursued, byPureDamage, ele same as holder
 func applyExtraDmg(mod *modifier.Instance, e event.AttackEnd) {
-
+	state := mod.State().(*healRecorder)
+	dmgAmt := mod.State().(*healRecorder).lastHealAmt
+	if state.cooldown == 1 {
+		validTargets := e.Targets
+		chosenEnemy := mod.Engine().Retarget(info.Retarget{
+			// targets are enemies hit by this atk. NOTE : confirm if onLimbo is included.
+			Targets: validTargets,
+			Max:     1,
+		})
+		// get lc holder's element
+		holderInfo, _ := mod.Engine().CharacterInfo(mod.Owner())
+		dmgType := holderInfo.Element
+		mod.Engine().Attack(info.Attack{
+			Key:          extraDmg,
+			Targets:      chosenEnemy,
+			Source:       mod.Owner(),
+			AttackType:   model.AttackType_PURSUED,
+			DamageType:   dmgType,
+			DamageValue:  dmgAmt,
+			AsPureDamage: true,
+			// NOTE : might need to later change BaseDmg field to optional later
+			BaseDamage: info.DamageMap{
+				model.DamageFormula_BY_ATK: 0.0,
+			},
+			// this attack shouldn't call onHit listeners right?
+			UseSnapshot: true,
+		})
+		// after apply added dmg, set cd to 0
+		state.cooldown = 0
+	}
 }
 
 // take struct pointer, modify lastHealAmt value.
 func recordHealAmt(mod *modifier.Instance, e event.HealEnd) {
-
+	state := mod.State().(*healRecorder)
+	state.lastHealAmt = e.HealAmount
 }
