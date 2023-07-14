@@ -32,10 +32,11 @@ const (
 
 // Nihility
 const (
-	Fermata               LightCone = "fermata"
-	EyesofthePrey         LightCone = "eyes_of_the_prey"
-	GoodNightandSleepWell LightCone = "good_night_and_sleep_well"
-	IncessantRain         LightCone = "incessant_rain"
+	Fermata                        LightCone = "fermata"
+	EyesofthePrey                  LightCone = "eyes_of_the_prey"
+	GoodNightandSleepWell          LightCone = "good_night_and_sleep_well"
+	IncessantRain                  LightCone = "incessant_rain"
+	BeforetheTutorialMissionStarts LightCone = "before_the_tutorial_mission_starts"
 )
 
 // Erudition
