@@ -16,7 +16,7 @@ const (
 	extraDmg key.Modifier = "time-waits-for-no-one-extra-damage"
 )
 
-type extraDamage struct {
+type healRecorder struct {
 	cooldown    int
 	lastHealAmt float64
 }
@@ -44,15 +44,6 @@ type extraDamage struct {
 // _Sub def : OnAfterDealHeal : store heal value
 // OnStart : add _Main mod
 
-// Conclusion on impl. :
-// create base modifier. add hp and healboost. add listeners :
-// NOTE : do we need to add _Sub as separate mod?
-// -> OnPhase1 : refresh cooldown
-// -> OnAfterAttack : if cooldown = 1 : Retarget(). apply dmg to chosen target. ele = holder ele.
-// type pursued (how about the flags?), byPureDmg
-// -> OnSnapshotCreate (?)
-// OnAfterDealHeal : record heal value (read incessant rain impl.)
-
 func init() {
 	lightcone.Register(key.TimeWaitsforNoOne, lightcone.Config{
 		CreatePassive: Create,
@@ -66,12 +57,16 @@ func init() {
 			OnAfterAttack:   applyExtraDmg,
 			OnAfterDealHeal: recordHealAmt,
 		},
+		CanModifySnapshot: true,
 	})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	// initialize extraDamage struct.
-	extraDmg := new(extraDamage)
+	// initialize healRecorder struct.
+	modState := healRecorder{
+		cooldown: 1,
+		lastHealAmt: 0,
+	}
 	// add in the HP + out. heal buffs. add struct pointer as state
 	hpBuffAmt := 0.15 + 0.03*float64(lc.Imposition)
 	outHealAmt := 0.10 + 0.02*float64(lc.Imposition)
@@ -82,13 +77,13 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 			prop.HPPercent: hpBuffAmt,
 			prop.HealBoost: outHealAmt,
 		},
-		State: &extraDmg,
+		State: &modState,
 	})
 }
 
 // take struct pointer, modify cooldown value
 func refreshCD(mod *modifier.Instance) {
-
+	cd := mod.State().(*healRecorder)
 }
 
 // if cooldown = 1, Retarget(1 target), add dmg type pursued, byPureDamage(?), ele same as holder
