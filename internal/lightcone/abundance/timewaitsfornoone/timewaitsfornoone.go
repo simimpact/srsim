@@ -12,9 +12,7 @@ import (
 )
 
 const (
-	time key.Modifier = "time-waits-for-no-one"
-	// key for extra dmg attack, not for modifier.
-	extraDmg key.Attack = "time-waits-for-no-one-extra-damage"
+	time = "time-waits-for-no-one"
 )
 
 type healRecorder struct {
@@ -103,7 +101,7 @@ func applyExtraDmg(mod *modifier.Instance, e event.AttackEnd) {
 		holderInfo, _ := mod.Engine().CharacterInfo(mod.Owner())
 		dmgType := holderInfo.Element
 		mod.Engine().Attack(info.Attack{
-			Key:          extraDmg,
+			Key:          time,
 			Targets:      chosenEnemy,
 			Source:       mod.Owner(),
 			AttackType:   model.AttackType_PURSUED,
