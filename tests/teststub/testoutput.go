@@ -1,57 +1,31 @@
 package teststub
 
 import (
-	"os"
+	"testing"
 
 	"github.com/fatih/color"
 )
 
-type logLevel uint8
-
-const (
-	Info logLevel = iota
-	Error
-	Disabled
-)
-
-var curLogLevel = Info
-
-func init() {
-	switch os.Getenv("LogLevel") {
-	case "Info":
-		curLogLevel = Info
-	case "Error":
-		curLogLevel = Error
-	case "Disabled":
-		curLogLevel = Disabled
-	default:
-		curLogLevel = Info
-	}
-}
-
-func LogError(format string, args ...interface{}) {
-	if curLogLevel == Disabled {
-		return
-	}
+func LogError(t *testing.T, format string, args ...interface{}) {
 	const errString = "[TESTFRAME] [ERROR] "
 	errFormat := errString + format
-	color.Red(errFormat, args...)
+	color.Set(color.FgRed)
+	t.Logf(errFormat, args...)
+	color.Unset()
 }
 
-func LogExpectFalse(format string, args ...interface{}) {
-	if curLogLevel > Info {
-		return
-	}
+func LogExpectFalse(t *testing.T, format string, args ...interface{}) {
 	const expectString = "[TESTFRAME] [EXPECT] [Expect Checker False] "
 	format = expectString + format
-	color.Yellow(format, args...)
+	color.Set(color.FgYellow)
+	t.Logf(format, args...)
+	color.Unset()
 }
 
-func LogExpectSuccess(format string, args ...interface{}) {
-	if curLogLevel > Info {
-		return
-	}
+func LogExpectSuccess(t *testing.T, format string, args ...interface{}) {
 	const expectString = "[TESTFRAME] [EXPECT] [Expect Success] "
 	format = expectString + format
-	color.Green(format, args...)
+	color.Set(color.FgGreen)
+	t.Logf(format, args...)
+	color.Unset()
 }
