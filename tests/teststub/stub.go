@@ -52,7 +52,7 @@ func (s *Stub) SetupTest() {
 	s.autoRun = true
 	s.Characters = Characters{
 		cfg:             s.cfg,
-		characters:      nil,
+		testChars:       nil,
 		attributes:      nil,
 		customFunctions: nil,
 	}
@@ -101,7 +101,7 @@ func (s *Stub) StartSimulation() {
 	// start sim logic, fast-forward sim to BattleStart state, so we can initialize the remaining helper stuff
 	s.Expect(battlestart.ExpectFor())
 	// initialize the evaluator and Character based on current state
-	s.Characters.characters = s.simulator.Characters()
+	s.Characters.init(s.simulator.Characters())
 	s.initEval()
 
 	if !s.autoContinue {
@@ -159,7 +159,11 @@ func (s *Stub) initEval() {
 
 func (s *Stub) LoadYamlCfg(filepath string) {
 	var err error
-	s.cfg, s.cfgEval, err = testyaml.ParseConfig(filepath)
+	var ev *eval.Eval
+	s.cfg, ev, err = testyaml.ParseConfig(filepath)
+	if ev != nil {
+		s.cfgEval = ev
+	}
 	s.Characters.cfg = s.cfg
 	if err != nil {
 		s.FailNow("Yaml unmarshal fail", err)
