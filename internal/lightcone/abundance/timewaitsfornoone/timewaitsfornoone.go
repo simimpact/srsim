@@ -66,16 +66,12 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 
 	// event subscriber to atkEnd by all chars -> bypass if atker is enemy.
 	engine.Events().AttackEnd.Subscribe(func(e event.AttackEnd) {
-		//
-		if engine.IsCharacter(e.Attacker) {
-			// fetch modifier instance attached to lc owner
-			mod := engine.GetModifiers(owner, time)[0]
-
-			// run only if not on cd
-			if !mod.State.(*healRecorder).onCooldown {
-				// perform attack, reset dmgAmt, and put mod on CD
-
-			}
+		// fetch modifier instance attached to lc owner (HOW?)
+		mod := engine.GetModifiers(owner, time)[0]
+		// apply extra dmg if attacker is not enemy and not on cd
+		if (engine.IsCharacter(e.Attacker) && !mod.State.(*healRecorder).onCooldown) {
+			// perform attack, reset dmgAmt, and put mod on CD
+			applyExtraDmg(mod, e)
 		}
 	})
 }
