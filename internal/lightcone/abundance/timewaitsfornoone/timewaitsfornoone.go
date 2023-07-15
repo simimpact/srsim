@@ -66,11 +66,11 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 
 	// event subscriber to atkEnd by all chars -> bypass if atker is enemy.
 	engine.Events().AttackEnd.Subscribe(func(e event.AttackEnd) {
-		// fetch modifier instance attached to lc owner (HOW?)
-		mod := engine.GetModifiers(owner, time)[0] // temp (wrong)
-		if (engine.IsCharacter(e.Attacker) && !mod.State.(*healRecorder).onCooldown) {
+		// fetch modifier instance attached to lc owner
+		mod := engine.GetModifiers(owner, time)[0]
+		if engine.IsCharacter(e.Attacker) && !mod.State.(*healRecorder).onCooldown {
 			// perform attack, reset dmgAmt, and put mod on CD
-			applyExtraDmg(mod, e)
+			applyExtraDmg(engine, mod, e)
 		}
 	})
 }
@@ -81,23 +81,23 @@ func refreshCD(mod *modifier.Instance) {
 }
 
 // if onCooldown = 1, Retarget(1 target), add dmg type pursued, byPureDamage, ele same as holder
-func applyExtraDmg(mod *modifier.Instance, e event.AttackEnd) {
-	state := mod.State().(*healRecorder)
+func applyExtraDmg(engine engine.Engine, mod info.Modifier, e event.AttackEnd) {
+	state := mod.State.(*healRecorder)
 	dmgAmt := state.recordedHeals * state.extraDmgMult
 	// return early if on cd. reduces code depth
 	if state.onCooldown {
 		return
 	}
-	chosenEnemy := mod.Engine().Retarget(info.Retarget{
+	chosenEnemy := engine.Retarget(info.Retarget{
 		Targets: e.Targets,
 		Max:     1,
 	})
 	// get lc holder's info to fetch their element
-	holderInfo, _ := mod.Engine().CharacterInfo(mod.Owner())
-	mod.Engine().Attack(info.Attack{
+	holderInfo, _ := engine.CharacterInfo(mod.Source)
+	engine.Attack(info.Attack{
 		Key:          time,
 		Targets:      chosenEnemy,
-		Source:       mod.Owner(),
+		Source:       mod.Source,
 		AttackType:   model.AttackType_PURSUED,
 		DamageType:   holderInfo.Element,
 		DamageValue:  dmgAmt,
