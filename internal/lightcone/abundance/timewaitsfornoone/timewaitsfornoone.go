@@ -18,8 +18,8 @@ const (
 )
 
 type healRecorder struct {
-	cooldown    int
-	lastHealAmt float64
+	cooldown      int
+	recordedHeals float64
 }
 
 // Desc : Increases the wearer's Max HP by 18% and Outgoing Healing by 12%.
@@ -49,8 +49,8 @@ func init() {
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	// initialize healRecorder struct.
 	modState := healRecorder{
-		cooldown:    1,
-		lastHealAmt: 0,
+		cooldown:      1,
+		recordedHeals: 0,
 	}
 	// add in the HP + out. heal buffs. add struct pointer as state
 	hpBuffAmt := 0.15 + 0.03*float64(lc.Imposition)
@@ -75,7 +75,7 @@ func refreshCD(mod *modifier.Instance) {
 // if cooldown = 1, Retarget(1 target), add dmg type pursued, byPureDamage, ele same as holder
 func applyExtraDmg(mod *modifier.Instance, e event.AttackEnd) {
 	state := mod.State().(*healRecorder)
-	dmgAmt := mod.State().(*healRecorder).lastHealAmt
+	dmgAmt := mod.State().(*healRecorder).recordedHeals
 	if state.cooldown == 1 {
 		validTargets := e.Targets
 		chosenEnemy := mod.Engine().Retarget(info.Retarget{
@@ -101,13 +101,15 @@ func applyExtraDmg(mod *modifier.Instance, e event.AttackEnd) {
 			// this attack shouldn't call onHit listeners right?
 			UseSnapshot: true,
 		})
-		// after apply added dmg, set cd to 0
+		// after apply added dmg, reset cd and recordedHeals
 		state.cooldown = 0
+		state.recordedHeals = 0.0
 	}
 }
 
-// take struct pointer, modify lastHealAmt value.
+// take struct pointer, modify recordedHeals value.
 func recordHealAmt(mod *modifier.Instance, e event.HealEnd) {
 	state := mod.State().(*healRecorder)
-	state.lastHealAmt = e.HealAmount
+	// sum all recorded heals
+	state.recordedHeals += e.HealAmount
 }
