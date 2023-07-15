@@ -155,7 +155,7 @@ func (s *Stub) initEval() {
 		if eval == nil {
 			eval = testeval.Default()
 		}
-		s.evaluator.registerAction(s.Characters.GetCharacterTargetID(i), eval)
+		s.evaluator.registerAction(s.Characters.testChars[i].ID(), eval)
 	}
 }
 
