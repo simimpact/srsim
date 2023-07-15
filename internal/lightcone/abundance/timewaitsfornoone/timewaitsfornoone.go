@@ -18,8 +18,9 @@ const (
 )
 
 type healRecorder struct {
-	cooldown      int
+	onCooldown    bool
 	recordedHeals float64
+	damageMult    float64
 }
 
 // Desc : Increases the wearer's Max HP by 18% and Outgoing Healing by 12%.
@@ -48,8 +49,9 @@ func init() {
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	// initialize healRecorder struct.
 	modState := healRecorder{
-		cooldown:      1,
+		onCooldown:    false,
 		recordedHeals: 0.0,
+		damageMult:    0.30 + 0.06*float64(lc.Imposition),
 	}
 	// add in the HP + out. heal buffs. add struct pointer as state
 	hpBuffAmt := 0.15 + 0.03*float64(lc.Imposition)
@@ -72,7 +74,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 			mod := engine.GetModifiers(owner, time)[0]
 
 			// run only if not on cd
-			if mod.State.(*healRecorder).cooldown == 1 {
+			if !mod.State.(*healRecorder).onCooldown {
 				// perform attack, reset dmgAmt, and put mod on CD
 
 			}
@@ -80,17 +82,17 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-// take struct pointer, modify cooldown value
+// take struct pointer, modify onCooldown value
 func refreshCD(mod *modifier.Instance) {
 	state := mod.State().(*healRecorder)
-	state.cooldown = 1
+	state.onCooldown = false
 }
 
-// if cooldown = 1, Retarget(1 target), add dmg type pursued, byPureDamage, ele same as holder
+// if onCooldown = 1, Retarget(1 target), add dmg type pursued, byPureDamage, ele same as holder
 func applyExtraDmg(mod *modifier.Instance, e event.AttackEnd) {
 	state := mod.State().(*healRecorder)
 	dmgAmt := mod.State().(*healRecorder).recordedHeals
-	if state.cooldown == 1 {
+	if !state.onCooldown {
 		validTargets := e.Targets
 		chosenEnemy := mod.Engine().Retarget(info.Retarget{
 			// targets are enemies hit by this atk. NOTE : confirm if onLimbo is included.
@@ -116,7 +118,7 @@ func applyExtraDmg(mod *modifier.Instance, e event.AttackEnd) {
 			UseSnapshot: true,
 		})
 		// after apply added dmg, reset cd and recordedHeals
-		state.cooldown = 0
+		state.onCooldown = true
 		state.recordedHeals = 0.0
 	}
 }
