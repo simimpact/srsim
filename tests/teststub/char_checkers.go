@@ -9,6 +9,7 @@ import (
 
 func newCharacter(char *model.Character) *Character {
 	res := &Character{
+		t:     nil,
 		model: char,
 		key:   0,
 		stat:  nil,
@@ -25,7 +26,7 @@ func (c *Character) ID() key.TargetID {
 }
 
 // Because we use floating points, our Require will only ask that the two values be close enough
-func require(expected float64, actual float64) bool {
+func require(expected, actual float64) bool {
 	if actual == 0 { // division by 0
 		return expected == 0
 	}

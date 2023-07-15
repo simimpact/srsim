@@ -36,10 +36,6 @@ func Register(key key.LightCone, lightCone Config) {
 	lightConeCatalog[key] = lightCone
 }
 
-func Retrieve(key key.LightCone) Config {
-	return lightConeCatalog[key]
-}
-
 type Config struct {
 	CreatePassive func(engine engine.Engine, owner key.TargetID, lc info.LightCone)
 	Promotions    []PromotionData

@@ -37,7 +37,3 @@ func Register(key key.Character, character Config) {
 
 	characterCatalog[key] = character
 }
-
-func Retrieve(key key.Character) Config {
-	return characterCatalog[key]
-}
