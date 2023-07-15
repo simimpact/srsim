@@ -41,9 +41,15 @@ type Stub struct {
 
 	// Characters gives access to various character-related testing actions
 	Characters Characters
+
+	// Assert wraps common assertion methods for convenience
+	Assert assertion
 }
 
 func (s *Stub) SetupTest() {
+	s.Assert = assertion{
+		t: s.T(),
+	}
 	s.eventPipe = make(chan handler.Event)
 	s.haltSignaller = make(chan struct{})
 	s.turnPipe = make(chan TurnCommand)
