@@ -33,7 +33,7 @@ func (t *QPQTest) Test_EnergyAdd() {
 	t.Expect(turnstart.ExpectFor(), turnstart.CurrentTurnIs(dummy.ID()))
 	t.Continue()
 	t.Expect(turnend.ExpectFor())
-	dummy.AssertEnergy(0)
-	dan.AssertEnergy(8)
+	t.Assert.Equal(0, dummy.Stats().Energy())
+	t.Assert.Equal(8, dan.Stats().Energy())
 	t.Continue()
 }

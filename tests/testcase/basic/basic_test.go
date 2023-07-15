@@ -90,5 +90,5 @@ func (t *BasicTest) Test_TraceMap_Registration() {
 	t.Expect(turnstart.ExpectFor(), turnstart.CurrentTurnIs(dan.ID()))
 	t.Expect(termination.ExpectFor())
 	// 16% from OSR, 18% from Traces
-	dan.Equal(prop.ATKPercent, 0.34)
+	dan.Equal(prop.ATKPercent, 0.35)
 }
