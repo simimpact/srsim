@@ -24,7 +24,7 @@ func (t *MusketeerTest) Test_Tracemap_Registration() {
 	dan.Relics = testrelic.MusketeerStatlessSet()
 	t.Characters.AddCharacter(dan)
 	t.StartSimulation()
-	info := t.Characters.GetCharacterInfo(t.Characters.CharacterIdx(key.DanHeng))
+	info := t.Characters.Character(key.DanHeng).Stats()
 	// DH base atk is 1186.8 with OSR and base spd 110
 	t.Require().Less(float64(111), info.SPD())
 	t.Require().Less(float64(1187), info.ATK())

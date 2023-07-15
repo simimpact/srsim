@@ -13,19 +13,30 @@ import (
 // -- during sim: checking the state of existing chars
 type Characters struct {
 	cfg             *model.SimConfig
-	characters      []key.TargetID
+	testChars       []*Character
 	attributes      attribute.Manager
 	customFunctions []testeval.ActionEval
 }
 
+// Character is a test instance of a character which provides various Checker methods and retrievers
+type Character struct {
+	model *model.Character
+	key   key.TargetID
+	stat  func(id key.TargetID) *info.Stats
+}
+
 func (s *Characters) ResetCharacters() {
 	s.cfg.Characters = make([]*model.Character, 0, 4)
+	s.testChars = make([]*Character, 0, 4)
 }
 
 // AddCharacter adds a char to the list of SimConfig.
 // This method is available only BEFORE calling Stub.StartSimulation
-func (s *Characters) AddCharacter(char *model.Character) {
+// This returns a testchar instance that will be useful for assertions later on
+func (s *Characters) AddCharacter(char *model.Character) *Character {
 	s.cfg.Characters = append(s.cfg.Characters, char)
+	s.testChars = append(s.testChars, newCharacter(char))
+	return s.testChars[len(s.testChars)-1]
 }
 
 // AddCharacterEval adds a custom eval for the character at idx (based on AddCharacter order).
@@ -41,32 +52,31 @@ func (s *Characters) AddCharacterEval(eval testeval.ActionEval, idx int) {
 // GetCharacterTargetID fetches the key.TargetID value for the character at idx that the Sim is using.
 // This is used for most state checks
 func (s *Characters) GetCharacterTargetID(idx int) key.TargetID {
-	if idx >= len(s.characters) {
+	if idx >= len(s.testChars) {
 		LogError("invalid idx %d, insufficient characters", idx)
 		panic("Invalid index")
 	}
-	return s.characters[idx]
+	return s.testChars[idx].key
 }
 
-// CharacterIdx fetches the index of the first character with the given key. This is useful for adding clarity
+// Character fetches the test instance of the first character with the given key. This is useful for adding clarity
 // or todo: cases where the character is added post-combat start
-func (s *Characters) CharacterIdx(key key.Character) int {
-	for i, v := range s.cfg.Characters {
-		if v.Key == key.String() {
-			return i
+func (s *Characters) Character(key key.Character) *Character {
+	for _, v := range s.testChars {
+		if v.model.Key == key.String() {
+			return v
 		}
 	}
 	LogError("Character Key %s is not in the SimConfig", key.String())
-	return -1
+	return nil
 }
 
 // GetCharacterInfo fetches the info.Stats value for the character at idx. Useful for verifying energy state etc.
 func (s *Characters) GetCharacterInfo(idx int) *info.Stats {
-	if idx >= len(s.characters) {
+	if idx >= len(s.testChars) {
 		LogError("invalid idx %d, insufficient characters", idx)
 	}
-	id := s.characters[idx]
-	return s.attributes.Stats(id)
+	return s.testChars[idx].Stats()
 }
 
 func (s *Characters) getCharacterEval(idx int) testeval.ActionEval {
@@ -74,4 +84,16 @@ func (s *Characters) getCharacterEval(idx int) testeval.ActionEval {
 		return s.customFunctions[idx]
 	}
 	return nil
+}
+
+func (s *Characters) init(characters []key.TargetID) {
+	if len(s.testChars) < len(characters) { // eval loaded config, need to populate testchars
+		for i := range s.cfg.Characters {
+			s.testChars = append(s.testChars, newCharacter(s.cfg.Characters[i]))
+		}
+	}
+	for i := range s.testChars {
+		s.testChars[i].key = characters[i]
+		s.testChars[i].stat = s.attributes.Stats
+	}
 }

@@ -59,7 +59,7 @@ func (t *BasicTest) Test_LoadYaml() {
 	t.StartSimulation()
 	t.Expect(turnstart.ExpectFor(), turnstart.CurrentTurnIs(t.Characters.GetCharacterTargetID(0)))
 	t.Expect(termination.ExpectFor())
-	t.Require().Equal(0, t.Characters.CharacterIdx(key.DanHeng))
+	t.Require().Equal(key.TargetID(1), t.Characters.Character(key.DanHeng).ID())
 }
 
 // Verify that t.Continue does not deadlock if AutoContinue is disabled, or if it is called twice with AutoContinue enabled
@@ -81,7 +81,7 @@ func (t *BasicTest) Test_TraceMap_Registration() {
 	t.StartSimulation()
 	t.Expect(turnstart.ExpectFor(), turnstart.CurrentTurnIs(t.Characters.GetCharacterTargetID(0)))
 	t.Expect(termination.ExpectFor())
-	info := t.Characters.GetCharacterInfo(t.Characters.CharacterIdx(key.DanHeng))
+	info := t.Characters.Character(key.DanHeng).Stats()
 	// DH base atk is 1186.8 with OSR, here we test that minor atk traces were activated
 	t.Require().Less(float64(1187), info.ATK())
 }
