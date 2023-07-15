@@ -1,6 +1,7 @@
 package teststub
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -140,8 +141,13 @@ func (s *Stub) Expect(checkers ...eventchecker.EventChecker) {
 			}
 			break
 		}
+		marshalled, err := json.Marshal(e)
+		if err != nil {
+			s.FailNow("Json Marshal for event err", err)
+			return
+		}
 		if toContinue {
-			LogExpectSuccess("%#+v", e)
+			LogExpectSuccess("%T%s", e, marshalled)
 			if s.autoContinue {
 				s.haltSignaller <- struct{}{}
 			} else {
@@ -149,7 +155,7 @@ func (s *Stub) Expect(checkers ...eventchecker.EventChecker) {
 			}
 			return
 		}
-		LogExpectFalse("%#+v", e)
+		LogExpectFalse("%T%s", e, marshalled)
 		s.haltSignaller <- struct{}{}
 	}
 }
@@ -157,11 +163,11 @@ func (s *Stub) Expect(checkers ...eventchecker.EventChecker) {
 func (s *Stub) initEval() {
 	_ = s.evaluator.Init(s.simulator)
 	for i := range s.cfg.Characters {
-		eval := s.Characters.getCharacterEval(i)
-		if eval == nil {
-			eval = testeval.Default()
+		ev := s.Characters.getCharacterEval(i)
+		if ev == nil {
+			ev = testeval.Default()
 		}
-		s.evaluator.registerAction(s.Characters.testChars[i].ID(), eval)
+		s.evaluator.registerAction(s.Characters.testChars[i].ID(), ev)
 	}
 }
 
