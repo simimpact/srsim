@@ -87,21 +87,19 @@ func applyExtraDmg(mod *modifier.Instance, e event.AttackEnd) {
 	state := mod.State().(*healRecorder)
 	dmgAmt := mod.State().(*healRecorder).recordedHeals
 	if !state.onCooldown {
-		validTargets := e.Targets
 		chosenEnemy := mod.Engine().Retarget(info.Retarget{
-			// targets are enemies hit by this atk. NOTE : confirm if onLimbo is included.
-			Targets: validTargets,
+			// targets are enemies hit by this atk.
+			Targets: e.Targets,
 			Max:     1,
 		})
-		// get lc holder's element
+		// get lc holder's info to fetch their element
 		holderInfo, _ := mod.Engine().CharacterInfo(mod.Owner())
-		dmgType := holderInfo.Element
 		mod.Engine().Attack(info.Attack{
 			Key:          time,
 			Targets:      chosenEnemy,
 			Source:       mod.Owner(),
 			AttackType:   model.AttackType_PURSUED,
-			DamageType:   dmgType,
+			DamageType:   holderInfo.Element,
 			DamageValue:  dmgAmt,
 			AsPureDamage: true,
 			// NOTE : might need to later change BaseDmg field to optional later
