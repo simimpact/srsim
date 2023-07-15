@@ -39,7 +39,6 @@ func init() {
 	modifier.Register(time, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnPhase1:        refreshCD,
-			OnAfterAttack:   applyExtraDmg,
 			OnAfterDealHeal: recordHealAmt,
 		},
 		CanModifySnapshot: true,
@@ -50,7 +49,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	// initialize healRecorder struct.
 	modState := healRecorder{
 		cooldown:      1,
-		recordedHeals: 0,
+		recordedHeals: 0.0,
 	}
 	// add in the HP + out. heal buffs. add struct pointer as state
 	hpBuffAmt := 0.15 + 0.03*float64(lc.Imposition)
@@ -63,6 +62,21 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 			prop.HealBoost: outHealAmt,
 		},
 		State: &modState,
+	})
+
+	// event subscriber to atkEnd by all chars -> bypass if atker is enemy.
+	engine.Events().AttackEnd.Subscribe(func(e event.AttackEnd) {
+		//
+		if engine.IsCharacter(e.Attacker) {
+			// fetch modifier instance attached to lc owner
+			mod := engine.GetModifiers(owner, time)[0]
+
+			// run only if not on cd
+			if mod.State.(*healRecorder).cooldown == 1 {
+				// perform attack, reset dmgAmt, and put mod on CD
+
+			}
+		}
 	})
 }
 
