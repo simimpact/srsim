@@ -3,6 +3,7 @@ package basic
 import (
 	"testing"
 
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/tests/eventchecker/termination"
 	"github.com/simimpact/srsim/tests/eventchecker/turnstart"
@@ -30,15 +31,13 @@ func (t *BasicTest) Test_Framework() {
 // Verify that we can manually dictate turns
 func (t *BasicTest) Test_TurnLogic() {
 	t.SetAutoRun(false)
-	t.Characters.AddCharacter(testchar.DummyChar())
-	t.Characters.AddCharacter(testchar.DanHung())
+	dummy := t.Characters.AddCharacter(testchar.DummyChar())
+	dan := t.Characters.AddCharacter(testchar.DanHung())
 	t.StartSimulation()
-	dummyID := t.Characters.GetCharacterTargetID(0)
-	danID := t.Characters.GetCharacterTargetID(1)
-	t.Require().Equal(key.TargetID(1), dummyID)
-	t.Require().Equal(key.TargetID(2), danID)
-	t.NextTurn(danID)
-	t.Expect(turnstart.ExpectFor(), turnstart.CurrentTurnIs(danID))
+	t.Require().Equal(key.TargetID(1), dummy.ID())
+	t.Require().Equal(key.TargetID(2), dan.ID())
+	t.NextTurn(dan)
+	t.Expect(turnstart.ExpectFor(), turnstart.CurrentTurnIs(dan.ID()))
 	t.TerminateRun()
 	t.Expect(termination.ExpectFor())
 }
@@ -47,7 +46,7 @@ func (t *BasicTest) Test_TurnLogic() {
 func (t *BasicTest) Test_ManualContinue() {
 	t.SetAutoContinue(false)
 	t.StartSimulation()
-	t.Expect(turnstart.ExpectFor(), turnstart.CurrentTurnIs(t.Characters.GetCharacterTargetID(0)))
+	t.Expect(turnstart.ExpectFor(), turnstart.CurrentTurnIs(t.Characters.Character(key.DummyCharacter).ID()))
 	t.Continue()
 	t.Expect(termination.ExpectFor())
 	t.Continue()
@@ -57,15 +56,24 @@ func (t *BasicTest) Test_ManualContinue() {
 func (t *BasicTest) Test_LoadYaml() {
 	t.LoadYamlCfg(testyaml.SampleTestCfg)
 	t.StartSimulation()
-	t.Expect(turnstart.ExpectFor(), turnstart.CurrentTurnIs(t.Characters.GetCharacterTargetID(0)))
+	t.Expect(turnstart.ExpectFor(), turnstart.CurrentTurnIs(t.Characters.Character(key.DanHeng).ID()))
 	t.Expect(termination.ExpectFor())
-	t.Require().Equal(0, t.Characters.CharacterIdx(key.DanHeng))
+	t.Require().Equal(key.TargetID(1), t.Characters.Character(key.DanHeng).ID())
+}
+
+// Verify that LoadYamlCfg loads properly without a gcsl eval
+func (t *BasicTest) Test_LoadYamlWithoutEval() {
+	t.LoadYamlCfg(testyaml.SampleTestCfgNoEval)
+	t.StartSimulation()
+	t.Expect(turnstart.ExpectFor(), turnstart.CurrentTurnIs(t.Characters.Character(key.DanHeng).ID()))
+	t.Expect(termination.ExpectFor())
+	t.Require().Equal(key.TargetID(1), t.Characters.Character(key.DanHeng).ID())
 }
 
 // Verify that t.Continue does not deadlock if AutoContinue is disabled, or if it is called twice with AutoContinue enabled
 func (t *BasicTest) Test_AutoContinue_Deadlock() {
 	t.StartSimulation()
-	t.Expect(turnstart.ExpectFor(), turnstart.CurrentTurnIs(t.Characters.GetCharacterTargetID(0)))
+	t.Expect(turnstart.ExpectFor(), turnstart.CurrentTurnIs(t.Characters.Character(key.DummyCharacter).ID()))
 	t.Continue()
 	t.SetAutoContinue(false)
 	t.Expect(termination.ExpectFor())
@@ -75,13 +83,12 @@ func (t *BasicTest) Test_AutoContinue_Deadlock() {
 
 // Verify that MaxTraces creates a proper TraceMap
 func (t *BasicTest) Test_TraceMap_Registration() {
-	dan := testchar.DanHung()
-	dan.Traces = testcfg.MaxTraces()
-	t.Characters.AddCharacter(dan)
+	danModel := testchar.DanHung()
+	danModel.Traces = testcfg.MaxTraces()
+	dan := t.Characters.AddCharacter(danModel)
 	t.StartSimulation()
-	t.Expect(turnstart.ExpectFor(), turnstart.CurrentTurnIs(t.Characters.GetCharacterTargetID(0)))
+	t.Expect(turnstart.ExpectFor(), turnstart.CurrentTurnIs(dan.ID()))
 	t.Expect(termination.ExpectFor())
-	info := t.Characters.GetCharacterInfo(t.Characters.CharacterIdx(key.DanHeng))
-	// DH base atk is 1186.8 with OSR, here we test that minor atk traces were activated
-	t.Require().Less(float64(1187), info.ATK())
+	// 16% from OSR, 18% from Traces
+	dan.Equal(prop.ATKPercent, 0.34)
 }

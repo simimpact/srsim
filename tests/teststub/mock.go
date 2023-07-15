@@ -1,6 +1,7 @@
 package teststub
 
 import (
+	"testing"
 	"time"
 
 	"github.com/simimpact/srsim/pkg/engine/event"
@@ -8,6 +9,7 @@ import (
 )
 
 type mockManager struct {
+	t        *testing.T
 	turnPipe chan TurnCommand
 }
 
@@ -16,8 +18,9 @@ type TurnCommand struct {
 	Av   float64
 }
 
-func newMockManager(pipe chan TurnCommand) *mockManager {
+func newMockManager(t *testing.T, pipe chan TurnCommand) *mockManager {
 	return &mockManager{
+		t:        t,
 		turnPipe: pipe,
 	}
 }
@@ -37,7 +40,7 @@ func (m *mockManager) StartTurn() (key.TargetID, float64, []event.TurnStatus, er
 	case t := <-m.turnPipe:
 		return t.Next, t.Av, nil, nil
 	case <-time.After(1 * time.Second):
-		LogError("mockManager StartTurn did not receive next turn command")
+		LogError(m.t, "mockManager StartTurn did not receive next turn command")
 		panic("Test failed, be sure to call NextTurn")
 	}
 }
