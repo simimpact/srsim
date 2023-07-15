@@ -61,7 +61,7 @@ func (s *Characters) Character(key key.Character) *Character {
 			return v
 		}
 	}
-	LogError("Character Key %s is not in the SimConfig", key.String())
+	LogError(s.t, "Character Key %s is not in the SimConfig", key.String())
 	return nil
 }
 

@@ -97,7 +97,7 @@ func (s *Stub) StartSimulation() {
 	}
 	s.simulator = simulation.NewSimulation(s.cfg, evalToUse, 0)
 	if !s.autoRun {
-		s.simulator.Turn = newMockManager(s.turnPipe)
+		s.simulator.Turn = newMockManager(s.T(), s.turnPipe)
 	}
 	s.Characters.attributes = s.simulator.Attr
 	go func() {
@@ -147,7 +147,7 @@ func (s *Stub) Expect(checkers ...eventchecker.EventChecker) {
 			return
 		}
 		if toContinue {
-			LogExpectSuccess("%T%s", e, marshalled)
+			LogExpectSuccess(s.T(), "%T%s", e, marshalled)
 			if s.autoContinue {
 				s.haltSignaller <- struct{}{}
 			} else {
@@ -155,7 +155,7 @@ func (s *Stub) Expect(checkers ...eventchecker.EventChecker) {
 			}
 			return
 		}
-		LogExpectFalse("%T%s", e, marshalled)
+		LogExpectFalse(s.T(), "%T%s", e, marshalled)
 		s.haltSignaller <- struct{}{}
 	}
 }
