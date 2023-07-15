@@ -51,6 +51,7 @@ func (s *Stub) SetupTest() {
 	s.autoContinue = true
 	s.autoRun = true
 	s.Characters = Characters{
+		t:               s.T(),
 		cfg:             s.cfg,
 		testChars:       nil,
 		attributes:      nil,
@@ -62,6 +63,7 @@ func (s *Stub) SetupTest() {
 func (s *Stub) TearDownTest() {
 	fmt.Println("Test Finished")
 	logging.InitLoggers()
+	s.cfgEval = nil
 	select {
 	case <-s.eventPipe:
 		s.haltSignaller <- struct{}{}
