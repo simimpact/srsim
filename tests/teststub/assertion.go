@@ -11,7 +11,11 @@ type assertion struct {
 }
 
 func (a *assertion) Equal(expected, actual float64) {
-	assert.InEpsilon(a.t, expected, actual, epsilon)
+	if expected == 0 {
+		assert.Equal(a.t, expected, actual)
+	} else {
+		assert.InEpsilon(a.t, expected, actual, epsilon)
+	}
 }
 
 func (a *assertion) Greater(expected, actual float64) {
