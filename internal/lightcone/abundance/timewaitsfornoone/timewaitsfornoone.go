@@ -13,7 +13,7 @@ import (
 
 const (
 	time = "time-waits-for-no-one"
-	cd   = "time-waits-for-no-one-extra-dmg-cd"
+	cd   = "time-waits-for-no-one-cd"
 )
 
 // Desc : Increases the wearer's Max HP by 18% and Outgoing Healing by 12%.
@@ -32,7 +32,9 @@ func init() {
 	})
 	modifier.Register(time, modifier.Config{})
 	// added to automatically track extraDmg cooldown
-	modifier.Register(cd, modifier.Config{})
+	modifier.Register(cd, modifier.Config{
+		TickMoment: modifier.ModifierPhase1End,
+	})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
