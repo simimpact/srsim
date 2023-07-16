@@ -31,8 +31,8 @@ func (sim *Simulation) createSnapshot() snapshot {
 	}
 }
 
-func (sim *Simulation) ModifySP(amt int) error {
-	return sim.Attr.ModifySP(amt)
+func (sim *Simulation) ModifySP(reason key.Reason, amt int) error {
+	return sim.Attr.ModifySP(reason, amt)
 }
 
 func (sim *Simulation) SP() int {

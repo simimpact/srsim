@@ -57,6 +57,7 @@ func (mgr *Manager) ExecuteAction(id key.TargetID, isInsert bool) (target.Execut
 			SPDelta:    -skillInfo.Skill.SPNeed,
 			AttackType: model.AttackType_SKILL,
 			IsInsert:   isInsert,
+			Key:        mgr.info[id].Key.String(),
 		}, nil
 	}
 
@@ -81,6 +82,7 @@ func (mgr *Manager) ExecuteAction(id key.TargetID, isInsert bool) (target.Execut
 		SPDelta:    skillInfo.Attack.SPAdd,
 		AttackType: model.AttackType_NORMAL,
 		IsInsert:   isInsert,
+		Key:        mgr.info[id].Key.String(),
 	}, nil
 }
 

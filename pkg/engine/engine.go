@@ -122,7 +122,7 @@ type Attribute interface {
 	ModifyEnergyFixed(target key.TargetID, amt float64) error
 
 	// Add or remove Skill Points from the current sim state.
-	ModifySP(amt int) error
+	ModifySP(reason key.Reason, amt int) error
 
 	// Return the current number of available Skill Points.
 	SP() int

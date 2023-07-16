@@ -53,6 +53,7 @@ type StanceReset struct {
 
 type SPChangeEventHandler = handler.EventHandler[SPChange]
 type SPChange struct {
-	OldSP int `json:"old_sp"`
-	NewSP int `json:"new_sp"`
+	Key   key.Reason `json:"key"`
+	OldSP int        `json:"old_sp"`
+	NewSP int        `json:"new_sp"`
 }

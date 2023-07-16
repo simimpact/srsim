@@ -26,7 +26,7 @@ type Getter interface {
 type Manager interface {
 	Getter
 
-	ModifySP(amt int) error
+	ModifySP(key key.Reason, amt int) error
 
 	AddTarget(target key.TargetID, base info.Attributes) error
 

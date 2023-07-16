@@ -2,6 +2,7 @@ package simulation
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
@@ -136,7 +137,9 @@ func (sim *Simulation) executeAction(id key.TargetID, isInsert bool) error {
 		return fmt.Errorf("unsupported target type: %v", sim.Targets[id])
 	}
 
-	sim.ModifySP(executable.SPDelta)
+	reason := key.Reason(strings.ToLower(fmt.Sprintf("%s-%s", executable.Key, executable.AttackType)))
+	sim.ModifySP(reason, executable.SPDelta)
+
 	sim.clearActionTargets()
 	sim.Event.ActionStart.Emit(event.ActionStart{
 		Owner:      id,
