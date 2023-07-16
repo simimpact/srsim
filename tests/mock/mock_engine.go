@@ -617,10 +617,10 @@ func (mr *MockEngineMockRecorder) ModifyHPByRatio(arg0, arg1, arg2 interface{}) 
 }
 
 // ModifySP mocks base method.
-func (m *MockEngine) ModifySP(arg0 int) int {
+func (m *MockEngine) ModifySP(arg0 int) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ModifySP", arg0)
-	ret0, _ := ret[0].(int)
+	ret0, _ := ret[0].(error)
 	return ret0
 }
 

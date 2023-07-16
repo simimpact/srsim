@@ -1,7 +1,6 @@
 package simulation
 
 import (
-	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 )
@@ -32,25 +31,12 @@ func (sim *Simulation) createSnapshot() snapshot {
 	}
 }
 
-// TODO: move this to attr service?
-func (sim *Simulation) ModifySP(amt int) int {
-	old := sim.Sp
-	sim.Sp += amt
-	if sim.Sp > 5 {
-		sim.Sp = 5
-	}
-
-	if old != sim.Sp {
-		sim.Event.SPChange.Emit(event.SPChange{
-			OldSP: old,
-			NewSP: sim.Sp,
-		})
-	}
-	return sim.Sp
+func (sim *Simulation) ModifySP(amt int) error {
+	return sim.Attr.ModifySP(amt)
 }
 
 func (sim *Simulation) SP() int {
-	return sim.Sp
+	return sim.Attr.SP()
 }
 
 func (sim *Simulation) Stats(target key.TargetID) *info.Stats {
