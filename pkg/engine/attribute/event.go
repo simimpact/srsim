@@ -71,3 +71,13 @@ func (s *Service) emitEnergyChange(target key.TargetID, prevE, newE float64) err
 	}
 	return nil
 }
+
+func (s *Service) emitSPChange(prevSP, newSP int) error {
+	if prevSP != newSP {
+		s.event.SPChange.Emit(event.SPChange{
+			OldSP: prevSP,
+			NewSP: newSP,
+		})
+	}
+	return nil
+}

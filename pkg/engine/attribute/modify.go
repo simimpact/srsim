@@ -150,3 +150,12 @@ func (s *Service) ModifyEnergyFixed(target key.TargetID, amt float64) error {
 	}
 	return s.SetEnergy(target, t.attributes.Energy+amt)
 }
+
+func (s *Service) ModifySP(amt int) error {
+	old := s.sp
+	s.sp += amt
+	if s.sp > 5 {
+		s.sp = 5
+	}
+	return s.emitSPChange(old, s.sp)
+}

@@ -128,8 +128,8 @@ type Attribute interface {
 	// increased by the target's Energy Regeneration.
 	ModifyEnergyFixed(target key.TargetID, amt float64) error
 
-	// Add or remove Skill Points from the current sim state. Returns the new SP amount
-	ModifySP(amt int) int
+	// Add or remove Skill Points from the current sim state.
+	ModifySP(amt int) error
 
 	// Return the current number of available Skill Points.
 	SP() int
