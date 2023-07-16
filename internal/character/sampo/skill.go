@@ -1,6 +1,7 @@
 package sampo
 
 import (
+	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
@@ -28,12 +29,26 @@ func (c *char) OnProjectileHit(target key.TargetID, stanceDamage float64, i int)
 	// 	//TODO: implement sampo E4
 	// }
 
-	targets := c.engine.Enemies()
+	targets := []key.TargetID{target}
+	if i > 0 {
+		enemies := c.engine.Enemies()
+		allDead := allTargetsDead(c.engine, enemies)
+
+		targets = c.engine.Retarget(info.Retarget{
+			Targets:      enemies,
+			Max:          1,
+			IncludeLimbo: true,
+			Filter: func(t key.TargetID) bool {
+				return allDead || c.engine.HPRatio(t) > 0
+			},
+		})
+	}
+
 	c.engine.Attack(info.Attack{
 		Key:        Skill,
 		HitIndex:   i,
 		Source:     c.id,
-		Targets:    []key.TargetID{targets[c.engine.Rand().Intn(len(targets))]},
+		Targets:    targets,
 		DamageType: model.DamageType_WIND,
 		AttackType: model.AttackType_SKILL,
 		BaseDamage: info.DamageMap{
@@ -42,4 +57,13 @@ func (c *char) OnProjectileHit(target key.TargetID, stanceDamage float64, i int)
 		StanceDamage: stanceDamage,
 		EnergyGain:   6,
 	})
+}
+
+func allTargetsDead(engine engine.Engine, targets []key.TargetID) bool {
+	for _, t := range targets {
+		if engine.HPRatio(t) > 0 {
+			return false
+		}
+	}
+	return true
 }
