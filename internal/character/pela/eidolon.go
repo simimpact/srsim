@@ -10,25 +10,12 @@ import (
 )
 
 const (
-	E1 key.Modifier = "pela-e1"
 	E2 key.Modifier = "pela-e2"
 	E4 key.Modifier = "pela-e4"
 	E6              = "pela-e6"
 )
 
 func init() {
-	// When an enemy is defeated, Pela regenerates 5 Energy.
-	modifier.Register(E1, modifier.Config{
-		Listeners: modifier.Listeners{
-			OnTriggerDeath: func(mod *modifier.Instance, target key.TargetID) {
-				if !mod.Engine().IsEnemy(target) {
-					return
-				}
-				mod.Engine().ModifyEnergy(mod.Owner(), 5)
-			},
-		},
-	})
-
 	// Using Skill to remove buff(s) increases SPD by 10% for 2 turn(s).
 	modifier.Register(E2, modifier.Config{
 		Stacking:      modifier.ReplaceBySource,
@@ -92,9 +79,11 @@ func (c *char) e4(target key.TargetID) {
 
 func (c *char) initEidolons() {
 	if c.info.Eidolon >= 1 {
-		c.engine.AddModifier(c.id, info.Modifier{
-			Name:   E1,
-			Source: c.id,
+		// When an enemy is defeated (by any ally), Pela regenerates 5 Energy.
+		c.engine.Events().TargetDeath.Subscribe(func(e event.TargetDeath) {
+			if c.engine.IsCharacter(e.Killer) {
+				c.engine.ModifyEnergy(c.id, 5)
+			}
 		})
 	}
 
