@@ -15,12 +15,6 @@ const (
 	time = "time-waits-for-no-one"
 )
 
-type healRecorder struct {
-	onCooldown    bool
-	recordedHeals float64
-	extraDmgMult  float64
-}
-
 // Desc : Increases the wearer's Max HP by 18% and Outgoing Healing by 12%.
 // When the wearer heals allies, record the amount of Outgoing Healing.
 // When any ally launches an attack, a random attacked enemy takes Additional DMG
@@ -40,13 +34,6 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	// initialize healRecorder struct.
-	modState := healRecorder{
-		onCooldown:    false,
-		recordedHeals: 0.0,
-		extraDmgMult:  0.30 + 0.06*float64(lc.Imposition),
-	}
-
 	// modifier now only added the hp and healboost buffs
 	engine.AddModifier(owner, info.Modifier{
 		Name:   time,
@@ -55,16 +42,18 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 			prop.HPPercent: 0.15 + 0.03*float64(lc.Imposition),
 			prop.HealBoost: 0.10 + 0.02*float64(lc.Imposition),
 		},
-		State: &modState,
 	})
+
+	extraDmgMult := 0.30 + 0.06*float64(lc.Imposition)
+	healAmt := 0.0
 
 	// event subscriber to atkEnd by all chars -> bypass if atker is enemy.
 	engine.Events().AttackEnd.Subscribe(func(e event.AttackEnd) {
 		// fetch modifier instance attached to lc owner
 		mod := engine.GetModifiers(owner, time)[0]
-		if engine.IsCharacter(e.Attacker) && !mod.State.(*healRecorder).onCooldown {
+		if engine.IsCharacter(e.Attacker) && !engine.HasModifier(owner, cd) {
 			// perform attack, reset dmgAmt, and put mod on CD
-			applyExtraDmg(engine, e.Targets, mod.Source, mod.State.(*healRecorder))
+			applyExtraDmg(engine, e.Targets, mod.Source, healAmt *  extraDmgMult)
 		}
 	})
 }
@@ -75,8 +64,7 @@ func refreshCD(mod *modifier.Instance) {
 }
 
 // if onCooldown = 1, Retarget(1 target), add dmg type pursued, byPureDamage, ele same as holder
-func applyExtraDmg(engine engine.Engine, targets []key.TargetID, source key.TargetID, state *healRecorder) {
-	dmgAmt := state.recordedHeals * state.extraDmgMult
+func applyExtraDmg(engine engine.Engine, targets []key.TargetID, source key.TargetID, dmgAmt float64) {
 	chosenEnemy := engine.Retarget(info.Retarget{
 		Targets: targets,
 		Max:     1,
