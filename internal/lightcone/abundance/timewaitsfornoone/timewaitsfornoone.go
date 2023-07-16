@@ -70,7 +70,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		mod := engine.GetModifiers(owner, time)[0]
 		if engine.IsCharacter(e.Attacker) && !mod.State.(*healRecorder).onCooldown {
 			// perform attack, reset dmgAmt, and put mod on CD
-			applyExtraDmg(engine, mod, e)
+			applyExtraDmg(engine, e.Targets, mod.Source, mod.State.(*healRecorder))
 		}
 	})
 }
@@ -81,23 +81,18 @@ func refreshCD(mod *modifier.Instance) {
 }
 
 // if onCooldown = 1, Retarget(1 target), add dmg type pursued, byPureDamage, ele same as holder
-func applyExtraDmg(engine engine.Engine, mod info.Modifier, e event.AttackEnd) {
-	state := mod.State.(*healRecorder)
+func applyExtraDmg(engine engine.Engine, targets []key.TargetID, source key.TargetID, state *healRecorder) {
 	dmgAmt := state.recordedHeals * state.extraDmgMult
-	// return early if on cd. reduces code depth
-	if state.onCooldown {
-		return
-	}
 	chosenEnemy := engine.Retarget(info.Retarget{
-		Targets: e.Targets,
+		Targets: targets,
 		Max:     1,
 	})
 	// get lc holder's info to fetch their element
-	holderInfo, _ := engine.CharacterInfo(mod.Source)
+	holderInfo, _ := engine.CharacterInfo(source)
 	engine.Attack(info.Attack{
 		Key:          time,
 		Targets:      chosenEnemy,
-		Source:       mod.Source,
+		Source:       source,
 		AttackType:   model.AttackType_PURSUED,
 		DamageType:   holderInfo.Element,
 		DamageValue:  dmgAmt,
