@@ -408,20 +408,6 @@ func (mr *MockEngineMockRecorder) InsertAction(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertAction", reflect.TypeOf((*MockEngine)(nil).InsertAction), arg0)
 }
 
-// IsAlive mocks base method.
-func (m *MockEngine) IsAlive(arg0 key.TargetID) bool {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "IsAlive", arg0)
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// IsAlive indicates an expected call of IsAlive.
-func (mr *MockEngineMockRecorder) IsAlive(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsAlive", reflect.TypeOf((*MockEngine)(nil).IsAlive), arg0)
-}
-
 // IsCharacter mocks base method.
 func (m *MockEngine) IsCharacter(arg0 key.TargetID) bool {
 	m.ctrl.T.Helper()
@@ -586,20 +572,6 @@ func (m *MockEngine) ModifyGaugeNormalized(arg0 key.TargetID, arg1 float64) erro
 func (mr *MockEngineMockRecorder) ModifyGaugeNormalized(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyGaugeNormalized", reflect.TypeOf((*MockEngine)(nil).ModifyGaugeNormalized), arg0, arg1)
-}
-
-// ModifyHPByAmount mocks base method.
-func (m *MockEngine) ModifyHPByAmount(arg0, arg1 key.TargetID, arg2 float64) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ModifyHPByAmount", arg0, arg1, arg2)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// ModifyHPByAmount indicates an expected call of ModifyHPByAmount.
-func (mr *MockEngineMockRecorder) ModifyHPByAmount(arg0, arg1, arg2 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyHPByAmount", reflect.TypeOf((*MockEngine)(nil).ModifyHPByAmount), arg0, arg1, arg2)
 }
 
 // ModifyHPByRatio mocks base method.

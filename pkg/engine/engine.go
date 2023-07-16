@@ -84,9 +84,6 @@ type Attribute interface {
 	// only be applied to the snapshot.
 	Stats(target key.TargetID) *info.Stats
 
-	// Returns true if this target is alive. Will return false if the target is in limbo
-	IsAlive(target key.TargetID) bool
-
 	// Gets the current stance amount of the target.
 	Stance(target key.TargetID) float64
 
@@ -110,10 +107,6 @@ type Attribute interface {
 	// ensure that the target HP does not go below the given threshold. Source target is used for
 	// tracking who owns this HP modification in the event that the modification kills the target.
 	ModifyHPByRatio(target, source key.TargetID, data info.ModifyHPByRatio) error
-
-	// Modifies the target HP by the given flat amount. Source target is used for tracking who owns
-	// this HP modification in the event that the modification kills the target.
-	ModifyHPByAmount(target, source key.TargetID, amt float64) error
 
 	// Modifies the target stance by the given flat amount. Source target is used for tracking who
 	// owns this stance modification in the event that the stance reaches 0 and a break is triggered.

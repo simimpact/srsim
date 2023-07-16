@@ -43,10 +43,6 @@ func (sim *Simulation) Stats(target key.TargetID) *info.Stats {
 	return sim.Attr.Stats(target)
 }
 
-func (sim *Simulation) IsAlive(target key.TargetID) bool {
-	return sim.Attr.State(target) == info.Alive
-}
-
 func (sim *Simulation) Stance(target key.TargetID) float64 {
 	return sim.Attr.Stance(target)
 }
@@ -75,11 +71,6 @@ func (sim *Simulation) SetHP(target, source key.TargetID, amt float64) error {
 func (sim *Simulation) ModifyHPByRatio(target, source key.TargetID, data info.ModifyHPByRatio) error {
 	sim.ActionTargets[target] = true
 	return sim.Attr.ModifyHPByRatio(target, source, data, false)
-}
-
-func (sim *Simulation) ModifyHPByAmount(target, source key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Attr.ModifyHPByAmount(target, source, amt, false)
 }
 
 func (sim *Simulation) ModifyStance(target, source key.TargetID, amt float64) error {
