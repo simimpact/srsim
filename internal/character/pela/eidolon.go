@@ -35,20 +35,23 @@ func init() {
 		Stacking: modifier.ReplaceBySource,
 		Listeners: modifier.Listeners{
 			OnAfterAttack: func(mod *modifier.Instance, e event.AttackEnd) {
-				for _, trg := range e.Targets {
-					if mod.Engine().ModifierStatusCount(trg, model.StatusType_STATUS_DEBUFF) >= 1 {
-						mod.Engine().Attack(info.Attack{
-							Key:        E6,
-							Source:     mod.Owner(),
-							Targets:    []key.TargetID{trg},
-							DamageType: model.DamageType_ICE,
-							AttackType: model.AttackType_PURSUED,
-							BaseDamage: info.DamageMap{
-								model.DamageFormula_BY_ATK: 0.4,
-							},
-						})
-					}
-				}
+				targets := mod.Engine().Retarget(info.Retarget{
+					Targets: e.Targets,
+					Filter: func(t key.TargetID) bool {
+						return mod.Engine().ModifierStatusCount(t, model.StatusType_STATUS_DEBUFF) >= 1
+					},
+				})
+
+				mod.Engine().Attack(info.Attack{
+					Key:        E6,
+					Source:     mod.Owner(),
+					Targets:    targets,
+					DamageType: model.DamageType_ICE,
+					AttackType: model.AttackType_PURSUED,
+					BaseDamage: info.DamageMap{
+						model.DamageFormula_BY_ATK: 0.4,
+					},
+				})
 			},
 		},
 	})
