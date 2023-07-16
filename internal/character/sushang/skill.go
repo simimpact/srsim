@@ -41,7 +41,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	stats := c.engine.Stats(c.id)
 	hitChance := 0.33 * (1 + stats.EffectHitRate()) * (1 - stats.EffectRES())
 
-	if c.engine.HasModifier(c.id, UltBuff) {
+	if c.engine.HasModifier(c.id, Ult) {
 		for i := 0; i <= 1; i++ {
 			if isBroken || c.engine.Rand().Float64() < hitChance {
 				chances[i] = true

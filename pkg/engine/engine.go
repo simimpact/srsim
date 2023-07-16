@@ -170,16 +170,16 @@ type Insert interface {
 
 type Turn interface {
 	// Sets the gauge for the given target. The amount is specified in gauge units (base = 10,000)
-	SetGauge(target key.TargetID, amt float64) error
+	SetGauge(data info.ModifyAttribute) error
 
 	// Modifies the gauge for the given target using gauge normalization. If amt = 1.0, this will add
 	// 10,000 gauge to the targets gauge (amt defines the % of base gauge to add).
-	ModifyGaugeNormalized(target key.TargetID, amt float64) error
+	ModifyGaugeNormalized(data info.ModifyAttribute) error
 
 	// Modifies the gauge for the given target by adding AV to their gauge. Unlike gauge normalization,
 	// the amount of gauge this modifies will depend on the target's current speed:
 	//		gauge_added = amt * target_speed
-	ModifyGaugeAV(target key.TargetID, amt float64) error
+	ModifyGaugeAV(data info.ModifyAttribute) error
 
 	// Sets the current gauge cost to the given amount (the default value for gauge cost is 1.0).
 	// This determines what the active target's gauge will be set to on "Turn Reset" (at Action End).

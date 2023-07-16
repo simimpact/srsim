@@ -1,6 +1,7 @@
 package common
 
 import (
+	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
@@ -8,7 +9,7 @@ import (
 )
 
 const (
-	Imprisonment      key.Modifier = "common-imprisonment"
+	Imprisonment                   = "common-imprisonment"
 	BreakImprisonment key.Modifier = "break-imprisonment"
 )
 
@@ -41,5 +42,10 @@ func imprisonAdd(mod *modifier.Instance) {
 	}
 
 	mod.AddProperty(prop.SPDPercent, -state.SpeedDownRatio)
-	mod.Engine().ModifyGaugeNormalized(mod.Owner(), state.DelayRatio)
+	mod.Engine().ModifyGaugeNormalized(info.ModifyAttribute{
+		Key:    Imprisonment,
+		Target: mod.Owner(),
+		Source: mod.Source(),
+		Amount: state.DelayRatio,
+	})
 }

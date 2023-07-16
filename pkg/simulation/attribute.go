@@ -88,19 +88,19 @@ func (sim *Simulation) ModifyEnergyFixed(data info.ModifyAttribute) error {
 	return sim.Attr.ModifyEnergyFixed(data)
 }
 
-func (sim *Simulation) SetGauge(target key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Turn.SetGauge(target, amt)
+func (sim *Simulation) SetGauge(data info.ModifyAttribute) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Turn.SetGauge(data)
 }
 
-func (sim *Simulation) ModifyGaugeNormalized(target key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Turn.ModifyGaugeNormalized(target, amt)
+func (sim *Simulation) ModifyGaugeNormalized(data info.ModifyAttribute) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Turn.ModifyGaugeNormalized(data)
 }
 
-func (sim *Simulation) ModifyGaugeAV(target key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Turn.ModifyGaugeAV(target, amt)
+func (sim *Simulation) ModifyGaugeAV(data info.ModifyAttribute) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Turn.ModifyGaugeAV(data)
 }
 
 func (sim *Simulation) SetCurrentGaugeCost(amt float64) {
