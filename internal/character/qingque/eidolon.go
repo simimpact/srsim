@@ -11,6 +11,7 @@ import (
 
 const (
 	E1      key.Modifier = "qingque-e1"
+	E2      key.Reason   = "qingque-e2"
 	Autarky key.Modifier = "qingque-e4"
 )
 
@@ -26,9 +27,15 @@ func init() {
 		},
 	})
 }
+
 func (c *char) e2() {
 	if c.info.Eidolon >= 2 {
-		c.engine.ModifyEnergy(c.id, 1)
+		c.engine.ModifyEnergy(info.ModifyAttribute{
+			Key:    E2,
+			Target: c.id,
+			Source: c.id,
+			Amount: 1,
+		})
 	}
 }
 func (c *char) initEidolons() {

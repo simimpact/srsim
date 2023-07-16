@@ -6,10 +6,13 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-const Skill key.Attack = "arlan-skill"
+const Skill = "arlan-skill"
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
-	c.engine.ModifyHPByRatio(c.id, c.id, info.ModifyHPByRatio{
+	c.engine.ModifyHPByRatio(info.ModifyHPByRatio{
+		Key:       Skill,
+		Target:    c.id,
+		Source:    c.id,
 		Ratio:     -0.15,
 		RatioType: model.ModifyHPRatioType_MAX_HP,
 		Floor:     1,

@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	mod key.Modifier = "before-tutorial-mission-starts"
+	name = "before-tutorial-mission-starts"
 )
 
 // Increases the wearer's Effect Hit Rate by 20%.
@@ -25,7 +25,7 @@ func init() {
 		Path:          model.Path_NIHILITY,
 		Promotions:    promotions,
 	})
-	modifier.Register(mod, modifier.Config{
+	modifier.Register(name, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAfterAttack: addEnergy,
 		},
@@ -36,7 +36,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	ehrAmt := 0.15 + 0.05*float64(lc.Imposition)
 	energyAmt := 3.0 + float64(lc.Imposition)
 	engine.AddModifier(owner, info.Modifier{
-		Name:   mod,
+		Name:   name,
 		Source: owner,
 		Stats:  info.PropMap{prop.EffectHitRate: ehrAmt},
 		State:  energyAmt,
@@ -46,7 +46,12 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 func addEnergy(mod *modifier.Instance, e event.AttackEnd) {
 	energyAmt := mod.State().(float64)
 	if hasDefReducedTarget(mod.Engine(), e.Targets) {
-		mod.Engine().ModifyEnergy(mod.Owner(), energyAmt)
+		mod.Engine().ModifyEnergy(info.ModifyAttribute{
+			Key:    name,
+			Target: mod.Owner(),
+			Source: mod.Owner(),
+			Amount: energyAmt,
+		})
 	}
 }
 

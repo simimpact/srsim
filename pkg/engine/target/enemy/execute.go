@@ -12,5 +12,6 @@ func (mgr *Manager) ExecuteAction(id key.TargetID) (target.ExecutableAction, err
 		AttackType: model.AttackType_NORMAL,
 		IsInsert:   false,
 		SPDelta:    0,
+		Key:        "dummy",
 	}, nil
 }

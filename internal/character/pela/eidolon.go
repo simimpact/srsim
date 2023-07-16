@@ -10,6 +10,7 @@ import (
 )
 
 const (
+	E1 key.Reason   = "pela-e1"
 	E2 key.Modifier = "pela-e2"
 	E4 key.Modifier = "pela-e4"
 	E6              = "pela-e6"
@@ -85,7 +86,12 @@ func (c *char) initEidolons() {
 		// When an enemy is defeated (by any ally), Pela regenerates 5 Energy.
 		c.engine.Events().TargetDeath.Subscribe(func(e event.TargetDeath) {
 			if c.engine.IsCharacter(e.Killer) {
-				c.engine.ModifyEnergy(c.id, 5)
+				c.engine.ModifyEnergy(info.ModifyAttribute{
+					Key:    E1,
+					Target: c.id,
+					Source: c.id,
+					Amount: 5,
+				})
 			}
 		})
 	}

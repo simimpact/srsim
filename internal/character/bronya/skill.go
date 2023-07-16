@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	Skill key.Modifier = "bronya-skill"
+	Skill = "bronya-skill"
 )
 
 func init() {
@@ -53,5 +53,10 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	c.e2(target)
 
 	// Add energy
-	c.engine.ModifyEnergy(c.id, 30.0)
+	c.engine.ModifyEnergy(info.ModifyAttribute{
+		Key:    Skill,
+		Target: c.id,
+		Source: c.id,
+		Amount: 30.0,
+	})
 }

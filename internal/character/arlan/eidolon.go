@@ -13,7 +13,7 @@ const (
 	E1     key.Modifier = "arlan-e1"
 	E4     key.Modifier = "arlan-e4"
 	E6     key.Modifier = "arlan-e6"
-	Revive key.Insert   = "arlan-revive"
+	Revive              = "arlan-revive"
 )
 
 func init() {
@@ -49,8 +49,12 @@ func init() {
 				// Queue Heal
 				mod.Engine().InsertAbility(info.Insert{
 					Execute: func() {
-						mod.Engine().SetHP(
-							mod.Owner(), mod.Owner(), mod.OwnerStats().MaxHP()*0.25)
+						mod.Engine().SetHP(info.ModifyAttribute{
+							Key:    Revive,
+							Target: mod.Owner(),
+							Source: mod.Owner(),
+							Amount: mod.OwnerStats().MaxHP() * 0.25,
+						})
 					},
 					Key:        Revive,
 					Source:     mod.Owner(),

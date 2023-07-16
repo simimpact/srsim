@@ -7,6 +7,7 @@ import (
 )
 
 const (
+	E1          key.Reason = "sushang-e1"
 	Skill       key.Attack = "sushang-skill"
 	SwordStance key.Attack = "sword-stance"
 )
@@ -61,7 +62,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	state.EndAttack()
 
 	if isBroken && c.info.Eidolon >= 1 {
-		c.engine.ModifySP(1)
+		c.engine.ModifySP(E1, 1)
 	}
 
 	c.a6()

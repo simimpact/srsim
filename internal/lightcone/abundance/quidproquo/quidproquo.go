@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	QPQCheck key.Modifier = "quid-pro-quo"
+	QPQ = "quid-pro-quo"
 )
 
 // At the start of the wearer's turn, regenerates 8 Energy for a randomly chosen ally
@@ -23,7 +23,7 @@ func init() {
 		Promotions:    promotions,
 	})
 	// OnPhase1. checker. refill 1 char's energy randomly. (condition : <50% + not LC holder)
-	modifier.Register(QPQCheck, modifier.Config{
+	modifier.Register(QPQ, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnPhase1: randomlyAddEnergy,
 		},
@@ -32,7 +32,7 @@ func init() {
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	engine.AddModifier(owner, info.Modifier{
-		Name:   QPQCheck,
+		Name:   QPQ,
 		Source: owner,
 		State:  6 + 2*float64(lc.Imposition),
 	})
@@ -40,7 +40,6 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 
 func randomlyAddEnergy(mod *modifier.Instance) {
 	allyList := mod.Engine().Characters()
-	amt := mod.State().(float64)
 	var validAllyList []key.TargetID
 
 	for _, char := range allyList {
@@ -53,6 +52,11 @@ func randomlyAddEnergy(mod *modifier.Instance) {
 	if validAllyList != nil {
 		// randomly choose 1 char to add energy to from validAllyList.
 		chosenOne := validAllyList[mod.Engine().Rand().Intn(len(validAllyList))]
-		mod.Engine().ModifyEnergy(chosenOne, amt)
+		mod.Engine().ModifyEnergy(info.ModifyAttribute{
+			Key:    QPQ,
+			Target: chosenOne,
+			Source: mod.Owner(),
+			Amount: mod.State().(float64),
+		})
 	}
 }

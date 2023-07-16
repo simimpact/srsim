@@ -10,6 +10,7 @@ import (
 )
 
 const (
+	A4 key.Reason   = "sampo-a4"
 	A6 key.Modifier = "sampo-a6"
 )
 
@@ -23,7 +24,12 @@ func init() {
 
 func (c *char) a4() {
 	if c.info.Traces["102"] {
-		c.engine.ModifyEnergy(c.id, 10)
+		c.engine.ModifyEnergy(info.ModifyAttribute{
+			Key:    A4,
+			Target: c.id,
+			Source: c.id,
+			Amount: 10,
+		})
 	}
 }
 

@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	A2 key.Modifier = "qingque-a2"
+	A2              = "qingque-a2"
 	A6 key.Modifier = "qingque-a6"
 )
 
@@ -44,7 +44,7 @@ func (c *char) initTraces() {
 
 func A2ActionEndListener(mod *modifier.Instance, e event.ActionEnd) {
 	if e.AttackType == model.AttackType_SKILL {
-		mod.Engine().ModifySP(1)
+		mod.Engine().ModifySP(A2, 1)
 		mod.RemoveSelf()
 	}
 }

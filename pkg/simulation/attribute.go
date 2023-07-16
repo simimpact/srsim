@@ -31,8 +31,8 @@ func (sim *Simulation) createSnapshot() snapshot {
 	}
 }
 
-func (sim *Simulation) ModifySP(amt int) error {
-	return sim.Attr.ModifySP(amt)
+func (sim *Simulation) ModifySP(reason key.Reason, amt int) error {
+	return sim.Attr.ModifySP(reason, amt)
 }
 
 func (sim *Simulation) SP() int {
@@ -63,29 +63,29 @@ func (sim *Simulation) HPRatio(target key.TargetID) float64 {
 	return sim.Attr.HPRatio(target)
 }
 
-func (sim *Simulation) SetHP(target, source key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Attr.SetHP(target, source, amt, false)
+func (sim *Simulation) SetHP(data info.ModifyAttribute) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Attr.SetHP(data, false)
 }
 
-func (sim *Simulation) ModifyHPByRatio(target, source key.TargetID, data info.ModifyHPByRatio) error {
-	sim.ActionTargets[target] = true
-	return sim.Attr.ModifyHPByRatio(target, source, data, false)
+func (sim *Simulation) ModifyHPByRatio(data info.ModifyHPByRatio) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Attr.ModifyHPByRatio(data, false)
 }
 
-func (sim *Simulation) ModifyStance(target, source key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Attr.ModifyStance(target, source, amt)
+func (sim *Simulation) ModifyStance(data info.ModifyAttribute) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Attr.ModifyStance(data)
 }
 
-func (sim *Simulation) ModifyEnergy(target key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Attr.ModifyEnergy(target, amt)
+func (sim *Simulation) ModifyEnergy(data info.ModifyAttribute) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Attr.ModifyEnergy(data)
 }
 
-func (sim *Simulation) ModifyEnergyFixed(target key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Attr.ModifyEnergyFixed(target, amt)
+func (sim *Simulation) ModifyEnergyFixed(data info.ModifyAttribute) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Attr.ModifyEnergyFixed(data)
 }
 
 func (sim *Simulation) SetGauge(target key.TargetID, amt float64) error {

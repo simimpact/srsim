@@ -10,7 +10,7 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-const MeshingCogs key.Modifier = "meshing_cogs"
+const MeshingCogs = "meshing_cogs"
 
 type cogsState struct {
 	imposition int
@@ -38,7 +38,12 @@ func tryEnergyRegen(mod *modifier.Instance, _ event.AttackEnd) {
 	if !state.charged {
 		return
 	}
-	mod.Engine().ModifyEnergy(mod.Owner(), float64(3+state.imposition))
+	mod.Engine().ModifyEnergy(info.ModifyAttribute{
+		Key:    MeshingCogs,
+		Target: mod.Owner(),
+		Source: mod.Owner(),
+		Amount: float64(3 + state.imposition),
+	})
 	state.charged = false
 }
 

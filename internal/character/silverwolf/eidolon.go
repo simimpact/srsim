@@ -10,6 +10,7 @@ import (
 )
 
 const (
+	E1 key.Reason   = "silverwolf-e1"
 	E2 key.Modifier = "silverwolf-e2"
 	E4 key.Attack   = "silverwolf-e4"
 	E6 key.Modifier = "silverwolf-e6"
@@ -54,7 +55,12 @@ func (c *char) e1(target key.TargetID) {
 		if debuffCount > 5 {
 			debuffCount = 5
 		}
-		c.engine.ModifyEnergy(c.id, float64(7*debuffCount))
+		c.engine.ModifyEnergy(info.ModifyAttribute{
+			Key:    E1,
+			Target: c.id,
+			Source: c.id,
+			Amount: float64(7 * debuffCount),
+		})
 	}
 }
 
