@@ -30,13 +30,13 @@ func init() {
 		Path:          model.Path_ABUNDANCE,
 		Promotions:    promotions,
 	})
-	// vacated for switch to event subscription
 	modifier.Register(time, modifier.Config{})
+	// added to automatically track extraDmg cooldown
 	modifier.Register(cd, modifier.Config{})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	// modifier now only added the hp and healboost buffs
+	// modifier only adds the hp and outgoing heal buffs
 	engine.AddModifier(owner, info.Modifier{
 		Name:   time,
 		Source: owner,
@@ -56,7 +56,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		}
 	})
 
-	// event subscriber to atkEnd by all chars -> bypass if atker is enemy.
+	// apply extra dmg if not on cooldown, then reset recorded heals and set to cooldown
 	engine.Events().AttackEnd.Subscribe(func(e event.AttackEnd) {
 		if engine.IsCharacter(e.Attacker) && !engine.HasModifier(owner, cd) {
 			applyExtraDmg(engine, e.Targets, owner, healAmt*extraDmgMult)
@@ -71,18 +71,17 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-// if onCooldown = 1, Retarget(1 target), add dmg type pursued, byPureDamage, ele same as holder
-func applyExtraDmg(engine engine.Engine, targets []key.TargetID, source key.TargetID, dmgAmt float64) {
+// choose 1 in targets list, apply pure pursued damage
+func applyExtraDmg(engine engine.Engine, targets []key.TargetID, owner key.TargetID, dmgAmt float64) {
 	chosenEnemy := engine.Retarget(info.Retarget{
 		Targets: targets,
 		Max:     1,
 	})
-	// get lc holder's info to fetch their element
-	holderInfo, _ := engine.CharacterInfo(source)
+	holderInfo, _ := engine.CharacterInfo(owner)
 	engine.Attack(info.Attack{
 		Key:          time,
 		Targets:      chosenEnemy,
-		Source:       source,
+		Source:       owner,
 		AttackType:   model.AttackType_PURSUED,
 		DamageType:   holderInfo.Element,
 		DamageValue:  dmgAmt,
