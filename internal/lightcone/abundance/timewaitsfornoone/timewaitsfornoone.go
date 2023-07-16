@@ -35,13 +35,8 @@ func init() {
 		Path:          model.Path_ABUNDANCE,
 		Promotions:    promotions,
 	})
-	modifier.Register(time, modifier.Config{
-		Listeners: modifier.Listeners{
-			OnPhase1:        refreshCD,
-			OnAfterDealHeal: recordHealAmt,
-		},
-		CanModifySnapshot: true,
-	})
+	// vacated for switch to event subscription
+	modifier.Register(time, modifier.Config{})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
@@ -51,15 +46,14 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		recordedHeals: 0.0,
 		extraDmgMult:  0.30 + 0.06*float64(lc.Imposition),
 	}
-	// add in the HP + out. heal buffs. add struct pointer as state
-	hpBuffAmt := 0.15 + 0.03*float64(lc.Imposition)
-	outHealAmt := 0.10 + 0.02*float64(lc.Imposition)
+
+	// modifier now only added the hp and healboost buffs
 	engine.AddModifier(owner, info.Modifier{
 		Name:   time,
 		Source: owner,
 		Stats: info.PropMap{
-			prop.HPPercent: hpBuffAmt,
-			prop.HealBoost: outHealAmt,
+			prop.HPPercent: 0.15 + 0.03*float64(lc.Imposition),
+			prop.HealBoost: 0.10 + 0.02*float64(lc.Imposition),
 		},
 		State: &modState,
 	})
