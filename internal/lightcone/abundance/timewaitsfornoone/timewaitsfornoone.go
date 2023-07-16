@@ -13,6 +13,7 @@ import (
 
 const (
 	time = "time-waits-for-no-one"
+	cd   = "time-waits-for-no-one-extra-dmg-cd"
 )
 
 // Desc : Increases the wearer's Max HP by 18% and Outgoing Healing by 12%.
@@ -31,6 +32,7 @@ func init() {
 	})
 	// vacated for switch to event subscription
 	modifier.Register(time, modifier.Config{})
+	modifier.Register(cd, modifier.Config{})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
@@ -47,20 +49,26 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	extraDmgMult := 0.30 + 0.06*float64(lc.Imposition)
 	healAmt := 0.0
 
-	// event subscriber to atkEnd by all chars -> bypass if atker is enemy.
-	engine.Events().AttackEnd.Subscribe(func(e event.AttackEnd) {
-		// fetch modifier instance attached to lc owner
-		mod := engine.GetModifiers(owner, time)[0]
-		if engine.IsCharacter(e.Attacker) && !engine.HasModifier(owner, cd) {
-			// perform attack, reset dmgAmt, and put mod on CD
-			applyExtraDmg(engine, e.Targets, mod.Source, healAmt *  extraDmgMult)
+	// record lc holder's heals
+	engine.Events().HealEnd.Subscribe(func(e event.HealEnd) {
+		if e.Healer == owner {
+			healAmt += e.HealAmount
 		}
 	})
-}
 
-func refreshCD(mod *modifier.Instance) {
-	state := mod.State().(*healRecorder)
-	state.onCooldown = false
+	// event subscriber to atkEnd by all chars -> bypass if atker is enemy.
+	engine.Events().AttackEnd.Subscribe(func(e event.AttackEnd) {
+		if engine.IsCharacter(e.Attacker) && !engine.HasModifier(owner, cd) {
+			applyExtraDmg(engine, e.Targets, owner, healAmt*extraDmgMult)
+
+			healAmt = 0.0                            // reset heal amount
+			engine.AddModifier(owner, info.Modifier{ // add 1 turn cd modifier
+				Name:     cd,
+				Source:   owner,
+				Duration: 1,
+			})
+		}
+	})
 }
 
 // if onCooldown = 1, Retarget(1 target), add dmg type pursued, byPureDamage, ele same as holder
@@ -85,13 +93,4 @@ func applyExtraDmg(engine engine.Engine, targets []key.TargetID, source key.Targ
 		},
 		UseSnapshot: true,
 	})
-	// after apply added dmg, reset cd and recordedHeals
-	state.onCooldown = true
-	state.recordedHeals = 0.0
-}
-
-func recordHealAmt(mod *modifier.Instance, e event.HealEnd) {
-	state := mod.State().(*healRecorder)
-	// sum all recorded heals
-	state.recordedHeals += e.HealAmount
 }
