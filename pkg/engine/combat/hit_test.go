@@ -78,9 +78,26 @@ func TestPerformHitWithShield(t *testing.T) {
 			return amt - absorb
 		})
 
-	attr.EXPECT().ModifyHPByAmount(hit.Defender.ID(), hit.Attacker.ID(), -hpUpdate, true)
-	attr.EXPECT().ModifyStance(hit.Defender.ID(), hit.Attacker.ID(), -hit.StanceDamage)
-	attr.EXPECT().ModifyEnergy(hit.Attacker.ID(), 0.0)
+	modify := info.ModifyAttribute{
+		Key:    "tst",
+		Target: hit.Defender.ID(),
+		Source: hit.Attacker.ID(),
+		Amount: 0,
+	}
+
+	modify.Amount = -hpUpdate
+	attr.EXPECT().ModifyHPByAmount(modify, true)
+
+	modify.Amount = -hit.StanceDamage
+	attr.EXPECT().ModifyStance(modify)
+
+	attr.EXPECT().ModifyEnergy(info.ModifyAttribute{
+		Key:    "tst",
+		Target: hit.Attacker.ID(),
+		Source: hit.Attacker.ID(),
+		Amount: 0,
+	})
+
 	attr.EXPECT().HPRatio(hit.Defender.ID())
 	target.EXPECT().IsCharacter(hit.Attacker.ID()).Return(true)
 

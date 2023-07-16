@@ -63,7 +63,14 @@ func (sim *Simulation) ultCheck() error {
 				},
 				Execute: func() { sim.executeUlt(act) }, // TODO: error handling
 			})
-			sim.Attr.ModifyEnergy(act.Target, -sim.Attr.MaxEnergy(act.Target))
+
+			i, _ := sim.CharacterInfo(act.Target)
+			sim.Attr.ModifyEnergy(info.ModifyAttribute{
+				Key:    key.Reason(strings.ToLower(fmt.Sprintf("%s-ult", i.Key.String()))),
+				Target: act.Target,
+				Source: act.Target,
+				Amount: -sim.Attr.MaxEnergy(act.Target),
+			})
 		}
 	}
 	return nil

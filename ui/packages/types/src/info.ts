@@ -19,18 +19,48 @@ export interface Attributes {
 }
 export interface ModifyHPByRatio {
   /**
+   * A unique identifier for this modification
+   */
+  key: string;
+  /**
+   * The target of this HP modification
+   */
+  target: string;
+  /**
+   * The source of this HP modification (who caused it)
+   */
+  source: string;
+  /**
    * The amount of HP ratio to modify the HP by (negative will remove HP)
    */
-  Ratio: number /* float64 */;
+  ratio: number /* float64 */;
   /**
    * What ratio type should be used (should Ratio be based on MaxHP or CurrentHP)
    */
-  RatioType: string;
+  ratio_type: string;
   /**
    * The floor for how low HP can go with this modification. IE: Floor = 1 will prevent the HP
    * from reaching 0 in this modification (can reduce up to 1 HP)
    */
-  Floor: number /* float64 */;
+  floor: number /* float64 */;
+}
+export interface ModifyAttribute {
+  /**
+   * A unique identifier for this modification
+   */
+  key: string;
+  /**
+   * The target of this modification
+   */
+  target: string;
+  /**
+   * The source of this modification
+   */
+  source: string;
+  /**
+   * The amount that should be modified (added or removed)
+   */
+  amount: number /* float64 */;
 }
 export type TargetState = number /* int */;
 export const Invalid: TargetState = 0;

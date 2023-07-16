@@ -6,7 +6,7 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-const Ult key.Heal = "natasha-ult"
+const Ult = "natasha-ult"
 
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	targets := c.engine.Characters()
@@ -24,5 +24,10 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		HealValue: ultFlat[c.info.UltLevelIndex()],
 	})
 
-	c.engine.ModifyEnergy(c.id, 5)
+	c.engine.ModifyEnergy(info.ModifyAttribute{
+		Key:    Ult,
+		Target: c.id,
+		Source: c.id,
+		Amount: 5,
+	})
 }

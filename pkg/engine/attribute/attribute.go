@@ -30,16 +30,16 @@ type Manager interface {
 
 	AddTarget(target key.TargetID, base info.Attributes) error
 
-	SetHP(target, source key.TargetID, amt float64, isDamage bool) error
-	ModifyHPByRatio(target, source key.TargetID, data info.ModifyHPByRatio, isDamage bool) error
-	ModifyHPByAmount(target, source key.TargetID, amt float64, isDamage bool) error
+	SetHP(data info.ModifyAttribute, isDamage bool) error
+	ModifyHPByRatio(data info.ModifyHPByRatio, isDamage bool) error
+	ModifyHPByAmount(data info.ModifyAttribute, isDamage bool) error
 
-	SetEnergy(target key.TargetID, amt float64) error
-	ModifyEnergy(target key.TargetID, amt float64) error
-	ModifyEnergyFixed(target key.TargetID, amt float64) error
+	SetEnergy(data info.ModifyAttribute) error
+	ModifyEnergy(data info.ModifyAttribute) error
+	ModifyEnergyFixed(data info.ModifyAttribute) error
 
-	SetStance(target, source key.TargetID, amt float64) error
-	ModifyStance(target, source key.TargetID, amt float64) error
+	SetStance(data info.ModifyAttribute) error
+	ModifyStance(data info.ModifyAttribute) error
 }
 
 type Service struct {

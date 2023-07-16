@@ -4,6 +4,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/prop"
+	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
@@ -60,7 +61,12 @@ func (mgr *Manager) Heal(heal info.Heal) {
 		}
 
 		// Call ModifyHP to add the new HP to the healed target
-		mgr.attr.ModifyHPByAmount(t, heal.Source, healAmount, false)
+		mgr.attr.ModifyHPByAmount(info.ModifyAttribute{
+			Key:    key.Reason(heal.Key),
+			Target: t,
+			Source: heal.Source,
+			Amount: healAmount,
+		}, false)
 
 		mgr.event.HealEnd.Emit(event.HealEnd{
 			Key:                heal.Key,

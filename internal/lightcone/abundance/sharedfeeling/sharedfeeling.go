@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	SFMod key.Modifier = "shared-feeling"
+	SFMod = "shared-feeling"
 )
 
 func init() {
@@ -44,11 +44,15 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 func giveTeamEnergy(mod *modifier.Instance, e event.ActionEnd) {
-	amt := mod.State().(float64)
 	if e.AttackType == model.AttackType_SKILL {
 		// apply team energy top up.
 		for _, char := range mod.Engine().Characters() {
-			mod.Engine().ModifyEnergy(char, amt)
+			mod.Engine().ModifyEnergy(info.ModifyAttribute{
+				Key:    SFMod,
+				Target: char,
+				Source: mod.Owner(),
+				Amount: mod.State().(float64),
+			})
 		}
 	}
 }

@@ -148,59 +148,59 @@ func (mr *MockAttributeMockRecorder) MaxEnergy(arg0 interface{}) *gomock.Call {
 }
 
 // ModifyEnergy mocks base method.
-func (m *MockAttribute) ModifyEnergy(arg0 key.TargetID, arg1 float64) error {
+func (m *MockAttribute) ModifyEnergy(arg0 info.ModifyAttribute) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ModifyEnergy", arg0, arg1)
+	ret := m.ctrl.Call(m, "ModifyEnergy", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // ModifyEnergy indicates an expected call of ModifyEnergy.
-func (mr *MockAttributeMockRecorder) ModifyEnergy(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockAttributeMockRecorder) ModifyEnergy(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyEnergy", reflect.TypeOf((*MockAttribute)(nil).ModifyEnergy), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyEnergy", reflect.TypeOf((*MockAttribute)(nil).ModifyEnergy), arg0)
 }
 
 // ModifyEnergyFixed mocks base method.
-func (m *MockAttribute) ModifyEnergyFixed(arg0 key.TargetID, arg1 float64) error {
+func (m *MockAttribute) ModifyEnergyFixed(arg0 info.ModifyAttribute) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ModifyEnergyFixed", arg0, arg1)
+	ret := m.ctrl.Call(m, "ModifyEnergyFixed", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // ModifyEnergyFixed indicates an expected call of ModifyEnergyFixed.
-func (mr *MockAttributeMockRecorder) ModifyEnergyFixed(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockAttributeMockRecorder) ModifyEnergyFixed(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyEnergyFixed", reflect.TypeOf((*MockAttribute)(nil).ModifyEnergyFixed), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyEnergyFixed", reflect.TypeOf((*MockAttribute)(nil).ModifyEnergyFixed), arg0)
 }
 
 // ModifyHPByAmount mocks base method.
-func (m *MockAttribute) ModifyHPByAmount(arg0, arg1 key.TargetID, arg2 float64, arg3 bool) error {
+func (m *MockAttribute) ModifyHPByAmount(arg0 info.ModifyAttribute, arg1 bool) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ModifyHPByAmount", arg0, arg1, arg2, arg3)
+	ret := m.ctrl.Call(m, "ModifyHPByAmount", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // ModifyHPByAmount indicates an expected call of ModifyHPByAmount.
-func (mr *MockAttributeMockRecorder) ModifyHPByAmount(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+func (mr *MockAttributeMockRecorder) ModifyHPByAmount(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyHPByAmount", reflect.TypeOf((*MockAttribute)(nil).ModifyHPByAmount), arg0, arg1, arg2, arg3)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyHPByAmount", reflect.TypeOf((*MockAttribute)(nil).ModifyHPByAmount), arg0, arg1)
 }
 
 // ModifyHPByRatio mocks base method.
-func (m *MockAttribute) ModifyHPByRatio(arg0, arg1 key.TargetID, arg2 info.ModifyHPByRatio, arg3 bool) error {
+func (m *MockAttribute) ModifyHPByRatio(arg0 info.ModifyHPByRatio, arg1 bool) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ModifyHPByRatio", arg0, arg1, arg2, arg3)
+	ret := m.ctrl.Call(m, "ModifyHPByRatio", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // ModifyHPByRatio indicates an expected call of ModifyHPByRatio.
-func (mr *MockAttributeMockRecorder) ModifyHPByRatio(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+func (mr *MockAttributeMockRecorder) ModifyHPByRatio(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyHPByRatio", reflect.TypeOf((*MockAttribute)(nil).ModifyHPByRatio), arg0, arg1, arg2, arg3)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyHPByRatio", reflect.TypeOf((*MockAttribute)(nil).ModifyHPByRatio), arg0, arg1)
 }
 
 // ModifySP mocks base method.
@@ -218,17 +218,17 @@ func (mr *MockAttributeMockRecorder) ModifySP(arg0, arg1 interface{}) *gomock.Ca
 }
 
 // ModifyStance mocks base method.
-func (m *MockAttribute) ModifyStance(arg0, arg1 key.TargetID, arg2 float64) error {
+func (m *MockAttribute) ModifyStance(arg0 info.ModifyAttribute) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ModifyStance", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "ModifyStance", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // ModifyStance indicates an expected call of ModifyStance.
-func (mr *MockAttributeMockRecorder) ModifyStance(arg0, arg1, arg2 interface{}) *gomock.Call {
+func (mr *MockAttributeMockRecorder) ModifyStance(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyStance", reflect.TypeOf((*MockAttribute)(nil).ModifyStance), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyStance", reflect.TypeOf((*MockAttribute)(nil).ModifyStance), arg0)
 }
 
 // SP mocks base method.
@@ -246,45 +246,45 @@ func (mr *MockAttributeMockRecorder) SP() *gomock.Call {
 }
 
 // SetEnergy mocks base method.
-func (m *MockAttribute) SetEnergy(arg0 key.TargetID, arg1 float64) error {
+func (m *MockAttribute) SetEnergy(arg0 info.ModifyAttribute) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SetEnergy", arg0, arg1)
+	ret := m.ctrl.Call(m, "SetEnergy", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // SetEnergy indicates an expected call of SetEnergy.
-func (mr *MockAttributeMockRecorder) SetEnergy(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockAttributeMockRecorder) SetEnergy(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetEnergy", reflect.TypeOf((*MockAttribute)(nil).SetEnergy), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetEnergy", reflect.TypeOf((*MockAttribute)(nil).SetEnergy), arg0)
 }
 
 // SetHP mocks base method.
-func (m *MockAttribute) SetHP(arg0, arg1 key.TargetID, arg2 float64, arg3 bool) error {
+func (m *MockAttribute) SetHP(arg0 info.ModifyAttribute, arg1 bool) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SetHP", arg0, arg1, arg2, arg3)
+	ret := m.ctrl.Call(m, "SetHP", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // SetHP indicates an expected call of SetHP.
-func (mr *MockAttributeMockRecorder) SetHP(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+func (mr *MockAttributeMockRecorder) SetHP(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetHP", reflect.TypeOf((*MockAttribute)(nil).SetHP), arg0, arg1, arg2, arg3)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetHP", reflect.TypeOf((*MockAttribute)(nil).SetHP), arg0, arg1)
 }
 
 // SetStance mocks base method.
-func (m *MockAttribute) SetStance(arg0, arg1 key.TargetID, arg2 float64) error {
+func (m *MockAttribute) SetStance(arg0 info.ModifyAttribute) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SetStance", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "SetStance", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // SetStance indicates an expected call of SetStance.
-func (mr *MockAttributeMockRecorder) SetStance(arg0, arg1, arg2 interface{}) *gomock.Call {
+func (mr *MockAttributeMockRecorder) SetStance(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetStance", reflect.TypeOf((*MockAttribute)(nil).SetStance), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetStance", reflect.TypeOf((*MockAttribute)(nil).SetStance), arg0)
 }
 
 // Stance mocks base method.

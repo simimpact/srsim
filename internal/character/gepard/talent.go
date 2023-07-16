@@ -9,7 +9,8 @@ import (
 
 const (
 	Talent key.Modifier = "gepard-talent"
-	Revive key.Insert   = "gepard-revive"
+	Revive              = "gepard-revive"
+	A4     key.Reason   = "gepard-a4"
 )
 
 type talentState struct {
@@ -37,12 +38,21 @@ func talentRevive(mod *modifier.Instance) bool {
 	mod.Engine().InsertAbility(info.Insert{
 		Execute: func() {
 			// Set HP to specified Percentage
-			mod.Engine().SetHP(
-				mod.Owner(), mod.Owner(), mod.OwnerStats().MaxHP()*mod.State().(talentState).revivePerc)
+			mod.Engine().SetHP(info.ModifyAttribute{
+				Key:    Revive,
+				Target: mod.Owner(),
+				Source: mod.Owner(),
+				Amount: mod.OwnerStats().MaxHP() * mod.State().(talentState).revivePerc,
+			})
 
 			// If A4, restore Energy to 100% (Energy Cost is 100)
 			if mod.State().(talentState).a4Active {
-				mod.Engine().ModifyEnergyFixed(mod.Owner(), 100)
+				mod.Engine().ModifyEnergyFixed(info.ModifyAttribute{
+					Key:    A4,
+					Target: mod.Owner(),
+					Source: mod.Owner(),
+					Amount: 100,
+				})
 			}
 
 			// If E6, action forward

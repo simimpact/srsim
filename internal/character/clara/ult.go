@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	Ult        key.Modifier = "clara-ult" // MAvatar_Klara_00_Ultra_WarriorMode
+	Ult                     = "clara-ult" // MAvatar_Klara_00_Ultra_WarriorMode
 	UltCounter key.Modifier = "clara-ult-enhanced-counter"
 )
 
@@ -56,5 +56,10 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		MaxCount: 3,
 	})
 
-	c.engine.ModifyEnergy(c.id, 5.0)
+	c.engine.ModifyEnergy(info.ModifyAttribute{
+		Key:    Ult,
+		Target: c.id,
+		Source: c.id,
+		Amount: 5.0,
+	})
 }
