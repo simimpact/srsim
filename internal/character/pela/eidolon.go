@@ -10,25 +10,12 @@ import (
 )
 
 const (
-	E1 key.Modifier = "pela-e1"
 	E2 key.Modifier = "pela-e2"
 	E4 key.Modifier = "pela-e4"
 	E6              = "pela-e6"
 )
 
 func init() {
-	// When an enemy is defeated, Pela regenerates 5 Energy.
-	modifier.Register(E1, modifier.Config{
-		Listeners: modifier.Listeners{
-			OnTriggerDeath: func(mod *modifier.Instance, target key.TargetID) {
-				if !mod.Engine().IsEnemy(target) {
-					return
-				}
-				mod.Engine().ModifyEnergy(mod.Owner(), 5)
-			},
-		},
-	})
-
 	// Using Skill to remove buff(s) increases SPD by 10% for 2 turn(s).
 	modifier.Register(E2, modifier.Config{
 		Stacking:      modifier.ReplaceBySource,
@@ -48,20 +35,23 @@ func init() {
 		Stacking: modifier.ReplaceBySource,
 		Listeners: modifier.Listeners{
 			OnAfterAttack: func(mod *modifier.Instance, e event.AttackEnd) {
-				for _, trg := range e.Targets {
-					if mod.Engine().ModifierStatusCount(trg, model.StatusType_STATUS_DEBUFF) >= 1 {
-						mod.Engine().Attack(info.Attack{
-							Key:        E6,
-							Source:     mod.Owner(),
-							Targets:    []key.TargetID{trg},
-							DamageType: model.DamageType_ICE,
-							AttackType: model.AttackType_PURSUED,
-							BaseDamage: info.DamageMap{
-								model.DamageFormula_BY_ATK: 0.4,
-							},
-						})
-					}
-				}
+				targets := mod.Engine().Retarget(info.Retarget{
+					Targets: e.Targets,
+					Filter: func(t key.TargetID) bool {
+						return mod.Engine().ModifierStatusCount(t, model.StatusType_STATUS_DEBUFF) >= 1
+					},
+				})
+
+				mod.Engine().Attack(info.Attack{
+					Key:        E6,
+					Source:     mod.Owner(),
+					Targets:    targets,
+					DamageType: model.DamageType_ICE,
+					AttackType: model.AttackType_PURSUED,
+					BaseDamage: info.DamageMap{
+						model.DamageFormula_BY_ATK: 0.4,
+					},
+				})
 			},
 		},
 	})
@@ -92,9 +82,11 @@ func (c *char) e4(target key.TargetID) {
 
 func (c *char) initEidolons() {
 	if c.info.Eidolon >= 1 {
-		c.engine.AddModifier(c.id, info.Modifier{
-			Name:   E1,
-			Source: c.id,
+		// When an enemy is defeated (by any ally), Pela regenerates 5 Energy.
+		c.engine.Events().TargetDeath.Subscribe(func(e event.TargetDeath) {
+			if c.engine.IsCharacter(e.Killer) {
+				c.engine.ModifyEnergy(c.id, 5)
+			}
 		})
 	}
 

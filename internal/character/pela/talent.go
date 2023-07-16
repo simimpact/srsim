@@ -16,15 +16,7 @@ const (
 func init() {
 	modifier.Register(Talent, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAfterAttack: func(mod *modifier.Instance, e event.AttackEnd) {
-				char, _ := mod.Engine().CharacterInfo(mod.Owner())
-				for _, trg := range e.Targets {
-					if mod.Engine().ModifierStatusCount(trg, model.StatusType_STATUS_DEBUFF) >= 1 {
-						mod.Engine().ModifyEnergy(mod.Owner(), talent[char.TalentLevelIndex()])
-						return
-					}
-				}
-			},
+			OnAfterAttack: afterAttack,
 		},
 	})
 }
@@ -34,4 +26,14 @@ func (c *char) initTalent() {
 		Name:   Talent,
 		Source: c.id,
 	})
+}
+
+func afterAttack(mod *modifier.Instance, e event.AttackEnd) {
+	char, _ := mod.Engine().CharacterInfo(mod.Owner())
+	for _, trg := range e.Targets {
+		if mod.Engine().HPRatio(trg) > 0 && mod.Engine().ModifierStatusCount(trg, model.StatusType_STATUS_DEBUFF) >= 1 {
+			mod.Engine().ModifyEnergy(mod.Owner(), talent[char.TalentLevelIndex()])
+			return
+		}
+	}
 }
