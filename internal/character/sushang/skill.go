@@ -62,7 +62,11 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	state.EndAttack()
 
 	if isBroken && c.info.Eidolon >= 1 {
-		c.engine.ModifySP(E1, 1)
+		c.engine.ModifySP(info.ModifySP{
+			Key:    E1,
+			Source: c.id,
+			Amount: 1,
+		})
 	}
 
 	c.a6()

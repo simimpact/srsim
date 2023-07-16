@@ -52,6 +52,17 @@ type ModifyAttribute struct {
 	Amount float64 `json:"amount"`
 }
 
+type ModifySP struct {
+	// A unique identifier for this modification
+	Key key.Reason `json:"key"`
+
+	// The source of this modification
+	Source key.TargetID `json:"source"`
+
+	// The amount of SP to be added or removed
+	Amount int `json:"amount"`
+}
+
 func DefaultAttribute() Attributes {
 	return Attributes{
 		Level:         1,

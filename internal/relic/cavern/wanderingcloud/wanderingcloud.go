@@ -25,7 +25,11 @@ func init() {
 			{
 				MinCount: 4,
 				CreateEffect: func(engine engine.Engine, owner key.TargetID) {
-					engine.ModifySP(reason, 1)
+					engine.ModifySP(info.ModifySP{
+						Key:    reason,
+						Source: owner,
+						Amount: 1,
+					})
 				},
 			},
 		},

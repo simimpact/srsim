@@ -44,7 +44,11 @@ func (c *char) initTraces() {
 
 func A2ActionEndListener(mod *modifier.Instance, e event.ActionEnd) {
 	if e.AttackType == model.AttackType_SKILL {
-		mod.Engine().ModifySP(A2, 1)
+		mod.Engine().ModifySP(info.ModifySP{
+			Key:    A2,
+			Source: mod.Owner(),
+			Amount: 1,
+		})
 		mod.RemoveSelf()
 	}
 }

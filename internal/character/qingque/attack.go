@@ -41,10 +41,18 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 		c.unusedSuits = []string{"Wan", "Tong", "Tiao"}
 		c.a6()
 		if c.info.Eidolon >= 6 {
-			c.engine.ModifySP(E6, 1)
+			c.engine.ModifySP(info.ModifySP{
+				Key:    E6,
+				Source: c.id,
+				Amount: 1,
+			})
 		}
 	} else {
-		c.engine.ModifySP(NormalBasic, 1)
+		c.engine.ModifySP(info.ModifySP{
+			Key:    "normal",
+			Source: c.id,
+			Amount: 1,
+		})
 	}
 	state.EndAttack()
 }

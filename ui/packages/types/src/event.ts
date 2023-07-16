@@ -54,6 +54,7 @@ export interface StanceReset {
 export type SPChangeEventHandler = Handler<SPChange>;
 export interface SPChange {
   key: string;
+  source: string;
   old_sp: number /* int */;
   new_sp: number /* int */;
 }
