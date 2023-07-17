@@ -54,6 +54,10 @@ func freezePhase1(mod *modifier.Instance) {
 
 	// if frozen is getting removed this turn, set their next turn to half-cost for the "thaw" effect
 	if mod.Duration() <= 1 {
-		mod.Engine().ModifyCurrentGaugeCost(0.5)
+		mod.Engine().ModifyCurrentGaugeCost(info.ModifyCurrentGaugeCost{
+			Key:    Freeze,
+			Source: mod.Source(),
+			Amount: 0.5,
+		})
 	}
 }

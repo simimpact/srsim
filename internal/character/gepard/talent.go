@@ -11,6 +11,7 @@ const (
 	Talent key.Modifier = "gepard-talent"
 	Revive              = "gepard-revive"
 	A4     key.Reason   = "gepard-a4"
+	E6     key.Reason   = "gepard-e6"
 )
 
 type talentState struct {
@@ -57,7 +58,12 @@ func talentRevive(mod *modifier.Instance) bool {
 
 			// If E6, action forward
 			if mod.State().(talentState).e6Active {
-				mod.Engine().SetGauge(mod.Owner(), 0)
+				mod.Engine().SetGauge(info.ModifyAttribute{
+					Key:    E6,
+					Target: mod.Owner(),
+					Source: mod.Owner(),
+					Amount: 0,
+				})
 			}
 
 			mod.RemoveSelf()

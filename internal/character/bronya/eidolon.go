@@ -50,7 +50,11 @@ func (c *char) e1() {
 			// 50% Chance
 			if c.engine.Rand().Float32() < 0.5 {
 				// Add SP
-				c.engine.ModifySP(E1, 1)
+				c.engine.ModifySP(info.ModifySP{
+					Key:    E1,
+					Source: c.id,
+					Amount: 1,
+				})
 				// Set on CD
 				c.engine.AddModifier(c.id, info.Modifier{
 					Name:     E1Cooldown,

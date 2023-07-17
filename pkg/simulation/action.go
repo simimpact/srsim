@@ -64,9 +64,8 @@ func (sim *Simulation) ultCheck() error {
 				Execute: func() { sim.executeUlt(act) }, // TODO: error handling
 			})
 
-			i, _ := sim.CharacterInfo(act.Target)
 			sim.Attr.ModifyEnergy(info.ModifyAttribute{
-				Key:    key.Reason(strings.ToLower(fmt.Sprintf("%s-ult", i.Key.String()))),
+				Key:    "ult",
 				Target: act.Target,
 				Source: act.Target,
 				Amount: -sim.Attr.MaxEnergy(act.Target),
@@ -144,8 +143,11 @@ func (sim *Simulation) executeAction(id key.TargetID, isInsert bool) error {
 		return fmt.Errorf("unsupported target type: %v", sim.Targets[id])
 	}
 
-	reason := key.Reason(strings.ToLower(fmt.Sprintf("%s-%s", executable.Key, executable.AttackType)))
-	sim.ModifySP(reason, executable.SPDelta)
+	sim.ModifySP(info.ModifySP{
+		Key:    key.Reason(strings.ToLower(executable.AttackType.String())),
+		Source: id,
+		Amount: executable.SPDelta,
+	})
 
 	sim.clearActionTargets()
 	sim.Event.ActionStart.Emit(event.ActionStart{

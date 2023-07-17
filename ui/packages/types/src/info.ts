@@ -62,6 +62,34 @@ export interface ModifyAttribute {
    */
   amount: number /* float64 */;
 }
+export interface ModifySP {
+  /**
+   * A unique identifier for this modification
+   */
+  key: string;
+  /**
+   * The source of this modification
+   */
+  source: string;
+  /**
+   * The amount of SP to be added or removed
+   */
+  amount: number /* int */;
+}
+export interface ModifyCurrentGaugeCost {
+  /**
+   * A unique identifier for this modification
+   */
+  key: string;
+  /**
+   * The source of this modification
+   */
+  source: string;
+  /**
+   * The amount of gauge cost to be changed
+   */
+  amount: number /* float64 */;
+}
 export type TargetState = number /* int */;
 export const Invalid: TargetState = 0;
 export const Dead: TargetState = 1;

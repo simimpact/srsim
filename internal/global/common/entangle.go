@@ -48,7 +48,12 @@ func entangleAdd(mod *modifier.Instance) {
 		panic("incorrect state used for Entanglement modifier")
 	}
 
-	mod.Engine().ModifyGaugeNormalized(mod.Owner(), state.DelayRatio)
+	mod.Engine().ModifyGaugeNormalized(info.ModifyAttribute{
+		Key:    Entanglement,
+		Target: mod.Owner(),
+		Source: mod.Source(),
+		Amount: state.DelayRatio,
+	})
 }
 
 func entangleAfterAttack(mod *modifier.Instance, e event.AttackEnd) {

@@ -4,18 +4,19 @@ import (
 	"fmt"
 
 	"github.com/simimpact/srsim/pkg/engine/event"
+	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-func (mgr *manager) SetGauge(target key.TargetID, amt float64) error {
-	if _, ok := mgr.targetIndex[target]; !ok {
-		return fmt.Errorf("unknown target: %v", target)
+func (mgr *manager) SetGauge(data info.ModifyAttribute) error {
+	if _, ok := mgr.targetIndex[data.Target]; !ok {
+		return fmt.Errorf("unknown target: %v", data.Target)
 	}
 
-	prev := mgr.target(target).gauge
-	mgr.target(target).gauge = amt
+	prev := mgr.target(data.Target).gauge
+	mgr.target(data.Target).gauge = data.Amount
 
-	if mgr.target(target).gauge == prev {
+	if mgr.target(data.Target).gauge == prev {
 		return nil
 	}
 
@@ -45,44 +46,52 @@ func (mgr *manager) SetGauge(target key.TargetID, amt float64) error {
 	}
 
 	mgr.event.GaugeChange.Emit(event.GaugeChange{
-		Target:    target,
+		Key:       data.Key,
+		Target:    data.Target,
+		Source:    data.Source,
 		OldGauge:  prev,
-		NewGauge:  mgr.target(target).gauge,
+		NewGauge:  mgr.target(data.Target).gauge,
 		TurnOrder: status,
 	})
 	return nil
 }
 
-func (mgr *manager) ModifyGaugeNormalized(target key.TargetID, amt float64) error {
-	if _, ok := mgr.targetIndex[target]; !ok {
-		return fmt.Errorf("unknown target: %v", target)
+func (mgr *manager) ModifyGaugeNormalized(data info.ModifyAttribute) error {
+	if _, ok := mgr.targetIndex[data.Target]; !ok {
+		return fmt.Errorf("unknown target: %v", data.Target)
 	}
 
-	return mgr.SetGauge(target, mgr.target(target).gauge+amt*BaseGauge)
+	data.Amount = mgr.target(data.Target).gauge + data.Amount*BaseGauge
+	return mgr.SetGauge(data)
 }
 
-func (mgr *manager) ModifyGaugeAV(target key.TargetID, amt float64) error {
-	if _, ok := mgr.targetIndex[target]; !ok {
-		return fmt.Errorf("unknown target: %v", target)
+func (mgr *manager) ModifyGaugeAV(data info.ModifyAttribute) error {
+	if _, ok := mgr.targetIndex[data.Target]; !ok {
+		return fmt.Errorf("unknown target: %v", data.Target)
 	}
 
-	added := mgr.attr.Stats(target).SPD() * amt // SPD * AV = gauge
-	return mgr.SetGauge(target, mgr.target(target).gauge+added)
+	added := mgr.attr.Stats(data.Target).SPD() * data.Amount // SPD * AV = gauge
+	data.Amount = mgr.target(data.Target).gauge + added
+
+	return mgr.SetGauge(data)
 }
 
-func (mgr *manager) ModifyCurrentGaugeCost(amt float64) {
-	mgr.SetCurrentGaugeCost(mgr.gaugeCost + amt)
+func (mgr *manager) ModifyCurrentGaugeCost(data info.ModifyCurrentGaugeCost) {
+	data.Amount = mgr.gaugeCost + data.Amount
+	mgr.SetCurrentGaugeCost(data)
 }
 
-func (mgr *manager) SetCurrentGaugeCost(amt float64) {
+func (mgr *manager) SetCurrentGaugeCost(data info.ModifyCurrentGaugeCost) {
 	prev := mgr.gaugeCost
-	mgr.gaugeCost = amt
+	mgr.gaugeCost = data.Amount
 
 	if prev == mgr.gaugeCost {
 		return
 	}
 
 	mgr.event.CurrentGaugeCostChange.Emit(event.CurrentGaugeCostChange{
+		Key:     data.Key,
+		Source:  data.Source,
 		OldCost: prev,
 		NewCost: mgr.gaugeCost,
 	})

@@ -5,7 +5,6 @@ import (
 
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/prop"
-	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
@@ -174,11 +173,13 @@ func (s *Service) ModifyEnergyFixed(data info.ModifyAttribute) error {
 	})
 }
 
-func (s *Service) ModifySP(key key.Reason, amt int) error {
+func (s *Service) ModifySP(data info.ModifySP) error {
 	old := s.sp
-	s.sp += amt
+	s.sp += data.Amount
 	if s.sp > 5 {
 		s.sp = 5
+	} else if s.sp < 0 {
+		s.sp = 0
 	}
-	return s.emitSPChange(key, old, s.sp)
+	return s.emitSPChange(data.Key, data.Source, old, s.sp)
 }

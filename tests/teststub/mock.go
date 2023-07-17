@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/simimpact/srsim/pkg/engine/event"
+	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 )
 
@@ -49,20 +50,20 @@ func (m *mockManager) ResetTurn() error {
 	return nil
 }
 
-func (m *mockManager) SetGauge(target key.TargetID, amt float64) error {
+func (m *mockManager) SetGauge(data info.ModifyAttribute) error {
 	return nil
 }
 
-func (m *mockManager) ModifyGaugeNormalized(target key.TargetID, amt float64) error {
+func (m *mockManager) ModifyGaugeNormalized(data info.ModifyAttribute) error {
 	return nil
 }
 
-func (m *mockManager) ModifyGaugeAV(target key.TargetID, amt float64) error {
+func (m *mockManager) ModifyGaugeAV(data info.ModifyAttribute) error {
 	return nil
 }
 
-func (m *mockManager) SetCurrentGaugeCost(amt float64) {
+func (m *mockManager) SetCurrentGaugeCost(data info.ModifyCurrentGaugeCost) {
 }
 
-func (m *mockManager) ModifyCurrentGaugeCost(amt float64) {
+func (m *mockManager) ModifyCurrentGaugeCost(data info.ModifyCurrentGaugeCost) {
 }

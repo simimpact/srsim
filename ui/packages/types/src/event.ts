@@ -54,6 +54,7 @@ export interface StanceReset {
 export type SPChangeEventHandler = Handler<SPChange>;
 export interface SPChange {
   key: string;
+  source: string;
   old_sp: number /* int */;
   new_sp: number /* int */;
 }
@@ -301,13 +302,17 @@ export interface TurnReset {
 }
 export type GaugeChangeEventHandler = Handler<GaugeChange>;
 export interface GaugeChange {
+  key: string;
   target: string;
+  source: string;
   old_gauge: number /* float64 */;
   new_gauge: number /* float64 */;
   turn_order: TurnStatus[];
 }
 export type CurrentGaugeCostChangeEventHandler = Handler<CurrentGaugeCostChange>;
 export interface CurrentGaugeCostChange {
+  key: string;
+  source: string;
   old_cost: number /* float64 */;
   new_cost: number /* float64 */;
 }

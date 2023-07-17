@@ -204,17 +204,17 @@ func (mr *MockAttributeMockRecorder) ModifyHPByRatio(arg0, arg1 interface{}) *go
 }
 
 // ModifySP mocks base method.
-func (m *MockAttribute) ModifySP(arg0 key.Reason, arg1 int) error {
+func (m *MockAttribute) ModifySP(arg0 info.ModifySP) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ModifySP", arg0, arg1)
+	ret := m.ctrl.Call(m, "ModifySP", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // ModifySP indicates an expected call of ModifySP.
-func (mr *MockAttributeMockRecorder) ModifySP(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockAttributeMockRecorder) ModifySP(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifySP", reflect.TypeOf((*MockAttribute)(nil).ModifySP), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifySP", reflect.TypeOf((*MockAttribute)(nil).ModifySP), arg0)
 }
 
 // ModifyStance mocks base method.

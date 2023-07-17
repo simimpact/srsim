@@ -31,8 +31,8 @@ func (sim *Simulation) createSnapshot() snapshot {
 	}
 }
 
-func (sim *Simulation) ModifySP(reason key.Reason, amt int) error {
-	return sim.Attr.ModifySP(reason, amt)
+func (sim *Simulation) ModifySP(data info.ModifySP) error {
+	return sim.Attr.ModifySP(data)
 }
 
 func (sim *Simulation) SP() int {
@@ -88,25 +88,25 @@ func (sim *Simulation) ModifyEnergyFixed(data info.ModifyAttribute) error {
 	return sim.Attr.ModifyEnergyFixed(data)
 }
 
-func (sim *Simulation) SetGauge(target key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Turn.SetGauge(target, amt)
+func (sim *Simulation) SetGauge(data info.ModifyAttribute) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Turn.SetGauge(data)
 }
 
-func (sim *Simulation) ModifyGaugeNormalized(target key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Turn.ModifyGaugeNormalized(target, amt)
+func (sim *Simulation) ModifyGaugeNormalized(data info.ModifyAttribute) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Turn.ModifyGaugeNormalized(data)
 }
 
-func (sim *Simulation) ModifyGaugeAV(target key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Turn.ModifyGaugeAV(target, amt)
+func (sim *Simulation) ModifyGaugeAV(data info.ModifyAttribute) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Turn.ModifyGaugeAV(data)
 }
 
-func (sim *Simulation) SetCurrentGaugeCost(amt float64) {
-	sim.Turn.SetCurrentGaugeCost(amt)
+func (sim *Simulation) SetCurrentGaugeCost(data info.ModifyCurrentGaugeCost) {
+	sim.Turn.SetCurrentGaugeCost(data)
 }
 
-func (sim *Simulation) ModifyCurrentGaugeCost(amt float64) {
-	sim.Turn.ModifyCurrentGaugeCost(amt)
+func (sim *Simulation) ModifyCurrentGaugeCost(data info.ModifyCurrentGaugeCost) {
+	sim.Turn.ModifyCurrentGaugeCost(data)
 }

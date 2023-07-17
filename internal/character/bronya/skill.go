@@ -31,7 +31,12 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 
 	// Action forward
 	if target != c.id {
-		c.engine.SetGauge(target, 0)
+		c.engine.SetGauge(info.ModifyAttribute{
+			Key:    Skill,
+			Target: target,
+			Source: c.id,
+			Amount: 0,
+		})
 	}
 
 	buffDuration := 1
