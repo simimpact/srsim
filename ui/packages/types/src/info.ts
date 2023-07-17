@@ -576,6 +576,20 @@ export interface ComputedStats {
   effect_res: number /* float64 */;
   energy_regen: number /* float64 */;
   break_effect: number /* float64 */;
+  physical_damage_percent: number /* float64 */;
+  fire_damage_percent: number /* float64 */;
+  ice_damage_percent: number /* float64 */;
+  lightning_damage_percent: number /* float64 */;
+  wind_damage_percent: number /* float64 */;
+  quantum_damage_percent: number /* float64 */;
+  imaginary_damage_percent: number /* float64 */;
+  physical_res: number /* float64 */;
+  fire_res: number /* float64 */;
+  ice_res: number /* float64 */;
+  lightning_res: number /* float64 */;
+  wind_res: number /* float64 */;
+  quantum_res: number /* float64 */;
+  imaginary_res: number /* float64 */;
 }
 export interface LoggedProp {
   prop: string;
