@@ -5,7 +5,6 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
-	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
@@ -17,9 +16,9 @@ import (
 //	Using Skill to remove buff(s) increases the DMG of the next attack by 20%.
 
 const (
-	A2 key.Modifier = "pela-a2"
-	A4 key.Modifier = "pela-a4"
-	A6 key.Modifier = "pela-a6"
+	A2 = "pela-a2"
+	A4 = "pela-a4"
+	A6 = "pela-a6"
 )
 
 func init() {
@@ -27,7 +26,7 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: func(mod *modifier.Instance, e event.HitStart) {
 				if mod.Engine().ModifierStatusCount(e.Hit.Defender.ID(), model.StatusType_STATUS_DEBUFF) >= 1 {
-					e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.2)
+					e.Hit.Attacker.AddProperty(A2, prop.AllDamagePercent, 0.2)
 				}
 			},
 		},
@@ -53,7 +52,7 @@ func init() {
 	modifier.Register(A6, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: func(mod *modifier.Instance, e event.HitStart) {
-				e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.2)
+				e.Hit.Attacker.AddProperty(A6, prop.AllDamagePercent, 0.2)
 			},
 			OnAfterAttack: func(mod *modifier.Instance, e event.AttackEnd) {
 				mod.RemoveSelf()

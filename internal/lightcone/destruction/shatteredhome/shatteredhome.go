@@ -12,8 +12,7 @@ import (
 )
 
 const (
-	ShatteredHomeCheck key.Modifier = "shattered-home-check"
-	ShatteredHomeBuff  key.Modifier = "shattered-home-buff"
+	ShatteredHome = "shattered-home"
 )
 
 func init() {
@@ -24,7 +23,7 @@ func init() {
 		Promotions:    promotions,
 	})
 
-	modifier.Register(ShatteredHomeCheck, modifier.Config{
+	modifier.Register(ShatteredHome, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: onBeforeHitAll,
 		},
@@ -34,7 +33,7 @@ func init() {
 // The wear deals 20%/25%/30%/35%/40% more DMG to enemy targets whose HP percentage is greater than 50%.
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	engine.AddModifier(owner, info.Modifier{
-		Name:   ShatteredHomeCheck,
+		Name:   ShatteredHome,
 		Source: owner,
 		State:  0.15 + 0.05*float64(lc.Imposition),
 	})
@@ -42,6 +41,6 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 
 func onBeforeHitAll(mod *modifier.Instance, e event.HitStart) {
 	if e.Hit.Defender.CurrentHPRatio() > 0.5 {
-		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, mod.State().(float64))
+		e.Hit.Attacker.AddProperty(ShatteredHome, prop.AllDamagePercent, mod.State().(float64))
 	}
 }

@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	mod key.Modifier = "inert-salsotto"
+	name = "inert-salsotto"
 )
 
 // 2pc:
@@ -27,7 +27,7 @@ func init() {
 				Stats:    info.PropMap{prop.CritChance: 0.08},
 				CreateEffect: func(engine engine.Engine, owner key.TargetID) {
 					engine.AddModifier(owner, info.Modifier{
-						Name:   mod,
+						Name:   name,
 						Source: owner,
 					})
 				},
@@ -35,7 +35,7 @@ func init() {
 		},
 	})
 
-	modifier.Register(mod, modifier.Config{
+	modifier.Register(name, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeHit: onBeforeHit,
 		},
@@ -46,7 +46,7 @@ func onBeforeHit(mod *modifier.Instance, e event.HitStart) {
 	stats := mod.OwnerStats()
 	if stats.CritChance() >= 0.50 {
 		if e.Hit.AttackType == model.AttackType_ULT || e.Hit.AttackType == model.AttackType_INSERT {
-			e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.15)
+			e.Hit.Attacker.AddProperty(name, prop.AllDamagePercent, 0.15)
 		}
 	}
 }

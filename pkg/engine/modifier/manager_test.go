@@ -40,7 +40,7 @@ func TestOnPropertyChangeBuff(t *testing.T) {
 	conditionalMod := key.Modifier("TestOnPropertyChangeBuffMod1")
 	otherMod := key.Modifier("TestOnPropertyChangeBuffMod2")
 	target := key.TargetID(1)
-	var mods info.ModifierState
+	var mods *info.ModifierState
 	var expectedProps info.PropMap
 
 	modifier.Register(conditionalMod, modifier.Config{
@@ -97,7 +97,7 @@ func TestReplaceStacking(t *testing.T) {
 
 	mod := key.Modifier("TestReplaceStacking")
 	target := key.TargetID(1)
-	var mods info.ModifierState
+	var mods *info.ModifierState
 	var expectedProps info.PropMap
 
 	modifier.Register(mod, modifier.Config{
@@ -211,7 +211,7 @@ func TestTickImmediatelyBeforeAction(t *testing.T) {
 	manager, mockCtrl := NewTestManager(t)
 	defer mockCtrl.Finish()
 
-	var mods info.ModifierState
+	var mods *info.ModifierState
 	mod := key.Modifier("TestTickImmediatelyBeforeAction")
 	target := key.TargetID(3)
 
@@ -244,7 +244,7 @@ func TestTickImmediatelyAfterAction(t *testing.T) {
 	manager, mockCtrl := NewTestManager(t)
 	defer mockCtrl.Finish()
 
-	var mods info.ModifierState
+	var mods *info.ModifierState
 	mod := key.Modifier("TestTickImmediatelyBeforeAction")
 	target := key.TargetID(3)
 
@@ -338,6 +338,11 @@ func TestModifierRemovesInListener(t *testing.T) {
 	expectedRemaining := []key.Modifier{modA, modC}
 	state := manager.EvalModifiers(target)
 
+	actual := make([]key.Modifier, 0)
+	for _, m := range state.Modifiers {
+		actual = append(actual, m.Name)
+	}
+
 	assert.Equal(t, expectedCalls, calls)
-	assert.ElementsMatch(t, expectedRemaining, state.Modifiers)
+	assert.ElementsMatch(t, expectedRemaining, actual)
 }

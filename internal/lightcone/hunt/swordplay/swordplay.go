@@ -12,9 +12,9 @@ import (
 )
 
 const (
-	Check  key.Modifier = "swordplay_check"
-	Buff   key.Modifier = "swordplay_buff"
-	Target key.Modifier = "swordplay_target"
+	Check               = "swordplay"
+	Buff   key.Modifier = "swordplay-buff"
+	Target key.Modifier = "swordplay-target"
 )
 
 // For each time the wearer hits the same target, DMG dealt increases by
@@ -61,7 +61,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 func onBeforeHit(mod *modifier.Instance, e event.HitStart) {
 	if !mod.Engine().HasModifierFromSource(e.Defender, mod.Owner(), Target) {
 		stacks := mod.Engine().ModifierStackCount(mod.Owner(), mod.Owner(), Buff)
-		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, -mod.State().(float64)*stacks)
+		e.Hit.Attacker.AddProperty(Check, prop.AllDamagePercent, -mod.State().(float64)*stacks)
 		mod.Engine().RemoveModifier(mod.Owner(), Buff)
 
 		for _, enemy := range mod.Engine().Enemies() {

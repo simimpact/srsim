@@ -10,7 +10,7 @@ import (
 type activeModifiers []*Instance
 
 type Eval interface {
-	EvalModifiers(target key.TargetID) info.ModifierState
+	EvalModifiers(target key.TargetID) *info.ModifierState
 }
 
 type Manager struct {

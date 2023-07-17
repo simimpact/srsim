@@ -23,7 +23,7 @@ func TestBaseDamageByATK(t *testing.T) {
 		HitRatio:   1.0,
 	}
 
-	hit.Attacker.AddProperty(prop.ATKBase, 100.0)
+	hit.Attacker.AddProperty("tst", prop.ATKBase, 100.0)
 	result := baseDamage(hit)
 
 	assert.Equal(t, 50.0, result)
@@ -42,7 +42,7 @@ func TestCritCheckNormal(t *testing.T) {
 		HitRatio:   1.0,
 	}
 
-	hit.Attacker.AddProperty(prop.CritChance, 1.0)
+	hit.Attacker.AddProperty("tst", prop.CritChance, 1.0)
 	assert.True(t, crit(hit, rdm), "is a crit with 100% chance")
 }
 
@@ -60,6 +60,6 @@ func TestCritCheckPureDamage(t *testing.T) {
 		AsPureDamage: true,
 	}
 
-	hit.Attacker.AddProperty(prop.CritChance, 1.0)
+	hit.Attacker.AddProperty("tst", prop.CritChance, 1.0)
 	assert.False(t, crit(hit, rdm), "is never a crit")
 }

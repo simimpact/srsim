@@ -413,7 +413,13 @@ export interface ModifierState {
   weakness: WeaknessMap;
   flags: string[];
   counts: { [key: string]: number /* int */};
-  modifiers: string[];
+  modifiers: ModifierChangeSet[];
+}
+export interface ModifierChangeSet {
+  name: string;
+  props: PropMap;
+  debuff_res: DebuffRESMap;
+  weakness: WeaknessMap;
 }
 
 //////////
@@ -549,13 +555,13 @@ export interface StatsEncoded {
   hp_ratio: number /* float64 */;
   energy: number /* float64 */;
   stance: number /* float64 */;
-  props: PropMap;
-  debuff_res: DebuffRESMap;
-  weakness: WeaknessMap;
+  stats?: ComputedStats;
   flags: string[];
   status_counts: { [key: string]: number /* int */};
-  modifiers: string[];
-  stats?: ComputedStats;
+  modifiers: { [key: string]: number /* int */};
+  props: (LoggedProp | undefined)[];
+  debuff_res: (LoggedDebuffRES | undefined)[];
+  weakness: WeaknessMap;
 }
 export interface ComputedStats {
   hp: number /* float64 */;
@@ -570,4 +576,32 @@ export interface ComputedStats {
   effect_res: number /* float64 */;
   energy_regen: number /* float64 */;
   break_effect: number /* float64 */;
+  physical_damage_percent: number /* float64 */;
+  fire_damage_percent: number /* float64 */;
+  ice_damage_percent: number /* float64 */;
+  lightning_damage_percent: number /* float64 */;
+  wind_damage_percent: number /* float64 */;
+  quantum_damage_percent: number /* float64 */;
+  imaginary_damage_percent: number /* float64 */;
+  physical_res: number /* float64 */;
+  fire_res: number /* float64 */;
+  ice_res: number /* float64 */;
+  lightning_res: number /* float64 */;
+  wind_res: number /* float64 */;
+  quantum_res: number /* float64 */;
+  imaginary_res: number /* float64 */;
+}
+export interface LoggedProp {
+  prop: string;
+  total: number /* float64 */;
+  sources: FloatChangeSet[];
+}
+export interface LoggedDebuffRES {
+  flag: string;
+  total: number /* float64 */;
+  sources: FloatChangeSet[];
+}
+export interface FloatChangeSet {
+  key: string;
+  amount: number /* float64 */;
 }

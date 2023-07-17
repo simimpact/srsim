@@ -19,7 +19,7 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: func(mod *modifier.Instance, e event.HitStart) {
 				if e.Hit.Defender.CurrentHPRatio() >= 0.5 {
-					e.Hit.Attacker.AddProperty(prop.CritChance, 0.12)
+					e.Hit.Attacker.AddProperty(E1, prop.CritChance, 0.12)
 				}
 			},
 		},

@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	SampoDOTTaken key.Modifier = "sampo-dot-taken"
-	Ult           key.Attack   = "sampo-ult"
+	SampoDOTTaken            = "sampo-dot-taken"
+	Ult           key.Attack = "sampo-ult"
 )
 
 func init() {
@@ -61,6 +61,6 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 
 func onBeforeBeingHitAll(mod *modifier.Instance, e event.HitStart) {
 	if e.Hit.AttackType == model.AttackType_DOT {
-		e.Hit.Defender.AddProperty(prop.AllDamageTaken, mod.State().(float64))
+		e.Hit.Defender.AddProperty(SampoDOTTaken, prop.AllDamageTaken, mod.State().(float64))
 	}
 }

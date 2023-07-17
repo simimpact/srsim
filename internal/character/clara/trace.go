@@ -19,7 +19,7 @@ import (
 const (
 	A2 key.Modifier = "clara-a2"
 	A4 key.Modifier = "clara-a4"
-	A6 key.Modifier = "clara-a6"
+	A6              = "clara-a6"
 )
 
 func init() {
@@ -41,7 +41,7 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnBeforeHit: func(mod *modifier.Instance, e event.HitStart) {
 				if e.Hit.AttackType == model.AttackType_INSERT {
-					e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.3)
+					e.Hit.Attacker.AddProperty(A6, prop.AllDamagePercent, 0.3)
 				}
 			},
 		},

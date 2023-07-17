@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	Talent   key.Modifier = "dan-heng-talent"
+	Talent                = "dan-heng-talent"
 	TalentCD key.Modifier = "dan-heng-talent-cd"
 )
 
@@ -73,7 +73,7 @@ func talentBeforeHitAll(mod *modifier.Instance, e event.HitStart) {
 	if e.Hit.AttackType == model.AttackType_NORMAL ||
 		e.Hit.AttackType == model.AttackType_SKILL ||
 		e.Hit.AttackType == model.AttackType_ULT {
-		e.Hit.Attacker.AddProperty(prop.WindPEN, state.penAmt)
+		e.Hit.Attacker.AddProperty(Talent, prop.WindPEN, state.penAmt)
 	}
 }
 

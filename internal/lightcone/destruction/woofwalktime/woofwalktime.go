@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	mod key.Modifier = "woof-walk-time"
+	WoofWalkTime = "woof-walk-time"
 )
 
 // Increases the wearer's ATK by 10%, and increases their DMG to enemies
@@ -25,7 +25,7 @@ func init() {
 		Path:          model.Path_DESTRUCTION,
 		Promotions:    promotions,
 	})
-	modifier.Register(mod, modifier.Config{
+	modifier.Register(WoofWalkTime, modifier.Config{
 		CanModifySnapshot: true,
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: dmgBoostOnBurnBleed,
@@ -38,7 +38,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	dmgBoostAmt := 0.12 + 0.04*float64(lc.Imposition)
 
 	engine.AddModifier(owner, info.Modifier{
-		Name:   mod,
+		Name:   WoofWalkTime,
 		Source: owner,
 		Stats:  info.PropMap{prop.ATKPercent: atkAmt},
 		State:  dmgBoostAmt,
@@ -54,6 +54,6 @@ func dmgBoostOnBurnBleed(mod *modifier.Instance, e event.HitStart) {
 	dmgBoostAmt := mod.State().(float64)
 
 	if mod.Engine().HasBehaviorFlag(e.Defender, triggerFlags...) {
-		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, dmgBoostAmt)
+		e.Hit.Attacker.AddProperty(WoofWalkTime, prop.AllDamagePercent, dmgBoostAmt)
 	}
 }
