@@ -62,8 +62,8 @@ func (m *mockManager) ModifyGaugeAV(data info.ModifyAttribute) error {
 	return nil
 }
 
-func (m *mockManager) SetCurrentGaugeCost(amt float64) {
+func (m *mockManager) SetCurrentGaugeCost(data info.ModifyCurrentGaugeCost) {
 }
 
-func (m *mockManager) ModifyCurrentGaugeCost(amt float64) {
+func (m *mockManager) ModifyCurrentGaugeCost(data info.ModifyCurrentGaugeCost) {
 }

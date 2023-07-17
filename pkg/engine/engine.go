@@ -184,10 +184,10 @@ type Turn interface {
 	// Sets the current gauge cost to the given amount (the default value for gauge cost is 1.0).
 	// This determines what the active target's gauge will be set to on "Turn Reset" (at Action End).
 	// This is used by stuff like freeze which will set the targets next to be half gauge.
-	SetCurrentGaugeCost(amt float64)
+	SetCurrentGaugeCost(data info.ModifyCurrentGaugeCost)
 
 	// Modifies the current gauge cost by the given amount (will add to the current gauge cost value).
-	ModifyCurrentGaugeCost(amt float64)
+	ModifyCurrentGaugeCost(data info.ModifyCurrentGaugeCost)
 }
 
 type Info interface {

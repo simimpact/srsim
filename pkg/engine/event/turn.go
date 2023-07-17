@@ -30,8 +30,10 @@ type GaugeChange struct {
 
 type CurrentGaugeCostChangeEventHandler = handler.EventHandler[CurrentGaugeCostChange]
 type CurrentGaugeCostChange struct {
-	OldCost float64 `json:"old_cost"`
-	NewCost float64 `json:"new_cost"`
+	Key     key.Reason   `json:"key"`
+	Source  key.TargetID `json:"source"`
+	OldCost float64      `json:"old_cost"`
+	NewCost float64      `json:"new_cost"`
 }
 
 type TurnStatus struct {

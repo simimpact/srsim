@@ -507,7 +507,7 @@ func (mr *MockEngineMockRecorder) ModifierStatusCount(arg0, arg1 interface{}) *g
 }
 
 // ModifyCurrentGaugeCost mocks base method.
-func (m *MockEngine) ModifyCurrentGaugeCost(arg0 float64) {
+func (m *MockEngine) ModifyCurrentGaugeCost(arg0 info.ModifyCurrentGaugeCost) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "ModifyCurrentGaugeCost", arg0)
 }
@@ -721,7 +721,7 @@ func (mr *MockEngineMockRecorder) SP() *gomock.Call {
 }
 
 // SetCurrentGaugeCost mocks base method.
-func (m *MockEngine) SetCurrentGaugeCost(arg0 float64) {
+func (m *MockEngine) SetCurrentGaugeCost(arg0 info.ModifyCurrentGaugeCost) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "SetCurrentGaugeCost", arg0)
 }

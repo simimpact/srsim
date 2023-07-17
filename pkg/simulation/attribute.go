@@ -103,10 +103,10 @@ func (sim *Simulation) ModifyGaugeAV(data info.ModifyAttribute) error {
 	return sim.Turn.ModifyGaugeAV(data)
 }
 
-func (sim *Simulation) SetCurrentGaugeCost(amt float64) {
-	sim.Turn.SetCurrentGaugeCost(amt)
+func (sim *Simulation) SetCurrentGaugeCost(data info.ModifyCurrentGaugeCost) {
+	sim.Turn.SetCurrentGaugeCost(data)
 }
 
-func (sim *Simulation) ModifyCurrentGaugeCost(amt float64) {
-	sim.Turn.ModifyCurrentGaugeCost(amt)
+func (sim *Simulation) ModifyCurrentGaugeCost(data info.ModifyCurrentGaugeCost) {
+	sim.Turn.ModifyCurrentGaugeCost(data)
 }

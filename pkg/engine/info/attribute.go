@@ -63,6 +63,17 @@ type ModifySP struct {
 	Amount int `json:"amount"`
 }
 
+type ModifyCurrentGaugeCost struct {
+	// A unique identifier for this modification
+	Key key.Reason `json:"key"`
+
+	// The source of this modification
+	Source key.TargetID `json:"source"`
+
+	// The amount of gauge cost to be changed
+	Amount float64 `json:"amount"`
+}
+
 func DefaultAttribute() Attributes {
 	return Attributes{
 		Level:         1,

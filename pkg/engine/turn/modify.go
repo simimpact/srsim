@@ -76,19 +76,22 @@ func (mgr *manager) ModifyGaugeAV(data info.ModifyAttribute) error {
 	return mgr.SetGauge(data)
 }
 
-func (mgr *manager) ModifyCurrentGaugeCost(amt float64) {
-	mgr.SetCurrentGaugeCost(mgr.gaugeCost + amt)
+func (mgr *manager) ModifyCurrentGaugeCost(data info.ModifyCurrentGaugeCost) {
+	data.Amount = mgr.gaugeCost + data.Amount
+	mgr.SetCurrentGaugeCost(data)
 }
 
-func (mgr *manager) SetCurrentGaugeCost(amt float64) {
+func (mgr *manager) SetCurrentGaugeCost(data info.ModifyCurrentGaugeCost) {
 	prev := mgr.gaugeCost
-	mgr.gaugeCost = amt
+	mgr.gaugeCost = data.Amount
 
 	if prev == mgr.gaugeCost {
 		return
 	}
 
 	mgr.event.CurrentGaugeCostChange.Emit(event.CurrentGaugeCostChange{
+		Key:     data.Key,
+		Source:  data.Source,
 		OldCost: prev,
 		NewCost: mgr.gaugeCost,
 	})
