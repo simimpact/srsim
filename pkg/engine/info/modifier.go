@@ -82,5 +82,12 @@ type ModifierState struct {
 	Weakness  WeaknessMap              `json:"weakness"`
 	Flags     []model.BehaviorFlag     `json:"flags"`
 	Counts    map[model.StatusType]int `json:"counts"`
-	Modifiers []key.Modifier           `json:"modifiers"`
+	Modifiers []ModifierChangeSet      `json:"modifiers"`
+}
+
+type ModifierChangeSet struct {
+	Name      key.Modifier `json:"name"`
+	Props     PropMap      `json:"props"`
+	DebuffRES DebuffRESMap `json:"debuff_res"`
+	Weakness  WeaknessMap  `json:"weakness"`
 }

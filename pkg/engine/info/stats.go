@@ -11,41 +11,53 @@ import (
 // A snapshot of a targets stats at a point in time
 type Stats struct {
 	id           key.TargetID
-	level        int
-	currentHP    float64
-	energy       float64
-	maxEnergy    float64
-	stance       float64
-	maxStance    float64
 	props        PropMap
 	debuffRES    DebuffRESMap
 	weakness     WeaknessMap
 	flags        []model.BehaviorFlag
 	statusCounts map[model.StatusType]int
-	modifiers    []key.Modifier
+	modifiers    []ModifierChangeSet
+	attributes   *Attributes
+	// TODO: change set for add prop && add debuff res calls
 }
 
-// TODO: ToProto method for logging
-
-func NewStats(id key.TargetID, attributes *Attributes, mods ModifierState) *Stats {
+func NewStats(id key.TargetID, attributes *Attributes, mods *ModifierState) *Stats {
 	mods.Props.AddAll(attributes.BaseStats)
 	mods.DebuffRES.AddAll(attributes.BaseDebuffRES)
 	mods.Weakness.AddAll(attributes.Weakness)
-	// TODO: merge weaknesses between attributes + mods for cases of weakness app like Silver Wolf
+
 	return &Stats{
 		id:           id,
-		level:        attributes.Level,
-		currentHP:    attributes.HPRatio,
-		energy:       attributes.Energy,
-		maxEnergy:    attributes.MaxEnergy,
-		stance:       attributes.Stance,
-		maxStance:    attributes.MaxStance,
-		weakness:     attributes.Weakness,
 		props:        mods.Props,
 		debuffRES:    mods.DebuffRES,
+		weakness:     mods.Weakness,
 		flags:        mods.Flags,
 		statusCounts: mods.Counts,
 		modifiers:    mods.Modifiers,
+		attributes:   copyAttributes(attributes),
+	}
+}
+
+func copyAttributes(attributes *Attributes) *Attributes {
+	props := make(PropMap, len(attributes.BaseStats))
+	props.AddAll(attributes.BaseStats)
+
+	debuffRES := make(DebuffRESMap, len(attributes.BaseDebuffRES))
+	debuffRES.AddAll(attributes.BaseDebuffRES)
+
+	weakness := make(WeaknessMap, len(attributes.Weakness))
+	weakness.AddAll(attributes.Weakness)
+
+	return &Attributes{
+		Level:         attributes.Level,
+		BaseStats:     props,
+		BaseDebuffRES: debuffRES,
+		Weakness:      weakness,
+		HPRatio:       attributes.HPRatio,
+		Energy:        attributes.Energy,
+		MaxEnergy:     attributes.MaxEnergy,
+		Stance:        attributes.Stance,
+		MaxStance:     attributes.MaxStance,
 	}
 }
 
@@ -92,7 +104,7 @@ func (stats *Stats) StatusCount(status model.StatusType) int {
 }
 
 // A list of all modifiers that were used to populate this Stats
-func (stats *Stats) Modifiers() []key.Modifier {
+func (stats *Stats) Modifiers() []ModifierChangeSet {
 	return stats.modifiers
 }
 
@@ -103,37 +115,37 @@ func (stats *Stats) IsWeakTo(t model.DamageType) bool {
 
 // The current level of the target.
 func (stats *Stats) Level() int {
-	return stats.level
+	return stats.attributes.Level
 }
 
 // The current HP amount of the target (HPRatio * MaxHP)
 func (stats *Stats) CurrentHP() float64 {
-	return stats.currentHP * stats.MaxHP()
+	return stats.attributes.HPRatio * stats.MaxHP()
 }
 
 // The current HPRatio (value between 0 and 1).
 func (stats *Stats) CurrentHPRatio() float64 {
-	return stats.currentHP
+	return stats.attributes.HPRatio
 }
 
 // The current Stance/Toughness amount of the target
 func (stats *Stats) Stance() float64 {
-	return stats.stance
+	return stats.attributes.Stance
 }
 
 // The max Stance/Toughness amount of the target
 func (stats *Stats) MaxStance() float64 {
-	return stats.maxStance
+	return stats.attributes.MaxStance
 }
 
 // The current energy amount of the target
 func (stats *Stats) Energy() float64 {
-	return stats.energy
+	return stats.attributes.Energy
 }
 
 // The max energy amount of the target
 func (stats *Stats) MaxEnergy() float64 {
-	return stats.maxEnergy
+	return stats.attributes.MaxEnergy
 }
 
 // HP = HP_BASE * (1 + HP_PERCENT) + HP_FLAT + HP_CONVERT
@@ -230,13 +242,13 @@ type StatsEncoded struct {
 	HPRatio      float64                  `json:"hp_ratio"`
 	Energy       float64                  `json:"energy"`
 	Stance       float64                  `json:"stance"`
-	Props        PropMap                  `json:"props"`
-	DebuffRES    DebuffRESMap             `json:"debuff_res"`
-	Weakness     WeaknessMap              `json:"weakness"`
+	Stats        *ComputedStats           `json:"stats"`
 	Flags        []model.BehaviorFlag     `json:"flags"`
 	StatusCounts map[model.StatusType]int `json:"status_counts"`
-	Modifiers    []key.Modifier           `json:"modifiers"`
-	Stats        *ComputedStats           `json:"stats"`
+	Modifiers    map[key.Modifier]int     `json:"modifiers"`
+	Props        []*LoggedProp            `json:"props"`
+	DebuffRES    []*LoggedDebuffRES       `json:"debuff_res"`
+	Weakness     WeaknessMap              `json:"weakness"`
 }
 
 type ComputedStats struct {
@@ -254,18 +266,99 @@ type ComputedStats struct {
 	BreakEffect   float64 `json:"break_effect"`
 }
 
+type LoggedProp struct {
+	Prop    prop.Property    `json:"prop"`
+	Total   float64          `json:"total"`
+	Sources []FloatChangeSet `json:"sources"`
+}
+
+type LoggedDebuffRES struct {
+	Flag    model.BehaviorFlag `json:"flag"`
+	Total   float64            `json:"total"`
+	Sources []FloatChangeSet   `json:"sources"`
+}
+
+type FloatChangeSet struct {
+	Key    key.Reason `json:"key"`
+	Amount float64    `json:"amount"`
+}
+
 func (stats *Stats) MarshalJSON() ([]byte, error) {
+	modOccurrences := make(map[key.Modifier]int, len(stats.modifiers))
+	props := make(map[prop.Property]*LoggedProp, prop.Total())
+	debuffRES := make(map[model.BehaviorFlag]*LoggedDebuffRES, len(model.BehaviorFlag_name))
+
+	for p, amt := range stats.props {
+		props[p] = &LoggedProp{
+			Prop:    p,
+			Total:   amt,
+			Sources: make([]FloatChangeSet, 0, 8),
+		}
+	}
+
+	for f, amt := range stats.debuffRES {
+		debuffRES[f] = &LoggedDebuffRES{
+			Flag:    f,
+			Total:   amt,
+			Sources: make([]FloatChangeSet, 0, 8),
+		}
+	}
+
+	for p, amt := range stats.attributes.BaseStats {
+		props[p].Sources = append(props[p].Sources, FloatChangeSet{
+			Key:    "base",
+			Amount: amt,
+		})
+	}
+
+	for f, amt := range stats.attributes.BaseDebuffRES {
+		debuffRES[f].Sources = append(debuffRES[f].Sources, FloatChangeSet{
+			Key:    "base",
+			Amount: amt,
+		})
+	}
+
+	for _, m := range stats.modifiers {
+		modOccurrences[m.Name] += 1
+
+		for p, amt := range m.Props {
+			props[p].Sources = append(props[p].Sources, FloatChangeSet{
+				Key:    key.Reason(m.Name),
+				Amount: amt,
+			})
+		}
+
+		for f, amt := range m.DebuffRES {
+			debuffRES[f].Sources = append(debuffRES[f].Sources, FloatChangeSet{
+				Key:    key.Reason(m.Name),
+				Amount: amt,
+			})
+		}
+	}
+
+	// TODO: props additional changes
+
+	loggedProps := make([]*LoggedProp, 0, len(props))
+	for _, v := range props {
+		loggedProps = append(loggedProps, v)
+	}
+
+	loggedDebuffRES := make([]*LoggedDebuffRES, 0, len(debuffRES))
+	for _, v := range debuffRES {
+		loggedDebuffRES = append(loggedDebuffRES, v)
+	}
+
 	out := StatsEncoded{
 		ID:           stats.ID(),
 		HPRatio:      stats.CurrentHPRatio(),
 		Energy:       stats.Energy(),
 		Stance:       stats.Stance(),
-		DebuffRES:    stats.debuffRES,
+		Props:        loggedProps,
+		DebuffRES:    loggedDebuffRES,
 		Weakness:     stats.weakness,
 		Flags:        stats.flags,
 		StatusCounts: stats.statusCounts,
-		Modifiers:    stats.Modifiers(),
-		Props:        stats.props,
+		Modifiers:    modOccurrences,
 		Stats: &ComputedStats{
 			HP:            stats.HP(),
 			ATK:           stats.ATK(),
