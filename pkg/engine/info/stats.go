@@ -254,6 +254,16 @@ func (stats *Stats) BreakEffect() float64 {
 	return stats.props[prop.BreakEffect]
 }
 
+// DAMAGE_PERCENT = ALL_DAMAGE_PERCENT + DAMAGE_TYPE_PERCENT
+func (stats *Stats) DamagePercent(dmg model.DamageType) float64 {
+	return stats.props[prop.AllDamagePercent] + stats.props[prop.DamagePercent(dmg)]
+}
+
+// DAMAGE_RES = ALL_DAMAGE_RES + DAMAGE_TYPE_RES
+func (stats *Stats) DamageRES(dmg model.DamageType) float64 {
+	return stats.props[prop.AllDamageRES] + stats.props[prop.DamageRES(dmg)]
+}
+
 func statCalc(base, percent, flat float64) float64 {
 	out := base*(1+percent) + flat
 	if out < 0 {
@@ -277,18 +287,32 @@ type StatsEncoded struct {
 }
 
 type ComputedStats struct {
-	HP            float64 `json:"hp"`
-	ATK           float64 `json:"atk"`
-	DEF           float64 `json:"def"`
-	SPD           float64 `json:"spd"`
-	Aggro         float64 `json:"aggro"`
-	CritChance    float64 `json:"crit_chance"`
-	CritDMG       float64 `json:"crit_dmg"`
-	HealBoost     float64 `json:"heal_boost"`
-	EffectHitRate float64 `json:"effect_hit_rate"`
-	EffectRES     float64 `json:"effect_res"`
-	EnergyRegen   float64 `json:"energy_regen"`
-	BreakEffect   float64 `json:"break_effect"`
+	HP                     float64 `json:"hp"`
+	ATK                    float64 `json:"atk"`
+	DEF                    float64 `json:"def"`
+	SPD                    float64 `json:"spd"`
+	Aggro                  float64 `json:"aggro"`
+	CritChance             float64 `json:"crit_chance"`
+	CritDMG                float64 `json:"crit_dmg"`
+	HealBoost              float64 `json:"heal_boost"`
+	EffectHitRate          float64 `json:"effect_hit_rate"`
+	EffectRES              float64 `json:"effect_res"`
+	EnergyRegen            float64 `json:"energy_regen"`
+	BreakEffect            float64 `json:"break_effect"`
+	PhysicalDamagePercent  float64 `json:"physical_damage_percent"`
+	FireDamagePercent      float64 `json:"fire_damage_percent"`
+	IceDamagePercent       float64 `json:"ice_damage_percent"`
+	LightningDamagePercent float64 `json:"lightning_damage_percent"`
+	WindDamagePercent      float64 `json:"wind_damage_percent"`
+	QuantumDamagePercent   float64 `json:"quantum_damage_percent"`
+	ImaginaryDamagePercent float64 `json:"imaginary_damage_percent"`
+	PhysicalRES            float64 `json:"physical_res"`
+	FireRES                float64 `json:"fire_res"`
+	IceRES                 float64 `json:"ice_res"`
+	LightningRES           float64 `json:"lightning_res"`
+	WindRES                float64 `json:"wind_res"`
+	QuantumRES             float64 `json:"quantum_res"`
+	ImaginaryRES           float64 `json:"imaginary_res"`
 }
 
 type LoggedProp struct {
@@ -397,18 +421,39 @@ func (stats *Stats) MarshalJSON() ([]byte, error) {
 		StatusCounts: stats.statusCounts,
 		Modifiers:    modOccurrences,
 		Stats: &ComputedStats{
-			HP:            stats.HP(),
-			ATK:           stats.ATK(),
-			DEF:           stats.DEF(),
-			SPD:           stats.SPD(),
+			// base stats
+			HP:  stats.HP(),
+			ATK: stats.ATK(),
+			DEF: stats.DEF(),
+			SPD: stats.SPD(),
+
+			// advanced stats
 			CritChance:    stats.CritChance(),
 			CritDMG:       stats.CritDamage(),
+			BreakEffect:   stats.BreakEffect(),
 			HealBoost:     stats.HealBoost(),
+			EnergyRegen:   stats.EnergyRegen(),
 			EffectHitRate: stats.EffectHitRate(),
 			EffectRES:     stats.EffectRES(),
-			EnergyRegen:   stats.EnergyRegen(),
-			BreakEffect:   stats.BreakEffect(),
-			Aggro:         stats.Aggro(),
+
+			// dmg type
+			PhysicalDamagePercent:  stats.DamagePercent(model.DamageType_PHYSICAL),
+			FireDamagePercent:      stats.DamagePercent(model.DamageType_FIRE),
+			IceDamagePercent:       stats.DamagePercent(model.DamageType_ICE),
+			LightningDamagePercent: stats.DamagePercent(model.DamageType_THUNDER),
+			WindDamagePercent:      stats.DamagePercent(model.DamageType_WIND),
+			QuantumDamagePercent:   stats.DamagePercent(model.DamageType_QUANTUM),
+			ImaginaryDamagePercent: stats.DamagePercent(model.DamageType_IMAGINARY),
+			PhysicalRES:            stats.DamageRES(model.DamageType_PHYSICAL),
+			FireRES:                stats.DamageRES(model.DamageType_FIRE),
+			IceRES:                 stats.DamageRES(model.DamageType_ICE),
+			LightningRES:           stats.DamageRES(model.DamageType_THUNDER),
+			WindRES:                stats.DamageRES(model.DamageType_WIND),
+			QuantumRES:             stats.DamageRES(model.DamageType_QUANTUM),
+			ImaginaryRES:           stats.DamageRES(model.DamageType_IMAGINARY),
+
+			// hidden stats
+			Aggro: stats.Aggro(),
 		},
 	}
 	return json.Marshal(out)

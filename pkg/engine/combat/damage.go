@@ -31,12 +31,12 @@ func bonusDamage(h *info.Hit) float64 {
 	// If hit doesn't use break damage equation, adds dmg%
 	// Otherwise, adds break effect%
 	if !h.AsPureDamage {
-		dmg += h.Attacker.GetProperty(prop.AllDamagePercent)
-		dmg += h.Attacker.GetProperty(prop.DamagePercent(h.DamageType))
+		dmg += h.Attacker.DamagePercent(h.DamageType)
 		if h.AttackType == model.AttackType_DOT {
 			dmg += h.Attacker.GetProperty(prop.DOTDamagePercent)
 		}
 	}
+
 	if h.BaseDamage[model.DamageFormula_BY_BREAK_DAMAGE] != 0 {
 		dmg += h.Attacker.BreakEffect()
 	}
@@ -51,8 +51,7 @@ func defMult(h *info.Hit) float64 {
 }
 
 func res(h *info.Hit) float64 {
-	res := h.Defender.GetProperty(prop.AllDamageRES)
-	res += h.Defender.GetProperty(prop.DamageRES(h.DamageType)) - h.Attacker.GetProperty(prop.DamagePEN(h.DamageType))
+	res := h.Defender.DamageRES(h.DamageType) - h.Attacker.GetProperty(prop.DamagePEN(h.DamageType))
 
 	if res < -1 {
 		res = -1
