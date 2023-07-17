@@ -6,5 +6,5 @@ import (
 
 type Instance struct {
 	name key.Shield
-	HP   float64
+	hp   float64
 }

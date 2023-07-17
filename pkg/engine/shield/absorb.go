@@ -6,37 +6,51 @@ import (
 )
 
 func (mgr *Manager) AbsorbDamage(target key.TargetID, damage float64) float64 {
-	// TODO: ACTUAL SHIELD LOGIC GOES HERE
-	// 1. for every shield on this target, attempt to deal "damage" amount of damage to the shield
-	// 2. for each shield, a ShieldChangeEvent should be emitted (how much damage was done to the shield)
-	// 3. if shield HP <= damage, remove that shield (mgr.RemoveShield to generate event)
-	// 4. if all shields HP <= damage, return will be damage - max(ShieldHP) [the damage not blocked by shield]
-	// 5. if there are shields which HP > damage, return should be 0
-	// 6. remaining state should be only shields that starting HP > damage
-
-	// placeholder just for some basic event emission
-	for _, shield := range mgr.targets[target] {
-		prevHP := shield.HP
-		shield.HP -= damage
-		if shield.HP < 0 {
-			shield.HP = 0
+	// Check if incoming damage = 0
+	if damage != 0 {
+		var removedShields []*Instance
+		i := 0
+		// If not 0, then run loop to apply damage to all shields
+		for _, shield := range mgr.targets[target] {
+			shield.hp -= damage
+			if shield.hp < 0 {
+				shield.hp = 0
+			}
+			// Generate list of shields to remove
+			if shield.hp == 0 {
+				removedShields = append(removedShields, shield)
+			} else {
+				mgr.targets[target][i] = shield
+				i++
+			}
 		}
+		mgr.targets[target] = mgr.targets[target][:i]
+
+		// Getting outgoing damage
+		maxShield := mgr.MaxShield(target)
+		maxShieldHP := mgr.targets[target][maxShield]
+		newMaxShieldHP := maxShieldHP.hp - damage
+		damageOut := -newMaxShieldHP
+		if damageOut < 0 {
+			damageOut = 0
+		}
+
+		// Event emission to remove shields that have 0 hp
+		for _, shield := range removedShields {
+			mgr.event.ShieldRemoved.Emit(event.ShieldRemoved{
+				ID:     shield.name,
+				Target: target,
+			})
+		}
+
+		// Event emission for shield hp change
 		mgr.event.ShieldChange.Emit(event.ShieldChange{
-			ID:     shield.name,
-			Target: target,
-			OldHP:  prevHP,
-			NewHP:  shield.HP,
+			Target:    target,
+			NewHP:     newMaxShieldHP,
+			DamageIn:  damage,
+			DamageOut: damageOut,
 		})
-
-		if shield.HP == 0 {
-			mgr.RemoveShield(shield.name, target)
-			damage -= prevHP
-		}
-
-		if shield.HP != 0 {
-			damage = 0
-		}
+		return damageOut
 	}
-
 	return damage
 }

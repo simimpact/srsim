@@ -12,11 +12,8 @@ func (mgr *Manager) RemoveShield(id key.Shield, target key.TargetID) {
 	}
 
 	i := 0
-	var removedShield []*Instance
 	for _, shield := range mgr.targets[target] {
-		if shield.name == id {
-			removedShield = append(removedShield, shield)
-		} else {
+		if shield.name != id {
 			mgr.targets[target][i] = shield
 			i++
 		}
