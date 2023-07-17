@@ -10,15 +10,28 @@ import (
 
 // A snapshot of a targets stats at a point in time
 type Stats struct {
-	id           key.TargetID
-	props        PropMap
-	debuffRES    DebuffRESMap
-	weakness     WeaknessMap
-	flags        []model.BehaviorFlag
-	statusCounts map[model.StatusType]int
-	modifiers    []ModifierChangeSet
-	attributes   *Attributes
-	// TODO: change set for add prop && add debuff res calls
+	id                 key.TargetID
+	props              PropMap
+	debuffRES          DebuffRESMap
+	weakness           WeaknessMap
+	flags              []model.BehaviorFlag
+	statusCounts       map[model.StatusType]int
+	modifiers          []ModifierChangeSet
+	attributes         *Attributes
+	propChanges        []propChangeSet
+	debuffRESChangeSet []debuffRESChangeSet
+}
+
+type propChangeSet struct {
+	prop   prop.Property
+	key    key.Reason
+	amount float64
+}
+
+type debuffRESChangeSet struct {
+	flag   model.BehaviorFlag
+	key    key.Reason
+	amount float64
 }
 
 func NewStats(id key.TargetID, attributes *Attributes, mods *ModifierState) *Stats {
@@ -27,14 +40,16 @@ func NewStats(id key.TargetID, attributes *Attributes, mods *ModifierState) *Sta
 	mods.Weakness.AddAll(attributes.Weakness)
 
 	return &Stats{
-		id:           id,
-		props:        mods.Props,
-		debuffRES:    mods.DebuffRES,
-		weakness:     mods.Weakness,
-		flags:        mods.Flags,
-		statusCounts: mods.Counts,
-		modifiers:    mods.Modifiers,
-		attributes:   copyAttributes(attributes),
+		id:                 id,
+		props:              mods.Props,
+		debuffRES:          mods.DebuffRES,
+		weakness:           mods.Weakness,
+		flags:              mods.Flags,
+		statusCounts:       mods.Counts,
+		modifiers:          mods.Modifiers,
+		attributes:         copyAttributes(attributes),
+		propChanges:        make([]propChangeSet, 0, 16),
+		debuffRESChangeSet: make([]debuffRESChangeSet, 0, 16),
 	}
 }
 
@@ -67,12 +82,22 @@ func (stats *Stats) ID() key.TargetID {
 }
 
 // Adds a property to this Stats snapshot
-func (stats *Stats) AddProperty(p prop.Property, amt float64) {
+func (stats *Stats) AddProperty(key key.Reason, p prop.Property, amt float64) {
+	stats.propChanges = append(stats.propChanges, propChangeSet{
+		key:    key,
+		prop:   p,
+		amount: amt,
+	})
 	stats.props.Modify(p, amt)
 }
 
 // Adds a debuff RES to this Stats snapshot
-func (stats *Stats) AddDebuffRES(flag model.BehaviorFlag, amt float64) {
+func (stats *Stats) AddDebuffRES(key key.Reason, flag model.BehaviorFlag, amt float64) {
+	stats.debuffRESChangeSet = append(stats.debuffRESChangeSet, debuffRESChangeSet{
+		key:    key,
+		flag:   flag,
+		amount: amt,
+	})
 	stats.debuffRES.Modify(flag, amt)
 }
 
@@ -336,7 +361,19 @@ func (stats *Stats) MarshalJSON() ([]byte, error) {
 		}
 	}
 
-	// TODO: props additional changes
+	for _, change := range stats.propChanges {
+		props[change.prop].Sources = append(props[change.prop].Sources, FloatChangeSet{
+			Key:    change.key,
+			Amount: change.amount,
+		})
+	}
+
+	for _, change := range stats.debuffRESChangeSet {
+		debuffRES[change.flag].Sources = append(debuffRES[change.flag].Sources, FloatChangeSet{
+			Key:    change.key,
+			Amount: change.amount,
+		})
+	}
 
 	loggedProps := make([]*LoggedProp, 0, len(props))
 	for _, v := range props {

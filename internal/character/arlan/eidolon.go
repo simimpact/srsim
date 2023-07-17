@@ -5,15 +5,14 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
-	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
-	E1     key.Modifier = "arlan-e1"
-	E4     key.Modifier = "arlan-e4"
-	E6     key.Modifier = "arlan-e6"
-	Revive              = "arlan-revive"
+	E1     = "arlan-e1"
+	E4     = "arlan-e4"
+	E6     = "arlan-e6"
+	Revive = "arlan-revive"
 )
 
 func init() {
@@ -26,7 +25,7 @@ func init() {
 				}
 
 				if mod.Engine().HPRatio(mod.Owner()) <= 0.5 {
-					e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.1)
+					e.Hit.Attacker.AddProperty(E1, prop.AllDamagePercent, 0.1)
 				}
 			},
 		},
@@ -78,7 +77,7 @@ func init() {
 				}
 
 				if mod.Engine().HPRatio(mod.Owner()) <= 0.5 {
-					e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.2)
+					e.Hit.Attacker.AddProperty(E6, prop.AllDamagePercent, 0.2)
 				}
 			},
 		},

@@ -5,13 +5,12 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
-	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
-	A4 key.Reason   = "sampo-a4"
-	A6 key.Modifier = "sampo-a6"
+	A4 = "sampo-a4"
+	A6 = "sampo-a6"
 )
 
 func init() {
@@ -35,7 +34,7 @@ func (c *char) a4() {
 
 func A6OnBeforeBeingHitAll(mod *modifier.Instance, e event.HitStart) {
 	if mod.Engine().HasBehaviorFlag(e.Hit.Attacker.ID(), model.BehaviorFlag_STAT_DOT_POISON) {
-		e.Hit.Attacker.AddProperty(prop.Fatigue, 0.15)
+		e.Hit.Attacker.AddProperty(A6, prop.Fatigue, 0.15)
 	}
 }
 

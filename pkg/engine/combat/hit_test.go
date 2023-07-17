@@ -43,7 +43,7 @@ func TestPerformHitWithShield(t *testing.T) {
 	defer func() { assert.True(t, hitStartEmitted, "HitStart event was never emitted") }()
 
 	// POPULATE STATS
-	hit.Attacker.AddProperty(prop.ATKBase, 200)
+	hit.Attacker.AddProperty("tst", prop.ATKBase, 200)
 
 	// EXPECTED RESULTS
 	total := 100.0 // defender has 0 DEF, attacker only has 200 ATK w/ 50% attack, so 100 total

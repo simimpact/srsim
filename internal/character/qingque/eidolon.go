@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	E1      key.Modifier = "qingque-e1"
+	E1                   = "qingque-e1"
 	E2      key.Reason   = "qingque-e2"
 	Autarky key.Modifier = "qingque-e4"
 )
@@ -22,7 +22,7 @@ func init() {
 				if e.Hit.AttackType != model.AttackType_ULT {
 					return
 				}
-				e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.1)
+				e.Hit.Attacker.AddProperty(E1, prop.AllDamagePercent, 0.1)
 			},
 		},
 	})

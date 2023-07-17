@@ -20,7 +20,7 @@ const (
 	A2Check key.Modifier = "dan-heng-a2-check"
 	A2Buff  key.Modifier = "dan-heng-a2-buff"
 	A4      key.Modifier = "dan-heng-a4"
-	A6      key.Modifier = "dan-heng-a6"
+	A6                   = "dan-heng-a6"
 )
 
 func init() {
@@ -56,7 +56,7 @@ func init() {
 				}
 
 				if mod.Engine().HasBehaviorFlag(e.Defender, model.BehaviorFlag_STAT_SPEED_DOWN) {
-					e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.4)
+					e.Hit.Attacker.AddProperty(A6, prop.AllDamagePercent, 0.4)
 				}
 			},
 		},

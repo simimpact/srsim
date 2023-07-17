@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	Check key.Modifier = "collapsing-sky"
+	Check = "collapsing-sky"
 )
 
 // Increases the wearer's Basic ATK and Skill DMG by 20%.
@@ -43,6 +43,6 @@ func onBeforeHit(mod *modifier.Instance, e event.HitStart) {
 	dmgBonus := mod.State().(float64)
 
 	if e.Hit.AttackType == model.AttackType_NORMAL || e.Hit.AttackType == model.AttackType_SKILL {
-		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, dmgBonus)
+		e.Hit.Attacker.AddProperty(Check, prop.AllDamagePercent, dmgBonus)
 	}
 }

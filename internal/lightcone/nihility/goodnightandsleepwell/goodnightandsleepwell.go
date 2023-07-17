@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	Check key.Modifier = "good_night_and_sleep_well_check"
+	name = "good-night-and-sleep-well"
 )
 
 func init() {
@@ -23,7 +23,7 @@ func init() {
 		Promotions:    promotions,
 	})
 
-	modifier.Register(Check, modifier.Config{
+	modifier.Register(name, modifier.Config{
 		CanModifySnapshot: true,
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: onBeforeHitAll,
@@ -36,7 +36,7 @@ func init() {
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	amt := 0.09 + 0.03*float64(lc.Imposition)
 	engine.AddModifier(owner, info.Modifier{
-		Name:   Check,
+		Name:   name,
 		Source: owner,
 		State:  amt,
 	})
@@ -48,5 +48,5 @@ func onBeforeHitAll(mod *modifier.Instance, e event.HitStart) {
 		debuffCount = 3
 	}
 	amt := mod.State().(float64) * debuffCount
-	e.Hit.Attacker.AddProperty(prop.AllDamagePercent, amt)
+	e.Hit.Attacker.AddProperty(name, prop.AllDamagePercent, amt)
 }

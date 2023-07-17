@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	A2 key.Modifier = "bronya-a2"
+	A2              = "bronya-a2"
 	A4 key.Modifier = "bronya-a4"
 	A6 key.Modifier = "bronya-a6"
 )
@@ -21,7 +21,7 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnBeforeHit: func(mod *modifier.Instance, e event.HitStart) {
 				if e.Hit.AttackType == model.AttackType_NORMAL {
-					e.Hit.Attacker.AddProperty(prop.CritChance, 1)
+					e.Hit.Attacker.AddProperty(A2, prop.CritChance, 1)
 				}
 			},
 		},

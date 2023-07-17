@@ -59,12 +59,12 @@ func TestResistModifier(t *testing.T) {
 	target := key.TargetID(1)
 	targetStats := mock.NewEmptyStats(target)
 	engine.EXPECT().Stats(gomock.Eq(target)).Return(targetStats).Times(1)
-	targetStats.AddProperty(prop.EffectRES, eres)
-	targetStats.AddDebuffRES(model.BehaviorFlag_STAT_CTRL, dres)
+	targetStats.AddProperty("tst", prop.EffectRES, eres)
+	targetStats.AddDebuffRES("tst", model.BehaviorFlag_STAT_CTRL, dres)
 
 	source := key.TargetID(2)
 	sourceStats := mock.NewEmptyStats(source)
-	sourceStats.AddProperty(prop.EffectHitRate, ehr)
+	sourceStats.AddProperty("tst", prop.EffectHitRate, ehr)
 	engine.EXPECT().Stats(gomock.Eq(source)).Return(sourceStats).Times(1)
 
 	name := key.Modifier("TestResistModifier")
@@ -109,12 +109,12 @@ func TestFailedResist(t *testing.T) {
 	target := key.TargetID(1)
 	targetStats := mock.NewEmptyStats(target)
 	engine.EXPECT().Stats(gomock.Eq(target)).Return(targetStats).Times(1)
-	targetStats.AddProperty(prop.EffectRES, eres)
-	targetStats.AddDebuffRES(model.BehaviorFlag_STAT_CTRL, dres)
+	targetStats.AddProperty("tst", prop.EffectRES, eres)
+	targetStats.AddDebuffRES("tst", model.BehaviorFlag_STAT_CTRL, dres)
 
 	source := key.TargetID(2)
 	sourceStats := mock.NewEmptyStats(source)
-	sourceStats.AddProperty(prop.EffectHitRate, ehr)
+	sourceStats.AddProperty("tst", prop.EffectHitRate, ehr)
 	engine.EXPECT().Stats(gomock.Eq(source)).Return(sourceStats).Times(1)
 
 	name := key.Modifier("TestResistModifier")
