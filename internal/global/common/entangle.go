@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	Entanglement      key.Modifier = "common_entanglement"
-	BreakEntanglement key.Modifier = "break_entanglement"
+	Entanglement      = "common-entanglement"
+	BreakEntanglement = "break-entanglement"
 )
 
 type EntangleState struct {
@@ -48,7 +48,12 @@ func entangleAdd(mod *modifier.Instance) {
 		panic("incorrect state used for Entanglement modifier")
 	}
 
-	mod.Engine().ModifyGaugeNormalized(mod.Owner(), state.DelayRatio)
+	mod.Engine().ModifyGaugeNormalized(info.ModifyAttribute{
+		Key:    Entanglement,
+		Target: mod.Owner(),
+		Source: mod.Source(),
+		Amount: state.DelayRatio,
+	})
 }
 
 func entangleAfterAttack(mod *modifier.Instance, e event.AttackEnd) {
@@ -66,6 +71,7 @@ func entanglePhase1(mod *modifier.Instance) {
 
 	// perform quantum damage
 	mod.Engine().Attack(info.Attack{
+		Key:        Entanglement,
 		Source:     mod.Source(),
 		Targets:    []key.TargetID{mod.Owner()},
 		AttackType: model.AttackType_PURSUED,

@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	DataBank key.Modifier = "data-bank"
+	DataBank = "data-bank"
 )
 
 func init() {
@@ -40,6 +40,6 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 
 func onBeforeHit(mod *modifier.Instance, e event.HitStart) {
 	if e.Hit.AttackType == model.AttackType_ULT {
-		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, mod.State().(float64))
+		e.Hit.Attacker.AddProperty(DataBank, prop.AllDamagePercent, mod.State().(float64))
 	}
 }

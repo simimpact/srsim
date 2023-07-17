@@ -8,8 +8,7 @@ import (
 )
 
 const (
-	Ult       key.Modifier = "gepard-ult"
-	UltShield key.Shield   = "gepard-ult-shield"
+	Ult = "gepard-ult"
 )
 
 type ultState struct {
@@ -23,7 +22,7 @@ func init() {
 		StatusType: model.StatusType_STATUS_BUFF,
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.Instance) {
-				mod.Engine().AddShield(UltShield, info.Shield{
+				mod.Engine().AddShield(Ult, info.Shield{
 					Source:      mod.Source(),
 					Target:      mod.Owner(),
 					BaseShield:  info.ShieldMap{model.ShieldFormula_SHIELD_BY_SHIELDER_DEF: mod.State().(ultState).shieldPerc},
@@ -31,7 +30,7 @@ func init() {
 				})
 			},
 			OnRemove: func(mod *modifier.Instance) {
-				mod.Engine().RemoveShield(UltShield, mod.Owner())
+				mod.Engine().RemoveShield(Ult, mod.Owner())
 			},
 		},
 	})
@@ -52,5 +51,10 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		})
 	}
 
-	c.engine.ModifyEnergy(c.id, 5.0)
+	c.engine.ModifyEnergy(info.ModifyAttribute{
+		Key:    Ult,
+		Target: c.id,
+		Source: c.id,
+		Amount: 5.0,
+	})
 }

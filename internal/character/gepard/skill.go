@@ -9,13 +9,16 @@ import (
 
 const (
 	E2Tracker key.Modifier = "gepard-e2-tracker"
+	Skill     key.Attack   = "gepard-skill"
 )
 
 var skillHits = []float64{0.15, 0.35, 0.5}
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
-	for _, hitRatio := range skillHits {
+	for i, hitRatio := range skillHits {
 		c.engine.Attack(info.Attack{
+			Key:        Skill,
+			HitIndex:   i,
 			Source:     c.id,
 			Targets:    []key.TargetID{target},
 			DamageType: model.DamageType_ICE,

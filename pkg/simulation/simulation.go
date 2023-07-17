@@ -39,7 +39,7 @@ type Simulation struct {
 	Event    *event.System
 	Queue    *queue.Handler
 	Modifier *modifier.Manager
-	Attr     *attribute.Service
+	Attr     attribute.Manager
 	Char     *character.Manager
 	Enemy    *enemy.Manager
 	Turn     turn.Manager
@@ -47,8 +47,6 @@ type Simulation struct {
 	Shield   *shield.Manager
 
 	// state
-	Sp            int
-	Tp            int
 	Targets       map[key.TargetID]info.TargetClass
 	characters    []key.TargetID
 	enemies       []key.TargetID
@@ -74,8 +72,6 @@ func NewSimulation(cfg *model.SimConfig, eval logic.Eval, seed int64) *Simulatio
 		Random: rand.New(rand.NewSource(seed)),
 		IDGen:  key.NewTargetIDGenerator(),
 
-		Sp:            3,
-		Tp:            4, // TODO: define starting amount in config?
 		Targets:       make(map[key.TargetID]info.TargetClass, 15),
 		characters:    make([]key.TargetID, 0, 4),
 		enemies:       make([]key.TargetID, 0, 5),

@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	mod     key.Modifier = "wearewildfire"
-	modHeal key.Modifier = "wearewildfire-heal"
+	mod  key.Modifier = "wearewildfire"
+	heal key.Heal     = "wearewildfire-heal"
 )
 
 // At the start of the battle, the DMG dealt to all allies decreases by
@@ -54,6 +54,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		}
 
 		engine.Heal(info.Heal{
+			Key:     heal,
 			Targets: engine.Characters(),
 			Source:  owner,
 			BaseHeal: info.HealMap{

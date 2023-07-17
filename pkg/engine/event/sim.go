@@ -14,6 +14,26 @@ type Initialize struct {
 	// TODO: sim metadata (build date, commit hash, etc)?
 }
 
+type CharactersAddedEventHandler = handler.EventHandler[CharactersAdded]
+type CharactersAdded struct {
+	Characters []CharInfo `json:"characters"`
+}
+
+type CharInfo struct {
+	ID   key.TargetID    `json:"id"`
+	Info *info.Character `json:"info"`
+}
+
+type EnemiesAddedEventHandler = handler.EventHandler[EnemiesAdded]
+type EnemiesAdded struct {
+	Enemies []EnemyInfo `json:"enemies"`
+}
+
+type EnemyInfo struct {
+	ID   key.TargetID `json:"id"`
+	Info *info.Enemy  `json:"info"`
+}
+
 type BattleStartEventHandler = handler.EventHandler[BattleStart]
 type BattleStart struct {
 	CharInfo     map[key.TargetID]info.Character `json:"char_info"`
@@ -23,12 +43,25 @@ type BattleStart struct {
 	NeutralStats []*info.Stats                   `json:"neutral_stats"`
 }
 
+type Phase1StartEventHandler = handler.EventHandler[Phase1Start]
+type Phase1Start struct{}
+
+type Phase1EndEventHandler = handler.EventHandler[Phase1End]
+type Phase1End struct{}
+
+type Phase2StartEventHandler = handler.EventHandler[Phase2Start]
+type Phase2Start struct{}
+
+type Phase2EndEventHandler = handler.EventHandler[Phase2End]
+type Phase2End struct{}
+
 type TurnStartEventHandler = handler.EventHandler[TurnStart]
 type TurnStart struct {
-	Active    key.TargetID `json:"active"`
-	DeltaAV   float64      `json:"delta_av"`
-	TotalAV   float64      `json:"total_av"`
-	TurnOrder []TurnStatus `json:"turn_order"`
+	Active     key.TargetID     `json:"active"`
+	TargetType info.TargetClass `json:"target_type"`
+	DeltaAV    float64          `json:"delta_av"`
+	TotalAV    float64          `json:"total_av"`
+	TurnOrder  []TurnStatus     `json:"turn_order"`
 }
 
 type TurnEndEventHandler = handler.EventHandler[TurnEnd]
@@ -61,6 +94,7 @@ type ActionEnd struct {
 
 type InsertStartEventHandler = handler.EventHandler[InsertStart]
 type InsertStart struct {
+	Key        key.Insert           `json:"key"`
 	Owner      key.TargetID         `json:"owner"`
 	AbortFlags []model.BehaviorFlag `json:"abort_flags"`
 	Priority   info.InsertPriority  `json:"priority"`
@@ -68,8 +102,15 @@ type InsertStart struct {
 
 type InsertEndEventHandler = handler.EventHandler[InsertEnd]
 type InsertEnd struct {
+	Key        key.Insert            `json:"key"`
 	Owner      key.TargetID          `json:"owner"`
 	Targets    map[key.TargetID]bool `json:"targets"`
 	AbortFlags []model.BehaviorFlag  `json:"abort_flags"`
 	Priority   info.InsertPriority   `json:"priority"`
+}
+
+type TargetDeathEventHandler = handler.EventHandler[TargetDeath]
+type TargetDeath struct {
+	Target key.TargetID `json:"target"`
+	Killer key.TargetID `json:"killer"`
 }

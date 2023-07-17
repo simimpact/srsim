@@ -12,10 +12,10 @@ import (
 )
 
 const (
-	mod           key.Modifier = "texture"
-	modshield     key.Shield   = "texture-shield"
-	modcd         key.Modifier = "texture-cooldown"
-	modshieldbuff key.Modifier = "texture-shield-buff"
+	texture                    = "texture-of-memories"
+	modshield     key.Shield   = "texture-of-memories-shield"
+	modcd         key.Modifier = "texture-of-memories-cooldown"
+	modshieldbuff key.Modifier = "texture-of-memories-shield-buff"
 )
 
 type State struct {
@@ -36,7 +36,7 @@ func init() {
 		Promotions:    promotions,
 	})
 
-	modifier.Register(mod, modifier.Config{
+	modifier.Register(texture, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeBeingHitAll:  onBeforeBeingHitAll,
 			OnAfterBeingAttacked: onAfterBeingAttacked,
@@ -61,7 +61,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	dmgRes := 0.09 + 0.03*float64(lc.Imposition)
 
 	engine.AddModifier(owner, info.Modifier{
-		Name:   mod,
+		Name:   texture,
 		Source: owner,
 		Stats:  info.PropMap{prop.EffectRES: effResAmt},
 		State:  State{shieldAmt, dmgRes},
@@ -72,7 +72,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 func onBeforeBeingHitAll(mod *modifier.Instance, e event.HitStart) {
 	if mod.Engine().IsShielded(mod.Owner()) {
 		state := mod.State().(State)
-		e.Hit.Defender.AddProperty(prop.AllDamageReduce, state.dmgRes)
+		e.Hit.Defender.AddProperty(texture, prop.AllDamageReduce, state.dmgRes)
 	}
 }
 

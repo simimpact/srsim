@@ -5,7 +5,6 @@ import (
 
 	"github.com/simimpact/srsim/pkg/engine/equip/lightcone"
 	"github.com/simimpact/srsim/pkg/engine/equip/relic"
-	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
@@ -122,11 +121,6 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 	for _, f := range relicCBs {
 		f(mgr.engine, id)
 	}
-
-	mgr.engine.Events().CharacterAdded.Emit(event.CharacterAdded{
-		ID:   id,
-		Info: info,
-	})
 	return nil
 }
 

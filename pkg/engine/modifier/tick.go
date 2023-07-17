@@ -11,7 +11,7 @@ func (mgr *Manager) Tick(target key.TargetID, phase info.BattlePhase) {
 	case info.TurnStart:
 		mgr.turnCount += 1
 	case info.ModifierPhase1:
-		for _, mod := range mgr.targets[target] {
+		for _, mod := range mgr.itr(target) {
 			f := mod.listeners.OnPhase1
 			if f != nil {
 				f(mod)
@@ -24,7 +24,7 @@ func (mgr *Manager) Tick(target key.TargetID, phase info.BattlePhase) {
 			mod.canTickImmediatelyPhase2 = true
 		}
 	case info.ModifierPhase2:
-		for _, mod := range mgr.targets[target] {
+		for _, mod := range mgr.itr(target) {
 			f := mod.listeners.OnPhase2
 			if f != nil {
 				f(mod)

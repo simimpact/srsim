@@ -9,6 +9,9 @@ import (
 
 const (
 	Talent key.Modifier = "gepard-talent"
+	Revive              = "gepard-revive"
+	A4     key.Reason   = "gepard-a4"
+	E6     key.Reason   = "gepard-e6"
 )
 
 type talentState struct {
@@ -36,21 +39,36 @@ func talentRevive(mod *modifier.Instance) bool {
 	mod.Engine().InsertAbility(info.Insert{
 		Execute: func() {
 			// Set HP to specified Percentage
-			mod.Engine().SetHP(
-				mod.Owner(), mod.Owner(), mod.OwnerStats().MaxHP()*mod.State().(talentState).revivePerc)
+			mod.Engine().SetHP(info.ModifyAttribute{
+				Key:    Revive,
+				Target: mod.Owner(),
+				Source: mod.Owner(),
+				Amount: mod.OwnerStats().MaxHP() * mod.State().(talentState).revivePerc,
+			})
 
 			// If A4, restore Energy to 100% (Energy Cost is 100)
 			if mod.State().(talentState).a4Active {
-				mod.Engine().ModifyEnergyFixed(mod.Owner(), 100)
+				mod.Engine().ModifyEnergyFixed(info.ModifyAttribute{
+					Key:    A4,
+					Target: mod.Owner(),
+					Source: mod.Owner(),
+					Amount: 100,
+				})
 			}
 
 			// If E6, action forward
 			if mod.State().(talentState).e6Active {
-				mod.Engine().SetGauge(mod.Owner(), 0)
+				mod.Engine().SetGauge(info.ModifyAttribute{
+					Key:    E6,
+					Target: mod.Owner(),
+					Source: mod.Owner(),
+					Amount: 0,
+				})
 			}
 
 			mod.RemoveSelf()
 		},
+		Key:        Revive,
 		Source:     mod.Owner(),
 		Priority:   info.CharReviveSelf,
 		AbortFlags: nil,
@@ -71,7 +89,7 @@ func (c *char) talent() {
 		Source: c.id,
 		State: talentState{
 			revivePerc: revivePerc,
-			a4Active:   c.info.Traces["1104102"],
+			a4Active:   c.info.Traces["102"],
 			e6Active:   c.info.Eidolon >= 6,
 		},
 	})

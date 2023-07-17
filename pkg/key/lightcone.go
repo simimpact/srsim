@@ -13,6 +13,7 @@ const (
 	UndertheBlueSky        LightCone = "under_the_blue_sky"
 	CollapsingSky          LightCone = "collapsing_sky"
 	OntheFallofanAeon      LightCone = "on_the_fall_of_an_aeon"
+	WoofWalkTime           LightCone = "woof_walk_time"
 )
 
 // Hunt
@@ -32,9 +33,11 @@ const (
 
 // Nihility
 const (
-	Fermata               LightCone = "fermata"
-	EyesofthePrey         LightCone = "eyes_of_the_prey"
-	GoodNightandSleepWell LightCone = "good_night_and_sleep_well"
+	Fermata                        LightCone = "fermata"
+	EyesofthePrey                  LightCone = "eyes_of_the_prey"
+	GoodNightandSleepWell          LightCone = "good_night_and_sleep_well"
+	IncessantRain                  LightCone = "incessant_rain"
+	BeforetheTutorialMissionStarts LightCone = "before_the_tutorial_mission_starts"
 )
 
 // Erudition
@@ -63,6 +66,7 @@ const (
 	TrendoftheUniversalMarket LightCone = "trend_of_the_universal_market"
 	Pioneering                LightCone = "pioneering"
 	WeAreWildfire             LightCone = "we_are_wildfire"
+	LandausChoice             LightCone = "landaus_choice"
 )
 
 // Abundance
@@ -75,6 +79,7 @@ const (
 	SharedFeeling            LightCone = "shared_feeling"
 	QuidProQuo               LightCone = "quid_pro_quo"
 	PerfectTiming            LightCone = "perfect_timing"
+	TimeWaitsforNoOne        LightCone = "time_waits_for_no_one"
 )
 
 func (l LightCone) String() string {

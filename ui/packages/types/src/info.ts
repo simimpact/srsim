@@ -19,19 +19,82 @@ export interface Attributes {
 }
 export interface ModifyHPByRatio {
   /**
+   * A unique identifier for this modification
+   */
+  key: string;
+  /**
+   * The target of this HP modification
+   */
+  target: string;
+  /**
+   * The source of this HP modification (who caused it)
+   */
+  source: string;
+  /**
    * The amount of HP ratio to modify the HP by (negative will remove HP)
    */
-  Ratio: number /* float64 */;
+  ratio: number /* float64 */;
   /**
    * What ratio type should be used (should Ratio be based on MaxHP or CurrentHP)
    */
-  RatioType: string;
+  ratio_type: string;
   /**
    * The floor for how low HP can go with this modification. IE: Floor = 1 will prevent the HP
    * from reaching 0 in this modification (can reduce up to 1 HP)
    */
-  Floor: number /* float64 */;
+  floor: number /* float64 */;
 }
+export interface ModifyAttribute {
+  /**
+   * A unique identifier for this modification
+   */
+  key: string;
+  /**
+   * The target of this modification
+   */
+  target: string;
+  /**
+   * The source of this modification
+   */
+  source: string;
+  /**
+   * The amount that should be modified (added or removed)
+   */
+  amount: number /* float64 */;
+}
+export interface ModifySP {
+  /**
+   * A unique identifier for this modification
+   */
+  key: string;
+  /**
+   * The source of this modification
+   */
+  source: string;
+  /**
+   * The amount of SP to be added or removed
+   */
+  amount: number /* int */;
+}
+export interface ModifyCurrentGaugeCost {
+  /**
+   * A unique identifier for this modification
+   */
+  key: string;
+  /**
+   * The source of this modification
+   */
+  source: string;
+  /**
+   * The amount of gauge cost to be changed
+   */
+  amount: number /* float64 */;
+}
+export type TargetState = number /* int */;
+export const Invalid: TargetState = 0;
+export const Dead: TargetState = 1;
+export const Limbo: TargetState = 2;
+export const Alive: TargetState = 3;
 
 //////////
 // source: character.go
@@ -68,6 +131,14 @@ export interface LightCone {
 export type DamageMap = { [key: string]: number /* float64 */};
 export type HealMap = { [key: string]: number /* float64 */};
 export interface Attack {
+  /**
+   * A unique identifier for this attack instance
+   */
+  key: string;
+  /**
+   * Optional. Specify when an attack is split into multiple hits
+   */
+  hit_index: number /* int */;
   /**
    * List of targets to perform this attack against (will perform 1 hit per target)
    */
@@ -127,6 +198,14 @@ export interface Attack {
   use_snapshot: boolean;
 }
 export interface Hit {
+  /**
+   * The unique identifier of the source attack
+   */
+  key: string;
+  /**
+   * The index of this hit
+   */
+  hit_index: number /* int */;
   /**
    * The stats of the attacker of this hit. These stats are a snapshot of the target's state and
    * can be modified
@@ -188,6 +267,10 @@ export interface Hit {
   use_snapshot: boolean;
 }
 export interface Heal {
+  /**
+   * A unique identifier of this heal instance
+   */
+  key: string;
   /**
    * The targets that the healer is healing
    */
@@ -330,7 +413,13 @@ export interface ModifierState {
   weakness: WeaknessMap;
   flags: string[];
   counts: { [key: string]: number /* int */};
-  modifiers: string[];
+  modifiers: ModifierChangeSet[];
+}
+export interface ModifierChangeSet {
+  name: string;
+  props: PropMap;
+  debuff_res: DebuffRESMap;
+  weakness: WeaknessMap;
 }
 
 //////////
@@ -340,6 +429,10 @@ export interface ModifierState {
  * metadata on what is being inserted into the turn queue
  */
 export interface Insert {
+  /**
+   * Unique identifier for this insert
+   */
+  Key: string;
   /**
    * The logic to run when this insert is executed during the turn
    */
@@ -378,6 +471,10 @@ export const CharHealOthers: InsertPriority = 58;
 /**
  * TODO: specific insert priorities for specific casses (IE: himiko vs herta, clara vs march)
  */
+export const CharBuffSelf: InsertPriority = 65;
+/**
+ * TODO: specific insert priorities for specific casses (IE: himiko vs herta, clara vs march)
+ */
 export const CharInsertAttackSelf: InsertPriority = 75;
 /**
  * TODO: specific insert priorities for specific casses (IE: himiko vs herta, clara vs march)
@@ -402,6 +499,10 @@ export const EnemyHealOthers: InsertPriority = 158;
 /**
  * TODO: specific insert priorities for specific casses (IE: himiko vs herta, clara vs march)
  */
+export const EnemyBuffSelf: InsertPriority = 165;
+/**
+ * TODO: specific insert priorities for specific casses (IE: himiko vs herta, clara vs march)
+ */
 export const EnemyInsertAttackSelf: InsertPriority = 175;
 /**
  * TODO: specific insert priorities for specific casses (IE: himiko vs herta, clara vs march)
@@ -410,19 +511,11 @@ export const EnemyInsertAttackOthers: InsertPriority = 215;
 /**
  * TODO: specific insert priorities for specific casses (IE: himiko vs herta, clara vs march)
  */
-export const CharInsertUlt: InsertPriority = 500;
+export const CharInsertAction: InsertPriority = 500;
 /**
  * TODO: specific insert priorities for specific casses (IE: himiko vs herta, clara vs march)
  */
-export const CharInsertAction: InsertPriority = 800;
-/**
- * TODO: specific insert priorities for specific casses (IE: himiko vs herta, clara vs march)
- */
-export const EnemyInsertUlt: InsertPriority = 1000;
-/**
- * TODO: specific insert priorities for specific casses (IE: himiko vs herta, clara vs march)
- */
-export const EnemyInsertAction: InsertPriority = 1300;
+export const EnemyInsertAction: InsertPriority = 1000;
 
 //////////
 // source: shield.go
@@ -462,13 +555,13 @@ export interface StatsEncoded {
   hp_ratio: number /* float64 */;
   energy: number /* float64 */;
   stance: number /* float64 */;
-  props: PropMap;
-  debuff_res: DebuffRESMap;
-  weakness: WeaknessMap;
+  stats?: ComputedStats;
   flags: string[];
   status_counts: { [key: string]: number /* int */};
-  modifiers: string[];
-  stats?: ComputedStats;
+  modifiers: { [key: string]: number /* int */};
+  props: (LoggedProp | undefined)[];
+  debuff_res: (LoggedDebuffRES | undefined)[];
+  weakness: WeaknessMap;
 }
 export interface ComputedStats {
   hp: number /* float64 */;
@@ -483,4 +576,32 @@ export interface ComputedStats {
   effect_res: number /* float64 */;
   energy_regen: number /* float64 */;
   break_effect: number /* float64 */;
+  physical_damage_percent: number /* float64 */;
+  fire_damage_percent: number /* float64 */;
+  ice_damage_percent: number /* float64 */;
+  lightning_damage_percent: number /* float64 */;
+  wind_damage_percent: number /* float64 */;
+  quantum_damage_percent: number /* float64 */;
+  imaginary_damage_percent: number /* float64 */;
+  physical_res: number /* float64 */;
+  fire_res: number /* float64 */;
+  ice_res: number /* float64 */;
+  lightning_res: number /* float64 */;
+  wind_res: number /* float64 */;
+  quantum_res: number /* float64 */;
+  imaginary_res: number /* float64 */;
+}
+export interface LoggedProp {
+  prop: string;
+  total: number /* float64 */;
+  sources: FloatChangeSet[];
+}
+export interface LoggedDebuffRES {
+  flag: string;
+  total: number /* float64 */;
+  sources: FloatChangeSet[];
+}
+export interface FloatChangeSet {
+  key: string;
+  amount: number /* float64 */;
 }

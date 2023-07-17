@@ -15,8 +15,8 @@ import (
 // After the wearer uses their Skill or Ultimate, they gain Somnus Corpus.
 // Upon triggering a follow-up attack, Somnus Corpus will be consumed and the follow-up attack DMG increases by x%.
 const (
-	BeforeDawn   key.Modifier = "before-dawn"
-	SomnusCorpus key.Modifier = "somnus-corpus"
+	BeforeDawn   = "before-dawn"
+	SomnusCorpus = "somnus-corpus"
 )
 
 type somnusState struct {
@@ -63,7 +63,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 func onBeforeHit(mod *modifier.Instance, e event.HitStart) {
 	if e.Hit.AttackType == model.AttackType_ULT ||
 		e.Hit.AttackType == model.AttackType_SKILL {
-		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.15+0.03*mod.State().(float64))
+		e.Hit.Attacker.AddProperty(BeforeDawn, prop.AllDamagePercent, 0.15+0.03*mod.State().(float64))
 	}
 }
 
@@ -71,7 +71,7 @@ func onBeforeHit(mod *modifier.Instance, e event.HitStart) {
 func onBeforeHitSomnus(mod *modifier.Instance, e event.HitStart) {
 	state := mod.State().(*somnusState)
 	if e.Hit.AttackType == model.AttackType_INSERT {
-		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, state.amt)
+		e.Hit.Attacker.AddProperty(SomnusCorpus, prop.AllDamagePercent, state.amt)
 		state.used = true
 	}
 }

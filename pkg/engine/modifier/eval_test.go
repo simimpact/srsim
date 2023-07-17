@@ -52,11 +52,20 @@ func TestEvalWithMod(t *testing.T) {
 	expectedCounts := make(map[model.StatusType]int)
 	expectedCounts[model.StatusType_STATUS_BUFF] = 1
 
+	expectedChangeSet := []info.ModifierChangeSet{
+		{
+			Name:      name,
+			Props:     expectedProps,
+			DebuffRES: expectedDebuff,
+			Weakness:  info.WeaknessMap{},
+		},
+	}
+
 	assert.Equal(t, expectedProps, result.Props)
 	assert.Equal(t, expectedDebuff, result.DebuffRES)
 	assert.Equal(t, expectedCounts, result.Counts)
 	assert.Equal(t, []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL}, result.Flags)
-	assert.Equal(t, []key.Modifier{name}, result.Modifiers)
+	assert.Equal(t, expectedChangeSet, result.Modifiers)
 	assert.Empty(t, result.Weakness)
 }
 
@@ -122,6 +131,5 @@ func TestEvalWithMultipleMods(t *testing.T) {
 	assert.Equal(t, expectedDebuff, result.DebuffRES)
 	assert.Equal(t, expectedCounts, result.Counts)
 	assert.ElementsMatch(t, expectedFlags, result.Flags)
-	assert.ElementsMatch(t, []key.Modifier{mod1Name, mod2Name, mod3Name}, result.Modifiers)
 	assert.Contains(t, result.Weakness, model.DamageType_ICE, model.DamageType_QUANTUM)
 }

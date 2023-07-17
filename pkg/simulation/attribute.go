@@ -1,30 +1,42 @@
 package simulation
 
 import (
-	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-// TODO: move this to attr service?
-func (sim *Simulation) ModifySP(amt int) int {
-	old := sim.Sp
-	sim.Sp += amt
-	if sim.Sp > 5 {
-		sim.Sp = 5
-	}
+type snapshot struct {
+	characters []*info.Stats
+	enemies    []*info.Stats
+	neutrals   []*info.Stats
+}
 
-	if old != sim.Sp {
-		sim.Event.SPChange.Emit(event.SPChange{
-			OldSP: old,
-			NewSP: sim.Sp,
-		})
+func (sim *Simulation) createSnapshot() snapshot {
+	charStats := make([]*info.Stats, len(sim.characters))
+	for i, t := range sim.characters {
+		charStats[i] = sim.Attr.Stats(t)
 	}
-	return sim.Sp
+	enemyStats := make([]*info.Stats, len(sim.enemies))
+	for i, t := range sim.enemies {
+		enemyStats[i] = sim.Attr.Stats(t)
+	}
+	neutralStats := make([]*info.Stats, len(sim.neutrals))
+	for i, t := range sim.neutrals {
+		neutralStats[i] = sim.Attr.Stats(t)
+	}
+	return snapshot{
+		characters: charStats,
+		enemies:    enemyStats,
+		neutrals:   neutralStats,
+	}
+}
+
+func (sim *Simulation) ModifySP(data info.ModifySP) error {
+	return sim.Attr.ModifySP(data)
 }
 
 func (sim *Simulation) SP() int {
-	return sim.Sp
+	return sim.Attr.SP()
 }
 
 func (sim *Simulation) Stats(target key.TargetID) *info.Stats {
@@ -51,55 +63,50 @@ func (sim *Simulation) HPRatio(target key.TargetID) float64 {
 	return sim.Attr.HPRatio(target)
 }
 
-func (sim *Simulation) SetHP(target, source key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Attr.SetHP(target, source, amt, false)
+func (sim *Simulation) SetHP(data info.ModifyAttribute) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Attr.SetHP(data, false)
 }
 
-func (sim *Simulation) ModifyHPByRatio(target, source key.TargetID, data info.ModifyHPByRatio) error {
-	sim.ActionTargets[target] = true
-	return sim.Attr.ModifyHPByRatio(target, source, data, false)
+func (sim *Simulation) ModifyHPByRatio(data info.ModifyHPByRatio) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Attr.ModifyHPByRatio(data, false)
 }
 
-func (sim *Simulation) ModifyHPByAmount(target, source key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Attr.ModifyHPByAmount(target, source, amt, false)
+func (sim *Simulation) ModifyStance(data info.ModifyAttribute) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Attr.ModifyStance(data)
 }
 
-func (sim *Simulation) ModifyStance(target, source key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Attr.ModifyStance(target, source, amt)
+func (sim *Simulation) ModifyEnergy(data info.ModifyAttribute) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Attr.ModifyEnergy(data)
 }
 
-func (sim *Simulation) ModifyEnergy(target key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Attr.ModifyEnergy(target, amt)
+func (sim *Simulation) ModifyEnergyFixed(data info.ModifyAttribute) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Attr.ModifyEnergyFixed(data)
 }
 
-func (sim *Simulation) ModifyEnergyFixed(target key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Attr.ModifyEnergyFixed(target, amt)
+func (sim *Simulation) SetGauge(data info.ModifyAttribute) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Turn.SetGauge(data)
 }
 
-func (sim *Simulation) SetGauge(target key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Turn.SetGauge(target, amt)
+func (sim *Simulation) ModifyGaugeNormalized(data info.ModifyAttribute) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Turn.ModifyGaugeNormalized(data)
 }
 
-func (sim *Simulation) ModifyGaugeNormalized(target key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Turn.ModifyGaugeNormalized(target, amt)
+func (sim *Simulation) ModifyGaugeAV(data info.ModifyAttribute) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Turn.ModifyGaugeAV(data)
 }
 
-func (sim *Simulation) ModifyGaugeAV(target key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Turn.ModifyGaugeAV(target, amt)
+func (sim *Simulation) SetCurrentGaugeCost(data info.ModifyCurrentGaugeCost) {
+	sim.Turn.SetCurrentGaugeCost(data)
 }
 
-func (sim *Simulation) SetCurrentGaugeCost(amt float64) {
-	sim.Turn.SetCurrentGaugeCost(amt)
-}
-
-func (sim *Simulation) ModifyCurrentGaugeCost(amt float64) {
-	sim.Turn.ModifyCurrentGaugeCost(amt)
+func (sim *Simulation) ModifyCurrentGaugeCost(data info.ModifyCurrentGaugeCost) {
+	sim.Turn.ModifyCurrentGaugeCost(data)
 }

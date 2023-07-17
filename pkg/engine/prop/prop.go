@@ -121,6 +121,10 @@ const (
 	MinFatigue      Property = 92
 )
 
+func Total() int {
+	return len(model.Property_name)
+}
+
 func FromProto(p model.Property) Property {
 	return Property(p)
 }

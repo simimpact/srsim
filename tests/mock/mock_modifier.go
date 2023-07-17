@@ -36,10 +36,10 @@ func (m *MockModifier) EXPECT() *MockModifierMockRecorder {
 }
 
 // EvalModifiers mocks base method.
-func (m *MockModifier) EvalModifiers(arg0 key.TargetID) info.ModifierState {
+func (m *MockModifier) EvalModifiers(arg0 key.TargetID) *info.ModifierState {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "EvalModifiers", arg0)
-	ret0, _ := ret[0].(info.ModifierState)
+	ret0, _ := ret[0].(*info.ModifierState)
 	return ret0
 }
 

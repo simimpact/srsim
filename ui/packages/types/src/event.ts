@@ -11,6 +11,7 @@ import * as info from "./info";
 
 export type HPChangeEventHandler = Handler<HPChange>;
 export interface HPChange {
+  key: string;
   target: string;
   old_hp_ratio: number /* float64 */;
   new_hp_ratio: number /* float64 */;
@@ -23,45 +24,39 @@ export interface LimboWaitHeal {
   target: string;
   is_cancelled: boolean;
 }
-export type TargetDeathEventHandler = Handler<TargetDeath>;
-export interface TargetDeath {
-  target: string;
-  killer: string;
-}
 export type EnergyChangeEventHandler = Handler<EnergyChange>;
 export interface EnergyChange {
+  key: string;
   target: string;
+  source: string;
   old_energy: number /* float64 */;
   new_energy: number /* float64 */;
 }
 export type StanceChangeEventHandler = Handler<StanceChange>;
 export interface StanceChange {
+  key: string;
   target: string;
+  source: string;
   old_stance: number /* float64 */;
   new_stance: number /* float64 */;
 }
 export type StanceBreakEventHandler = Handler<StanceBreak>;
 export interface StanceBreak {
+  key: string;
   target: string;
   source: string;
 }
 export type StanceResetEventHandler = Handler<StanceReset>;
 export interface StanceReset {
+  key: string;
   target: string;
 }
 export type SPChangeEventHandler = Handler<SPChange>;
 export interface SPChange {
+  key: string;
+  source: string;
   old_sp: number /* int */;
   new_sp: number /* int */;
-}
-
-//////////
-// source: character.go
-
-export type CharacterAddedEventHandler = Handler<CharacterAdded>;
-export interface CharacterAdded {
-  id: string;
-  info: info.Character;
 }
 
 //////////
@@ -69,6 +64,7 @@ export interface CharacterAdded {
 
 export type AttackStartEventHandler = Handler<AttackStart>;
 export interface AttackStart {
+  key: string;
   attacker: string;
   targets: string[];
   attack_type: string;
@@ -76,6 +72,7 @@ export interface AttackStart {
 }
 export type AttackEndEventHandler = Handler<AttackEnd>;
 export interface AttackEnd {
+  key: string;
   attacker: string;
   targets: string[];
   attack_type: string;
@@ -89,6 +86,8 @@ export interface HitStart {
 }
 export type HitEndEventHandler = Handler<HitEnd>;
 export interface HitEnd {
+  key: string;
+  hit_index: number /* int */;
   attacker: string;
   defender: string;
   attack_type: string;
@@ -111,6 +110,7 @@ export interface HitEnd {
 }
 export type HealStartEventHandler = Handler<HealStart>;
 export interface HealStart {
+  key: string;
   target?: info.StatsEncoded;
   healer?: info.StatsEncoded;
   base_heal: info.HealMap;
@@ -119,20 +119,12 @@ export interface HealStart {
 }
 export type HealEndEventHandler = Handler<HealEnd>;
 export interface HealEnd {
+  key: string;
   target: string;
   healer: string;
   heal_amount: number /* float64 */;
   overflow_heal_amount: number /* float64 */;
   use_snapshot: boolean;
-}
-
-//////////
-// source: enemy.go
-
-export type EnemyAddedEventHandler = Handler<EnemyAdded>;
-export interface EnemyAdded {
-  id: string;
-  info: info.Enemy;
 }
 
 //////////
@@ -205,6 +197,22 @@ export interface Initialize {
   config?: any /* model.SimConfig */;
   seed: number /* int64 */;
 }
+export type CharactersAddedEventHandler = Handler<CharactersAdded>;
+export interface CharactersAdded {
+  characters: CharInfo[];
+}
+export interface CharInfo {
+  id: string;
+  info?: info.Character;
+}
+export type EnemiesAddedEventHandler = Handler<EnemiesAdded>;
+export interface EnemiesAdded {
+  enemies: EnemyInfo[];
+}
+export interface EnemyInfo {
+  id: string;
+  info?: info.Enemy;
+}
 export type BattleStartEventHandler = Handler<BattleStart>;
 export interface BattleStart {
   char_info: { [key: string]: info.Character};
@@ -213,9 +221,22 @@ export interface BattleStart {
   enemy_stats: (info.StatsEncoded | undefined)[];
   neutral_stats: (info.StatsEncoded | undefined)[];
 }
+export type Phase1StartEventHandler = Handler<Phase1Start>;
+export interface Phase1Start {
+}
+export type Phase1EndEventHandler = Handler<Phase1End>;
+export interface Phase1End {
+}
+export type Phase2StartEventHandler = Handler<Phase2Start>;
+export interface Phase2Start {
+}
+export type Phase2EndEventHandler = Handler<Phase2End>;
+export interface Phase2End {
+}
 export type TurnStartEventHandler = Handler<TurnStart>;
 export interface TurnStart {
   active: string;
+  target_type: string;
   delta_av: number /* float64 */;
   total_av: number /* float64 */;
   turn_order: TurnStatus[];
@@ -246,16 +267,23 @@ export interface ActionEnd {
 }
 export type InsertStartEventHandler = Handler<InsertStart>;
 export interface InsertStart {
+  key: string;
   owner: string;
   abort_flags: string[];
   priority: info.InsertPriority;
 }
 export type InsertEndEventHandler = Handler<InsertEnd>;
 export interface InsertEnd {
+  key: string;
   owner: string;
   targets: { [key: string]: boolean};
   abort_flags: string[];
   priority: info.InsertPriority;
+}
+export type TargetDeathEventHandler = Handler<TargetDeath>;
+export interface TargetDeath {
+  target: string;
+  killer: string;
 }
 
 //////////
@@ -274,13 +302,17 @@ export interface TurnReset {
 }
 export type GaugeChangeEventHandler = Handler<GaugeChange>;
 export interface GaugeChange {
+  key: string;
   target: string;
+  source: string;
   old_gauge: number /* float64 */;
   new_gauge: number /* float64 */;
   turn_order: TurnStatus[];
 }
 export type CurrentGaugeCostChangeEventHandler = Handler<CurrentGaugeCostChange>;
 export interface CurrentGaugeCostChange {
+  key: string;
+  source: string;
   old_cost: number /* float64 */;
   new_cost: number /* float64 */;
 }

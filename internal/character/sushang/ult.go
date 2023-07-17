@@ -9,11 +9,11 @@ import (
 )
 
 const (
-	UltBuff key.Modifier = "sushang_ult_buff"
+	Ult = "sushang-ult"
 )
 
 func init() {
-	modifier.Register(UltBuff, modifier.Config{
+	modifier.Register(Ult, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_BUFF,
 	})
@@ -21,6 +21,7 @@ func init() {
 
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	c.engine.Attack(info.Attack{
+		Key:        Ult,
 		Source:     c.id,
 		Targets:    []key.TargetID{target},
 		DamageType: model.DamageType_PHYSICAL,
@@ -34,9 +35,15 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	})
 
 	state.EndAttack()
-	c.engine.SetGauge(c.id, 0)
+	c.engine.SetGauge(info.ModifyAttribute{
+		Key:    Ult,
+		Target: c.id,
+		Source: c.id,
+		Amount: 0,
+	})
+
 	c.engine.AddModifier(c.id, info.Modifier{
-		Name:   UltBuff,
+		Name:   Ult,
 		Source: c.id,
 		Stats: info.PropMap{
 			prop.ATKPercent: ultAtkBuff[c.info.UltLevelIndex()],

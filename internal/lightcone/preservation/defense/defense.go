@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	mod key.Modifier = "defense-lc" // incase defense keyword is too universal
+	name = "defense-lc" // incase defense keyword is too universal
 )
 
 // When the wearer unleashes their Ultimate, they restore HP by
@@ -24,7 +24,7 @@ func init() {
 		Promotions:    promotions,
 	})
 
-	modifier.Register(mod, modifier.Config{
+	modifier.Register(name, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeAction: onBeforeAction,
 		},
@@ -35,7 +35,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	healAmt := 0.15 + 0.03*float64(lc.Imposition)
 
 	engine.AddModifier(owner, info.Modifier{
-		Name:   mod,
+		Name:   name,
 		Source: owner,
 		State:  healAmt,
 	})
@@ -46,6 +46,7 @@ func onBeforeAction(mod *modifier.Instance, e event.ActionStart) {
 
 	if e.AttackType == model.AttackType_ULT {
 		mod.Engine().Heal(info.Heal{
+			Key:      name,
 			Targets:  []key.TargetID{mod.Owner()},
 			Source:   mod.Owner(),
 			BaseHeal: info.HealMap{model.HealFormula_BY_HEALER_MAX_HP: healAmt},

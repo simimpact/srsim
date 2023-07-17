@@ -12,13 +12,13 @@ import (
 
 type Manager struct {
 	engine    engine.Engine
-	attr      attribute.Modifier
+	attr      attribute.Manager
 	eval      logic.Eval
 	instances map[key.TargetID]info.CharInstance
 	info      map[key.TargetID]info.Character
 }
 
-func New(engine engine.Engine, attr attribute.Modifier, eval logic.Eval) *Manager {
+func New(engine engine.Engine, attr attribute.Manager, eval logic.Eval) *Manager {
 	return &Manager{
 		engine:    engine,
 		attr:      attr,

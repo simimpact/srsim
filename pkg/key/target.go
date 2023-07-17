@@ -5,6 +5,8 @@ import (
 	"fmt"
 )
 
+type TargetEvaluator TargetID
+
 type TargetID int
 
 type TargetIDGenerator struct {

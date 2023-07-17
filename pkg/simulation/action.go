@@ -2,6 +2,7 @@ package simulation
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
@@ -55,14 +56,20 @@ func (sim *Simulation) ultCheck() error {
 		if sim.Attr.FullEnergy(act.Target) {
 			sim.Queue.Insert(queue.Task{
 				Source:   act.Target,
-				Priority: info.CharInsertUlt,
+				Priority: info.CharInsertAction,
 				AbortFlags: []model.BehaviorFlag{
 					model.BehaviorFlag_STAT_CTRL,
 					model.BehaviorFlag_DISABLE_ACTION,
 				},
 				Execute: func() { sim.executeUlt(act) }, // TODO: error handling
 			})
-			sim.Attr.ModifyEnergy(act.Target, -sim.Attr.MaxEnergy(act.Target))
+
+			sim.Attr.ModifyEnergy(info.ModifyAttribute{
+				Key:    "ult",
+				Target: act.Target,
+				Source: act.Target,
+				Amount: -sim.Attr.MaxEnergy(act.Target),
+			})
 		}
 	}
 	return nil
@@ -85,8 +92,9 @@ func (sim *Simulation) executeQueue(phase info.BattlePhase, next stateFn) (state
 	for !sim.Queue.IsEmpty() {
 		insert := sim.Queue.Pop()
 
-		// if source has no HP, skip this insert
-		if sim.Attr.HPRatio(insert.Source) <= 0 {
+		// if source is dead, skip this insert (limbo okay for case of revives)
+		// TODO: make this behavior change based off current insert priority?
+		if sim.Attr.State(insert.Source) == info.Dead {
 			continue
 		}
 
@@ -96,6 +104,7 @@ func (sim *Simulation) executeQueue(phase info.BattlePhase, next stateFn) (state
 		}
 
 		insert.Execute()
+		sim.deathCheck(false)
 
 		// attempt to exit. If can exit, stop sim now
 		if next, err := sim.exitCheck(next); next == nil || err != nil {
@@ -111,6 +120,11 @@ func (sim *Simulation) executeQueue(phase info.BattlePhase, next stateFn) (state
 func (sim *Simulation) executeAction(id key.TargetID, isInsert bool) error {
 	var executable target.ExecutableAction
 	var err error
+
+	// actions can only be executed while alive (skip if dead or limbo)
+	if sim.Attr.State(id) != info.Alive {
+		return nil
+	}
 
 	switch sim.Targets[id] {
 	case info.ClassCharacter:
@@ -129,7 +143,12 @@ func (sim *Simulation) executeAction(id key.TargetID, isInsert bool) error {
 		return fmt.Errorf("unsupported target type: %v", sim.Targets[id])
 	}
 
-	sim.ModifySP(executable.SPDelta)
+	sim.ModifySP(info.ModifySP{
+		Key:    key.Reason(strings.ToLower(executable.AttackType.String())),
+		Source: id,
+		Amount: executable.SPDelta,
+	})
+
 	sim.clearActionTargets()
 	sim.Event.ActionStart.Emit(event.ActionStart{
 		Owner:      id,
@@ -190,6 +209,7 @@ func (sim *Simulation) executeUlt(act logic.Action) error {
 func (sim *Simulation) executeInsert(i info.Insert) {
 	sim.clearActionTargets()
 	sim.Event.InsertStart.Emit(event.InsertStart{
+		Key:        i.Key,
 		Owner:      i.Source,
 		AbortFlags: i.AbortFlags,
 		Priority:   i.Priority,
@@ -201,6 +221,7 @@ func (sim *Simulation) executeInsert(i info.Insert) {
 	// end attack if in one. no-op if not in an attack
 	sim.Combat.EndAttack()
 	sim.Event.InsertEnd.Emit(event.InsertEnd{
+		Key:        i.Key,
 		Owner:      i.Source,
 		Targets:    sim.ActionTargets,
 		AbortFlags: i.AbortFlags,

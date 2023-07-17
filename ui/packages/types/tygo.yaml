@@ -13,6 +13,10 @@ packages:
     key.Character: string
     key.LightCone: string
     key.Modifier: string
+    key.Attack: string
+    key.Heal: string
+    key.Insert: string
+    key.Reason: string
     prop.Property: string
 
     model.DamageFormula: string
@@ -49,6 +53,7 @@ packages:
     info.Modifier: info.Modifier
     info.Shield: info.Shield
     info.InsertPriority: info.InsertPriority
+    info.TargetClass: string
 
     # special internal types
     key.TargetID: string
@@ -56,6 +61,10 @@ packages:
     key.Character: string
     key.Modifier: string
     key.Shield: string
+    key.Attack: string
+    key.Heal: string
+    key.Insert: string
+    key.Reason: string
     prop.Property: string
 
     # TODO: placeholder, need to do proto generation
