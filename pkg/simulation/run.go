@@ -180,11 +180,18 @@ func phase1(sim *Simulation) (stateFn, error) {
 
 	// reset the stance if this is start of enemy turn and their stance is 0
 	if sim.IsEnemy(sim.Active) && sim.Attr.Stance(sim.Active) <= 0 {
-		info, err := sim.Enemy.Info(sim.Active)
+		i, err := sim.Enemy.Info(sim.Active)
 		if err != nil {
 			return nil, fmt.Errorf("error when getting enemy info in phase1 %w", err)
 		}
-		if err := sim.Attr.SetStance(sim.Active, sim.Active, info.MaxStance); err != nil {
+
+		err = sim.Attr.SetStance(info.ModifyAttribute{
+			Key:    "turn-stance-reset",
+			Target: sim.Active,
+			Source: sim.Active,
+			Amount: i.MaxStance,
+		})
+		if err != nil {
 			return nil, fmt.Errorf("error when reseting target stance %w", err)
 		}
 	}

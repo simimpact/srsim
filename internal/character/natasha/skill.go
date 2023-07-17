@@ -64,7 +64,12 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		Duration: hotDuration,
 	})
 
-	c.engine.ModifyEnergy(c.id, 30)
+	c.engine.ModifyEnergy(info.ModifyAttribute{
+		Key:    Skill,
+		Target: c.id,
+		Source: c.id,
+		Amount: 30,
+	})
 }
 
 func natHot(mod *modifier.Instance) {

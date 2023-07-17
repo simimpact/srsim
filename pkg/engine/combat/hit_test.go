@@ -43,7 +43,7 @@ func TestPerformHitWithShield(t *testing.T) {
 	defer func() { assert.True(t, hitStartEmitted, "HitStart event was never emitted") }()
 
 	// POPULATE STATS
-	hit.Attacker.AddProperty(prop.ATKBase, 200)
+	hit.Attacker.AddProperty("tst", prop.ATKBase, 200)
 
 	// EXPECTED RESULTS
 	total := 100.0 // defender has 0 DEF, attacker only has 200 ATK w/ 50% attack, so 100 total
@@ -78,9 +78,26 @@ func TestPerformHitWithShield(t *testing.T) {
 			return amt - absorb
 		})
 
-	attr.EXPECT().ModifyHPByAmount(hit.Defender.ID(), hit.Attacker.ID(), -hpUpdate, true)
-	attr.EXPECT().ModifyStance(hit.Defender.ID(), hit.Attacker.ID(), -hit.StanceDamage)
-	attr.EXPECT().ModifyEnergy(hit.Attacker.ID(), 0.0)
+	modify := info.ModifyAttribute{
+		Key:    "tst",
+		Target: hit.Defender.ID(),
+		Source: hit.Attacker.ID(),
+		Amount: 0,
+	}
+
+	modify.Amount = -hpUpdate
+	attr.EXPECT().ModifyHPByAmount(modify, true)
+
+	modify.Amount = -hit.StanceDamage
+	attr.EXPECT().ModifyStance(modify)
+
+	attr.EXPECT().ModifyEnergy(info.ModifyAttribute{
+		Key:    "tst",
+		Target: hit.Attacker.ID(),
+		Source: hit.Attacker.ID(),
+		Amount: 0,
+	})
+
 	attr.EXPECT().HPRatio(hit.Defender.ID())
 	target.EXPECT().IsCharacter(hit.Attacker.ID()).Return(true)
 

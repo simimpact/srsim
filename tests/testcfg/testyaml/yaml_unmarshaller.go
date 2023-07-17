@@ -55,11 +55,13 @@ func ParseConfig(path string) (*model.SimConfig, *eval.Eval, error) {
 		p := parse.New(logic.Gcsl)
 		list, err := p.Parse()
 		if err != nil {
+			// if eval is provided but is improper, we report an error
 			return nil, nil, fmt.Errorf("ActionList parse error: %w", err)
 		}
 		e = eval.New(context.TODO(), list.Program)
 	default:
-		return nil, nil, fmt.Errorf("unknown logic type: %v", logic)
+		// if eval is entirely missing it is acceptable
+		return result, nil, nil
 	}
 
 	return result, e, nil

@@ -1,7 +1,6 @@
 package simulation
 
 import (
-	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 )
@@ -32,33 +31,16 @@ func (sim *Simulation) createSnapshot() snapshot {
 	}
 }
 
-// TODO: move this to attr service?
-func (sim *Simulation) ModifySP(amt int) int {
-	old := sim.Sp
-	sim.Sp += amt
-	if sim.Sp > 5 {
-		sim.Sp = 5
-	}
-
-	if old != sim.Sp {
-		sim.Event.SPChange.Emit(event.SPChange{
-			OldSP: old,
-			NewSP: sim.Sp,
-		})
-	}
-	return sim.Sp
+func (sim *Simulation) ModifySP(data info.ModifySP) error {
+	return sim.Attr.ModifySP(data)
 }
 
 func (sim *Simulation) SP() int {
-	return sim.Sp
+	return sim.Attr.SP()
 }
 
 func (sim *Simulation) Stats(target key.TargetID) *info.Stats {
 	return sim.Attr.Stats(target)
-}
-
-func (sim *Simulation) IsAlive(target key.TargetID) bool {
-	return sim.Attr.State(target) == info.Alive
 }
 
 func (sim *Simulation) Stance(target key.TargetID) float64 {
@@ -81,55 +63,50 @@ func (sim *Simulation) HPRatio(target key.TargetID) float64 {
 	return sim.Attr.HPRatio(target)
 }
 
-func (sim *Simulation) SetHP(target, source key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Attr.SetHP(target, source, amt, false)
+func (sim *Simulation) SetHP(data info.ModifyAttribute) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Attr.SetHP(data, false)
 }
 
-func (sim *Simulation) ModifyHPByRatio(target, source key.TargetID, data info.ModifyHPByRatio) error {
-	sim.ActionTargets[target] = true
-	return sim.Attr.ModifyHPByRatio(target, source, data, false)
+func (sim *Simulation) ModifyHPByRatio(data info.ModifyHPByRatio) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Attr.ModifyHPByRatio(data, false)
 }
 
-func (sim *Simulation) ModifyHPByAmount(target, source key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Attr.ModifyHPByAmount(target, source, amt, false)
+func (sim *Simulation) ModifyStance(data info.ModifyAttribute) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Attr.ModifyStance(data)
 }
 
-func (sim *Simulation) ModifyStance(target, source key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Attr.ModifyStance(target, source, amt)
+func (sim *Simulation) ModifyEnergy(data info.ModifyAttribute) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Attr.ModifyEnergy(data)
 }
 
-func (sim *Simulation) ModifyEnergy(target key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Attr.ModifyEnergy(target, amt)
+func (sim *Simulation) ModifyEnergyFixed(data info.ModifyAttribute) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Attr.ModifyEnergyFixed(data)
 }
 
-func (sim *Simulation) ModifyEnergyFixed(target key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Attr.ModifyEnergyFixed(target, amt)
+func (sim *Simulation) SetGauge(data info.ModifyAttribute) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Turn.SetGauge(data)
 }
 
-func (sim *Simulation) SetGauge(target key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Turn.SetGauge(target, amt)
+func (sim *Simulation) ModifyGaugeNormalized(data info.ModifyAttribute) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Turn.ModifyGaugeNormalized(data)
 }
 
-func (sim *Simulation) ModifyGaugeNormalized(target key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Turn.ModifyGaugeNormalized(target, amt)
+func (sim *Simulation) ModifyGaugeAV(data info.ModifyAttribute) error {
+	sim.ActionTargets[data.Target] = true
+	return sim.Turn.ModifyGaugeAV(data)
 }
 
-func (sim *Simulation) ModifyGaugeAV(target key.TargetID, amt float64) error {
-	sim.ActionTargets[target] = true
-	return sim.Turn.ModifyGaugeAV(target, amt)
+func (sim *Simulation) SetCurrentGaugeCost(data info.ModifyCurrentGaugeCost) {
+	sim.Turn.SetCurrentGaugeCost(data)
 }
 
-func (sim *Simulation) SetCurrentGaugeCost(amt float64) {
-	sim.Turn.SetCurrentGaugeCost(amt)
-}
-
-func (sim *Simulation) ModifyCurrentGaugeCost(amt float64) {
-	sim.Turn.ModifyCurrentGaugeCost(amt)
+func (sim *Simulation) ModifyCurrentGaugeCost(data info.ModifyCurrentGaugeCost) {
+	sim.Turn.ModifyCurrentGaugeCost(data)
 }

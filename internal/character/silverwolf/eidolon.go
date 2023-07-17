@@ -10,9 +10,10 @@ import (
 )
 
 const (
+	E1 key.Reason   = "silverwolf-e1"
 	E2 key.Modifier = "silverwolf-e2"
 	E4 key.Attack   = "silverwolf-e4"
-	E6 key.Modifier = "silverwolf-e6"
+	E6              = "silverwolf-e6"
 )
 
 func init() {
@@ -39,7 +40,7 @@ func init() {
 				if debuffCount > 5 {
 					debuffCount = 5
 				}
-				e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.2*float64(debuffCount))
+				e.Hit.Attacker.AddProperty(E6, prop.AllDamagePercent, 0.2*float64(debuffCount))
 			},
 		},
 	})
@@ -54,7 +55,12 @@ func (c *char) e1(target key.TargetID) {
 		if debuffCount > 5 {
 			debuffCount = 5
 		}
-		c.engine.ModifyEnergy(c.id, float64(7*debuffCount))
+		c.engine.ModifyEnergy(info.ModifyAttribute{
+			Key:    E1,
+			Target: c.id,
+			Source: c.id,
+			Amount: float64(7 * debuffCount),
+		})
 	}
 }
 

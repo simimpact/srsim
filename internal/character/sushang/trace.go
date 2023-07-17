@@ -21,8 +21,9 @@ import (
 const (
 	A2Check key.Modifier = "sushang-a2-check"
 	A2Buff  key.Modifier = "sushang-a2-buff"
-	A4Mod   key.Modifier = "sushang-a4-mod"
-	A4Buff  key.Modifier = "sushang-a4-buff"
+	A4Mod                = "sushang-a4"
+	A4Buff  key.Modifier = "sushang-a4-stacks"
+	A6      key.Reason   = "sushang-a6"
 )
 
 func init() {
@@ -81,7 +82,7 @@ func a2HPCheck(mod *modifier.Instance) {
 
 func a4OnBeforeHitAll(mod *modifier.Instance, e event.HitStart) {
 	stacks := mod.State().(float64)
-	e.Hit.Attacker.AddProperty(prop.AllDamagePercent, stacks*0.025)
+	e.Hit.Attacker.AddProperty(A4Mod, prop.AllDamagePercent, stacks*0.025)
 }
 
 func (c *char) a4AddStack() {
@@ -99,7 +100,11 @@ func (c *char) a6() {
 	if c.info.Traces["103"] {
 		for _, enemy := range c.engine.Enemies() {
 			if c.engine.Stats(enemy).Stance() == 0 {
-				c.engine.ModifyCurrentGaugeCost(-0.15)
+				c.engine.ModifyCurrentGaugeCost(info.ModifyCurrentGaugeCost{
+					Key:    A6,
+					Source: c.id,
+					Amount: -0.15,
+				})
 				break
 			}
 		}

@@ -5,12 +5,11 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
-	"github.com/simimpact/srsim/pkg/key"
 )
 
 const (
-	Talent                      key.Modifier = "natasha-talent"
-	talentHpThresholdPercentage float64      = 0.3
+	Talent                              = "natasha-talent"
+	talentHpThresholdPercentage float64 = 0.3
 )
 
 func init() {
@@ -35,6 +34,6 @@ func (c *char) initTalent() {
 func talentHealListener(mod *modifier.Instance, e *event.HealStart) {
 	if e.Target.CurrentHPRatio() <= talentHpThresholdPercentage {
 		healer, _ := mod.Engine().CharacterInfo(e.Healer.ID())
-		e.Healer.AddProperty(prop.HealBoost, talent[healer.TalentLevelIndex()])
+		e.Healer.AddProperty(Talent, prop.HealBoost, talent[healer.TalentLevelIndex()])
 	}
 }

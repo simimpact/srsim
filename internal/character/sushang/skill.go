@@ -7,6 +7,7 @@ import (
 )
 
 const (
+	E1          key.Reason = "sushang-e1"
 	Skill       key.Attack = "sushang-skill"
 	SwordStance key.Attack = "sword-stance"
 )
@@ -40,7 +41,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	stats := c.engine.Stats(c.id)
 	hitChance := 0.33 * (1 + stats.EffectHitRate()) * (1 - stats.EffectRES())
 
-	if c.engine.HasModifier(c.id, UltBuff) {
+	if c.engine.HasModifier(c.id, Ult) {
 		for i := 0; i <= 1; i++ {
 			if isBroken || c.engine.Rand().Float64() < hitChance {
 				chances[i] = true
@@ -61,7 +62,11 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	state.EndAttack()
 
 	if isBroken && c.info.Eidolon >= 1 {
-		c.engine.ModifySP(1)
+		c.engine.ModifySP(info.ModifySP{
+			Key:    E1,
+			Source: c.id,
+			Amount: 1,
+		})
 	}
 
 	c.a6()

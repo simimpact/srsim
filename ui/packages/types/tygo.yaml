@@ -16,6 +16,7 @@ packages:
     key.Attack: string
     key.Heal: string
     key.Insert: string
+    key.Reason: string
     prop.Property: string
 
     model.DamageFormula: string
@@ -63,6 +64,7 @@ packages:
     key.Attack: string
     key.Heal: string
     key.Insert: string
+    key.Reason: string
     prop.Property: string
 
     # TODO: placeholder, need to do proto generation

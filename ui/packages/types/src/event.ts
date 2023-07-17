@@ -11,6 +11,7 @@ import * as info from "./info";
 
 export type HPChangeEventHandler = Handler<HPChange>;
 export interface HPChange {
+  key: string;
   target: string;
   old_hp_ratio: number /* float64 */;
   new_hp_ratio: number /* float64 */;
@@ -25,27 +26,35 @@ export interface LimboWaitHeal {
 }
 export type EnergyChangeEventHandler = Handler<EnergyChange>;
 export interface EnergyChange {
+  key: string;
   target: string;
+  source: string;
   old_energy: number /* float64 */;
   new_energy: number /* float64 */;
 }
 export type StanceChangeEventHandler = Handler<StanceChange>;
 export interface StanceChange {
+  key: string;
   target: string;
+  source: string;
   old_stance: number /* float64 */;
   new_stance: number /* float64 */;
 }
 export type StanceBreakEventHandler = Handler<StanceBreak>;
 export interface StanceBreak {
+  key: string;
   target: string;
   source: string;
 }
 export type StanceResetEventHandler = Handler<StanceReset>;
 export interface StanceReset {
+  key: string;
   target: string;
 }
 export type SPChangeEventHandler = Handler<SPChange>;
 export interface SPChange {
+  key: string;
+  source: string;
   old_sp: number /* int */;
   new_sp: number /* int */;
 }
@@ -293,13 +302,17 @@ export interface TurnReset {
 }
 export type GaugeChangeEventHandler = Handler<GaugeChange>;
 export interface GaugeChange {
+  key: string;
   target: string;
+  source: string;
   old_gauge: number /* float64 */;
   new_gauge: number /* float64 */;
   turn_order: TurnStatus[];
 }
 export type CurrentGaugeCostChangeEventHandler = Handler<CurrentGaugeCostChange>;
 export interface CurrentGaugeCostChange {
+  key: string;
+  source: string;
   old_cost: number /* float64 */;
   new_cost: number /* float64 */;
 }

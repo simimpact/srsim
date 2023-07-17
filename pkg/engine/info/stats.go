@@ -10,42 +10,69 @@ import (
 
 // A snapshot of a targets stats at a point in time
 type Stats struct {
-	id           key.TargetID
-	level        int
-	currentHP    float64
-	energy       float64
-	maxEnergy    float64
-	stance       float64
-	maxStance    float64
-	props        PropMap
-	debuffRES    DebuffRESMap
-	weakness     WeaknessMap
-	flags        []model.BehaviorFlag
-	statusCounts map[model.StatusType]int
-	modifiers    []key.Modifier
+	id                 key.TargetID
+	props              PropMap
+	debuffRES          DebuffRESMap
+	weakness           WeaknessMap
+	flags              []model.BehaviorFlag
+	statusCounts       map[model.StatusType]int
+	modifiers          []ModifierChangeSet
+	attributes         *Attributes
+	propChanges        []propChangeSet
+	debuffRESChangeSet []debuffRESChangeSet
 }
 
-// TODO: ToProto method for logging
+type propChangeSet struct {
+	prop   prop.Property
+	key    key.Reason
+	amount float64
+}
 
-func NewStats(id key.TargetID, attributes *Attributes, mods ModifierState) *Stats {
+type debuffRESChangeSet struct {
+	flag   model.BehaviorFlag
+	key    key.Reason
+	amount float64
+}
+
+func NewStats(id key.TargetID, attributes *Attributes, mods *ModifierState) *Stats {
 	mods.Props.AddAll(attributes.BaseStats)
 	mods.DebuffRES.AddAll(attributes.BaseDebuffRES)
 	mods.Weakness.AddAll(attributes.Weakness)
-	// TODO: merge weaknesses between attributes + mods for cases of weakness app like Silver Wolf
+
 	return &Stats{
-		id:           id,
-		level:        attributes.Level,
-		currentHP:    attributes.HPRatio,
-		energy:       attributes.Energy,
-		maxEnergy:    attributes.MaxEnergy,
-		stance:       attributes.Stance,
-		maxStance:    attributes.MaxStance,
-		weakness:     attributes.Weakness,
-		props:        mods.Props,
-		debuffRES:    mods.DebuffRES,
-		flags:        mods.Flags,
-		statusCounts: mods.Counts,
-		modifiers:    mods.Modifiers,
+		id:                 id,
+		props:              mods.Props,
+		debuffRES:          mods.DebuffRES,
+		weakness:           mods.Weakness,
+		flags:              mods.Flags,
+		statusCounts:       mods.Counts,
+		modifiers:          mods.Modifiers,
+		attributes:         copyAttributes(attributes),
+		propChanges:        make([]propChangeSet, 0, 16),
+		debuffRESChangeSet: make([]debuffRESChangeSet, 0, 16),
+	}
+}
+
+func copyAttributes(attributes *Attributes) *Attributes {
+	props := make(PropMap, len(attributes.BaseStats))
+	props.AddAll(attributes.BaseStats)
+
+	debuffRES := make(DebuffRESMap, len(attributes.BaseDebuffRES))
+	debuffRES.AddAll(attributes.BaseDebuffRES)
+
+	weakness := make(WeaknessMap, len(attributes.Weakness))
+	weakness.AddAll(attributes.Weakness)
+
+	return &Attributes{
+		Level:         attributes.Level,
+		BaseStats:     props,
+		BaseDebuffRES: debuffRES,
+		Weakness:      weakness,
+		HPRatio:       attributes.HPRatio,
+		Energy:        attributes.Energy,
+		MaxEnergy:     attributes.MaxEnergy,
+		Stance:        attributes.Stance,
+		MaxStance:     attributes.MaxStance,
 	}
 }
 
@@ -55,12 +82,22 @@ func (stats *Stats) ID() key.TargetID {
 }
 
 // Adds a property to this Stats snapshot
-func (stats *Stats) AddProperty(p prop.Property, amt float64) {
+func (stats *Stats) AddProperty(key key.Reason, p prop.Property, amt float64) {
+	stats.propChanges = append(stats.propChanges, propChangeSet{
+		key:    key,
+		prop:   p,
+		amount: amt,
+	})
 	stats.props.Modify(p, amt)
 }
 
 // Adds a debuff RES to this Stats snapshot
-func (stats *Stats) AddDebuffRES(flag model.BehaviorFlag, amt float64) {
+func (stats *Stats) AddDebuffRES(key key.Reason, flag model.BehaviorFlag, amt float64) {
+	stats.debuffRESChangeSet = append(stats.debuffRESChangeSet, debuffRESChangeSet{
+		key:    key,
+		flag:   flag,
+		amount: amt,
+	})
 	stats.debuffRES.Modify(flag, amt)
 }
 
@@ -92,7 +129,7 @@ func (stats *Stats) StatusCount(status model.StatusType) int {
 }
 
 // A list of all modifiers that were used to populate this Stats
-func (stats *Stats) Modifiers() []key.Modifier {
+func (stats *Stats) Modifiers() []ModifierChangeSet {
 	return stats.modifiers
 }
 
@@ -103,37 +140,37 @@ func (stats *Stats) IsWeakTo(t model.DamageType) bool {
 
 // The current level of the target.
 func (stats *Stats) Level() int {
-	return stats.level
+	return stats.attributes.Level
 }
 
 // The current HP amount of the target (HPRatio * MaxHP)
 func (stats *Stats) CurrentHP() float64 {
-	return stats.currentHP * stats.MaxHP()
+	return stats.attributes.HPRatio * stats.MaxHP()
 }
 
 // The current HPRatio (value between 0 and 1).
 func (stats *Stats) CurrentHPRatio() float64 {
-	return stats.currentHP
+	return stats.attributes.HPRatio
 }
 
 // The current Stance/Toughness amount of the target
 func (stats *Stats) Stance() float64 {
-	return stats.stance
+	return stats.attributes.Stance
 }
 
 // The max Stance/Toughness amount of the target
 func (stats *Stats) MaxStance() float64 {
-	return stats.maxStance
+	return stats.attributes.MaxStance
 }
 
 // The current energy amount of the target
 func (stats *Stats) Energy() float64 {
-	return stats.energy
+	return stats.attributes.Energy
 }
 
 // The max energy amount of the target
 func (stats *Stats) MaxEnergy() float64 {
-	return stats.maxEnergy
+	return stats.attributes.MaxEnergy
 }
 
 // HP = HP_BASE * (1 + HP_PERCENT) + HP_FLAT + HP_CONVERT
@@ -217,6 +254,16 @@ func (stats *Stats) BreakEffect() float64 {
 	return stats.props[prop.BreakEffect]
 }
 
+// DAMAGE_PERCENT = ALL_DAMAGE_PERCENT + DAMAGE_TYPE_PERCENT
+func (stats *Stats) DamagePercent(dmg model.DamageType) float64 {
+	return stats.props[prop.AllDamagePercent] + stats.props[prop.DamagePercent(dmg)]
+}
+
+// DAMAGE_RES = ALL_DAMAGE_RES + DAMAGE_TYPE_RES
+func (stats *Stats) DamageRES(dmg model.DamageType) float64 {
+	return stats.props[prop.AllDamageRES] + stats.props[prop.DamageRES(dmg)]
+}
+
 func statCalc(base, percent, flat float64) float64 {
 	out := base*(1+percent) + flat
 	if out < 0 {
@@ -230,55 +277,183 @@ type StatsEncoded struct {
 	HPRatio      float64                  `json:"hp_ratio"`
 	Energy       float64                  `json:"energy"`
 	Stance       float64                  `json:"stance"`
-	Props        PropMap                  `json:"props"`
-	DebuffRES    DebuffRESMap             `json:"debuff_res"`
-	Weakness     WeaknessMap              `json:"weakness"`
+	Stats        *ComputedStats           `json:"stats"`
 	Flags        []model.BehaviorFlag     `json:"flags"`
 	StatusCounts map[model.StatusType]int `json:"status_counts"`
-	Modifiers    []key.Modifier           `json:"modifiers"`
-	Stats        *ComputedStats           `json:"stats"`
+	Modifiers    map[key.Modifier]int     `json:"modifiers"`
+	Props        []*LoggedProp            `json:"props"`
+	DebuffRES    []*LoggedDebuffRES       `json:"debuff_res"`
+	Weakness     WeaknessMap              `json:"weakness"`
 }
 
 type ComputedStats struct {
-	HP            float64 `json:"hp"`
-	ATK           float64 `json:"atk"`
-	DEF           float64 `json:"def"`
-	SPD           float64 `json:"spd"`
-	Aggro         float64 `json:"aggro"`
-	CritChance    float64 `json:"crit_chance"`
-	CritDMG       float64 `json:"crit_dmg"`
-	HealBoost     float64 `json:"heal_boost"`
-	EffectHitRate float64 `json:"effect_hit_rate"`
-	EffectRES     float64 `json:"effect_res"`
-	EnergyRegen   float64 `json:"energy_regen"`
-	BreakEffect   float64 `json:"break_effect"`
+	HP                     float64 `json:"hp"`
+	ATK                    float64 `json:"atk"`
+	DEF                    float64 `json:"def"`
+	SPD                    float64 `json:"spd"`
+	Aggro                  float64 `json:"aggro"`
+	CritChance             float64 `json:"crit_chance"`
+	CritDMG                float64 `json:"crit_dmg"`
+	HealBoost              float64 `json:"heal_boost"`
+	EffectHitRate          float64 `json:"effect_hit_rate"`
+	EffectRES              float64 `json:"effect_res"`
+	EnergyRegen            float64 `json:"energy_regen"`
+	BreakEffect            float64 `json:"break_effect"`
+	PhysicalDamagePercent  float64 `json:"physical_damage_percent"`
+	FireDamagePercent      float64 `json:"fire_damage_percent"`
+	IceDamagePercent       float64 `json:"ice_damage_percent"`
+	LightningDamagePercent float64 `json:"lightning_damage_percent"`
+	WindDamagePercent      float64 `json:"wind_damage_percent"`
+	QuantumDamagePercent   float64 `json:"quantum_damage_percent"`
+	ImaginaryDamagePercent float64 `json:"imaginary_damage_percent"`
+	PhysicalRES            float64 `json:"physical_res"`
+	FireRES                float64 `json:"fire_res"`
+	IceRES                 float64 `json:"ice_res"`
+	LightningRES           float64 `json:"lightning_res"`
+	WindRES                float64 `json:"wind_res"`
+	QuantumRES             float64 `json:"quantum_res"`
+	ImaginaryRES           float64 `json:"imaginary_res"`
+}
+
+type LoggedProp struct {
+	Prop    prop.Property    `json:"prop"`
+	Total   float64          `json:"total"`
+	Sources []FloatChangeSet `json:"sources"`
+}
+
+type LoggedDebuffRES struct {
+	Flag    model.BehaviorFlag `json:"flag"`
+	Total   float64            `json:"total"`
+	Sources []FloatChangeSet   `json:"sources"`
+}
+
+type FloatChangeSet struct {
+	Key    key.Reason `json:"key"`
+	Amount float64    `json:"amount"`
 }
 
 func (stats *Stats) MarshalJSON() ([]byte, error) {
+	modOccurrences := make(map[key.Modifier]int, len(stats.modifiers))
+	props := make(map[prop.Property]*LoggedProp, prop.Total())
+	debuffRES := make(map[model.BehaviorFlag]*LoggedDebuffRES, len(model.BehaviorFlag_name))
+
+	for p, amt := range stats.props {
+		props[p] = &LoggedProp{
+			Prop:    p,
+			Total:   amt,
+			Sources: make([]FloatChangeSet, 0, 8),
+		}
+	}
+
+	for f, amt := range stats.debuffRES {
+		debuffRES[f] = &LoggedDebuffRES{
+			Flag:    f,
+			Total:   amt,
+			Sources: make([]FloatChangeSet, 0, 8),
+		}
+	}
+
+	for p, amt := range stats.attributes.BaseStats {
+		props[p].Sources = append(props[p].Sources, FloatChangeSet{
+			Key:    "base",
+			Amount: amt,
+		})
+	}
+
+	for f, amt := range stats.attributes.BaseDebuffRES {
+		debuffRES[f].Sources = append(debuffRES[f].Sources, FloatChangeSet{
+			Key:    "base",
+			Amount: amt,
+		})
+	}
+
+	for _, m := range stats.modifiers {
+		modOccurrences[m.Name] += 1
+
+		for p, amt := range m.Props {
+			props[p].Sources = append(props[p].Sources, FloatChangeSet{
+				Key:    key.Reason(m.Name),
+				Amount: amt,
+			})
+		}
+
+		for f, amt := range m.DebuffRES {
+			debuffRES[f].Sources = append(debuffRES[f].Sources, FloatChangeSet{
+				Key:    key.Reason(m.Name),
+				Amount: amt,
+			})
+		}
+	}
+
+	for _, change := range stats.propChanges {
+		props[change.prop].Sources = append(props[change.prop].Sources, FloatChangeSet{
+			Key:    change.key,
+			Amount: change.amount,
+		})
+	}
+
+	for _, change := range stats.debuffRESChangeSet {
+		debuffRES[change.flag].Sources = append(debuffRES[change.flag].Sources, FloatChangeSet{
+			Key:    change.key,
+			Amount: change.amount,
+		})
+	}
+
+	loggedProps := make([]*LoggedProp, 0, len(props))
+	for _, v := range props {
+		loggedProps = append(loggedProps, v)
+	}
+
+	loggedDebuffRES := make([]*LoggedDebuffRES, 0, len(debuffRES))
+	for _, v := range debuffRES {
+		loggedDebuffRES = append(loggedDebuffRES, v)
+	}
+
 	out := StatsEncoded{
 		ID:           stats.ID(),
 		HPRatio:      stats.CurrentHPRatio(),
 		Energy:       stats.Energy(),
 		Stance:       stats.Stance(),
-		DebuffRES:    stats.debuffRES,
+		Props:        loggedProps,
+		DebuffRES:    loggedDebuffRES,
 		Weakness:     stats.weakness,
 		Flags:        stats.flags,
 		StatusCounts: stats.statusCounts,
-		Modifiers:    stats.Modifiers(),
-		Props:        stats.props,
+		Modifiers:    modOccurrences,
 		Stats: &ComputedStats{
-			HP:            stats.HP(),
-			ATK:           stats.ATK(),
-			DEF:           stats.DEF(),
-			SPD:           stats.SPD(),
+			// base stats
+			HP:  stats.HP(),
+			ATK: stats.ATK(),
+			DEF: stats.DEF(),
+			SPD: stats.SPD(),
+
+			// advanced stats
 			CritChance:    stats.CritChance(),
 			CritDMG:       stats.CritDamage(),
+			BreakEffect:   stats.BreakEffect(),
 			HealBoost:     stats.HealBoost(),
+			EnergyRegen:   stats.EnergyRegen(),
 			EffectHitRate: stats.EffectHitRate(),
 			EffectRES:     stats.EffectRES(),
-			EnergyRegen:   stats.EnergyRegen(),
-			BreakEffect:   stats.BreakEffect(),
-			Aggro:         stats.Aggro(),
+
+			// dmg type
+			PhysicalDamagePercent:  stats.DamagePercent(model.DamageType_PHYSICAL),
+			FireDamagePercent:      stats.DamagePercent(model.DamageType_FIRE),
+			IceDamagePercent:       stats.DamagePercent(model.DamageType_ICE),
+			LightningDamagePercent: stats.DamagePercent(model.DamageType_THUNDER),
+			WindDamagePercent:      stats.DamagePercent(model.DamageType_WIND),
+			QuantumDamagePercent:   stats.DamagePercent(model.DamageType_QUANTUM),
+			ImaginaryDamagePercent: stats.DamagePercent(model.DamageType_IMAGINARY),
+			PhysicalRES:            stats.DamageRES(model.DamageType_PHYSICAL),
+			FireRES:                stats.DamageRES(model.DamageType_FIRE),
+			IceRES:                 stats.DamageRES(model.DamageType_ICE),
+			LightningRES:           stats.DamageRES(model.DamageType_THUNDER),
+			WindRES:                stats.DamageRES(model.DamageType_WIND),
+			QuantumRES:             stats.DamageRES(model.DamageType_QUANTUM),
+			ImaginaryRES:           stats.DamageRES(model.DamageType_IMAGINARY),
+
+			// hidden stats
+			Aggro: stats.Aggro(),
 		},
 	}
 	return json.Marshal(out)

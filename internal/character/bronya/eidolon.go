@@ -10,6 +10,7 @@ import (
 )
 
 const (
+	E1         key.Reason   = "bronya-e1"
 	E1Cooldown key.Modifier = "bronya-e1-cooldown"
 	E2Hover    key.Modifier = "bronya-e2-hover"
 	E2Buff     key.Modifier = "bronya-e2-buff"
@@ -49,7 +50,11 @@ func (c *char) e1() {
 			// 50% Chance
 			if c.engine.Rand().Float32() < 0.5 {
 				// Add SP
-				c.engine.ModifySP(1)
+				c.engine.ModifySP(info.ModifySP{
+					Key:    E1,
+					Source: c.id,
+					Amount: 1,
+				})
 				// Set on CD
 				c.engine.AddModifier(c.id, info.Modifier{
 					Name:     E1Cooldown,

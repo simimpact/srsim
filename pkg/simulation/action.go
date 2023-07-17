@@ -2,6 +2,7 @@ package simulation
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
@@ -62,7 +63,13 @@ func (sim *Simulation) ultCheck() error {
 				},
 				Execute: func() { sim.executeUlt(act) }, // TODO: error handling
 			})
-			sim.Attr.ModifyEnergy(act.Target, -sim.Attr.MaxEnergy(act.Target))
+
+			sim.Attr.ModifyEnergy(info.ModifyAttribute{
+				Key:    "ult",
+				Target: act.Target,
+				Source: act.Target,
+				Amount: -sim.Attr.MaxEnergy(act.Target),
+			})
 		}
 	}
 	return nil
@@ -136,7 +143,12 @@ func (sim *Simulation) executeAction(id key.TargetID, isInsert bool) error {
 		return fmt.Errorf("unsupported target type: %v", sim.Targets[id])
 	}
 
-	sim.ModifySP(executable.SPDelta)
+	sim.ModifySP(info.ModifySP{
+		Key:    key.Reason(strings.ToLower(executable.AttackType.String())),
+		Source: id,
+		Amount: executable.SPDelta,
+	})
+
 	sim.clearActionTargets()
 	sim.Event.ActionStart.Emit(event.ActionStart{
 		Owner:      id,

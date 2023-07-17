@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	rain key.Modifier = "incessant-rain"
+	rain              = "incessant-rain"
 	code key.Modifier = "aether-code"
 )
 
@@ -69,7 +69,7 @@ func critRateBoost(mod *modifier.Instance, e event.HitStart) {
 	state := mod.State().(*state)
 	debuffCount := float64(e.Hit.Defender.StatusCount(model.StatusType_STATUS_DEBUFF))
 	if debuffCount >= 3 {
-		e.Hit.Attacker.AddProperty(prop.CritChance, state.critAmt)
+		e.Hit.Attacker.AddProperty(rain, prop.CritChance, state.critAmt)
 	}
 }
 

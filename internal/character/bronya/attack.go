@@ -6,7 +6,10 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-const Normal key.Attack = "bronya-normal"
+const (
+	Normal key.Attack = "bronya-normal"
+	Talent key.Reason = "bronya-talent"
+)
 
 func (c *char) Attack(target key.TargetID, state info.ActionState) {
 	c.engine.Attack(info.Attack{
@@ -25,5 +28,9 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 	state.EndAttack()
 
 	// Talent
-	c.engine.ModifyCurrentGaugeCost(-talent[c.info.TalentLevelIndex()])
+	c.engine.ModifyCurrentGaugeCost(info.ModifyCurrentGaugeCost{
+		Key:    Talent,
+		Source: c.id,
+		Amount: -talent[c.info.TalentLevelIndex()],
+	})
 }

@@ -7,10 +7,11 @@ import (
 )
 
 const (
-	NormalBasic            key.Attack = "qingque-normal-basic"
+	NormalBasic                       = "qingque-normal-basic"
 	NormalEnhancedPrimary  key.Attack = "qingque-normal-enhanced-primary"
 	NormalEnchangeAdjacent key.Attack = "qingque-normal-enhanced-adjacent"
 	Insert                 key.Insert = "qingque-follow-up"
+	E6                     key.Reason = "qingque-e6"
 )
 
 func (c *char) Attack(target key.TargetID, state info.ActionState) {
@@ -40,10 +41,18 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 		c.unusedSuits = []string{"Wan", "Tong", "Tiao"}
 		c.a6()
 		if c.info.Eidolon >= 6 {
-			c.engine.ModifySP(1)
+			c.engine.ModifySP(info.ModifySP{
+				Key:    E6,
+				Source: c.id,
+				Amount: 1,
+			})
 		}
 	} else {
-		c.engine.ModifySP(1)
+		c.engine.ModifySP(info.ModifySP{
+			Key:    "normal",
+			Source: c.id,
+			Amount: 1,
+		})
 	}
 	state.EndAttack()
 }

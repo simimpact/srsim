@@ -3,7 +3,7 @@ package relic
 import (
 	"testing"
 
-	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/tests/testcfg/testchar"
 	"github.com/simimpact/srsim/tests/testcfg/testrelic"
 	"github.com/simimpact/srsim/tests/teststub"
@@ -19,13 +19,12 @@ func TestBasicTest(t *testing.T) {
 }
 
 // Verify that Musketeer Set adds atk% and spd
-func (t *MusketeerTest) Test_Tracemap_Registration() {
-	dan := testchar.DanHung()
-	dan.Relics = testrelic.MusketeerStatlessSet()
-	t.Characters.AddCharacter(dan)
+func (t *MusketeerTest) Test_Musketeer_4p() {
+	danModel := testchar.DanHung()
+	danModel.Relics = testrelic.MusketeerStatlessSet()
+	dan := t.Characters.AddCharacter(danModel)
 	t.StartSimulation()
-	info := t.Characters.GetCharacterInfo(t.Characters.CharacterIdx(key.DanHeng))
-	// DH base atk is 1186.8 with OSR and base spd 110
-	t.Require().Less(float64(111), info.SPD())
-	t.Require().Less(float64(1187), info.ATK())
+	dan.Equal(prop.SPDPercent, 0.06)
+	// OSR +16, Musketeer +12
+	dan.Equal(prop.ATKPercent, 0.28)
 }

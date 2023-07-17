@@ -9,5 +9,5 @@ runs:
     - name: Run Tests
       working-directory: ./
       shell: bash
-      run: "go test ./pkg/..."
+      run: "go test ./pkg/... ./tests/..."
 # TODO: go test ./internal/... ./pkg/... ./backend/...

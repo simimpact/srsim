@@ -9,16 +9,16 @@ import (
 )
 
 const (
-	E1                                 = "natasha-e1"
-	E1PercentThreshold    float64      = 0.30
-	E1HealScale           float64      = 0.15
-	E1HealFlat            float64      = 400
-	E2                                 = "natasha-e2"
-	E2ThresholdPercentage float64      = 0.30
-	E2PercentageHOT       float64      = 0.06
-	E2FlatHOT             float64      = 160
-	E4                    key.Modifier = "natasha-e4"
-	E6                    key.Attack   = "natasha-e6"
+	E1                               = "natasha-e1"
+	E1PercentThreshold    float64    = 0.30
+	E1HealScale           float64    = 0.15
+	E1HealFlat            float64    = 400
+	E2                               = "natasha-e2"
+	E2ThresholdPercentage float64    = 0.30
+	E2PercentageHOT       float64    = 0.06
+	E2FlatHOT             float64    = 160
+	E4                               = "natasha-e4"
+	E6                    key.Attack = "natasha-e6"
 )
 
 func init() {
@@ -53,7 +53,12 @@ func init() {
 	modifier.Register(E4, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAfterBeingAttacked: func(mod *modifier.Instance, e event.AttackEnd) {
-				mod.Engine().ModifyEnergy(mod.Owner(), 5)
+				mod.Engine().ModifyEnergy(info.ModifyAttribute{
+					Key:    E4,
+					Target: mod.Owner(),
+					Source: mod.Owner(),
+					Amount: 5,
+				})
 			},
 		},
 	})

@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	IntheNight key.Modifier = "in_the_night"
+	IntheNight = "in-the-night"
 )
 
 type Amts struct {
@@ -69,9 +69,11 @@ func onBeforeHit(mod *modifier.Instance, e event.HitStart) {
 		// modify damage
 		switch e.Hit.AttackType {
 		case model.AttackType_NORMAL, model.AttackType_SKILL:
-			e.Hit.Attacker.AddProperty(prop.AllDamagePercent, float64(stacks)*mod.State().(Amts).dmg)
+			e.Hit.Attacker.AddProperty(
+				IntheNight, prop.AllDamagePercent, float64(stacks)*mod.State().(Amts).dmg)
 		case model.AttackType_ULT:
-			e.Hit.Attacker.AddProperty(prop.CritDMG, float64(stacks)*mod.State().(Amts).cd)
+			e.Hit.Attacker.AddProperty(
+				IntheNight, prop.CritDMG, float64(stacks)*mod.State().(Amts).cd)
 		}
 	}
 }

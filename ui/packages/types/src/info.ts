@@ -19,18 +19,76 @@ export interface Attributes {
 }
 export interface ModifyHPByRatio {
   /**
+   * A unique identifier for this modification
+   */
+  key: string;
+  /**
+   * The target of this HP modification
+   */
+  target: string;
+  /**
+   * The source of this HP modification (who caused it)
+   */
+  source: string;
+  /**
    * The amount of HP ratio to modify the HP by (negative will remove HP)
    */
-  Ratio: number /* float64 */;
+  ratio: number /* float64 */;
   /**
    * What ratio type should be used (should Ratio be based on MaxHP or CurrentHP)
    */
-  RatioType: string;
+  ratio_type: string;
   /**
    * The floor for how low HP can go with this modification. IE: Floor = 1 will prevent the HP
    * from reaching 0 in this modification (can reduce up to 1 HP)
    */
-  Floor: number /* float64 */;
+  floor: number /* float64 */;
+}
+export interface ModifyAttribute {
+  /**
+   * A unique identifier for this modification
+   */
+  key: string;
+  /**
+   * The target of this modification
+   */
+  target: string;
+  /**
+   * The source of this modification
+   */
+  source: string;
+  /**
+   * The amount that should be modified (added or removed)
+   */
+  amount: number /* float64 */;
+}
+export interface ModifySP {
+  /**
+   * A unique identifier for this modification
+   */
+  key: string;
+  /**
+   * The source of this modification
+   */
+  source: string;
+  /**
+   * The amount of SP to be added or removed
+   */
+  amount: number /* int */;
+}
+export interface ModifyCurrentGaugeCost {
+  /**
+   * A unique identifier for this modification
+   */
+  key: string;
+  /**
+   * The source of this modification
+   */
+  source: string;
+  /**
+   * The amount of gauge cost to be changed
+   */
+  amount: number /* float64 */;
 }
 export type TargetState = number /* int */;
 export const Invalid: TargetState = 0;
@@ -355,7 +413,13 @@ export interface ModifierState {
   weakness: WeaknessMap;
   flags: string[];
   counts: { [key: string]: number /* int */};
-  modifiers: string[];
+  modifiers: ModifierChangeSet[];
+}
+export interface ModifierChangeSet {
+  name: string;
+  props: PropMap;
+  debuff_res: DebuffRESMap;
+  weakness: WeaknessMap;
 }
 
 //////////
@@ -491,13 +555,13 @@ export interface StatsEncoded {
   hp_ratio: number /* float64 */;
   energy: number /* float64 */;
   stance: number /* float64 */;
-  props: PropMap;
-  debuff_res: DebuffRESMap;
-  weakness: WeaknessMap;
+  stats?: ComputedStats;
   flags: string[];
   status_counts: { [key: string]: number /* int */};
-  modifiers: string[];
-  stats?: ComputedStats;
+  modifiers: { [key: string]: number /* int */};
+  props: (LoggedProp | undefined)[];
+  debuff_res: (LoggedDebuffRES | undefined)[];
+  weakness: WeaknessMap;
 }
 export interface ComputedStats {
   hp: number /* float64 */;
@@ -512,4 +576,32 @@ export interface ComputedStats {
   effect_res: number /* float64 */;
   energy_regen: number /* float64 */;
   break_effect: number /* float64 */;
+  physical_damage_percent: number /* float64 */;
+  fire_damage_percent: number /* float64 */;
+  ice_damage_percent: number /* float64 */;
+  lightning_damage_percent: number /* float64 */;
+  wind_damage_percent: number /* float64 */;
+  quantum_damage_percent: number /* float64 */;
+  imaginary_damage_percent: number /* float64 */;
+  physical_res: number /* float64 */;
+  fire_res: number /* float64 */;
+  ice_res: number /* float64 */;
+  lightning_res: number /* float64 */;
+  wind_res: number /* float64 */;
+  quantum_res: number /* float64 */;
+  imaginary_res: number /* float64 */;
+}
+export interface LoggedProp {
+  prop: string;
+  total: number /* float64 */;
+  sources: FloatChangeSet[];
+}
+export interface LoggedDebuffRES {
+  flag: string;
+  total: number /* float64 */;
+  sources: FloatChangeSet[];
+}
+export interface FloatChangeSet {
+  key: string;
+  amount: number /* float64 */;
 }
