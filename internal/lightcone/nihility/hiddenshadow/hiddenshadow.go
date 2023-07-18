@@ -79,7 +79,6 @@ func applyDamageOnBasic(mod *modifier.Instance, e event.AttackEnd) {
 		BaseDamage: info.DamageMap{
 			model.DamageFormula_BY_ATK: state.dmgMult,
 		},
-		UseSnapshot: true,
 	})
 	// reset proc
 	state.procced = false
