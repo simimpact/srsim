@@ -17,9 +17,6 @@ const (
 
 // DESC : Increases DMG dealt from its wearer to Slowed enemies by 24%.
 
-// DM Listeners :
-// OnBeforeHitALl : if defender has STAT_SpeedDown, ModifyDamageRatio
-
 func init() {
 	lightcone.Register(key.Loop, lightcone.Config{
 		CreatePassive: Create,
