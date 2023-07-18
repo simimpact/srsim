@@ -40,6 +40,8 @@ func init() {
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	atkAmt := 0.075 + 0.015*float64(lc.Imposition)
 	dmgAmt := 0.25 + 0.05*float64(lc.Imposition)
+	//Using similar logic to only silence remains where it may not work for trotters - can try an implementation using an
+	//onbeforehit mod but i wasnt sure how engine would work with it so i just used this
 	engine.Events().EnemiesAdded.Subscribe(func(e event.EnemiesAdded) {
 		atkBuff(engine, owner, atkAmt)
 	})
