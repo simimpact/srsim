@@ -35,9 +35,8 @@ func init() {
 	})
 }
 
-//TODO: Find EnemyCount, useg that to get an atk buff (7.5 + 1.5 * level), find weakness break flag, increase damage by 30%
-//ALSO listen for weakness break, then buff dmg by
-//25 + (5 * imposition)
+//For every enemy on the field, increases the wearer's ATK by 9.0~15.0%, up to 5 stacks.
+//When an enemy is inflicted with Weakness Break, the DMG dealt by the wearer increases by 30~50% for 1 turn.
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	atkAmt := 0.075 + 0.015*float64(lc.Imposition)
 	dmgAmt := 0.25 + 0.05*float64(lc.Imposition)
