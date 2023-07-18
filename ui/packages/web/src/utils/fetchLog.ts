@@ -72,7 +72,7 @@ export type SimLog =
       event: event.StanceReset;
     }
   | {
-      name: "SpChange";
+      name: "SPChange";
       event: event.SPChange;
     }
   | {
