@@ -38,6 +38,7 @@ const (
 	GoodNightandSleepWell          LightCone = "good_night_and_sleep_well"
 	IncessantRain                  LightCone = "incessant_rain"
 	BeforetheTutorialMissionStarts LightCone = "before_the_tutorial_mission_starts"
+	HiddenShadow                   LightCone = "hidden_shadow"
 )
 
 // Erudition
