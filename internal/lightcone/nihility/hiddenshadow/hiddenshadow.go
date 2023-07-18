@@ -82,12 +82,11 @@ func applyDamageOnBasic(mod *modifier.Instance, e event.AttackEnd) {
 	})
 	holderInfo, _ := mod.Engine().CharacterInfo(mod.Source())
 	mod.Engine().Attack(info.Attack{
-		Key:          shadow,
-		Targets:      target,
-		Source:       mod.Source(),
-		AttackType:   model.AttackType_PURSUED,
-		DamageType:   holderInfo.Element,
-		AsPureDamage: true,
+		Key:        shadow,
+		Targets:    target,
+		Source:     mod.Source(),
+		AttackType: model.AttackType_PURSUED,
+		DamageType: holderInfo.Element,
 		BaseDamage: info.DamageMap{
 			model.DamageFormula_BY_ATK: state.dmgMult,
 		},
