@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { HelmetProvider } from "react-helmet-async";
 import { BrowserRouter } from "react-router-dom";
+import { SimControl } from "./SimControl";
 
 interface Props {
   children: ReactNode;
@@ -10,18 +11,24 @@ interface Props {
 
 const ErrorFallback = () => (
   <div className="flex flex-col justify-center items-center w-screen h-screen gap-5">
-    <h2 className="text-xl">something went wrong :(</h2>
+    <h2 className="text-xl">something went wrong {":("}</h2>
     <button className="rounded bg-blue-500 font-blod px-4 py-2 text-white">Refresh</button>
   </div>
 );
 const queryClient = new QueryClient();
 
-export const AppProvider = ({ children }: Props) => (
-  <ErrorBoundary FallbackComponent={ErrorFallback}>
-    <HelmetProvider>
-      <BrowserRouter>
-        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-      </BrowserRouter>
-    </HelmetProvider>
-  </ErrorBoundary>
-);
+export const AppProvider = ({ children }: Props) => {
+  // const simControl = useSimControl();
+
+  return (
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <HelmetProvider>
+        <BrowserRouter>
+          <QueryClientProvider client={queryClient}>
+            <SimControl>{children}</SimControl>
+          </QueryClientProvider>
+        </BrowserRouter>
+      </HelmetProvider>
+    </ErrorBoundary>
+  );
+};

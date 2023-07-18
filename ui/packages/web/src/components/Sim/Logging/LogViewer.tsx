@@ -1,41 +1,33 @@
-import { useMutation } from "@tanstack/react-query";
-import { Button } from "@/components/Primitives/Button";
+import { useContext } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Primitives/Tabs";
-import { ENDPOINT } from "@/utils/constants";
-import { fetchLog } from "@/utils/fetchLog";
+import { SimControlContext } from "@/providers/SimControl";
 import { LogTab } from "./LogTab";
 import { MvpTab } from "./MvpTab";
 
 interface Props {
-  placeholder: string;
+  placeholder?: string;
 }
 const LogViewer = ({ placeholder }: Props) => {
-  console.log(placeholder);
-  const logger = useMutation({
-    mutationKey: [ENDPOINT.logMock],
-    mutationFn: async () => await fetchLog(),
-    onSuccess: data => console.log(data),
-  });
+  if (placeholder) console.log(placeholder);
+
+  const { simulationData } = useContext(SimControlContext);
 
   return (
     <div>
-      <Button className="my-4" onClick={() => logger.mutate()}>
-        Generate Log (Make sure your CLI is running)
-      </Button>
-      <Tabs defaultValue="mvp">
+      <Tabs defaultValue="log">
         <TabsList className="w-full h-full">
-          <TabsTrigger value="mvp" className="w-full">
-            MVP tab
-          </TabsTrigger>
           <TabsTrigger value="log" className="w-full">
             Logging/Debugging
+          </TabsTrigger>
+          <TabsTrigger value="mvp" className="w-full">
+            MVP tab
           </TabsTrigger>
         </TabsList>
         <TabsContent value="mvp">
           <MvpTab name="test" />
         </TabsContent>
         <TabsContent value="log">
-          <LogTab data={logger.data ?? []} />
+          <LogTab data={simulationData} />
         </TabsContent>
       </Tabs>
     </div>
