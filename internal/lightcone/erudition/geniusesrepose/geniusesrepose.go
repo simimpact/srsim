@@ -4,12 +4,15 @@ import (
 	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/equip/lightcone"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
-	mod key.Modifier = "geniuses-repose"
+	checker key.Modifier = "geniuses-repose-checker"
+	mod     key.Modifier = "geniuses-repose-crit-dmg"
 )
 
 // DESC : Increases the wearer's ATK by 16%.
@@ -22,8 +25,28 @@ func init() {
 		Path:          model.Path_ERUDITION,
 		Promotions:    promotions,
 	})
+	modifier.Register(checker, modifier.Config{
+		Listeners: modifier.Listeners{
+			OnTriggerDeath: boostCDmg,
+		},
+	})
+	modifier.Register(mod, modifier.Config{
+		Stacking:   modifier.ReplaceBySource,
+		StatusType: model.StatusType_STATUS_BUFF,
+	})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
+	atkAmt := 0.12 + 0.04*float64(lc.Imposition)
+	engine.AddModifier(owner, info.Modifier{
+		Name:   mod,
+		Source: owner,
+		Stats:  info.PropMap{prop.ATKPercent: atkAmt},
+		State:  0.18 + 0.06*float64(lc.Imposition),
+	})
+}
+
+// enemy killed -> add CDmg buff, 3 turns
+func boostCDmg(mod *modifier.Instance, target key.TargetID) {
 
 }
