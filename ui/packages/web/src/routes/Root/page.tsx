@@ -5,10 +5,7 @@ import { SimActionBar } from "./SimActionBar";
 
 const Root = () => {
   return (
-    <div className="flex h-full self-start grow">
-      <div className="ml-4 self-center">
-        <SimActionBar />
-      </div>
+    <div id="dev" className="flex h-full self-start grow">
       <div className="flex flex-col grow gap-4">
         <div className="flex gap-4 justify-center mx-8">
           <div>
@@ -25,8 +22,12 @@ const Root = () => {
             </HoverCardContent>
           </HoverCard>
         </div>
-        <div className="bg-accent text-accent-foreground flex flex-col h-full mx-8 rounded-md p-10">
-          <LogViewer placeholder="test" />
+
+        <div className="flex gap-4 px-4">
+          <SimActionBar />
+          <div className="grow bg-accent text-accent-foreground flex flex-col h-full rounded-md p-10">
+            <LogViewer />
+          </div>
         </div>
       </div>
     </div>

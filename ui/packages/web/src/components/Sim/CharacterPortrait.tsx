@@ -35,7 +35,7 @@ const CharacterPortrait = ({ code, name, element, rarity }: Props) => {
                 src={url(code)}
                 alt={name}
                 className={cn(
-                  "max-h-32 max-w-32 rounded-full box-content p-1 border-2",
+                  "max-h-12 rounded-full box-content p-1 border-2",
                   elementVariants({ border: element }),
                   rarityVariants({ rarity: stringrarity })
                 )}
