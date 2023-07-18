@@ -6,12 +6,13 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
-	loop key.Modifier = "loop"
+	loop = "loop"
 )
 
 // DESC : Increases DMG dealt from its wearer to Slowed enemies by 24%.
@@ -34,9 +35,17 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-
+	dmgBoostAmt := 0.18 + 0.06*float64(lc.Imposition)
+	engine.AddModifier(owner, info.Modifier{
+		Name:   loop,
+		Source: owner,
+		State:  dmgBoostAmt,
+	})
 }
 
 func boostDmgOnSlowed(mod *modifier.Instance, e event.HitStart) {
-
+	amt := mod.State().(float64)
+	if mod.Engine().HasBehaviorFlag(e.Defender, model.BehaviorFlag_STAT_SPEED_DOWN) {
+		e.Hit.Attacker.AddProperty(loop, prop.AllDamagePercent, amt)
+	}
 }
