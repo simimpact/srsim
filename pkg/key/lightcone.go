@@ -48,6 +48,7 @@ const (
 	BeforeDawn                LightCone = "before_dawn"
 	TodayIsAnotherPeacefulDay LightCone = "today_is_another_peaceful_day"
 	TheSeriousnessofBreakfast LightCone = "the_seriousness_of_breakfast"
+	GeniusesRepose            LightCone = "geniuses_repose"
 )
 
 // Harmony
