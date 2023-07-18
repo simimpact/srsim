@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	loop = "loop"
+	name = "loop"
 )
 
 // DESC : Increases DMG dealt from its wearer to Slowed enemies by 24%.
@@ -24,7 +24,7 @@ func init() {
 		Path:          model.Path_NIHILITY,
 		Promotions:    promotions,
 	})
-	modifier.Register(loop, modifier.Config{
+	modifier.Register(name, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: boostDmgOnSlowed,
 		},
@@ -34,7 +34,7 @@ func init() {
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	dmgBoostAmt := 0.18 + 0.06*float64(lc.Imposition)
 	engine.AddModifier(owner, info.Modifier{
-		Name:   loop,
+		Name:   name,
 		Source: owner,
 		State:  dmgBoostAmt,
 	})
@@ -43,6 +43,6 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 func boostDmgOnSlowed(mod *modifier.Instance, e event.HitStart) {
 	amt := mod.State().(float64)
 	if mod.Engine().HasBehaviorFlag(e.Defender, model.BehaviorFlag_STAT_SPEED_DOWN) {
-		e.Hit.Attacker.AddProperty(loop, prop.AllDamagePercent, amt)
+		e.Hit.Attacker.AddProperty(name, prop.AllDamagePercent, amt)
 	}
 }
