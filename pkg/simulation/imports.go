@@ -35,6 +35,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/woofwalktime"
 	_ "github.com/simimpact/srsim/internal/lightcone/erudition/beforedawn"
 	_ "github.com/simimpact/srsim/internal/lightcone/erudition/databank"
+	_ "github.com/simimpact/srsim/internal/lightcone/erudition/nightonthemilkyway"
 	_ "github.com/simimpact/srsim/internal/lightcone/erudition/passkey"
 	_ "github.com/simimpact/srsim/internal/lightcone/erudition/theseriousnessofbreakfast"
 	_ "github.com/simimpact/srsim/internal/lightcone/erudition/todayisanotherpeacefulday"
