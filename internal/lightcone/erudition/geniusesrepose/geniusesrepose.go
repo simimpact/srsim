@@ -12,7 +12,7 @@ import (
 
 const (
 	checker key.Modifier = "geniuses-repose-checker"
-	mod     key.Modifier = "geniuses-repose-crit-dmg"
+	buff    key.Modifier = "geniuses-repose-crit-dmg"
 )
 
 // DESC : Increases the wearer's ATK by 16%.
@@ -30,7 +30,7 @@ func init() {
 			OnTriggerDeath: boostCDmg,
 		},
 	})
-	modifier.Register(mod, modifier.Config{
+	modifier.Register(buff, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_BUFF,
 	})
@@ -39,7 +39,7 @@ func init() {
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	atkAmt := 0.12 + 0.04*float64(lc.Imposition)
 	engine.AddModifier(owner, info.Modifier{
-		Name:   mod,
+		Name:   checker,
 		Source: owner,
 		Stats:  info.PropMap{prop.ATKPercent: atkAmt},
 		State:  0.18 + 0.06*float64(lc.Imposition),
@@ -48,5 +48,12 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 
 // enemy killed -> add CDmg buff, 3 turns
 func boostCDmg(mod *modifier.Instance, target key.TargetID) {
+	cDmgAmt := mod.State().(float64)
 
+	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
+		Name:     buff,
+		Source:   mod.Owner(),
+		Duration: 3,
+		Stats:    info.PropMap{prop.CritDMG: cDmgAmt},
+	})
 }
