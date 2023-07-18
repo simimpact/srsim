@@ -70,6 +70,7 @@ func atkBuff(engine engine.Engine, owner key.TargetID, amt float64){
 	})
 }
 
+//get damage bonus 
 func onListenBreak(mod *modifier.Instance, target key.TargetID){
 	dmgBonus := mod.State().(state).dmg
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
