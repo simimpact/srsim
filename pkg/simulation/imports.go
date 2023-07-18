@@ -56,6 +56,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/nihility/fermata"
 	_ "github.com/simimpact/srsim/internal/lightcone/nihility/goodnightandsleepwell"
 	_ "github.com/simimpact/srsim/internal/lightcone/nihility/incessantrain"
+	_ "github.com/simimpact/srsim/internal/lightcone/nihility/loop"
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/amber"
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/dayoneofmynewlife"
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/defense"
