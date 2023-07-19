@@ -95,45 +95,64 @@ const LogTab = ({ data }: Props) => {
 
   return (
     <>
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center">
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
+            <ColumnToggle
+              table={table}
+              variant="outline"
+              size="sm"
+              className="h-8 lg:flex border-muted-foreground"
+            />
+
             <ColumnSelectFilter
               placeholder="Select Event"
               options={options}
               column={table.getColumn("name")}
               buttonPlaceholder="Filter Event"
+              variant="outline"
+              className="border-muted-foreground"
+              size="sm"
             />
-            <MultipleSelect table={table} options={eventList} columnKey="name" />
+
+            <MultipleSelect
+              table={table}
+              options={eventList}
+              columnKey="name"
+              size="sm"
+              variant="outline"
+              className="border-muted-foreground"
+            />
 
             <Button
+              size="sm"
               onClick={() =>
                 table.getSelectedRowModel().rows.forEach(row => row.toggleExpanded(true))
               }
             >
               Expand Selected
             </Button>
+
             <Button
+              size="sm"
               onClick={() =>
                 table.getSelectedRowModel().rows.forEach(row => row.toggleExpanded(false))
               }
             >
               Collapse Selected
             </Button>
-            <Button
-              onClick={() => {
-                table.toggleAllRowsExpanded(false);
-                table.toggleAllRowsSelected(false);
-              }}
-            >
-              Reset Selection & Expand
-            </Button>
+          </div>
 
-            <div className="grow" />
-          </div>
-          <div className="ml-auto">
-            <ColumnToggle table={table} />
-          </div>
+          <Button
+            size="sm"
+            variant="destructive"
+            onClick={() => {
+              table.toggleAllRowsExpanded(false);
+              table.toggleAllRowsSelected(false);
+            }}
+          >
+            Reset Selection & Expand
+          </Button>
         </div>
 
         <DataTable table={table} className="bg-background" renderSubComponent={ExpandComponent} />

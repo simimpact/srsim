@@ -15,8 +15,8 @@ const SimActionBar = () => {
   const verticalHelper = cva("w-full justify-center", {
     variants: {
       variant: {
-        run: "bg-green-500 hover:bg-green-500/90",
-        destructive: "bg-red-500 hover:bg-red-500/90",
+        run: "bg-green-500 data-[state=open]:bg-green-500/90 focus:bg-green-500/90",
+        destructive: "bg-red-500 data-[state=open]:bg-red-500/90 focus:bg-red-500/90",
       },
     },
   });
@@ -27,7 +27,7 @@ const SimActionBar = () => {
   }
 
   return (
-    <Menubar orientation="vertical" className="gap-4">
+    <Menubar orientation="vertical" className="gap-2 min-w-max">
       <MenubarMenu>
         <MenubarTrigger className={verticalHelper({ variant: "run" })} onClick={onRun}>
           Run

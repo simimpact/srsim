@@ -28,9 +28,13 @@ function DataTableInner<TData>(
   ref: ForwardedRef<HTMLDivElement>
 ) {
   return (
-    <div ref={ref} className={cn("rounded-md border", className)} {...props}>
+    <div
+      ref={ref}
+      className={cn("rounded-md border border-muted-foreground", className)}
+      {...props}
+    >
       <Table>
-        <TableHeader>
+        <TableHeader className="[&_tr]:border-muted-foreground">
           {table.getHeaderGroups().map(headerGroup => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map(header => {
@@ -64,9 +68,9 @@ function DataTableInner<TData>(
               </Fragment>
             ))
           ) : (
-            <TableRow>
-              <TableCell colSpan={table.getAllColumns.length} className="h-24 text-center">
-                No results.
+            <TableRow className="[&_tr]:border-muted-foreground">
+              <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center">
+                No results. Please run the simulation
               </TableCell>
             </TableRow>
           )}

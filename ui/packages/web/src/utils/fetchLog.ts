@@ -2,7 +2,7 @@ import * as event from "@srsim/types/src/event";
 
 const cliApi = (endpoint: string) => `http://localhost:8382${endpoint}`;
 
-interface Result {
+export interface SimResult {
   schema_version: { major: string; minor: string };
   sim_version: string;
   modified: boolean;
@@ -39,7 +39,7 @@ async function fetchLog(): Promise<SimLog[]> {
 async function fetchResult() {
   const req = await fetch(cliApi("/result"));
   if (req.ok) {
-    const data = JSON.parse(await req.text()) as Result;
+    const data = JSON.parse(await req.text()) as SimResult;
     return data;
   } else throw Error("do you have the cli running ?");
 }

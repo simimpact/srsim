@@ -25,7 +25,7 @@ const Root = () => {
 
         <div className="flex gap-4 px-4">
           <SimActionBar />
-          <div className="grow bg-accent text-accent-foreground flex flex-col h-full rounded-md p-10">
+          <div className="grow bg-accent text-accent-foreground flex flex-col rounded-md p-10">
             <LogViewer />
           </div>
         </div>
