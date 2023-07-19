@@ -1,5 +1,6 @@
 import { Column } from "@tanstack/react-table";
 import { Check, LucideIcon } from "lucide-react";
+import { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/utils/classname";
 import { Button } from "../Button";
 import {
@@ -18,7 +19,7 @@ interface OptionItem {
   value: string;
   icon?: LucideIcon;
 }
-interface Props<TData> {
+interface Props<TData> extends ComponentPropsWithoutRef<typeof Button> {
   placeholder: string;
   buttonPlaceholder?: string;
   options: OptionItem[];
@@ -30,6 +31,7 @@ function ColumnSelectFilter<TData>({
   options,
   placeholder,
   buttonPlaceholder,
+  ...props
 }: Props<TData>) {
   const selectedValues = new Set(column?.getFilterValue() as string[]);
   const facets = column?.getFacetedUniqueValues();
@@ -37,9 +39,7 @@ function ColumnSelectFilter<TData>({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="secondary" size="sm">
-          {buttonPlaceholder}
-        </Button>
+        <Button {...props}>{buttonPlaceholder}</Button>
       </PopoverTrigger>
       <PopoverContent>
         <Command>

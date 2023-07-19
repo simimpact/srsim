@@ -1,5 +1,6 @@
 import { Table } from "@tanstack/react-table";
 import { Check } from "lucide-react";
+import { ComponentPropsWithoutRef } from "react";
 import { Button } from "@/components/Primitives/Button";
 import {
   Command,
@@ -13,7 +14,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/Primitives/Popover";
 import { cn } from "@/utils/classname";
 
-interface Props<TData, TFilter extends string> {
+interface Props<TData, TFilter extends string> extends ComponentPropsWithoutRef<typeof Button> {
   table: Table<TData>;
   options: TFilter[];
   columnKey: string;
@@ -22,6 +23,7 @@ function MultipleSelect<TData, TFilter extends string>({
   table,
   options,
   columnKey,
+  ...props
 }: Props<TData, TFilter>) {
   // removes duplications
   const selectedEvents = table.getIsSomePageRowsSelected();
@@ -30,7 +32,7 @@ function MultipleSelect<TData, TFilter extends string>({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button size="sm">Select Events</Button>
+        <Button {...props}>Select Events</Button>
       </PopoverTrigger>
       <PopoverContent>
         <Command>
