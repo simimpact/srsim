@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Primitive
 import { SimControlContext } from "@/providers/SimControl";
 import { LogTab } from "./LogTab";
 import { MvpTab } from "./MvpTab";
+import { ResultTab } from "./ResultTab";
 
 interface Props {
   placeholder?: string;
@@ -10,7 +11,7 @@ interface Props {
 const LogViewer = ({ placeholder }: Props) => {
   if (placeholder) console.log(placeholder);
 
-  const { simulationData } = useContext(SimControlContext);
+  const { simulationData, simulationResult } = useContext(SimControlContext);
 
   return (
     <div>
@@ -18,6 +19,9 @@ const LogViewer = ({ placeholder }: Props) => {
         <TabsList className="w-full h-full">
           <TabsTrigger value="log" className="w-full">
             Logging/Debugging
+          </TabsTrigger>
+          <TabsTrigger value="result" className="w-full">
+            Result tab
           </TabsTrigger>
           <TabsTrigger value="mvp" className="w-full">
             MVP tab
@@ -28,6 +32,9 @@ const LogViewer = ({ placeholder }: Props) => {
         </TabsContent>
         <TabsContent value="log">
           <LogTab data={simulationData} />
+        </TabsContent>
+        <TabsContent value="result">
+          <ResultTab data={simulationResult} />
         </TabsContent>
       </Tabs>
     </div>

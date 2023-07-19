@@ -1,11 +1,12 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { ReactNode, createContext, useState } from "react";
 import { ENDPOINT } from "@/utils/constants";
-import { SimLog, fetchLog } from "@/utils/fetchLog";
+import { SimLog, SimResult, fetchLog, fetchResult } from "@/utils/fetchLog";
 
 interface SimControlContextPayload {
   runSimulation: () => void;
   simulationData: SimLog[];
+  simulationResult: SimResult | undefined;
   reset: () => void;
 }
 
@@ -23,6 +24,12 @@ function useSimControl(): SimControlContextPayload {
     mutationFn: async () => await fetchLog(),
     onSuccess: onMutate,
   });
+
+  const { data: simulationResult } = useQuery({
+    queryKey: ["result"],
+    queryFn: async () => await fetchResult(),
+  });
+
   function onMutate(data: SimLog[]) {
     console.log(data);
     setSimulationData(data);
@@ -39,6 +46,7 @@ function useSimControl(): SimControlContextPayload {
   return {
     runSimulation,
     simulationData,
+    simulationResult,
     reset,
   };
 }
@@ -46,6 +54,7 @@ function useSimControl(): SimControlContextPayload {
 export const defaultSimControl: SimControlContextPayload = {
   runSimulation: () => {},
   simulationData: [],
+  simulationResult: undefined,
   reset: () => {},
 };
 
@@ -53,8 +62,6 @@ export const SimControlContext = createContext<SimControlContextPayload>(default
 
 /**
  * wrapper provider so we can use react query
- * @param param0
- * @returns
  */
 export const SimControl = ({ children }: { children: ReactNode }) => {
   const simControl = useSimControl();
