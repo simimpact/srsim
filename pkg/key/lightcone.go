@@ -38,6 +38,8 @@ const (
 	GoodNightandSleepWell          LightCone = "good_night_and_sleep_well"
 	IncessantRain                  LightCone = "incessant_rain"
 	BeforetheTutorialMissionStarts LightCone = "before_the_tutorial_mission_starts"
+	Loop                           LightCone = "loop"
+	HiddenShadow                   LightCone = "hidden_shadow"
 )
 
 // Erudition
@@ -47,7 +49,8 @@ const (
 	BeforeDawn                LightCone = "before_dawn"
 	TodayIsAnotherPeacefulDay LightCone = "today_is_another_peaceful_day"
 	TheSeriousnessofBreakfast LightCone = "the_seriousness_of_breakfast"
-	NightontheMilkyWay        LightCone = "night_on_the_milky_way"
+	GeniusesRepose            LightCone = "geniuses_repose"
+	NightontheMilkyWay 	  LightCone = "night_on_the_milky_way"
 )
 
 // Harmony
