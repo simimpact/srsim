@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { ReactNode, createContext, useState } from "react";
 import { ENDPOINT } from "@/utils/constants";
 import { SimLog, SimResult, fetchLog, fetchResult } from "@/utils/fetchLog";
@@ -6,6 +6,8 @@ import { SimLog, SimResult, fetchLog, fetchResult } from "@/utils/fetchLog";
 interface SimControlContextPayload {
   runSimulation: () => void;
   simulationData: SimLog[];
+
+  getResult: () => void;
   simulationResult: SimResult | undefined;
   reset: () => void;
 }
@@ -19,24 +21,28 @@ interface SimControlContextPayload {
 function useSimControl(): SimControlContextPayload {
   const [simulationData, setSimulationData] = useState<SimLog[]>([]);
 
-  const { mutate } = useMutation({
+  const logMutation = useMutation({
     mutationKey: [ENDPOINT.logMock],
     mutationFn: async () => await fetchLog(),
-    onSuccess: onMutate,
+    onSuccess: onLogMutate,
   });
 
-  const { data: simulationResult } = useQuery({
-    queryKey: ["result"],
-    queryFn: async () => await fetchResult(),
+  const resultMutation = useMutation({
+    mutationKey: ["result"],
+    mutationFn: async () => await fetchResult(),
   });
 
-  function onMutate(data: SimLog[]) {
+  function onLogMutate(data: SimLog[]) {
     console.log(data);
     setSimulationData(data);
   }
 
   function runSimulation() {
-    mutate();
+    logMutation.mutate();
+  }
+
+  function getResult() {
+    resultMutation.mutate();
   }
 
   function reset() {
@@ -46,7 +52,10 @@ function useSimControl(): SimControlContextPayload {
   return {
     runSimulation,
     simulationData,
-    simulationResult,
+
+    getResult,
+    simulationResult: resultMutation.data,
+
     reset,
   };
 }
@@ -54,7 +63,10 @@ function useSimControl(): SimControlContextPayload {
 export const defaultSimControl: SimControlContextPayload = {
   runSimulation: () => {},
   simulationData: [],
+
+  getResult: () => {},
   simulationResult: undefined,
+
   reset: () => {},
 };
 
