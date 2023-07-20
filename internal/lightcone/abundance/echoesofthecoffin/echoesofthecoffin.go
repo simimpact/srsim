@@ -62,7 +62,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 // add energy to lc holder based on # of targets hit. max 3.
 func addEnergyPerEnemyHit(mod *modifier.Instance, e event.AttackEnd) {
 	state := mod.State().(*state)
-	enemyHit := float64(len(e.Targets))
+	enemyHit := len(e.Targets)
 	if enemyHit > 3 {
 		enemyHit = 3
 	}
@@ -70,7 +70,7 @@ func addEnergyPerEnemyHit(mod *modifier.Instance, e event.AttackEnd) {
 		Key:    echoes,
 		Target: mod.Owner(),
 		Source: mod.Owner(),
-		Amount: state.energyAmt * enemyHit,
+		Amount: state.energyAmt * float64(enemyHit),
 	})
 }
 
