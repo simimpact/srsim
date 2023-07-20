@@ -15,6 +15,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/character/sushang"
 	_ "github.com/simimpact/srsim/internal/global"
 	_ "github.com/simimpact/srsim/internal/lightcone/abundance/cornucopia"
+	_ "github.com/simimpact/srsim/internal/lightcone/abundance/echoesofthecoffin"
 	_ "github.com/simimpact/srsim/internal/lightcone/abundance/finefruit"
 	_ "github.com/simimpact/srsim/internal/lightcone/abundance/multiplication"
 	_ "github.com/simimpact/srsim/internal/lightcone/abundance/perfecttiming"
