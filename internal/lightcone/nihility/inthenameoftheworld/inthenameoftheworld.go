@@ -14,6 +14,11 @@ const (
 	world key.Modifier = "in-the-name-of-the-world"
 )
 
+type state struct {
+	dmgNAtkAmt float64
+	ehrAmt     float64
+}
+
 // Increases the wearer's DMG to debuffed enemies by 24%.
 // When the wearer uses their Skill, the Effect Hit Rate for this attack increases by 18%,
 // and ATK increases by 24%.
@@ -40,7 +45,15 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-
+	modState := state{
+		dmgNAtkAmt: 0.20 + 0.04*float64(lc.Imposition),
+		ehrAmt:     0.15 + 0.03*float64(lc.Imposition),
+	}
+	engine.AddModifier(owner, info.Modifier{
+		Name:   world,
+		Source: owner,
+		State:  &modState,
+	})
 }
 
 // if debuff > 0, boost hit dmg
