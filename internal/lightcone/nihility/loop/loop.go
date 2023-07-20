@@ -28,6 +28,7 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: boostDmgOnSlowed,
 		},
+		CanModifySnapshot: true,
 	})
 }
 
