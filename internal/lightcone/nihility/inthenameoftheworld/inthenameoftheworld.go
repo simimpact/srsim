@@ -3,7 +3,9 @@ package inthenameoftheworld
 import (
 	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/equip/lightcone"
+	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -29,8 +31,24 @@ func init() {
 		Path:          model.Path_NIHILITY,
 		Promotions:    promotions,
 	})
+	modifier.Register(world, modifier.Config{
+		Listeners: modifier.Listeners{
+			OnBeforeHitAll: boostDmgOnDebuffed,
+			OnBeforeAction: boostEhrNAtkOnSkill,
+		},
+	})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
+
+}
+
+// if debuff > 0, boost hit dmg
+func boostDmgOnDebuffed(mod *modifier.Instance, e event.HitStart) {
+
+}
+
+// if action == skill, boost ehr + atk
+func boostEhrNAtkOnSkill(mod *modifier.Instance, e event.ActionStart) {
 
 }
