@@ -18,12 +18,13 @@ const columnHelper = createColumnHelper<SimLog>();
 export const columns = [
   columnHelper.display({
     id: "index",
+    header: "#",
     cell: ({ row }) => row.index,
   }),
   columnHelper.display({
     id: "checkbox",
     header: ({ table }) => (
-      <div className="text-center">
+      <div className="flex items-center justify-center">
         <Checkbox
           checked={table.getIsAllPageRowsSelected()}
           onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
