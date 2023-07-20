@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	checker key.Modifier = "echoes-of-the-coffin"
+	echoes               = "echoes-of-the-coffin"
 	spdBuff key.Modifier = "ecoes-of-the-coffin-spd"
 )
 
@@ -27,7 +27,7 @@ type state struct {
 // After the wearer uses their Ultimate, all allies gain 12 SPD for 1 turn.
 
 // DM :
-// OnAfterAttack : retarget on atktargetlist max 3. set enemyCount. modifySPNew. enemyCount to 0
+// OnAfterAttack : retarget on atktargetlist max 3. set enemyHit. modifySPNew. enemyHit to 0
 // OnAfterSkillUse : if Ult, addMod spdBuff,
 
 // impl :
@@ -42,7 +42,7 @@ func init() {
 		Path:          model.Path_ABUNDANCE,
 		Promotions:    promotions,
 	})
-	modifier.Register(checker, modifier.Config{
+	modifier.Register(echoes, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAfterAttack: addEnergyPerEnemyHit,
 			OnAfterAction: buffAllySpdOnUlt,
@@ -61,17 +61,41 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	}
 	atkAmt := 0.20 + 0.04*float64(lc.Imposition)
 	engine.AddModifier(owner, info.Modifier{
-		Name:   checker,
+		Name:   echoes,
 		Source: owner,
 		Stats:  info.PropMap{prop.ATKPercent: atkAmt},
 		State:  &modState,
 	})
 }
 
+// add energy to lc holder based on # of targets hit. max 3.
 func addEnergyPerEnemyHit(mod *modifier.Instance, e event.AttackEnd) {
-
+	state := mod.State().(*state)
+	enemyHit := float64(len(e.Targets))
+	if enemyHit > 3 {
+		enemyHit = 3
+	}
+	mod.Engine().ModifyEnergy(info.ModifyAttribute{
+		Key:    echoes,
+		Target: mod.Owner(),
+		Source: mod.Owner(),
+		Amount: state.energyAmt * enemyHit,
+	})
 }
 
 func buffAllySpdOnUlt(mod *modifier.Instance, e event.ActionEnd) {
-
+	// if action is not ult, return early
+	if e.AttackType != model.AttackType_ULT {
+		return
+	}
+	// if action is ult, add flat spd buff for all allies for 1 turn
+	state := mod.State().(*state)
+	for _, ally := range mod.Engine().Characters() {
+		mod.Engine().AddModifier(ally, info.Modifier{
+			Name:     spdBuff,
+			Source:   mod.Owner(),
+			Stats:    info.PropMap{prop.SPDFlat: state.speedAmt},
+			Duration: 1,
+		})
+	}
 }
