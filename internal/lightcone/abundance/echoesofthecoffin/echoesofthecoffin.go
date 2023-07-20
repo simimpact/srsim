@@ -3,9 +3,16 @@ package echoesofthecoffin
 import (
 	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/equip/lightcone"
+	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
+)
+
+const (
+	checker key.Modifier = "echoes-of-the-coffin"
+	spdBuff key.Modifier = "ecoes-of-the-coffin-spd"
 )
 
 // Increases the wearer's ATK by 24%. After the wearer uses an attack,
@@ -29,8 +36,26 @@ func init() {
 		Path:          model.Path_ABUNDANCE,
 		Promotions:    promotions,
 	})
+	modifier.Register(checker, modifier.Config{
+		Listeners: modifier.Listeners{
+			OnAfterAttack: addEnergyPerEnemyHit,
+			OnAfterAction: buffAllySpdOnUlt,
+		},
+	})
+	modifier.Register(spdBuff, modifier.Config{
+		Stacking:   modifier.ReplaceBySource,
+		StatusType: model.StatusType_STATUS_BUFF,
+	})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
+
+}
+
+func addEnergyPerEnemyHit(mod *modifier.Instance, e event.AttackEnd) {
+
+}
+
+func buffAllySpdOnUlt(mod *modifier.Instance, e event.ActionEnd) {
 
 }
