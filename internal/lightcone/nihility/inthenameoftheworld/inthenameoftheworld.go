@@ -13,7 +13,7 @@ import (
 
 const (
 	world                  = "in-the-name-of-the-world"
-	skillBuff key.Modifier = "in-the-name-of-the-world-buff"
+	skillBuff key.Modifier = "in-the-name-of-the-world-skill-buff"
 )
 
 type state struct {
@@ -25,12 +25,6 @@ type state struct {
 // When the wearer uses their Skill, the Effect Hit Rate for this attack increases by 18%,
 // and ATK increases by 24%.
 
-// DM :
-// OnBeforeHitALl : compare ByStatusCount >= 1, ModifyDmgRatio -> AllDmgTypeAddedRatio
-// OnBeforeSkillUse : Skill -> add _Sub
-// OnAfterSkillUse : remove _Sub
-// _Sub : AttackAddedRatio + StatusProbabilityBase buffs
-
 func init() {
 	lightcone.Register(key.IntheNameoftheWorld, lightcone.Config{
 		CreatePassive: Create,
@@ -41,7 +35,7 @@ func init() {
 	modifier.Register(world, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: boostDmgOnDebuffed,
-			OnBeforeAction: boostEhrNAtkOnSkill,
+			OnBeforeAction: addSkillBuff,
 			OnAfterAction:  removeSkillBuff,
 		},
 		// DM has similar impl to fermata w/ ModifyDotDamageData behav flag.
@@ -72,7 +66,7 @@ func boostDmgOnDebuffed(mod *modifier.Instance, e event.HitStart) {
 }
 
 // if action == skill, boost ehr + atk
-func boostEhrNAtkOnSkill(mod *modifier.Instance, e event.ActionStart) {
+func addSkillBuff(mod *modifier.Instance, e event.ActionStart) {
 	state := mod.State().(*state)
 	if e.AttackType == model.AttackType_SKILL {
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
@@ -86,6 +80,7 @@ func boostEhrNAtkOnSkill(mod *modifier.Instance, e event.ActionStart) {
 	}
 }
 
+// remove skillBuff after action if exists
 func removeSkillBuff(mod *modifier.Instance, e event.ActionEnd) {
 	if mod.Engine().HasModifier(mod.Owner(), skillBuff) {
 		mod.Engine().RemoveModifier(mod.Owner(), skillBuff)
