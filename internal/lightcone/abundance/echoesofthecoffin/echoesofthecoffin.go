@@ -6,6 +6,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -49,7 +50,13 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-
+	atkAmt := 0.20 + 0.04*float64(lc.Imposition)
+	engine.AddModifier(owner, info.Modifier{
+		Name:   checker,
+		Source: owner,
+		Stats:  info.PropMap{prop.ATKPercent: atkAmt},
+		State:  2.5 + 0.5*float64(lc.Imposition),
+	})
 }
 
 func addEnergyPerEnemyHit(mod *modifier.Instance, e event.AttackEnd) {
