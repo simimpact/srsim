@@ -6,8 +6,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 interface Props<TData> {
   table: Table<TData>;
   allowSelect?: boolean;
+  rowOptions?: number[];
 }
-function DataTablePagination<TData>({ table, allowSelect = false }: Props<TData>) {
+function DataTablePagination<TData>({ table, allowSelect = false, rowOptions }: Props<TData>) {
+  const options = rowOptions ?? [10, 20, 30, 40, 50];
   return (
     <div className="flex items-center justify-between px-2">
       {allowSelect ? (
@@ -31,7 +33,7 @@ function DataTablePagination<TData>({ table, allowSelect = false }: Props<TData>
               <SelectValue placeholder={table.getState().pagination.pageSize} />
             </SelectTrigger>
             <SelectContent side="top">
-              {[10, 20, 30, 40, 50].map(pageSize => (
+              {options.map(pageSize => (
                 <SelectItem key={pageSize} value={`${pageSize}`}>
                   {pageSize}
                 </SelectItem>
