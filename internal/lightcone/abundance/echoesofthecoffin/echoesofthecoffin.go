@@ -16,6 +16,11 @@ const (
 	spdBuff key.Modifier = "ecoes-of-the-coffin-spd"
 )
 
+type state struct {
+	energyAmt float64
+	speedAmt  float64
+}
+
 // Increases the wearer's ATK by 24%. After the wearer uses an attack,
 // for each different enemy target the wearer hits, regenerates 3 Energy.
 // Each attack can regenerate Energy up to 3 time(s) this way.
@@ -50,12 +55,16 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
+	modState := state{
+		energyAmt: 2.5 + 0.5*float64(lc.Imposition),
+		speedAmt:  10.0 + 2.0*float64(lc.Imposition),
+	}
 	atkAmt := 0.20 + 0.04*float64(lc.Imposition)
 	engine.AddModifier(owner, info.Modifier{
 		Name:   checker,
 		Source: owner,
 		Stats:  info.PropMap{prop.ATKPercent: atkAmt},
-		State:  2.5 + 0.5*float64(lc.Imposition),
+		State:  &modState,
 	})
 }
 
