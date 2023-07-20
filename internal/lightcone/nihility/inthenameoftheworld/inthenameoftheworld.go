@@ -6,12 +6,13 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
-	world key.Modifier = "in-the-name-of-the-world"
+	world = "in-the-name-of-the-world"
 )
 
 type state struct {
@@ -41,6 +42,8 @@ func init() {
 			OnBeforeHitAll: boostDmgOnDebuffed,
 			OnBeforeAction: boostEhrNAtkOnSkill,
 		},
+		// DM has similar impl to fermata w/ ModifyDotDamageData behav flag.
+		CanModifySnapshot: true,
 	})
 }
 
@@ -58,7 +61,11 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 
 // if debuff > 0, boost hit dmg
 func boostDmgOnDebuffed(mod *modifier.Instance, e event.HitStart) {
-
+	state := mod.State().(*state)
+	// NOTE : DM only says to count defender StatusCount(not just the debuffs?)
+	if mod.Engine().Stats(e.Defender).StatusCount(model.StatusType_STATUS_DEBUFF) > 0 {
+		e.Hit.Attacker.AddProperty(world, prop.AllDamagePercent, state.dmgNAtkAmt)
+	}
 }
 
 // if action == skill, boost ehr + atk
