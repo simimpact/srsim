@@ -13,7 +13,7 @@ import (
 
 const (
 	echoes               = "echoes-of-the-coffin"
-	spdBuff key.Modifier = "ecoes-of-the-coffin-spd"
+	spdBuff key.Modifier = "echoes-of-the-coffin-spd"
 )
 
 type state struct {
