@@ -28,7 +28,8 @@ jobs:
       uses: cloudflare/pages-action@v1
       with:
         projectName: srsim
-        workingDirectory: ./ui/packages/web/dist
+        branch: main
+        directory: ./ui/packages/web/dist
         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         githubToken: ${{ secrets.GITHUB_TOKEN }}
