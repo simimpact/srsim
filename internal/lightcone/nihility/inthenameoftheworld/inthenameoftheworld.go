@@ -12,7 +12,8 @@ import (
 )
 
 const (
-	world = "in-the-name-of-the-world"
+	world                  = "in-the-name-of-the-world"
+	skillBuff key.Modifier = "in-the-name-of-the-world-buff"
 )
 
 type state struct {
@@ -41,6 +42,7 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: boostDmgOnDebuffed,
 			OnBeforeAction: boostEhrNAtkOnSkill,
+			OnAfterAction:  removeSkillBuff,
 		},
 		// DM has similar impl to fermata w/ ModifyDotDamageData behav flag.
 		CanModifySnapshot: true,
@@ -70,5 +72,21 @@ func boostDmgOnDebuffed(mod *modifier.Instance, e event.HitStart) {
 
 // if action == skill, boost ehr + atk
 func boostEhrNAtkOnSkill(mod *modifier.Instance, e event.ActionStart) {
+	state := mod.State().(*state)
+	if e.AttackType == model.AttackType_SKILL {
+		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
+			Name:   skillBuff,
+			Source: mod.Owner(),
+			Stats: info.PropMap{
+				prop.EffectHitRate: state.ehrAmt,
+				prop.ATKPercent:    state.dmgNAtkAmt,
+			},
+		})
+	}
+}
 
+func removeSkillBuff(mod *modifier.Instance, e event.ActionEnd) {
+	if mod.Engine().HasModifier(mod.Owner(), skillBuff) {
+		mod.Engine().RemoveModifier(mod.Owner(), skillBuff)
+	}
 }
