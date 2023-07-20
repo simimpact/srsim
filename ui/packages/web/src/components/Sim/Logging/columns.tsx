@@ -1,6 +1,11 @@
+import * as Event from "@srsim/types/src/event";
 import { createColumnHelper } from "@tanstack/react-table";
+import { ChevronsDownUp, ChevronsUpDown, ExternalLink } from "lucide-react";
+import { ReactNode } from "react";
 import { Badge } from "@/components/Primitives/Badge";
+import { Checkbox } from "@/components/Primitives/Checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/Primitives/Popover";
+import { Toggle } from "@/components/Primitives/Toggle";
 import { SimLog } from "@/utils/fetchLog";
 
 const columnHelper = createColumnHelper<SimLog>();
@@ -15,33 +20,70 @@ export const columns = [
     id: "index",
     cell: ({ row }) => row.index,
   }),
+  columnHelper.display({
+    id: "checkbox",
+    header: ({ table }) => (
+      <div className="text-center">
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected()}
+          onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      </div>
+    ),
+    cell: ({ row }) => (
+      <div className="text-center">
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={value => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      </div>
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  }),
+  columnHelper.display({
+    id: "expander",
+    header: () => null,
+    cell: ({ row }) =>
+      row.getCanExpand() && (
+        <Toggle
+          size="sm"
+          // careful of the double callback
+          onClick={row.getToggleExpandedHandler()}
+        >
+          {row.getIsExpanded() ? (
+            <ChevronsDownUp className="w-4 h-4" />
+          ) : (
+            <ChevronsUpDown className="w-4 h-4" />
+          )}
+        </Toggle>
+      ),
+  }),
   columnHelper.accessor(data => data.name, {
     id: "name",
-    filterFn: (row, id, value: SimLog["name"][]) => {
+    filterFn: (row, _id, value: SimLog["name"][]) => {
       // NOTE: value is `any` by default, console log to double check type
-      return value.includes(row.getValue(id));
+      return value.includes(row.original.name);
     },
-    cell: info => (
-      <Badge variant={info.row.getValue("name") === "TurnStart" ? "destructive" : "default"}>
-        {info.row.getValue("name")}
+    cell: ({ row }) => (
+      <Badge variant={row.getIsSelected() ? "destructive" : "default"}>
+        {row.getValue("name")}
       </Badge>
     ),
   }),
   columnHelper.accessor(data => data, {
-    id: "event_0",
+    id: "Important Key",
     cell: props => summarizeBy(props.getValue(), 0),
   }),
   columnHelper.accessor(data => data, {
-    id: "event_1",
+    id: "event_key_1",
     cell: props => summarizeBy(props.getValue(), 1),
   }),
   columnHelper.accessor(data => data, {
-    id: "event_2",
+    id: "event_key_2",
     cell: props => summarizeBy(props.getValue(), 2),
-  }),
-  columnHelper.accessor(data => data, {
-    id: "event_3",
-    cell: props => summarizeBy(props.getValue(), 3),
   }),
 ];
 
@@ -53,34 +95,76 @@ export const columns = [
  * columns 2nd from the left, 1st column is the event name)
  * @returns Table cell
  */
-const summarizeBy = (data: SimLog, tableIndex: number): JSX.Element => {
+const summarizeBy = (data: SimLog, tableIndex: number): ReactNode => {
   const { name, event } = data;
+  function asDefault(index: number) {
+    return (
+      <Popover>
+        <PopoverTrigger className="inline-flex items-center underline">
+          {Object.keys(event)[index] && (
+            <>
+              {Object.keys(event)[index]} <ExternalLink className="ml-2 h-4 w-4" />
+            </>
+          )}
+        </PopoverTrigger>
+        <PopoverContent className="w-96 whitespace-pre-wrap">
+          <p>{JSON.stringify(event[Object.keys(event)[index] as keyof typeof event], null, 4)}</p>
+        </PopoverContent>
+      </Popover>
+    );
+  }
+
+  // here you can return a react component if you want something more complex
+  // (e.g a dialog/popover/button etc for a table cell for big data)
   switch (name) {
-    case "Initialize": {
-      if (tableIndex == 0) {
-        return (
-          <Popover>
-            <PopoverTrigger>Config Schema</PopoverTrigger>
-            <PopoverContent className="w-96 whitespace-pre-wrap">
-              <p>{JSON.stringify(event.config, null, 4)}</p>
-            </PopoverContent>
-          </Popover>
-        );
-      } else if (tableIndex == 1) {
-        return <span>Seed: {event.seed}</span>;
-      }
-      return <></>;
-    }
+    case "Initialize":
+      return summarizeInitialize(event, tableIndex);
+    case "SPChange":
+    case "AttackStart":
+    case "AttackEnd":
+    case "HPChange":
+    case "StanceChange":
+    case "EnergyChange":
+    case "HitEnd":
+    case "StanceBreak":
+    case "StanceReset":
+    case "HealStart":
+    case "HealEnd":
+    case "InsertStart":
+    case "InsertEnd":
+    case "GaugeChange":
+    case "CurrentGaugeCostChange":
+      return [event.key, asDefault(1), asDefault(2)][tableIndex];
+    case "HitStart":
+      return [
+        event.hit?.key ?? asDefault(0),
+        `attacker: ${event.attacker}`,
+        `defender: ${event.defender}`,
+      ][tableIndex];
+    case "ModifierAdded":
+      return [event.modifier.name, `source: ${event.modifier.source}`, asDefault(2)][tableIndex];
+    case "ModifierRemoved":
+      return [event.modifier.name, asDefault(1), asDefault(2)][tableIndex];
+    case "ActionEnd":
+    case "ActionStart":
+      return [event.attack_type, asDefault(1), asDefault(2)][tableIndex];
     default:
-      return (
-        <Popover>
-          <PopoverTrigger>{Object.keys(event)[tableIndex]}</PopoverTrigger>
-          <PopoverContent className="w-96 whitespace-pre-wrap">
-            <p>
-              {JSON.stringify(event[Object.keys(event)[tableIndex] as keyof typeof event], null, 4)}
-            </p>
-          </PopoverContent>
-        </Popover>
-      );
+      return asDefault(tableIndex);
   }
 };
+
+function summarizeInitialize(event: Event.Initialize, tableIndex: number): ReactNode {
+  if (tableIndex == 0) {
+    return (
+      <Popover>
+        <PopoverTrigger>Config Schema</PopoverTrigger>
+        <PopoverContent className="w-96 whitespace-pre-wrap">
+          <p>{JSON.stringify(event.config, null, 4)}</p>
+        </PopoverContent>
+      </Popover>
+    );
+  } else if (tableIndex == 1) {
+    return <span>Seed: {event.seed}</span>;
+  }
+  return <></>;
+}

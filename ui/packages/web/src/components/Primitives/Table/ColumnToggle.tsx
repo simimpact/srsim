@@ -1,5 +1,6 @@
 import { Table } from "@tanstack/react-table";
 import { SlidersHorizontal } from "lucide-react";
+import { ComponentPropsWithoutRef } from "react";
 import { Button } from "../Button";
 import {
   DropdownMenu,
@@ -10,15 +11,15 @@ import {
   DropdownMenuTrigger,
 } from "../DropdownMenu";
 
-interface Props<TData> {
+interface Props<TData> extends ComponentPropsWithoutRef<typeof Button> {
   table: Table<TData>;
 }
 
-function ColumnToggle<TData>({ table }: Props<TData>) {
+function ColumnToggle<TData>({ table, ...props }: Props<TData>) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="h-8 lg:flex">
+        <Button {...props}>
           <SlidersHorizontal className="mr-2 h-4 w-4" />
           View
         </Button>
