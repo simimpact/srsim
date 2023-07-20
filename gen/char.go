@@ -118,7 +118,9 @@ func GetCharacters() map[string]*CharData {
 		}
 
 		var config AvatarConfig
-		ReadDMFile(&config, value.JSONPath)
+		if err := ReadDMFile(&config, value.JSONPath); err != nil {
+			continue
+		}
 
 		key := keyRegex.ReplaceAllString(charName, "")
 		data := &CharData{

@@ -91,7 +91,7 @@ func main() {
 		err = OpenConfig(&avatarConfig, dmPath, value.JSONPath)
 		if err != nil {
 			fmt.Println(err)
-			return
+			continue
 		}
 
 		info := FindSkillInfo(avatarSkills, avatarConfig, key)
