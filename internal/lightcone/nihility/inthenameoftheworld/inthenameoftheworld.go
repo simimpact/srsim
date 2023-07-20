@@ -47,6 +47,7 @@ func init() {
 		// DM has similar impl to fermata w/ ModifyDotDamageData behav flag.
 		CanModifySnapshot: true,
 	})
+	modifier.Register(skillBuff, modifier.Config{})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
