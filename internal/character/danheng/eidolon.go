@@ -23,6 +23,7 @@ func init() {
 				}
 			},
 		},
+		CanModifySnapshot: true,
 	})
 
 	// When Dan Heng uses his Ultimate to defeat an enemy, he will immediately take action again.
