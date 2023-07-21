@@ -37,6 +37,7 @@ func init() {
 			OnBeforeHitAll: onBeforeHitAll,
 			OnTriggerDeath: onTriggerDeath,
 		},
+		CanModifySnapshot: true,
 	})
 
 	modifier.Register(CruisingintheStellarSeaATKBuff, modifier.Config{

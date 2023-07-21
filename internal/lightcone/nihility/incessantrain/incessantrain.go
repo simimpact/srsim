@@ -41,6 +41,7 @@ func init() {
 			OnAfterAttack:  fetchHitEnemies,
 			OnAfterAction:  applyDebuffOnce,
 		},
+		CanModifySnapshot: true,
 	})
 	modifier.Register(code, modifier.Config{
 		StatusType: model.StatusType_STATUS_DEBUFF,

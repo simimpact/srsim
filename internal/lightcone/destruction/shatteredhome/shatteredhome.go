@@ -27,6 +27,7 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: onBeforeHitAll,
 		},
+		CanModifySnapshot: true,
 	})
 }
 
