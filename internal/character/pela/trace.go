@@ -30,6 +30,7 @@ func init() {
 				}
 			},
 		},
+		CanModifySnapshot: true,
 	})
 
 	modifier.Register(A4, modifier.Config{
