@@ -85,6 +85,7 @@ const (
 	QuidProQuo               LightCone = "quid_pro_quo"
 	PerfectTiming            LightCone = "perfect_timing"
 	TimeWaitsforNoOne        LightCone = "time_waits_for_no_one"
+	EchoesoftheCoffin        LightCone = "echoes_of_the_coffin"
 )
 
 func (l LightCone) String() string {
