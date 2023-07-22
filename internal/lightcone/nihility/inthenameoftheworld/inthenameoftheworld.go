@@ -38,7 +38,6 @@ func init() {
 			OnBeforeAction: addSkillBuff,
 			OnAfterAction:  removeSkillBuff,
 		},
-		// DM has similar impl to fermata w/ ModifyDotDamageData behav flag.
 		CanModifySnapshot: true,
 	})
 	modifier.Register(skillBuff, modifier.Config{})
@@ -59,7 +58,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 // if debuff > 0, boost hit dmg
 func boostDmgOnDebuffed(mod *modifier.Instance, e event.HitStart) {
 	state := mod.State().(*state)
-	// NOTE : DM only says to count defender StatusCount(not just the debuffs?)
+	// if hit enemy has debuff, amplify holder damage.
 	if mod.Engine().Stats(e.Defender).StatusCount(model.StatusType_STATUS_DEBUFF) > 0 {
 		e.Hit.Attacker.AddProperty(world, prop.AllDamagePercent, state.dmgNAtkAmt)
 	}
@@ -80,9 +79,7 @@ func addSkillBuff(mod *modifier.Instance, e event.ActionStart) {
 	}
 }
 
-// remove skillBuff after action if exists
+// remove skillBuff mod instances after action
 func removeSkillBuff(mod *modifier.Instance, e event.ActionEnd) {
-	if mod.Engine().HasModifier(mod.Owner(), skillBuff) {
-		mod.Engine().RemoveModifier(mod.Owner(), skillBuff)
-	}
+	mod.Engine().RemoveModifier(mod.Owner(), skillBuff)
 }
