@@ -40,6 +40,7 @@ const (
 	BeforetheTutorialMissionStarts LightCone = "before_the_tutorial_mission_starts"
 	Loop                           LightCone = "loop"
 	HiddenShadow                   LightCone = "hidden_shadow"
+	IntheNameoftheWorld            LightCone = "in_the_name_of_the_world"
 )
 
 // Erudition
