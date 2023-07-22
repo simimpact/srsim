@@ -84,18 +84,14 @@ func fetchHitEnemies(mod *modifier.Instance, e event.AttackEnd) {
 func applyDebuffOnce(mod *modifier.Instance, e event.ActionEnd) {
 	state := mod.State().(*state)
 
-	// make new array for possible targets, loop through state.targets to filter
-	validEnemies := make([]key.TargetID, 0, len(state.targets))
-	for _, t := range state.targets {
-		if mod.Engine().HPRatio(t) > 0 && !mod.Engine().HasModifier(t, code) {
-			validEnemies = append(validEnemies, t)
-		}
-	}
+	target := mod.Engine().Retarget(info.Retarget{
+		Targets: state.targets,
+		Filter:  func(t key.TargetID) bool { return !mod.Engine().HasModifier(t, code) },
+		Max:     1,
+	})
 
-	if validEnemies != nil {
-		// choose one enemy, apply debuff to them.
-		chosenOne := validEnemies[mod.Engine().Rand().Intn(len(validEnemies))]
-		mod.Engine().AddModifier(chosenOne, info.Modifier{
+	if len(target) > 0 {
+		mod.Engine().AddModifier(target[0], info.Modifier{
 			Name:     code,
 			Source:   mod.Owner(),
 			Stats:    info.PropMap{prop.AllDamageTaken: state.dmgTakenAmt},
@@ -103,6 +99,7 @@ func applyDebuffOnce(mod *modifier.Instance, e event.ActionEnd) {
 			Duration: 1,
 		})
 	}
+
 	// set targets to nil at end to reset
 	state.targets = nil
 }
