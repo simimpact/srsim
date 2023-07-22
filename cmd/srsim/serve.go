@@ -20,6 +20,7 @@ type ServeOpts struct {
 
 func serve(opts *ServeOpts) {
 	server := &http.Server{Addr: address}
+	done := make(chan bool)
 	idleConnections := make(chan struct{})
 
 	hasLog := LogExists(opts.outpath)
@@ -29,7 +30,7 @@ func serve(opts *ServeOpts) {
 		http.HandleFunc("/result", func(resp http.ResponseWriter, req *http.Request) {
 			handleResult(resp, req, opts.outpath)
 			if !opts.keepAlive {
-				shutdown()
+				done <- true
 			}
 		})
 	}
@@ -38,7 +39,7 @@ func serve(opts *ServeOpts) {
 		http.HandleFunc("/log", func(resp http.ResponseWriter, req *http.Request) {
 			handleLog(resp, req, opts.outpath)
 			if !opts.keepAlive {
-				shutdown()
+				done <- true
 			}
 		})
 	}
@@ -47,7 +48,7 @@ func serve(opts *ServeOpts) {
 	fmt.Printf("starting server at %v\n", address)
 	fmt.Printf("keep-alive: %v\n", opts.keepAlive)
 
-	go interuptShutdown(server, idleConnections)
+	go interuptShutdown(server, done, idleConnections)
 	go func() {
 		if err := server.ListenAndServe(); err != http.ErrServerClosed {
 			log.Fatalf("HTTP server ListenAndSever Error: %v", err)
@@ -73,26 +74,19 @@ func serve(opts *ServeOpts) {
 	<-idleConnections
 }
 
-func interuptShutdown(server *http.Server, connections chan struct{}) {
+func interuptShutdown(server *http.Server, done chan bool, connections chan struct{}) {
 	defer close(connections)
 
 	sigint := make(chan os.Signal, 1)
 	signal.Notify(sigint, os.Interrupt)
-	<-sigint
+
+	select {
+	case <-done:
+	case <-sigint:
+	}
 
 	if err := server.Shutdown(context.Background()); err != nil {
 		fmt.Printf("HTTP server shutdown error: %v\n", err)
-	}
-}
-
-func shutdown() {
-	p, err := os.FindProcess(os.Getpid())
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	if err := p.Signal(os.Interrupt); err != nil {
-		log.Fatal(err)
 	}
 }
 
