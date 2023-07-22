@@ -1,9 +1,11 @@
 import {
   ColumnFiltersState,
+  PaginationState,
   Row,
   RowSelectionState,
   getCoreRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import { LucideIcon } from "lucide-react";
@@ -13,6 +15,7 @@ import {
   ColumnSelectFilter,
   ColumnToggle,
   DataTable,
+  DataTablePagination,
   MultipleSelect,
 } from "@/components/Primitives/Table/index";
 import { SimLog } from "@/utils/fetchLog";
@@ -24,24 +27,31 @@ interface Props {
 const LogTab = ({ data }: Props) => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 50 });
 
   const table = useReactTable({
     // INFO: data and column data of the table
     data,
     columns: columns,
+    defaultColumn: {
+      minSize: 0,
+      size: Number.MAX_SAFE_INTEGER,
+      maxSize: Number.MAX_SAFE_INTEGER,
+    },
 
     // NOTE: all rows can be expanded, this might be the desired behaviour
     // since we want full JSON data on all events
     getRowCanExpand: () => true,
     getFilteredRowModel: getFilteredRowModel(),
     getCoreRowModel: getCoreRowModel(),
-    // getPaginationRowModel: getPaginationRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
 
     // pass state to let the hook manage
     onColumnFiltersChange: setColumnFilters,
     onRowSelectionChange: setRowSelection,
+    onPaginationChange: setPagination,
 
-    state: { columnFilters, rowSelection },
+    state: { columnFilters, rowSelection, pagination },
   });
 
   const options: {
@@ -155,9 +165,14 @@ const LogTab = ({ data }: Props) => {
           </Button>
         </div>
 
-        <DataTable table={table} className="bg-background" renderSubComponent={ExpandComponent} />
+        <DataTable
+          stickyHeader
+          table={table}
+          className="bg-background h-[1000px] overflow-auto"
+          renderSubComponent={ExpandComponent}
+        />
 
-        {/* <DataTablePagination table={table} /> */}
+        <DataTablePagination table={table} rowOptions={[50, 75, 100, 150, 200]} />
       </div>
     </>
   );

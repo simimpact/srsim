@@ -4,6 +4,13 @@ import useLocalStorage from "use-local-storage";
 import { cn } from "@/utils/classname";
 import { Button } from "../Primitives/Button";
 
+const routes = [
+  { path: "/", label: "Simulator" },
+  { path: "/debug", label: "Debug" },
+  { path: "/team-db", label: "Teams DB" },
+  { path: "/docs", label: "Docs" },
+];
+
 export const Navigation = () => {
   // @footer
   const defaultDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -29,9 +36,11 @@ export const Navigation = () => {
         <img src="/images/favicon.ico" alt="SRSim" />
         <div className="m-[5px] border-x-[1px] border-[#fff3]" />
         <div className="flex gap-x-4 gap-y-2 text-lg text-foreground font-medium shrink grow-0 items-center w-full">
-          <Link to="/hello">Simulator</Link>
-          <Link to="/world">Teams DB</Link>
-          <Link to="/world">Docs</Link>
+          {routes.map(({ path, label }) => (
+            <Link key={path} to={path}>
+              {label}
+            </Link>
+          ))}
           <div className="grow" />
           <Button variant="ghost" size="sm" onClick={toggleTheme}>
             <Sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />

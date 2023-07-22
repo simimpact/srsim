@@ -1,13 +1,16 @@
 import { Table } from "@tanstack/react-table";
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { Button } from "../Button";
+import { Input } from "../Input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../Select";
 
 interface Props<TData> {
   table: Table<TData>;
   allowSelect?: boolean;
+  rowOptions?: number[];
 }
-function DataTablePagination<TData>({ table, allowSelect = false }: Props<TData>) {
+function DataTablePagination<TData>({ table, allowSelect = false, rowOptions }: Props<TData>) {
+  const options = rowOptions ?? [10, 20, 30, 40, 50];
   return (
     <div className="flex items-center justify-between px-2">
       {allowSelect ? (
@@ -31,7 +34,7 @@ function DataTablePagination<TData>({ table, allowSelect = false }: Props<TData>
               <SelectValue placeholder={table.getState().pagination.pageSize} />
             </SelectTrigger>
             <SelectContent side="top">
-              {[10, 20, 30, 40, 50].map(pageSize => (
+              {options.map(pageSize => (
                 <SelectItem key={pageSize} value={`${pageSize}`}>
                   {pageSize}
                 </SelectItem>
@@ -39,9 +42,25 @@ function DataTablePagination<TData>({ table, allowSelect = false }: Props<TData>
             </SelectContent>
           </Select>
         </div>
+
         <div className="flex w-[100px] items-center justify-center text-sm font-medium">
           Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
         </div>
+
+        <div className="flex items-center justify-center text-sm font-medium gap-2">
+          <span className="min-w-max">Go to page</span>
+          <Input
+            className="w-12"
+            type="number"
+            min={1}
+            defaultValue={table.getState().pagination.pageIndex + 1}
+            onChange={e => {
+              const page = e.target.value ? Number(e.target.value) - 1 : 0;
+              table.setPageIndex(page);
+            }}
+          />
+        </div>
+
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"
