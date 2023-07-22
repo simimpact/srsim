@@ -40,8 +40,9 @@ func init() {
 		},
 	})
 	modifier.Register(spdBuff, modifier.Config{
-		Stacking:   modifier.ReplaceBySource,
-		StatusType: model.StatusType_STATUS_BUFF,
+		Stacking:      modifier.ReplaceBySource,
+		StatusType:    model.StatusType_STATUS_BUFF,
+		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_UP},
 	})
 }
 
@@ -62,10 +63,12 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 // add energy to lc holder based on # of targets hit. max 3.
 func addEnergyPerEnemyHit(mod *modifier.Instance, e event.AttackEnd) {
 	state := mod.State().(*state)
-	enemyHit := len(e.Targets)
-	if enemyHit > 3 {
-		enemyHit = 3
-	}
+	// use retarget() to exclude enemies onLimbo.
+	enemyHit := len(mod.Engine().Retarget(info.Retarget{
+		Targets: e.Targets,
+		Max:     3,
+	}))
+
 	mod.Engine().ModifyEnergy(info.ModifyAttribute{
 		Key:    echoes,
 		Target: mod.Owner(),
