@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { Button } from "@/components/Primitives/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Primitives/Tabs";
 import { SimControlContext } from "@/providers/SimControl";
 import { LogTab } from "./LogTab";
@@ -11,7 +12,7 @@ interface Props {
 const LogViewer = ({ placeholder }: Props) => {
   if (placeholder) console.log(placeholder);
 
-  const { simulationData, simulationResult } = useContext(SimControlContext);
+  const { simulationData, simulationResult, getResult } = useContext(SimControlContext);
 
   return (
     <div>
@@ -27,14 +28,18 @@ const LogViewer = ({ placeholder }: Props) => {
             MVP tab
           </TabsTrigger>
         </TabsList>
-        <TabsContent value="mvp">
-          <MvpTab name="test" />
-        </TabsContent>
+
         <TabsContent value="log">
           <LogTab data={simulationData} />
         </TabsContent>
         <TabsContent value="result">
+          <Button size="sm" onClick={() => getResult()}>
+            Get Results
+          </Button>
           <ResultTab data={simulationResult} />
+        </TabsContent>
+        <TabsContent value="mvp">
+          <MvpTab name="test" />
         </TabsContent>
       </Tabs>
     </div>

@@ -1,6 +1,7 @@
 import { Table } from "@tanstack/react-table";
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { Button } from "../Button";
+import { Input } from "../Input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../Select";
 
 interface Props<TData> {
@@ -41,9 +42,25 @@ function DataTablePagination<TData>({ table, allowSelect = false, rowOptions }: 
             </SelectContent>
           </Select>
         </div>
+
         <div className="flex w-[100px] items-center justify-center text-sm font-medium">
           Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
         </div>
+
+        <div className="flex items-center justify-center text-sm font-medium gap-2">
+          <span className="min-w-max">Go to page</span>
+          <Input
+            className="w-12"
+            type="number"
+            min={1}
+            defaultValue={table.getState().pagination.pageIndex + 1}
+            onChange={e => {
+              const page = e.target.value ? Number(e.target.value) - 1 : 0;
+              table.setPageIndex(page);
+            }}
+          />
+        </div>
+
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"

@@ -4,7 +4,13 @@ import { ChevronsDownUp, ChevronsUpDown, ExternalLink } from "lucide-react";
 import { ReactNode } from "react";
 import { Badge } from "@/components/Primitives/Badge";
 import { Checkbox } from "@/components/Primitives/Checkbox";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/Primitives/Sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/Primitives/Sheet";
 import { Toggle } from "@/components/Primitives/Toggle";
 import { SimLog } from "@/utils/fetchLog";
 
@@ -16,11 +22,13 @@ const columnHelper = createColumnHelper<SimLog>();
 export const columns = [
   columnHelper.display({
     id: "index",
-    header: "#",
-    cell: ({ row }) => row.index,
+    size: 40,
+    header: () => <div className="text-center">#</div>,
+    cell: ({ row }) => <div className="text-center">{String(row.index).padStart(2, "0")}</div>,
   }),
   columnHelper.display({
     id: "checkbox",
+    size: 30,
     header: ({ table }) => (
       <div className="flex items-center justify-center">
         <Checkbox
@@ -44,6 +52,7 @@ export const columns = [
   }),
   columnHelper.display({
     id: "expander",
+    size: 30,
     header: () => null,
     cell: ({ row }) =>
       row.getCanExpand() && (
@@ -62,14 +71,32 @@ export const columns = [
   }),
   columnHelper.accessor(data => data.name, {
     id: "name",
+    size: 200,
     filterFn: (row, _id, value: SimLog["name"][]) => {
       // NOTE: value is `any` by default, console log to double check type
       return value.includes(row.original.name);
     },
-    cell: ({ row }) => (
-      <Badge variant={row.getIsSelected() ? "destructive" : "default"}>
-        {row.getValue("name")}
-      </Badge>
+    header: () => <div className="text-right">Event Name</div>,
+    cell: ({ row, getValue }) => (
+      <Sheet>
+        <SheetTrigger className="w-full flex justify-end">
+          <Badge
+            variant={row.getIsSelected() ? "destructive" : "default"}
+            className="cursor-pointer"
+          >
+            {row.getValue("name")}
+          </Badge>
+        </SheetTrigger>
+        <SheetContent
+          side="left"
+          className="w-96 overflow-y-auto whitespace-pre-wrap text-foreground"
+        >
+          <SheetHeader>
+            <SheetTitle>{getValue()}</SheetTitle>
+          </SheetHeader>
+          <p>{JSON.stringify(row, null, 2)}</p>
+        </SheetContent>
+      </Sheet>
     ),
   }),
   columnHelper.accessor(data => data, {
@@ -107,7 +134,13 @@ function summarizeBy(data: SimLog, tableIndex: number): ReactNode {
             </>
           )}
         </SheetTrigger>
-        <SheetContent className="w-96 whitespace-pre-wrap text-muted-foreground overflow-y-auto">
+        <SheetContent
+          className="w-96 whitespace-pre-wrap text-muted-foreground overflow-y-auto"
+          side="left"
+        >
+          <SheetHeader>
+            <SheetTitle>{Object.keys(event)[index]}</SheetTitle>
+          </SheetHeader>
           <p>{JSON.stringify(event[Object.keys(event)[index] as keyof typeof event], null, 4)}</p>
         </SheetContent>
       </Sheet>
@@ -158,7 +191,13 @@ function summarizeInitialize(event: Event.Initialize, tableIndex: number): React
     return (
       <Sheet>
         <SheetTrigger>Config Schema</SheetTrigger>
-        <SheetContent className="w-96 whitespace-pre-wrap text-muted-foreground overflow-y-auto">
+        <SheetContent
+          className="w-96 whitespace-pre-wrap text-muted-foreground overflow-y-auto"
+          side="left"
+        >
+          <SheetHeader>
+            <SheetTitle>Config Schema</SheetTitle>
+          </SheetHeader>
           <p>{JSON.stringify(event.config, null, 4)}</p>
         </SheetContent>
       </Sheet>

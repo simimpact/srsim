@@ -42,7 +42,14 @@ function DataTableInner<TData>(
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map(header => {
                 return (
-                  <TableHead key={header.id} className="border-b-muted-foreground border-b">
+                  <TableHead
+                    key={header.id}
+                    className="border-b-muted-foreground border-b"
+                    style={{
+                      width:
+                        header.getSize() === Number.MAX_SAFE_INTEGER ? "auto" : header.getSize(),
+                    }}
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(header.column.columnDef.header, header.getContext())}
@@ -61,7 +68,15 @@ function DataTableInner<TData>(
                   // className="[&_td]:border-b [&_td]:border-b-muted-foreground"
                 >
                   {row.getVisibleCells().map(cell => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      style={{
+                        width:
+                          cell.column.getSize() === Number.MAX_SAFE_INTEGER
+                            ? "auto"
+                            : cell.column.getSize(),
+                      }}
+                    >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}

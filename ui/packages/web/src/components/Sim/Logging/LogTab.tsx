@@ -33,6 +33,11 @@ const LogTab = ({ data }: Props) => {
     // INFO: data and column data of the table
     data,
     columns: columns,
+    defaultColumn: {
+      minSize: 0,
+      size: Number.MAX_SAFE_INTEGER,
+      maxSize: Number.MAX_SAFE_INTEGER,
+    },
 
     // NOTE: all rows can be expanded, this might be the desired behaviour
     // since we want full JSON data on all events
