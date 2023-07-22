@@ -11,13 +11,9 @@ const Debug = () => {
   }, []);
 
   return (
-    <div id="dev" className="flex h-full self-start grow">
-      <div className="flex flex-col grow gap-4">
-        <div className="flex gap-4 px-4">
-          <div className="grow bg-accent text-accent-foreground flex flex-col rounded-md p-10">
-            <LogViewer />
-          </div>
-        </div>
+    <div id="dev" className="w-full flex flex-col self-start grow gap-4">
+      <div className="grow bg-accent text-accent-foreground flex flex-col rounded-md p-2 mx-2">
+        <LogViewer />
       </div>
     </div>
   );
