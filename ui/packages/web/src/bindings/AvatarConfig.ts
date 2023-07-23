@@ -2,15 +2,6 @@ export type Path = "Destruction" | "Hunt" | "Erudition" | "Harmony" | "Nihility"
 
 export type Element = "Fire" | "Ice" | "Physical" | "Wind" | "Lightning" | "Quantum" | "Imaginary";
 
-export type PatchVersion = string;
-
-export interface PatchBanner {
-  characterData?: AvatarConfig | null;
-  dateEnd: string;
-  dateStart: string;
-  version: PatchVersion;
-}
-
 export interface AvatarConfig {
   avatar_base_type: Path;
   avatar_desc: string;
