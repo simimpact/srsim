@@ -1,4 +1,4 @@
-import { VariantProps } from "class-variance-authority";
+import { AvatarConfig } from "@/routes/Root/CharacterLineup";
 import { cn } from "@/utils/classname";
 import { elementVariants, rarityVariants } from "@/utils/variants";
 import {
@@ -9,58 +9,50 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../Primitives/Dialog";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../Primitives/Tooltip";
 
-interface Props extends VariantProps<typeof elementVariants> {
-  name: string;
-  code: number;
-  rarity: number;
+interface Props {
+  data: AvatarConfig;
 }
 
-const CharacterPortrait = ({ code, name, element, rarity }: Props) => {
-  let stringrarity: "green" | "blue" | "purple" | "gold" | "silver" | undefined = undefined;
-  if (rarity === 1) stringrarity = "silver";
-  if (rarity === 2) stringrarity = "green";
-  if (rarity === 3) stringrarity = "blue";
-  if (rarity === 4) stringrarity = "purple";
-  if (rarity === 5) stringrarity = "gold";
+const CharacterPortrait = ({ data }: Props) => {
+  const { damage_type: element, avatar_base_type: path } = data;
 
   return (
-    <TooltipProvider delayDuration={0}>
-      <Tooltip>
-        <TooltipTrigger>
-          <Dialog>
-            <DialogTrigger>
-              <img
-                src={url(code)}
-                alt={name}
-                className={cn(
-                  "max-h-12 rounded-full box-content p-1 border-2",
-                  elementVariants({ border: element }),
-                  rarityVariants({ rarity: stringrarity })
-                )}
-              />
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>{name}</DialogTitle>
-                <DialogDescription>{rarity} ✦ Erudition</DialogDescription>
-              </DialogHeader>
-              <img
-                src={url(code)}
-                alt={name}
-                className={cn(
-                  "h-32 w-32 rounded-full box-content p-1 border-2",
-                  elementVariants({ border: element }),
-                  rarityVariants({ rarity: stringrarity })
-                )}
-              />
-            </DialogContent>
-          </Dialog>
-        </TooltipTrigger>
-        <TooltipContent>{name} (click on me!)</TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Dialog>
+      <DialogTrigger className="flex items-center">
+        <img
+          src={url(data.avatar_id)}
+          alt={data.avatar_name}
+          className={cn(
+            "max-h-12 rounded-full box-content p-1 border-2",
+            elementVariants({ border: element }),
+            rarityVariants({ rarity: data.rarity as 1 | 2 | 3 | 4 | 5 | null })
+          )}
+        />
+      </DialogTrigger>
+      <DialogContent className="text-foreground">
+        <DialogHeader>
+          <DialogTitle className="text-foreground">{data.avatar_name}</DialogTitle>
+          <DialogDescription>{`${data.rarity} ✦ ${path}`}</DialogDescription>
+        </DialogHeader>
+        <div className="flex gap-2.5">
+          <img
+            src={url(data.avatar_id)}
+            alt={data.avatar_name}
+            className={cn(
+              "h-32 w-32 rounded-full box-content p-1 border-2",
+              elementVariants({ border: element }),
+              rarityVariants({ rarity: data.rarity as 1 | 2 | 3 | 4 | 5 | null })
+            )}
+          />
+          <p>
+            Id: {data.avatar_id} <br />
+            Path: {path} <br />
+            Element: {element}
+          </p>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

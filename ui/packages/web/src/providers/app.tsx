@@ -15,7 +15,9 @@ const ErrorFallback = () => (
     <button className="rounded bg-blue-500 font-blod px-4 py-2 text-white">Refresh</button>
   </div>
 );
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { refetchOnWindowFocus: false } },
+});
 
 export const AppProvider = ({ children }: Props) => {
   // const simControl = useSimControl();

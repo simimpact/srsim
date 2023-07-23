@@ -1,6 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
 import { ReactNode, createContext, useState } from "react";
-import { ENDPOINT } from "@/utils/constants";
 import { SimLog, SimResult, fetchLog, fetchResult } from "@/utils/fetchLog";
 
 interface SimControlContextPayload {
@@ -22,7 +21,7 @@ function useSimControl(): SimControlContextPayload {
   const [simulationData, setSimulationData] = useState<SimLog[]>([]);
 
   const logMutation = useMutation({
-    mutationKey: [ENDPOINT.logMock],
+    mutationKey: ["simulation"],
     mutationFn: async () => await fetchLog(),
     onSuccess: onLogMutate,
   });

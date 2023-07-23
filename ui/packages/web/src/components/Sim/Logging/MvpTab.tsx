@@ -1,10 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 import { ComponentProps } from "react";
-import { MvpWrapper } from "@/bindings/MvpWrapper";
 import { OuterLabelPie } from "@/components/Graphs";
 import { Button } from "@/components/Primitives/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Primitives/Tabs";
-import { ENDPOINT, typedFetch } from "@/utils/constants";
+import API from "@/utils/constants";
 import { TeamXY } from "./TeamXY";
 
 interface Props {
@@ -14,9 +13,9 @@ const MvpTab = ({ name }: Props) => {
   console.log(name);
   // TODO: mutation
   const statMock = useMutation({
-    mutationKey: [ENDPOINT.statMock],
+    mutationKey: ["mockHsrStat"],
     // NOTE: NOT AN ACTUAL FN
-    mutationFn: async () => await typedFetch<undefined, MvpWrapper>(ENDPOINT.statMock),
+    mutationFn: async () => await API.mockHsrStat.get(),
     onSuccess: data => console.log(data),
   });
 
