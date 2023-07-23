@@ -18,6 +18,12 @@ type state struct {
 	dmgAmt       float64
 }
 
+// Enters the buffed state upon defeating an enemy with Basic ATK, Skill, or Ultimate,
+// and receives an extra turn. While in the buffed state,
+// the DMG of Seele's attacks increases by 80% for 1 turn(s).
+// Enemies defeated in the extra turn provided by "Resurgence"
+// will not trigger another "Resurgence."
+
 func init() {
 	modifier.Register(Resurgence, modifier.Config{
 		Listeners: modifier.Listeners{
@@ -53,5 +59,8 @@ func applyResurgence(mod *modifier.Instance, target key.TargetID) {
 	})
 	if !state.isResurgence {
 		// TODO : implement extra turn mechanic here
+
+		// enter resurgence turn.
+		state.isResurgence = true
 	}
 }

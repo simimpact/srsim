@@ -11,6 +11,8 @@ const (
 	Ult key.Attack = "seele-ult"
 )
 
+// Seele enters the buffed state and deals Quantum DMG equal to 425% of her ATK to a single enemy.
+
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	// add buffedState mod
 	c.engine.AddModifier(c.id, info.Modifier{

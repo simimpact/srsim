@@ -13,6 +13,9 @@ const (
 	SkillSpeedBuff key.Modifier = "seele-skill-speed-up"
 )
 
+// Increases Seele's SPD by 25% for 2 turn(s)
+// and deals Quantum DMG equal to 220% of Seele's ATK to a single enemy.
+
 func init() {
 	modifier.Register(SkillSpeedBuff, modifier.Config{
 		Stacking:      modifier.ReplaceBySource,
