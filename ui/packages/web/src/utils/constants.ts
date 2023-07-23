@@ -1,17 +1,29 @@
+import { AvatarConfig } from "@/bindings/AvatarConfig";
+import { AvatarPropertyConfig } from "@/bindings/AvatarPropertyConfig";
+import { AvatarRankConfig } from "@/bindings/AvatarRankConfig";
+import { AvatarSkillConfig } from "@/bindings/AvatarSkillConfig";
+import { EquipmentConfig } from "@/bindings/EquipmentConfig";
+
 // NOTE: othi: ping me on discord if remote api is out of date/500/404s
-
-import { MvpWrapper } from "@/bindings/MvpWrapper";
-import { AvatarConfig, EquipmentConfig } from "@/routes/Root/CharacterLineup";
-
 export const OTHI_API = "https://api.othiremote.synology.me";
 // export const OTHI_API = "http://127.0.0.1:5005/";
 
 const API = {
-  // WARN: :id does not actually mean id number, in this case it's string params (`danheng`)
-  character: route<AvatarConfig>("/honkai/character/search/:id", "GET"),
-  lightCone: route<EquipmentConfig>("/honkai/light_cone/search/:id", "GET"),
-  mockHsrStat: route<MvpWrapper>("/utils/mock_hsr_stat", "GET"),
+  // WARN: :id does not actually mean id number, just a tag for regexing to
+  // string params (`danheng` in characterSearch)
+  characterSearch: route<AvatarConfig>("/honkai/character/search/:id", "GET"),
+  lightConeSearch: route<EquipmentConfig>("/honkai/light_cone/search/:id", "GET"),
+  // mockHsrStat: route<MvpWrapper>("/utils/mock_hsr_stat", "GET"),
+  skillsByCharId: route<List<AvatarSkillConfig>>("/honkai/avatar/:id/skill", "GET"),
+  character: route<AvatarConfig>("/honkai/avatar", "GET"),
+  properties: route<List<AvatarPropertyConfig>>("/honkai/properties", "GET"),
+  eidolon: route<List<AvatarRankConfig>>("/honkai/avatar/:id/eidolon", "GET"),
 };
+
+export interface List<T> {
+  list: T[];
+  [k: string]: unknown;
+}
 
 interface ApiRoute {
   path: string;
@@ -123,3 +135,11 @@ export async function serverFetch<TPayload, TResponse>(
 }
 
 export default API;
+
+export function characterIconUrl(characterId: number): string {
+  return `https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/character/${characterId}.png`;
+}
+
+export function lightConeIconUrl(lightConeId: number): string {
+  return `https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/image/light_cone_preview/${lightConeId}.png`;
+}

@@ -1,5 +1,6 @@
 import { cva } from "class-variance-authority";
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Menubar,
   MenubarContent,
@@ -25,6 +26,7 @@ const SimActionBar = () => {
   function onRun() {
     runSimulation();
   }
+  const route = useNavigate();
 
   return (
     <Menubar orientation="vertical" className="gap-2 min-w-max">
@@ -36,6 +38,11 @@ const SimActionBar = () => {
       <MenubarMenu>
         <MenubarTrigger className={verticalHelper({ variant: "destructive" })} onClick={reset}>
           Reset
+        </MenubarTrigger>
+      </MenubarMenu>
+      <MenubarMenu>
+        <MenubarTrigger className={cn(verticalHelper())} onClick={() => route("/config")}>
+          Config
         </MenubarTrigger>
       </MenubarMenu>
       <MenubarMenu>
