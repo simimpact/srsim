@@ -22,7 +22,7 @@ export interface CharacterConfig {
     max_level: number;
     imposition: number;
   };
-  relic: RelicConfig[];
+  relics: Relic[] | undefined;
 }
 
 export interface EnemyConfig {
@@ -34,7 +34,7 @@ export interface EnemyConfig {
 
 type ElementConfig = "WIND" | "QUANTUM" | "ICE" | "LIGHTNING" | "FIRE" | "IMAGINARY" | "PHYSICAL";
 
-export interface RelicConfig {
+export interface Relic {
   key: string;
   main_stat: RelicParam<EquimentMainStat>;
   sub_stats: RelicParam<EquimentSubStat>[];

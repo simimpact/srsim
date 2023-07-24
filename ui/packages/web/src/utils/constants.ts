@@ -3,6 +3,7 @@ import { AvatarPropertyConfig } from "@/bindings/AvatarPropertyConfig";
 import { AvatarRankConfig } from "@/bindings/AvatarRankConfig";
 import { AvatarSkillConfig } from "@/bindings/AvatarSkillConfig";
 import { EquipmentConfig } from "@/bindings/EquipmentConfig";
+import { RelicSetConfig } from "@/bindings/RelicSetConfig";
 import { SkillTreeConfig } from "@/bindings/SkillTreeConfig";
 
 // NOTE: othi: ping me on discord if remote api is out of date/500/404s
@@ -20,6 +21,7 @@ const API = {
   properties: route<List<AvatarPropertyConfig>>("/honkai/properties", "GET"),
   eidolon: route<List<AvatarRankConfig>>("/honkai/avatar/:id/eidolon", "GET"),
   trace: route<List<SkillTreeConfig>>("/honkai/avatar/:id/trace", "GET"),
+  relicSet: route<RelicSetConfig>("/honkai/relic_set/search/:id", "GET"),
 };
 
 export interface List<T> {

@@ -6,6 +6,7 @@ import API, { characterIconUrl } from "@/utils/constants";
 import { elementVariants, rarityVariants } from "@/utils/variants";
 import { LightConePortrait } from "../LightCone/LightConePortrait";
 import { Badge } from "../Primitives/Badge";
+import { RelicItem } from "../Relic/RelicItem";
 import { CharacterStatTable } from "./CharacterStatTable";
 import { EidolonIcon } from "./EidolonIcon";
 import { SkillIcon } from "./SkillIcon";
@@ -56,8 +57,8 @@ const CharacterProfile = ({ data: configData }: Props) => {
   const [technique, basic, talent, skill, ult] = params.map(e => getSkill(skills?.list, e));
 
   return (
-    <div id="main-container" className="flex gap-2.5">
-      <div id="left-container" className="grid grid-cols-12">
+    <div id="main-container" className="grid grid-cols-12 gap-2.5">
+      <div id="left-container" className="grid grid-cols-12 col-span-6">
         <div id="char-img" className="col-span-3 flex flex-col items-center">
           <img
             src={characterIconUrl(characterMetadata.avatar_id)}
@@ -198,21 +199,21 @@ const CharacterProfile = ({ data: configData }: Props) => {
         </div>
       </div>
 
-      <div id="mid-stats">
+      <div id="mid-stats" className="col-span-3 rounded-md border h-fit">
         <CharacterStatTable />
       </div>
 
-      <div id="right-relic" className="flex flex-col">
-        <div id="4p" className="flex flex-col">
-          <div>piece1</div>
-          <div>piece2</div>
-          <div>piece3</div>
-          <div>piece4</div>
+      <div id="right-relic" className="flex flex-col col-span-3 gap-6">
+        <div id="4p" className="flex flex-col gap-4 border rounded-md">
+          {configData.relics?.slice(0, 4).map((relic, index) => (
+            <RelicItem key={index} data={relic} mockIndex={index} />
+          ))}
         </div>
 
-        <div id="2p" className="flex flex-col">
-          <div>piece1</div>
-          <div>piece2</div>
+        <div id="2p" className="flex flex-col gap-4 border rounded-md">
+          {configData.relics?.slice(-2).map((relic, index) => (
+            <RelicItem key={index} data={relic} mockIndex={index} />
+          ))}
         </div>
       </div>
     </div>

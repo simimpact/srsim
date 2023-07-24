@@ -22,7 +22,7 @@ const TraceTree = ({ bigTraceAscension, traces, path, charTraces }: Props) => {
     <div className="flex flex-col items-center">
       {toRenderTraces?.map((traceNode, index) => (
         <Popover key={index}>
-          <PopoverTrigger>
+          <PopoverTrigger asChild>
             <IconWithTooltip
               node={traceNode}
               className={cn(
@@ -41,17 +41,15 @@ const TraceTree = ({ bigTraceAscension, traces, path, charTraces }: Props) => {
 interface IconProps extends HTMLAttributes<HTMLButtonElement> {
   node: SkillTreeConfig;
 }
-const IconWithTooltip = forwardRef<HTMLDivElement, IconProps>(
+const IconWithTooltip = forwardRef<HTMLButtonElement, IconProps>(
   ({ node, className, ...props }, ref) => (
     <Tooltip>
-      <TooltipTrigger>
-        <div ref={ref} className="flex flex-col items-center">
-          <button className={className} {...props}>
-            <img src={traceIconUrl(node)} alt={String(node.point_id)} width={32} height={32} />
-          </button>
+      <TooltipTrigger asChild>
+        <button ref={ref} className={cn("flex flex-col items-center", className)} {...props}>
+          <img src={traceIconUrl(node)} alt={String(node.point_id)} width={32} height={32} />
           {/* percentage */}
           {asPercentage(node)}
-        </div>
+        </button>
       </TooltipTrigger>
       <TooltipContent>{node.point_name}</TooltipContent>
     </Tooltip>

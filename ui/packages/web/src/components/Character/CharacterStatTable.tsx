@@ -1,3 +1,5 @@
+import { Fragment } from "react";
+
 interface Props {}
 
 // value = default params, from character
@@ -20,9 +22,9 @@ const MOCK_DATA = [
 // TODO: take above mock data as props
 const CharacterStatTable = ({}: Props) => {
   return (
-    <div className="flex flex-col">
+    <div className="grid grid-cols-2 gap-y-2">
       {MOCK_DATA.map(({ property, value, bonus, merge, percent }, index) => (
-        <div key={index} className="flex">
+        <Fragment key={index}>
           <div>{property}</div>
           {merge ? (
             <span>
@@ -33,7 +35,7 @@ const CharacterStatTable = ({}: Props) => {
               {value} + <span className="text-wind">{bonus}</span> {percent && "%"}
             </span>
           )}
-        </div>
+        </Fragment>
       ))}
     </div>
   );
