@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { Button } from "@/components/Primitives/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Primitives/Tabs";
 import { useTabRouteHelper } from "@/hooks/useTabRouteHelper";

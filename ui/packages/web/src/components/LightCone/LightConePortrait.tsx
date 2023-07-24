@@ -1,6 +1,6 @@
 import { EquipmentConfig } from "@/bindings/EquipmentConfig";
+import useCardEffect from "@/hooks/animation/useCardEffect";
 import { cn } from "@/utils/classname";
-import useCardEffect from "./useCardEffect";
 
 interface Props {
   data: EquipmentConfig;

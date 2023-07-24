@@ -41,6 +41,11 @@ const SimActionBar = () => {
         </MenubarTrigger>
       </MenubarMenu>
       <MenubarMenu>
+        <MenubarTrigger className={cn(verticalHelper())} onClick={() => route("/debug")}>
+          Debug
+        </MenubarTrigger>
+      </MenubarMenu>
+      <MenubarMenu>
         <MenubarTrigger className={cn(verticalHelper())} onClick={() => route("/config")}>
           Config
         </MenubarTrigger>

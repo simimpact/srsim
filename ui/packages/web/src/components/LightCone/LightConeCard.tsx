@@ -1,9 +1,9 @@
 import { HTMLAttributes, forwardRef } from "react";
 import { Path } from "@/bindings/AvatarConfig";
 import { Element } from "@/bindings/PatchBanner";
+import useCardEffect from "@/hooks/animation/useCardEffect";
 import { cn } from "@/utils/classname";
 import { range } from "@/utils/helpers";
-import useCardEffect from "./useCardEffect";
 
 interface Props {
   rarity?: number;
@@ -63,4 +63,3 @@ const RarityIcon = forwardRef<HTMLDivElement, RarityIconProps>(
     </div>
   )
 );
-RarityIcon.displayName = "RarityIcon";

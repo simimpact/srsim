@@ -3,8 +3,8 @@ import { ReactNode } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { HelmetProvider } from "react-helmet-async";
 import { BrowserRouter } from "react-router-dom";
-import { SimControl } from "./SimControl";
 import { TooltipProvider } from "@/components/Primitives/Tooltip";
+import { SimControl } from "./SimControl";
 
 interface Props {
   children: ReactNode;
