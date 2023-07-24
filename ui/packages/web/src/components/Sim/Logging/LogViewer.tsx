@@ -1,6 +1,7 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Button } from "@/components/Primitives/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Primitives/Tabs";
+import { useTabRouteHelper } from "@/hooks/useTabRouteHelper";
 import { SimControlContext } from "@/providers/SimControl";
 import { LogTab } from "./LogTab";
 import { MvpTab } from "./MvpTab";
@@ -11,12 +12,13 @@ interface Props {
 }
 const LogViewer = ({ placeholder }: Props) => {
   if (placeholder) console.log(placeholder);
+  const { tab, setTab } = useTabRouteHelper();
 
   const { simulationData, simulationResult, getResult } = useContext(SimControlContext);
 
   return (
     <div>
-      <Tabs defaultValue="log">
+      <Tabs value={tab ?? "log"} onValueChange={setTab}>
         <TabsList className="w-full h-full">
           <TabsTrigger value="log" className="w-full">
             Logging/Debugging
