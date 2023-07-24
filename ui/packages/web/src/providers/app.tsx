@@ -4,6 +4,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { HelmetProvider } from "react-helmet-async";
 import { BrowserRouter } from "react-router-dom";
 import { SimControl } from "./SimControl";
+import { TooltipProvider } from "@/components/Primitives/Tooltip";
 
 interface Props {
   children: ReactNode;
@@ -27,7 +28,9 @@ export const AppProvider = ({ children }: Props) => {
       <HelmetProvider>
         <BrowserRouter>
           <QueryClientProvider client={queryClient}>
-            <SimControl>{children}</SimControl>
+            <SimControl>
+              <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
+            </SimControl>
           </QueryClientProvider>
         </BrowserRouter>
       </HelmetProvider>

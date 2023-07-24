@@ -12,13 +12,12 @@ import { CharacterLineup } from "../Root/CharacterLineup";
 import { SimActionBar } from "../Root/SimActionBar";
 
 const Config = () => {
+  const { simulationConfig } = useContext(SimControlContext);
   const [currentCharacter, setCurrentCharacter] = useState<AvatarConfig | undefined>(undefined);
   const [currentCharacterConfig, setCurrentCharacterConfig] = useState<CharacterConfig | undefined>(
-    undefined
+    simulationConfig?.characters[0] ? simulationConfig.characters[0] : undefined
   );
   const characterId = currentCharacter?.avatar_id;
-
-  const { simulationConfig } = useContext(SimControlContext);
 
   const { data: characterEidolons } = useQuery({
     queryKey: ["eidolon", characterId],

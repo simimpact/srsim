@@ -5,8 +5,8 @@ import { AvatarSkillConfig } from "@/bindings/AvatarSkillConfig";
 import { EquipmentConfig } from "@/bindings/EquipmentConfig";
 
 // NOTE: othi: ping me on discord if remote api is out of date/500/404s
-export const OTHI_API = "https://api.othiremote.synology.me";
-// export const OTHI_API = "http://127.0.0.1:5005/";
+// export const OTHI_API = "https://api.othiremote.synology.me";
+export const OTHI_API = "http://127.0.0.1:5005";
 
 const API = {
   // WARN: :id does not actually mean id number, just a tag for regexing to
