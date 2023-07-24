@@ -8,6 +8,7 @@ import (
 
 const (
 	Normal key.Attack = "seele-normal"
+	A2     key.Reason = "seele-a2"
 )
 
 var attackHits = []float64{0.3, 0.7}
@@ -29,4 +30,10 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 			HitRatio:     hitRatio,
 		})
 	}
+	// A6 : After using a Basic ATK, Seele's next action will be Advanced Forward by 20%.
+	c.engine.ModifyCurrentGaugeCost(info.ModifyCurrentGaugeCost{
+		Key:    A2,
+		Source: c.id,
+		Amount: -0.2,
+	})
 }

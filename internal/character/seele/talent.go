@@ -43,7 +43,7 @@ func (c *char) talentActionEndListener(e event.ActionEnd) {
 	}
 	c.engine.AddModifier(c.id, info.Modifier{
 		Name:   Resurgence,
-		Source: c.id,
+		Source: e.Owner,
 		State:  &modState,
 	})
 }
@@ -55,12 +55,16 @@ func applyResurgence(mod *modifier.Instance, target key.TargetID) {
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 		Name:   BuffedState,
 		Source: mod.Owner(),
-		Stats:  info.PropMap{prop.AllDamagePercent: state.dmgAmt},
+		Stats: info.PropMap{
+			prop.AllDamagePercent: state.dmgAmt,
+			// A4 : While Seele is in the buffed state, her Quantum RES PEN increases by 20%.
+			prop.QuantumPEN: 0.2,
+		},
 	})
 	if !state.isResurgence {
-		// TODO : implement extra turn mechanic here
-
 		// enter resurgence turn.
 		state.isResurgence = true
+
+		// TODO : implement extra turn mechanic here
 	}
 }

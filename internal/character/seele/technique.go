@@ -21,7 +21,11 @@ func (c *char) Technique(target key.TargetID, state info.ActionState) {
 	c.engine.AddModifier(c.id, info.Modifier{
 		Name:   BuffedState,
 		Source: c.id,
-		Stats:  info.PropMap{prop.AllDamagePercent: talent[c.info.TalentLevelIndex()]},
+		Stats: info.PropMap{
+			prop.AllDamagePercent: talent[c.info.TalentLevelIndex()],
+			// A4 : While Seele is in the buffed state, her Quantum RES PEN increases by 20%.
+			prop.QuantumPEN: 0.2,
+		},
 	})
 	// add the minimal toughness damage atk? (observed effect, not in the DM?)
 	c.engine.Attack(info.Attack{
