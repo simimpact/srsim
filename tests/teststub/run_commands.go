@@ -20,6 +20,7 @@ func (s *Stub) SetAutoRun(cont bool) {
 
 // TerminateRun pipes a command with an astronomical AV to immediately exceed the cycle limit, ending the run
 func (s *Stub) TerminateRun() {
+	s.terminated = true
 	go func() {
 		s.turnPipe <- TurnCommand{Next: s.Characters.testChars[0].ID(), Av: 100000}
 	}()
