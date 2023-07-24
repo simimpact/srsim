@@ -6,6 +6,7 @@ import API, { characterIconUrl } from "@/utils/constants";
 import { elementVariants, rarityVariants } from "@/utils/variants";
 import { LightConePortrait } from "../LightCone/LightConePortrait";
 import { Badge } from "../Primitives/Badge";
+import { CharacterStatTable } from "./CharacterStatTable";
 import { EidolonIcon } from "./EidolonIcon";
 import { SkillIcon } from "./SkillIcon";
 import { TraceTree } from "./TraceTree";
@@ -31,6 +32,12 @@ const CharacterProfile = ({ data: configData }: Props) => {
     enabled: !!characterMetadata?.avatar_id,
   });
 
+  const { data: traces } = useQuery({
+    queryKey: ["trace", characterMetadata?.avatar_id],
+    queryFn: async () => await API.trace.get(characterMetadata?.avatar_id),
+    enabled: !!characterMetadata?.avatar_id,
+  });
+
   const { data: lightConeMetadata } = useQuery({
     queryKey: ["lightCone", configData.light_cone.key],
     queryFn: async () => await API.lightConeSearch.get(configData.light_cone.key),
@@ -41,6 +48,9 @@ const CharacterProfile = ({ data: configData }: Props) => {
   const element = characterMetadata.damage_type;
 
   const { light_cone, abilities, eidols } = configData;
+  const configTraces = configData.traces.map(shorthand =>
+    Number(`${characterMetadata.avatar_id}${shorthand}`)
+  );
 
   const params: SkillType[] = ["Maze", "Normal", "Talent", "BPSkill", "Ultra"];
   const [technique, basic, talent, skill, ult] = params.map(e => getSkill(skills?.list, e));
@@ -93,11 +103,14 @@ const CharacterProfile = ({ data: configData }: Props) => {
                   <SkillIcon data={technique} characterId={characterMetadata.avatar_id} />
                 )}
                 <Badge className="w-fit self-center">A0</Badge>
-                <TraceTree
-                  ascension={0}
-                  characterId={characterMetadata.avatar_id}
-                  path={characterMetadata.avatar_base_type}
-                />
+                {traces && (
+                  <TraceTree
+                    bigTraceAscension={0}
+                    path={characterMetadata.avatar_base_type}
+                    charTraces={configTraces}
+                    traces={traces.list}
+                  />
+                )}
               </div>
 
               <div className="flex flex-col">
@@ -106,7 +119,15 @@ const CharacterProfile = ({ data: configData }: Props) => {
                 </Badge>
 
                 {basic && <SkillIcon data={basic} characterId={characterMetadata.avatar_id} />}
-                <div>A2</div>
+                <Badge className="w-fit self-center">A2</Badge>
+                {traces && (
+                  <TraceTree
+                    bigTraceAscension={2}
+                    path={characterMetadata.avatar_base_type}
+                    traces={traces.list}
+                    charTraces={configTraces}
+                  />
+                )}
               </div>
 
               <div className="flex flex-col">
@@ -114,7 +135,15 @@ const CharacterProfile = ({ data: configData }: Props) => {
                   {abilities.talent} / {maxSkillLevel(eidols).talent}
                 </Badge>
                 {talent && <SkillIcon data={talent} characterId={characterMetadata.avatar_id} />}
-                <div>A4</div>
+                <Badge className="w-fit self-center">A4</Badge>
+                {traces && (
+                  <TraceTree
+                    bigTraceAscension={4}
+                    path={characterMetadata.avatar_base_type}
+                    traces={traces.list}
+                    charTraces={configTraces}
+                  />
+                )}
               </div>
 
               <div className="flex flex-col">
@@ -122,7 +151,15 @@ const CharacterProfile = ({ data: configData }: Props) => {
                   {abilities.skill} / {maxSkillLevel(eidols).skill}
                 </Badge>
                 {skill && <SkillIcon data={skill} characterId={characterMetadata.avatar_id} />}
-                <div>A6</div>
+                <Badge className="w-fit self-center">A6</Badge>
+                {traces && (
+                  <TraceTree
+                    bigTraceAscension={6}
+                    path={characterMetadata.avatar_base_type}
+                    traces={traces.list}
+                    charTraces={configTraces}
+                  />
+                )}
               </div>
 
               <div className="flex flex-col">
@@ -151,7 +188,7 @@ const CharacterProfile = ({ data: configData }: Props) => {
         <div id="lc-info" className="col-span-9 flex flex-col">
           <span>{lightConeMetadata.equipment_name}</span>
           <div className="flex gap-2">
-            <div className="rounded-full bg-black flex justify-center items-center p-1 aspect-square text-sm">
+            <div className="rounded-full bg-background flex justify-center items-center p-1 aspect-square text-sm">
               {asRoman(light_cone.imposition)}
             </div>
             <div>
@@ -161,7 +198,9 @@ const CharacterProfile = ({ data: configData }: Props) => {
         </div>
       </div>
 
-      <div id="mid-stats">mid-stats</div>
+      <div id="mid-stats">
+        <CharacterStatTable />
+      </div>
 
       <div id="right-relic" className="flex flex-col">
         <div id="4p" className="flex flex-col">

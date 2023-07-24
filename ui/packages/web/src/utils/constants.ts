@@ -3,6 +3,7 @@ import { AvatarPropertyConfig } from "@/bindings/AvatarPropertyConfig";
 import { AvatarRankConfig } from "@/bindings/AvatarRankConfig";
 import { AvatarSkillConfig } from "@/bindings/AvatarSkillConfig";
 import { EquipmentConfig } from "@/bindings/EquipmentConfig";
+import { SkillTreeConfig } from "@/bindings/SkillTreeConfig";
 
 // NOTE: othi: ping me on discord if remote api is out of date/500/404s
 // export const OTHI_API = "https://api.othiremote.synology.me";
@@ -18,6 +19,7 @@ const API = {
   character: route<AvatarConfig>("/honkai/avatar", "GET"),
   properties: route<List<AvatarPropertyConfig>>("/honkai/properties", "GET"),
   eidolon: route<List<AvatarRankConfig>>("/honkai/avatar/:id/eidolon", "GET"),
+  trace: route<List<SkillTreeConfig>>("/honkai/avatar/:id/trace", "GET"),
 };
 
 export interface List<T> {
