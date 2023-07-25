@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Primitive
 import { useTabRouteHelper } from "@/hooks/useTabRouteHelper";
 import { SimControlContext } from "@/providers/SimControl";
 import { LogTab } from "./LogTab";
-import { MvpTab } from "./MvpTab";
+// import { MvpTab } from "./MvpTab";
 import { ResultTab } from "./ResultTab";
 
 interface Props {
@@ -19,7 +19,7 @@ const LogViewer = ({ placeholder }: Props) => {
   return (
     <div>
       <Tabs value={tab ?? "log"} onValueChange={setTab}>
-        <TabsList className="w-full h-full">
+        <TabsList className="h-full w-full">
           <TabsTrigger value="log" className="w-full">
             Logging/Debugging
           </TabsTrigger>
@@ -40,9 +40,7 @@ const LogViewer = ({ placeholder }: Props) => {
           </Button>
           <ResultTab data={simulationResult} />
         </TabsContent>
-        <TabsContent value="mvp">
-          <MvpTab name="test" />
-        </TabsContent>
+        <TabsContent value="mvp">{/* <MvpTab name="test" /> */}</TabsContent>
       </Tabs>
     </div>
   );

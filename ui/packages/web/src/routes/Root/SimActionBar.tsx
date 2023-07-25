@@ -29,7 +29,7 @@ const SimActionBar = () => {
   const route = useNavigate();
 
   return (
-    <Menubar orientation="vertical" className="gap-2 min-w-max">
+    <Menubar orientation="vertical" className="min-w-max gap-2">
       <MenubarMenu>
         <MenubarTrigger className={verticalHelper({ variant: "run" })} onClick={onRun}>
           Run

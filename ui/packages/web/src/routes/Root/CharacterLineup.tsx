@@ -47,7 +47,7 @@ const CharacterLineup = ({ isEnemy = false, header, onCharacterSelect }: Props) 
                       src={characterIconUrl(data.avatar_id)}
                       alt={data.avatar_name}
                       className={cn(
-                        "max-h-12 rounded-full box-content border",
+                        "box-content max-h-12 rounded-full border",
                         elementVariants({ border: data.damage_type }),
                         rarityVariants({ rarity: data.rarity as 1 | 2 | 3 | 4 | 5 | null })
                       )}

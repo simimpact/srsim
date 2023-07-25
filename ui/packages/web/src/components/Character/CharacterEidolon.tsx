@@ -29,7 +29,7 @@ const CharacterEidolon = ({ data, characterId }: Props) => {
         {currentEidolon?.desc.map((descPart, index) => (
           <Fragment key={index}>
             <span className="whitespace-pre-wrap">{sanitizeNewline(descPart)}</span>
-            <span className="font-semibold text-accent-foreground">
+            <span className="text-accent-foreground font-semibold">
               {currentEidolon.param[index]}
             </span>
           </Fragment>

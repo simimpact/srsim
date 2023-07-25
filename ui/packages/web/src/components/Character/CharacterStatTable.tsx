@@ -1,110 +1,65 @@
-import { Fragment } from "react";
-import { IconMap } from "@/hooks/transform/usePropertyMap";
+import { Fragment, HTMLAttributes, forwardRef } from "react";
+import { IconMap, getPropertyMap } from "@/hooks/transform/usePropertyMap";
+import { asPercentage } from "@/utils/helpers";
 
-interface Props {
+interface Props extends HTMLAttributes<HTMLDivElement> {
   backendData?: unknown;
 }
 
 interface Mock {
-  property: keyof typeof IconMap;
+  prop: keyof typeof IconMap;
   label: string;
-  value: number;
-  bonus: 100;
+  val: number;
+  bonus: number;
   merge: boolean;
-  percent: boolean;
 }
 
 // value = default params, from character
 // bonus = from relics + traces
 const MOCK_DATA: Mock[] = [
-  { property: "ATK_BASE", label: "Atk", value: 100, bonus: 100, merge: false, percent: false },
-  { property: "HP_BASE", label: "HP", value: 100, bonus: 100, merge: false, percent: false },
-  { property: "DEF_BASE", label: "DEF", value: 100, bonus: 100, merge: false, percent: false },
-  { property: "SPD_BASE", label: "SPD", value: 100, bonus: 100, merge: false, percent: true },
-  {
-    property: "CRIT_CHANCE",
-    label: "CRIT Rate",
-    value: 100,
-    bonus: 100,
-    merge: true,
-    percent: true,
-  },
-  { property: "CRIT_DMG", label: "CRIT DMG", value: 100, bonus: 100, merge: true, percent: true },
-  {
-    property: "BREAK_EFFECT",
-    label: "Break Effect",
-    value: 100,
-    bonus: 100,
-    merge: true,
-    percent: true,
-  },
-  {
-    property: "ENERGY_REGEN_CONVERT",
-    label: "Energy Regeneration",
-    value: 100,
-    bonus: 100,
-    merge: true,
-    percent: true,
-  },
-  {
-    property: "EFFECT_HIT_RATE",
-    label: "Effect Hit Rate",
-    value: 100,
-    bonus: 100,
-    merge: true,
-    percent: true,
-  },
-  {
-    property: "EFFECT_RES",
-    label: "Effect Res",
-    value: 100,
-    bonus: 100,
-    merge: true,
-    percent: true,
-  },
-  {
-    property: "ICE_DMG_PERCENT",
-    label: "Ice DMG Boost",
-    value: 100,
-    bonus: 100,
-    merge: true,
-    percent: true,
-  },
-  {
-    property: "WIND_DMG_PERCENT",
-    label: "Wind DMG Boost",
-    value: 100,
-    bonus: 100,
-    merge: true,
-    percent: true,
-  },
+  { prop: "ATK_BASE", label: "Atk", val: 100, bonus: 100, merge: false },
+  { prop: "HP_BASE", label: "HP", val: 100, bonus: 100, merge: false },
+  { prop: "DEF_BASE", label: "DEF", val: 100, bonus: 100, merge: false },
+  { prop: "SPD_BASE", label: "SPD", val: 100, bonus: 100, merge: false },
+  { prop: "CRIT_CHANCE", label: "CRIT Rate", val: 0.05, bonus: 0.5, merge: true },
+  { prop: "CRIT_DMG", label: "CRIT DMG", val: 0.5, bonus: 0.7, merge: true },
+  { prop: "BREAK_EFFECT", label: "Break Effect", val: 0.05, bonus: 1, merge: true },
+  { prop: "ENERGY_REGEN_CONVERT", label: "Energy Limit", val: 420, bonus: 0, merge: true },
+  { prop: "ENERGY_REGEN", label: "Energy Regeneration", val: 0.5, bonus: 0.38, merge: true },
+  { prop: "EFFECT_HIT_RATE", label: "Effect Hit Rate", val: 0.5, bonus: 0.38, merge: true },
+  { prop: "EFFECT_RES", label: "Effect Res", val: 0.5, bonus: 0.38, merge: true },
+  { prop: "ICE_DMG_PERCENT", label: "Ice DMG Boost", val: 0.5, bonus: 0.38, merge: true },
+  { prop: "WIND_DMG_PERCENT", label: "Wind DMG Boost", val: 0.5, bonus: 0.38, merge: true },
 ];
 
 // TODO: take above mock data as props
-const CharacterStatTable = ({ backendData }: Props) => {
-  if (backendData) console.log(backendData);
-  return (
-    <div className="grid grid-cols-2 gap-y-2">
-      {MOCK_DATA.map(({ property, label, value, bonus, merge, percent }, index) => (
-        <Fragment key={index}>
-          <div className="flex">
-            <img src={iconUrl(property)} alt={property} className="invert-0 dark:invert" />
-            <div>{label}</div>
-          </div>
-          {merge ? (
-            <span>
-              {value + bonus} {percent && "%"}
-            </span>
-          ) : (
-            <span className="whitespace-nowrap">
-              {value} + <span className="text-wind">{bonus}</span> {percent && "%"}
-            </span>
-          )}
-        </Fragment>
-      ))}
-    </div>
-  );
-};
+const CharacterStatTable = forwardRef<HTMLDivElement, Props>(
+  ({ backendData, className, ...props }, ref) => {
+    if (backendData) console.log(backendData);
+    return (
+      <div className={className} ref={ref} {...props}>
+        {MOCK_DATA.map(({ prop: property, label, val: value, bonus, merge }) => (
+          <Fragment key={property}>
+            <div className="flex">
+              <img src={iconUrl(property)} alt={property} className="invert-0 dark:invert" />
+              <div>{label}</div>
+            </div>
+            {merge ? (
+              <span>
+                {getPropertyMap(property).isPercent ? asPercentage(value + bonus) : value + bonus}
+              </span>
+            ) : (
+              <span className="whitespace-nowrap">
+                {value} + <span className="text-wind">{bonus}</span>{" "}
+                {getPropertyMap(property).isPercent && "%"}
+              </span>
+            )}
+          </Fragment>
+        ))}
+      </div>
+    );
+  }
+);
 export { CharacterStatTable };
 
 function iconUrl(stat: keyof typeof IconMap) {

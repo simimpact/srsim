@@ -6,10 +6,12 @@ import {
   useCharacterTrace,
 } from "@/hooks/queries/useCharacter";
 import { useLightConeSearch } from "@/hooks/queries/useLightCone";
+import { useTraceTransformer } from "@/hooks/transform/useTraceTransformer";
 import { CharacterConfig } from "@/providers/temporarySimControlTypes";
 import { cn } from "@/utils/classname";
 import { characterIconUrl } from "@/utils/constants";
 import { elementVariants, rarityVariants } from "@/utils/variants";
+import { LightConeInfo } from "../LightCone/LightConeInfo";
 import { LightConePortrait } from "../LightCone/LightConePortrait";
 import { Badge } from "../Primitives/Badge";
 import { RelicItem } from "../Relic/RelicItem";
@@ -27,28 +29,28 @@ const CharacterProfile = ({ data: configData }: Props) => {
   const { eidolons } = useCharacterEidolon(character?.avatar_id);
   const { traces } = useCharacterTrace(character?.avatar_id);
   const { lightCone } = useLightConeSearch(configData.light_cone.key);
+  const { toFullTraces } = useTraceTransformer();
 
   if (!character || !lightCone) return null;
+
+  const configTraces = toFullTraces(character.avatar_id, configData.traces);
 
   const { damage_type: element } = character;
 
   const { light_cone, abilities, eidols } = configData;
-  const configTraces = configData.traces.map(shorthand =>
-    Number(`${character.avatar_id}${shorthand}`)
-  );
 
   const params: SkillType[] = ["Maze", "Normal", "Talent", "BPSkill", "Ultra"];
   const [technique, basic, talent, skill, ult] = params.map(e => getSkill(skills, e));
 
   return (
     <div id="main-container" className="grid grid-cols-12 gap-2.5">
-      <div id="left-container" className="grid grid-cols-12 col-span-6">
+      <div id="left-container" className="col-span-6 grid grid-cols-12">
         <div id="char-img" className="col-span-3 flex flex-col items-center">
           <img
             src={characterIconUrl(character.avatar_id)}
             alt={character.avatar_name}
             className={cn(
-              "h-32 w-32 rounded-full box-content p-1 border-2",
+              "box-content h-32 w-32 rounded-full border-2 p-1",
               elementVariants({ border: element }),
               rarityVariants({ rarity: character.rarity as 1 | 2 | 3 | 4 | 5 | null })
             )}
@@ -154,7 +156,7 @@ const CharacterProfile = ({ data: configData }: Props) => {
           </div>
         </div>
 
-        <div id="lc-img" className="col-span-3 relative">
+        <div id="lc-img" className="relative col-span-3">
           {/* alternate version using the 'skewed'/rotated ingame image
           <LightConeCard
             rarity={lightConeMetadata.rarity}
@@ -167,33 +169,31 @@ const CharacterProfile = ({ data: configData }: Props) => {
           </div>
         </div>
 
-        <div id="lc-info" className="col-span-9 flex flex-col">
-          <span>{lightCone.equipment_name}</span>
-          <div className="flex gap-2">
-            <div className="rounded-full bg-background flex justify-center items-center p-1 aspect-square text-sm">
-              {asRoman(light_cone.imposition)}
-            </div>
-            <div>
-              Lv. {light_cone.level} / {light_cone.max_level}
-            </div>
-          </div>
-        </div>
+        <LightConeInfo
+          id="lc-info"
+          className="col-span-9 flex flex-col"
+          name={lightCone.equipment_name}
+          imposition={light_cone.imposition}
+          currentLevel={light_cone.level}
+          maxLevel={light_cone.max_level}
+        />
       </div>
 
-      <div id="mid-stats" className="col-span-3 rounded-md border h-fit">
-        <CharacterStatTable />
-      </div>
+      <CharacterStatTable
+        id="mid-stats"
+        className="border-muted-foreground col-span-3 grid h-fit grid-cols-2 gap-y-2 rounded-md border"
+      />
 
-      <div id="right-relic" className="flex flex-col col-span-3 gap-6">
-        <div id="4p" className="flex flex-col gap-4 border rounded-md">
+      <div id="right-relic" className="col-span-3 flex flex-col gap-6">
+        <div id="4p" className="flex flex-col gap-4 rounded-md border">
           {configData.relics?.slice(0, 4).map((relic, index) => (
             <RelicItem key={index} data={relic} mockIndex={index} />
           ))}
         </div>
 
-        <div id="2p" className="flex flex-col gap-4 border rounded-md">
+        <div id="2p" className="flex flex-col gap-4 rounded-md border">
           {configData.relics?.slice(-2).map((relic, index) => (
-            <RelicItem key={index} data={relic} mockIndex={index} />
+            <RelicItem key={index} data={relic} mockIndex={index} asSet />
           ))}
         </div>
       </div>
@@ -222,22 +222,7 @@ function maxSkillLevel(eidolon: number) {
     talent,
   };
 }
-function asRoman(value: number) {
-  switch (value) {
-    case 1:
-      return "I";
-    case 2:
-      return "II";
-    case 3:
-      return "III";
-    case 4:
-      return "IV";
-    case 5:
-      return "V";
-    case 6:
-      return "VI";
-  }
-}
+
 function getSkill(list: AvatarSkillConfig[] | undefined, attackType: SkillType) {
   return list?.find(e =>
     e.attack_type ? e.attack_type == attackType : e.skill_type_desc == "Talent"

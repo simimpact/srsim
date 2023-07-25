@@ -12,6 +12,8 @@ const SkillIcon = ({
   data,
   characterId,
 }: Props) => {
+  if (!disableTooltip) console.log("unimplemented");
+  if (!disablePopover) console.log("unimplemented");
   return (
     <img
       src={getImagePath(characterId, data) ?? ""}

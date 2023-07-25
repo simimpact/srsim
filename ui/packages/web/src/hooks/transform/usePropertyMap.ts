@@ -2,7 +2,15 @@
  * This hook transform property name from the backend to DM names for ease of
  * support for other APIs
  */
-function usePropertyMap() {}
+export function getPropertyMap(prop: keyof typeof IconMap) {
+  let isPercent = true;
+  if (["BASE", "FLAT", "ENERGY_REGEN_CONVERT"].some(e => prop.endsWith(e))) isPercent = false;
+
+  return {
+    dmValue: IconMap[prop],
+    isPercent,
+  };
+}
 export const IconMap = {
   HP_BASE: "IconMaxHP",
   HP_PERCENT: "IconMaxHP",

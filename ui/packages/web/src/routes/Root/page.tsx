@@ -4,15 +4,15 @@ import { SimActionBar } from "./SimActionBar";
 
 const Root = () => {
   return (
-    <div id="dev" className="flex h-full self-start grow">
-      <div className="flex flex-col grow gap-4">
-        <div className="flex gap-4 justify-center mx-8">
+    <div id="dev" className="flex h-full grow self-start">
+      <div className="flex grow flex-col gap-4">
+        <div className="mx-8 flex justify-center gap-4">
           <CharacterLineup />
         </div>
 
         <div className="flex gap-4 px-4">
           <SimActionBar />
-          <div className="grow bg-accent text-accent-foreground flex flex-col rounded-md p-10">
+          <div className="bg-accent text-accent-foreground flex grow flex-col rounded-md p-10">
             <LogViewer />
           </div>
         </div>

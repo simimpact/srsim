@@ -15,6 +15,10 @@ interface Props {
 
 const LightConeCard = ({ rarity, element, path, name, imgUrl }: Props) => {
   const { flowRef, glowRef, removeListener, rotateToMouse } = useCardEffect();
+
+  if (element) console.log("unimplemented");
+  if (path) console.log("unimplemented");
+
   return (
     <div>
       <div

@@ -43,7 +43,7 @@ const EidolonDescription = ({ data }: { data: AvatarRankConfig }) => {
       {data.desc.map((descPart, index) => (
         <Fragment key={index}>
           <span className="whitespace-pre-wrap">{sanitizeNewline(descPart)}</span>
-          <span className="font-semibold text-accent-foreground">{data.param[index]}</span>
+          <span className="text-accent-foreground font-semibold">{data.param[index]}</span>
         </Fragment>
       ))}
     </div>

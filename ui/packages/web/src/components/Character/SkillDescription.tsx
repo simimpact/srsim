@@ -17,7 +17,7 @@ export const SkillDescription = ({ skillDesc, paramList, slv }: SkillDescription
       {skillDesc.map((descPart, index) => (
         <Fragment key={index}>
           <span className="whitespace-pre-wrap">{sanitizeNewline(descPart)}</span>
-          <span className="font-semibold text-accent-foreground">{currentParam[index]}</span>
+          <span className="text-accent-foreground font-semibold">{currentParam[index]}</span>
         </Fragment>
       ))}
     </p>

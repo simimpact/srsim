@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AvatarConfig } from "@/bindings/AvatarConfig";
 import { CharacterEidolon } from "@/components/Character/CharacterEidolon";
 import { CharacterProfile } from "@/components/Character/CharacterProfile";
@@ -15,7 +15,7 @@ const Config = () => {
   const { simulationConfig } = useContext(SimControlContext);
   const [currentCharacter, setCurrentCharacter] = useState<AvatarConfig | undefined>(undefined);
   const [currentCharacterConfig, setCurrentCharacterConfig] = useState<CharacterConfig | undefined>(
-    simulationConfig?.characters[0] ? simulationConfig.characters[0] : undefined
+    undefined
   );
   const { tab, setTab } = useTabRouteHelper();
 
@@ -30,16 +30,22 @@ const Config = () => {
     }
   }
 
+  useEffect(() => {
+    if (simulationConfig?.characters[0]) {
+      setCurrentCharacterConfig(simulationConfig.characters[0]);
+    }
+  }, [simulationConfig]);
+
   return (
-    <div id="dev" className="flex h-full self-start grow">
-      <div className="flex flex-col grow gap-2">
-        <div className="flex gap-4 justify-center mx-8">
+    <div id="dev" className="flex h-full grow self-start">
+      <div className="flex grow flex-col gap-2">
+        <div className="mx-8 flex justify-center gap-4">
           <CharacterLineup onCharacterSelect={onCharacterSelect} />
         </div>
 
         <div className="flex gap-4 px-4">
           <SimActionBar />
-          <div className="grow text-accent-foreground flex flex-col rounded-md">
+          <div className="text-accent-foreground flex grow flex-col rounded-md">
             <Tabs value={tab ?? "profile"} onValueChange={setTab}>
               <TabsList className="w-full">
                 <TabsTrigger value="profile" className="w-full">
@@ -56,7 +62,7 @@ const Config = () => {
                 </TabsTrigger>
               </TabsList>
 
-              <div className="bg-muted rounded-md px-4 p-2 my-2">
+              <div className="bg-muted my-2 rounded-md p-2 px-4">
                 <TabsContent value="profile">
                   {currentCharacterConfig && <CharacterProfile data={currentCharacterConfig} />}
                 </TabsContent>
