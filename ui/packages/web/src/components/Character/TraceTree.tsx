@@ -1,3 +1,4 @@
+import { cva } from "class-variance-authority";
 import { HTMLAttributes, forwardRef } from "react";
 import { Path } from "@/bindings/AvatarConfig";
 import { SkillTreeConfig } from "@/bindings/SkillTreeConfig";
@@ -10,8 +11,26 @@ interface Props {
   bigTraceAscension: number;
   path: Path;
   charTraces: number[];
+  emptyBigTrace?: boolean;
 }
-const TraceTree = ({ bigTraceAscension, traces, path, charTraces }: Props) => {
+
+const iconWrapVariant = cva("flex flex-col items-center", {
+  variants: {
+    variant: {
+      SMALL: "",
+      BIG: "bg-zinc-300",
+      CORE: "",
+    },
+  },
+});
+
+const TraceTree = ({
+  bigTraceAscension,
+  traces,
+  path,
+  charTraces,
+  emptyBigTrace = false,
+}: Props) => {
   const toRenderTraces = pointTable(path)
     .find(e => e.ascension === bigTraceAscension)
     ?.points.map(
@@ -19,7 +38,7 @@ const TraceTree = ({ bigTraceAscension, traces, path, charTraces }: Props) => {
     );
 
   return (
-    <div className="flex flex-col items-center">
+    <div className={cn("flex flex-col items-center", emptyBigTrace ? "pt-12" : "")}>
       {toRenderTraces?.map((traceNode, index) => (
         <Popover key={index}>
           <PopoverTrigger asChild>
@@ -45,8 +64,18 @@ const IconWithTooltip = forwardRef<HTMLButtonElement, IconProps>(
   ({ node, className, ...props }, ref) => (
     <Tooltip>
       <TooltipTrigger asChild>
-        <button ref={ref} className={cn("flex flex-col items-center", className)} {...props}>
-          <img src={traceIconUrl(node)} alt={String(node.point_id)} width={32} height={32} />
+        <button
+          ref={ref}
+          className={cn(iconWrapVariant({ variant: getNodeType(node) }), className)}
+          {...props}
+        >
+          <img
+            src={traceIconUrl(node)}
+            alt={String(node.point_id)}
+            width={getNodeType(node) === "BIG" ? 48 : 32}
+            height={getNodeType(node) === "BIG" ? 48 : 32}
+            className={getNodeType(node) === "BIG" ? "invert" : ""}
+          />
           {/* percentage */}
           {asPercentage(node)}
         </button>
@@ -55,7 +84,6 @@ const IconWithTooltip = forwardRef<HTMLButtonElement, IconProps>(
     </Tooltip>
   )
 );
-IconWithTooltip.displayName = "IconWithTooltip";
 
 function getNodeType(node: SkillTreeConfig): "CORE" | "SMALL" | "BIG" {
   if (node.icon_path.includes("_SkillTree")) return "BIG";

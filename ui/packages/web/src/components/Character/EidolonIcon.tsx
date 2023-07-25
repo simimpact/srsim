@@ -1,11 +1,11 @@
-import { ButtonHTMLAttributes, Fragment, forwardRef } from "react";
+import { ButtonHTMLAttributes, Fragment, HTMLAttributes, forwardRef } from "react";
 import { AvatarRankConfig } from "@/bindings/AvatarRankConfig";
 import { cn } from "@/utils/classname";
 import { sanitizeNewline } from "@/utils/helpers";
 import { Popover, PopoverContent, PopoverTrigger } from "../Primitives/Popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../Primitives/Tooltip";
 
-interface Props {
+interface Props extends HTMLAttributes<HTMLButtonElement> {
   disablePopover?: boolean;
   disableTooltip?: boolean;
   data: AvatarRankConfig;
@@ -14,20 +14,20 @@ interface Props {
 }
 
 const EidolonIcon = (props: Props) => {
-  const { disabled = false, ...innerProps } = props;
+  const { disabled = false, ...tooltipProps } = props;
   return (
     <Popover>
       <PopoverTrigger asChild>
         <IconWithTooltip
-          {...innerProps}
+          {...tooltipProps}
           className={cn(
-            "aspect-square min-w-[64px] invert dark:invert-0",
+            "aspect-square min-w-[48px] invert dark:invert-0",
             disabled ? "brightness-[.25]" : ""
           )}
         />
       </PopoverTrigger>
       {!props.disablePopover && (
-        <PopoverContent>
+        <PopoverContent className="w-96">
           <EidolonDescription data={props.data} />
         </PopoverContent>
       )}
@@ -58,24 +58,23 @@ const IconWithTooltip = forwardRef<HTMLButtonElement, IconProps>(
         <img
           src={url(characterId, data.rank)}
           alt={data.name}
-          width={64}
-          height={64}
-          className="aspect-square min-w-[64px] invert dark:invert-0"
+          width={48}
+          height={48}
+          className="aspect-square min-w-[48px] invert dark:invert-0"
         />
       );
     return (
-      <Tooltip>
+      <Tooltip disableHoverableContent>
         <TooltipTrigger asChild>
           <button ref={ref} className={className} {...props}>
-            <img src={url(characterId, data.rank)} alt={data.name} width={64} height={64} />
+            <img src={url(characterId, data.rank)} alt={data.name} width={48} height={48} />
           </button>
         </TooltipTrigger>
-        <TooltipContent>{data.name}</TooltipContent>
+        <TooltipContent className="select-none">{data.name}</TooltipContent>
       </Tooltip>
     );
   }
 );
-IconWithTooltip.displayName = "IconWithTooltip";
 
 function url(charID: number, eidolon: number) {
   let fmt = `rank${eidolon}`;

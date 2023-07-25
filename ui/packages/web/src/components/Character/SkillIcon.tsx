@@ -1,29 +1,68 @@
+import { HTMLAttributes, forwardRef } from "react";
 import { AvatarSkillConfig } from "@/bindings/AvatarSkillConfig";
+import { Popover, PopoverContent, PopoverTrigger } from "../Primitives/Popover";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../Primitives/Tooltip";
+import { SkillDescription } from "./SkillDescription";
 
-interface Props {
+interface Props extends HTMLAttributes<HTMLButtonElement> {
   disableTooltip?: boolean;
   disablePopover?: boolean;
   data: AvatarSkillConfig;
   characterId: number;
+  slv?: number;
 }
-const SkillIcon = ({
-  disableTooltip = false,
-  disablePopover = false,
-  data,
-  characterId,
-}: Props) => {
-  if (!disableTooltip) console.log("unimplemented");
-  if (!disablePopover) console.log("unimplemented");
+const SkillIcon = ({ disableTooltip = false, disablePopover = false, slv, ...props }: Props) => {
+  if (disablePopover)
+    return (
+      <IconWithTooltip disableTooltip={disableTooltip} disablePopover={disablePopover} {...props} />
+    );
+  const { skill_desc, param_list } = props.data;
   return (
-    <img
-      src={getImagePath(characterId, data) ?? ""}
-      alt={data.skill_name}
-      className="invert dark:invert-0"
-      width={64}
-      height={64}
-    />
+    <Popover>
+      <PopoverTrigger>
+        <IconWithTooltip
+          disableTooltip={disableTooltip}
+          disablePopover={disablePopover}
+          {...props}
+        />
+      </PopoverTrigger>
+      <PopoverContent className="w-[600px]">
+        <SkillDescription skillDesc={skill_desc} paramList={param_list} slv={slv ?? 0} />
+      </PopoverContent>
+    </Popover>
   );
 };
+
+const IconWithTooltip = forwardRef<HTMLButtonElement, Props>(
+  ({ disableTooltip, disablePopover, data, characterId, className, ...props }, ref) => {
+    if (disableTooltip)
+      return (
+        <img
+          src={getImagePath(characterId, data) ?? ""}
+          alt={data.skill_name}
+          className="invert dark:invert-0"
+          width={64}
+          height={64}
+        />
+      );
+    return (
+      <Tooltip disableHoverableContent>
+        <TooltipTrigger asChild>
+          <button ref={ref} className={className} {...props}>
+            <img
+              src={getImagePath(characterId, data) ?? ""}
+              alt={data.skill_name}
+              className="invert dark:invert-0"
+              width={64}
+              height={64}
+            />
+          </button>
+        </TooltipTrigger>
+        <TooltipContent className="select-none">{data.skill_name}</TooltipContent>
+      </Tooltip>
+    );
+  }
+);
 
 function getImagePath(
   characterId: number | null | undefined,

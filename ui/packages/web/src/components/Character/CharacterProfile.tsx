@@ -1,3 +1,4 @@
+import { cva } from "class-variance-authority";
 import { AvatarSkillConfig, SkillType } from "@/bindings/AvatarSkillConfig";
 import {
   useCharacterEidolon,
@@ -8,13 +9,11 @@ import {
 import { useLightConeSearch } from "@/hooks/queries/useLightCone";
 import { useTraceTransformer } from "@/hooks/transform/useTraceTransformer";
 import { CharacterConfig } from "@/providers/temporarySimControlTypes";
-import { cn } from "@/utils/classname";
-import { characterIconUrl } from "@/utils/constants";
-import { elementVariants, rarityVariants } from "@/utils/variants";
 import { LightConeInfo } from "../LightCone/LightConeInfo";
 import { LightConePortrait } from "../LightCone/LightConePortrait";
 import { Badge } from "../Primitives/Badge";
 import { RelicItem } from "../Relic/RelicItem";
+import { CharacterFloatCard } from "./CharacterFloatCard";
 import { CharacterStatTable } from "./CharacterStatTable";
 import { EidolonIcon } from "./EidolonIcon";
 import { SkillIcon } from "./SkillIcon";
@@ -35,26 +34,31 @@ const CharacterProfile = ({ data: configData }: Props) => {
 
   const configTraces = toFullTraces(character.avatar_id, configData.traces);
 
-  const { damage_type: element } = character;
-
   const { light_cone, abilities, eidols } = configData;
 
   const params: SkillType[] = ["Maze", "Normal", "Talent", "BPSkill", "Ultra"];
   const [technique, basic, talent, skill, ult] = params.map(e => getSkill(skills, e));
 
+  const skillRowVariant = cva("flex flex-col gap-2");
+
+  const skillColumns = [
+    { lv: 1, maxLv: 1, cfg: technique, trace: 0 },
+    { lv: abilities.attack, maxLv: maxSkillLevel(eidols).attack, cfg: basic, trace: 2 },
+    { lv: abilities.talent, maxLv: maxSkillLevel(eidols).talent, cfg: talent, trace: 4 },
+    { lv: abilities.skill, maxLv: maxSkillLevel(eidols).skill, cfg: skill, trace: 6 },
+    { lv: abilities.ult, maxLv: maxSkillLevel(eidols).ult, cfg: ult, trace: null },
+  ];
+
   return (
     <div id="main-container" className="grid grid-cols-12 gap-2.5">
       <div id="left-container" className="col-span-6 grid grid-cols-12">
         <div id="char-img" className="col-span-3 flex flex-col items-center">
-          <img
-            src={characterIconUrl(character.avatar_id)}
-            alt={character.avatar_name}
-            className={cn(
-              "box-content h-32 w-32 rounded-full border-2 p-1",
-              elementVariants({ border: element }),
-              rarityVariants({ rarity: character.rarity as 1 | 2 | 3 | 4 | 5 | null })
-            )}
+          <CharacterFloatCard
+            className="p-6"
+            imgUrl={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/image/character_preview/${character.avatar_id}.png`}
+            {...character}
           />
+
           <div>
             {character.avatar_name} - {character.rarity} ✦
           </div>
@@ -69,89 +73,39 @@ const CharacterProfile = ({ data: configData }: Props) => {
 
         <div id="char-info" className="col-span-9">
           <div id="eidolon-skill-spans" className="flex">
-            <div id="eidolon" className="flex flex-col">
+            <div id="eidolon" className="flex flex-col gap-2">
               <Badge className="w-fit self-center">E{configData.eidols}</Badge>
-              {eidolons?.map(eidolon => (
-                <EidolonIcon
-                  key={eidolon.rank}
-                  data={eidolon}
-                  characterId={character.avatar_id}
-                  disabled={eidolon.rank > configData.eidols}
-                />
-              ))}
+              <div className="flex flex-col gap-1">
+                {eidolons?.map(eidolon => (
+                  <EidolonIcon
+                    key={eidolon.rank}
+                    data={eidolon}
+                    characterId={character.avatar_id}
+                    disabled={eidolon.rank > configData.eidols}
+                  />
+                ))}
+              </div>
             </div>
 
             <div id="skill-trace" className="grid grid-cols-5">
-              <div className="flex flex-col">
-                <Badge className="w-fit self-center">1 / 1</Badge>
-
-                {technique && <SkillIcon data={technique} characterId={character.avatar_id} />}
-                <Badge className="w-fit self-center">A0</Badge>
-                {traces && (
-                  <TraceTree
-                    bigTraceAscension={0}
-                    path={character.avatar_base_type}
-                    charTraces={configTraces}
-                    traces={traces}
-                  />
-                )}
-              </div>
-
-              <div className="flex flex-col">
-                <Badge className="w-fit self-center">
-                  {abilities.attack} / {maxSkillLevel(eidols).attack}
-                </Badge>
-
-                {basic && <SkillIcon data={basic} characterId={character.avatar_id} />}
-                <Badge className="w-fit self-center">A2</Badge>
-                {traces && (
-                  <TraceTree
-                    bigTraceAscension={2}
-                    path={character.avatar_base_type}
-                    traces={traces}
-                    charTraces={configTraces}
-                  />
-                )}
-              </div>
-
-              <div className="flex flex-col">
-                <Badge className="w-fit self-center">
-                  {abilities.talent} / {maxSkillLevel(eidols).talent}
-                </Badge>
-                {talent && <SkillIcon data={talent} characterId={character.avatar_id} />}
-                <Badge className="w-fit self-center">A4</Badge>
-                {traces && (
-                  <TraceTree
-                    bigTraceAscension={4}
-                    path={character.avatar_base_type}
-                    traces={traces}
-                    charTraces={configTraces}
-                  />
-                )}
-              </div>
-
-              <div className="flex flex-col">
-                <Badge className="w-fit self-center">
-                  {abilities.skill} / {maxSkillLevel(eidols).skill}
-                </Badge>
-                {skill && <SkillIcon data={skill} characterId={character.avatar_id} />}
-                <Badge className="w-fit self-center">A6</Badge>
-                {traces && (
-                  <TraceTree
-                    bigTraceAscension={6}
-                    path={character.avatar_base_type}
-                    traces={traces}
-                    charTraces={configTraces}
-                  />
-                )}
-              </div>
-
-              <div className="flex flex-col">
-                <Badge className="w-fit self-center">
-                  {abilities.ult} / {maxSkillLevel(eidols).ult}
-                </Badge>
-                {ult && <SkillIcon data={ult} characterId={character.avatar_id} />}
-              </div>
+              {skillColumns.map(({ lv, maxLv, cfg, trace }) => (
+                <div key={trace} className={skillRowVariant()}>
+                  <Badge className="w-fit self-center">
+                    {lv} / {maxLv}
+                  </Badge>
+                  {cfg && <SkillIcon data={cfg} characterId={character.avatar_id} slv={lv} />}
+                  {trace !== null && <Badge className="w-fit self-center">A{trace}</Badge>}
+                  {traces && trace !== null && (
+                    <TraceTree
+                      emptyBigTrace={trace == 0}
+                      bigTraceAscension={trace}
+                      path={character.avatar_base_type}
+                      traces={traces}
+                      charTraces={configTraces}
+                    />
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -181,17 +135,17 @@ const CharacterProfile = ({ data: configData }: Props) => {
 
       <CharacterStatTable
         id="mid-stats"
-        className="border-muted-foreground col-span-3 grid h-fit grid-cols-2 gap-y-2 rounded-md border"
+        className="col-span-3 grid h-fit grid-cols-2 gap-y-2 rounded-md border"
       />
 
       <div id="right-relic" className="col-span-3 flex flex-col gap-6">
-        <div id="4p" className="flex flex-col gap-4 rounded-md border">
+        <div id="4p" className="flex flex-col gap-4">
           {configData.relics?.slice(0, 4).map((relic, index) => (
             <RelicItem key={index} data={relic} mockIndex={index} />
           ))}
         </div>
 
-        <div id="2p" className="flex flex-col gap-4 rounded-md border">
+        <div id="2p" className="flex flex-col gap-4">
           {configData.relics?.slice(-2).map((relic, index) => (
             <RelicItem key={index} data={relic} mockIndex={index} asSet />
           ))}
