@@ -32,10 +32,10 @@ export const Navigation = () => {
         "after:via-white/50"
       )}
     >
-      <div className="px-5 xs:px-16 py-3 flex gap-2 2xl:mx-auto">
+      <div className="xs:px-16 flex gap-2 px-5 py-3 2xl:mx-auto">
         <img src="/images/favicon.ico" alt="SRSim" />
         <div className="m-[5px] border-x-[1px] border-[#fff3]" />
-        <div className="flex gap-x-4 gap-y-2 text-lg text-foreground font-medium shrink grow-0 items-center w-full">
+        <div className="text-foreground flex w-full shrink grow-0 items-center gap-x-4 gap-y-2 text-lg font-medium">
           {routes.map(({ path, label }) => (
             <Link key={path} to={path}>
               {label}

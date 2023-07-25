@@ -1,10 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 import { ComponentProps } from "react";
-import { MvpWrapper } from "@/bindings/MvpWrapper";
 import { OuterLabelPie } from "@/components/Graphs";
 import { Button } from "@/components/Primitives/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Primitives/Tabs";
-import { ENDPOINT, typedFetch } from "@/utils/constants";
+import API from "@/utils/constants";
 import { TeamXY } from "./TeamXY";
 
 interface Props {
@@ -14,9 +13,9 @@ const MvpTab = ({ name }: Props) => {
   console.log(name);
   // TODO: mutation
   const statMock = useMutation({
-    mutationKey: [ENDPOINT.statMock],
+    mutationKey: ["mockHsrStat"],
     // NOTE: NOT AN ACTUAL FN
-    mutationFn: async () => await typedFetch<undefined, MvpWrapper>(ENDPOINT.statMock),
+    mutationFn: async () => await API.mockHsrStat.get(),
     onSuccess: data => console.log(data),
   });
 
@@ -56,11 +55,11 @@ const MvpTab = ({ name }: Props) => {
     <>
       <Button onClick={() => statMock.mutate()}>Generate</Button>
       <div className="flex gap-2">
-        <div id="left-container" className="flex flex-col gap-2 grow  max-w-[45vw]">
-          <div id="portrait" className="bg-background rounded-md p-4 h-64">
+        <div id="left-container" className="flex max-w-[45vw] grow flex-col  gap-2">
+          <div id="portrait" className="bg-background h-64 rounded-md p-4">
             portrait
           </div>
-          <div id="summary-distribution" className="bg-background rounded-md p-4 grow">
+          <div id="summary-distribution" className="bg-background grow rounded-md p-4">
             {statMock.data && (
               <>
                 <Tabs defaultValue="self">
@@ -91,7 +90,7 @@ const MvpTab = ({ name }: Props) => {
             )}
           </div>
         </div>
-        <div id="right-data-propagation" className="bg-background rounded-md p-4 grow">
+        <div id="right-data-propagation" className="bg-background grow rounded-md p-4">
           right: data propagation
         </div>
       </div>

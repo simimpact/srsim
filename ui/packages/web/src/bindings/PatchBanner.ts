@@ -1,41 +1,36 @@
-export type AssetPath = string;
+export type Path = "Destruction" | "Hunt" | "Erudition" | "Harmony" | "Nihility" | "Preservation" | "Abundance";
 
 export type Element = "Fire" | "Ice" | "Physical" | "Wind" | "Lightning" | "Quantum" | "Imaginary";
-
-export type SkillType = "Normal" | "BPSkill" | "Ultra" | "Talent" | "MazeNormal" | "Maze";
 
 export type PatchVersion = string;
 
 export interface PatchBanner {
-  characterData: Character;
+  characterData?: AvatarConfig | null;
   dateEnd: string;
   dateStart: string;
   version: PatchVersion;
-  [k: string]: unknown;
 }
 
-export interface Character {
-  character_id?: number | null;
-  character_name?: string | null;
-  element?: CharacterElement | null;
-  icon?: AssetPath | null;
-  skills: SimpleSkill[];
-  [k: string]: unknown;
+export interface AvatarConfig {
+  avatar_base_type: Path;
+  avatar_desc: string;
+  avatar_id: number;
+  avatar_name: string;
+  avatar_votag: string;
+  damage_type: Element;
+  damage_type_resistance: DamageTypeResistance[];
+  rank_idlist: number[];
+  rarity: number;
+  release: boolean;
+  skill_list: number[];
+  spneed: number;
 }
 
-export interface CharacterElement {
-  color: string;
-  icon: AssetPath;
-  id: string;
-  name: Element;
-  [k: string]: unknown;
+export interface DamageTypeResistance {
+  damage_type: Element;
+  value: Param;
 }
 
-export interface SimpleSkill {
-  description: string[];
-  id: number;
-  name: string;
-  params: string[][];
-  ttype: SkillType;
-  [k: string]: unknown;
+export interface Param {
+  value: number;
 }

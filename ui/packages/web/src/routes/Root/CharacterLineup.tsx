@@ -1,67 +1,77 @@
-import { VariantProps } from "class-variance-authority";
-import { ReactNode } from "react";
+import { useQueries } from "@tanstack/react-query";
+import { ReactNode, useContext } from "react";
+import { AvatarConfig } from "@/bindings/AvatarConfig";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTrigger,
-} from "@/components/Primitives/Dialog";
-import { CharacterPortrait } from "@/components/Sim/CharacterPortrait";
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/Primitives/Tooltip";
+import { SimControlContext } from "@/providers/SimControl";
 import { cn } from "@/utils/classname";
-import { elementVariants } from "@/utils/variants";
+import API, { characterIconUrl } from "@/utils/constants";
+import { elementVariants, rarityVariants } from "@/utils/variants";
 
 interface Props {
   isEnemy?: boolean;
   header?: ReactNode;
+  onCharacterSelect?: (characterData: AvatarConfig, index: number) => void;
 }
-const CharacterLineup = ({ isEnemy = false, header }: Props) => {
-  const charCodes: {
-    name: string;
-    code: number;
-    rarity: number;
-    element: VariantProps<typeof elementVariants>["element"];
-  }[] = [
-    { name: "Trailblaze (Fire)", code: 8004, rarity: 5, element: "fire" },
-    { name: "Natasha", code: 1105, rarity: 4, element: "physical" },
-    { name: "Bronya", code: 1101, rarity: 5, element: "wind" },
-    { name: "Kafka", code: 1005, rarity: 5, element: "lightning" },
-  ];
+const CharacterLineup = ({ isEnemy = false, header, onCharacterSelect }: Props) => {
+  const { simulationConfig } = useContext(SimControlContext);
+
+  const characterQueries = useQueries({
+    queries: getQueries(simulationConfig?.characters ?? []),
+  });
+  // console.log(characterQueries[0].data);
+
+  if (characterQueries.map(e => e.data).every(e => !e)) return null;
 
   return (
-    <Dialog>
-      <DialogTrigger>
-        <div
-          className={cn("flex flex-col rounded-md p-2", isEnemy ? "bg-destructive" : "bg-accent")}
-        >
-          {/* NOTE: CharacterCard is based for now, not yet implemented */}
-          <div className="flex justify-center">{header}</div>
-          <div className="flex">
-            {charCodes.map(({ name, code, rarity, element }) => (
-              // <TempCharCard key={code} name={name} code={code} />
-              <CharacterPortrait
-                key={code}
-                name={name}
-                code={code}
-                rarity={rarity}
-                element={element}
-              />
-            ))}
-          </div>
-        </div>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader className="text-card-foreground">Team name 123128</DialogHeader>
-        <DialogDescription>
-          <ul>
-            {charCodes.map(({ name, code }) => (
-              <li key={code}>{name}</li>
-            ))}
-          </ul>
-        </DialogDescription>
-      </DialogContent>
-    </Dialog>
+    <div className={cn("flex flex-col rounded-md p-2", isEnemy ? "bg-destructive" : "bg-accent")}>
+      {/* NOTE: CharacterCard is based for now, not yet implemented */}
+      <div className="flex justify-center">{header}</div>
+      <div className="flex gap-2">
+        {characterQueries.map(({ data }, index) =>
+          data ? (
+            // <TempCharCard key={code} name={name} code={code} />
+            <TooltipProvider key={index} delayDuration={0}>
+              <Tooltip>
+                <TooltipTrigger>
+                  <div
+                    onClick={() => {
+                      if (onCharacterSelect) onCharacterSelect(data, index);
+                    }}
+                  >
+                    <img
+                      src={characterIconUrl(data.avatar_id)}
+                      alt={data.avatar_name}
+                      className={cn(
+                        "box-content max-h-12 rounded-full border",
+                        elementVariants({ border: data.damage_type }),
+                        rarityVariants({ rarity: data.rarity as 1 | 2 | 3 | 4 | 5 | null })
+                      )}
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>{data.avatar_name}</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ) : null
+        )}
+      </div>
+    </div>
   );
 };
+
+function getQueries(characters: { key: string }[]) {
+  return characters.map(character => {
+    return {
+      queryKey: ["character", character.key],
+      queryFn: async () => await API.characterSearch.get(character.key),
+      enabled: !!character.key,
+    };
+  });
+}
 
 export { CharacterLineup };

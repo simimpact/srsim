@@ -18,7 +18,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default = {
   render: () => (
-    <div className="w-screen h-screen">
+    <div className="h-screen w-screen">
       <Dialog>
         <DialogTrigger>Open</DialogTrigger>
         <DialogContent>

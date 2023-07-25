@@ -62,9 +62,9 @@ export const columns = [
           onClick={row.getToggleExpandedHandler()}
         >
           {row.getIsExpanded() ? (
-            <ChevronsDownUp className="w-4 h-4" />
+            <ChevronsDownUp className="h-4 w-4" />
           ) : (
-            <ChevronsUpDown className="w-4 h-4" />
+            <ChevronsUpDown className="h-4 w-4" />
           )}
         </Toggle>
       ),
@@ -79,7 +79,7 @@ export const columns = [
     header: () => <div className="text-right">Event Name</div>,
     cell: ({ row, getValue }) => (
       <Sheet>
-        <SheetTrigger className="w-full flex justify-end">
+        <SheetTrigger className="flex w-full justify-end">
           <Badge
             variant={row.getIsSelected() ? "destructive" : "default"}
             className="cursor-pointer"
@@ -89,7 +89,7 @@ export const columns = [
         </SheetTrigger>
         <SheetContent
           side="left"
-          className="w-96 overflow-y-auto whitespace-pre-wrap text-foreground"
+          className="text-foreground w-96 overflow-y-auto whitespace-pre-wrap"
         >
           <SheetHeader>
             <SheetTitle>{getValue()}</SheetTitle>
@@ -135,7 +135,7 @@ function summarizeBy(data: SimLog, tableIndex: number): ReactNode {
           )}
         </SheetTrigger>
         <SheetContent
-          className="w-96 whitespace-pre-wrap text-muted-foreground overflow-y-auto"
+          className="text-muted-foreground w-96 overflow-y-auto whitespace-pre-wrap"
           side="left"
         >
           <SheetHeader>
@@ -192,7 +192,7 @@ function summarizeInitialize(event: Event.Initialize, tableIndex: number): React
       <Sheet>
         <SheetTrigger>Config Schema</SheetTrigger>
         <SheetContent
-          className="w-96 whitespace-pre-wrap text-muted-foreground overflow-y-auto"
+          className="text-muted-foreground w-96 overflow-y-auto whitespace-pre-wrap"
           side="left"
         >
           <SheetHeader>

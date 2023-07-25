@@ -31,12 +31,12 @@ function DataTableInner<TData>(
   return (
     <div
       ref={ref}
-      className={cn("rounded-md border border-muted-foreground", className)}
+      className={cn("border-muted-foreground rounded-md border", className)}
       {...props}
     >
       <Table className="border-separate border-spacing-0">
         <TableHeader
-          className={cn(stickyHeader ? "[&_th]:sticky [&_th]:top-0 [&_th]:bg-muted" : "")}
+          className={cn(stickyHeader ? "[&_th]:bg-muted [&_th]:sticky [&_th]:top-0" : "")}
         >
           {table.getHeaderGroups().map(headerGroup => (
             <TableRow key={headerGroup.id}>
@@ -59,7 +59,7 @@ function DataTableInner<TData>(
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody className="[&_td]:border-b [&_td]:border-b-muted-foreground [&_tr:last-child_td]:border-0">
+        <TableBody className="[&_td]:border-b-muted-foreground [&_td]:border-b [&_tr:last-child_td]:border-0">
           {table.getRowModel().rows.length ? (
             table.getRowModel().rows.map(row => (
               <Fragment key={row.id}>
