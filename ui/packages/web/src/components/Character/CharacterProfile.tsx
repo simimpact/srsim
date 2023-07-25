@@ -1,4 +1,5 @@
 import { cva } from "class-variance-authority";
+import { useRef, useState } from "react";
 import { AvatarSkillConfig, SkillType } from "@/bindings/AvatarSkillConfig";
 import {
   useCharacterEidolon,
@@ -9,9 +10,11 @@ import {
 import { useLightConeSearch } from "@/hooks/queries/useLightCone";
 import { useTraceTransformer } from "@/hooks/transform/useTraceTransformer";
 import { CharacterConfig } from "@/providers/temporarySimControlTypes";
+import { cn } from "@/utils/classname";
 import { LightConeInfo } from "../LightCone/LightConeInfo";
 import { LightConePortrait } from "../LightCone/LightConePortrait";
 import { Badge } from "../Primitives/Badge";
+import { Button } from "../Primitives/Button";
 import { RelicItem } from "../Relic/RelicItem";
 import { CharacterFloatCard } from "./CharacterFloatCard";
 import { CharacterStatTable } from "./CharacterStatTable";
@@ -29,6 +32,8 @@ const CharacterProfile = ({ data: configData }: Props) => {
   const { traces } = useCharacterTrace(character?.avatar_id);
   const { lightCone } = useLightConeSearch(configData.light_cone.key);
   const { toFullTraces } = useTraceTransformer();
+  const [open, setOpen] = useState(true);
+  const relicHeight = useRef<HTMLDivElement>(null);
 
   if (!character || !lightCone) return null;
 
@@ -135,21 +140,39 @@ const CharacterProfile = ({ data: configData }: Props) => {
 
       <CharacterStatTable
         id="mid-stats"
-        className="col-span-3 grid h-fit grid-cols-2 gap-y-2 rounded-md border"
+        className="col-span-3 grid h-fit grid-cols-2 gap-y-2 rounded-md border p-2"
+        style={{ height: relicHeight.current?.clientHeight ?? "auto" }}
       />
 
-      <div id="right-relic" className="col-span-3 flex flex-col gap-6">
-        <div id="4p" className="flex flex-col gap-4">
-          {configData.relics?.slice(0, 4).map((relic, index) => (
-            <RelicItem key={index} data={relic} mockIndex={index} />
-          ))}
+      <div id="right-relic" className="col-span-3 flex flex-col gap-2">
+        <div id="relic-block" className="relative flex flex-col gap-4">
+          <div id="4p" className="flex flex-col gap-2" ref={relicHeight}>
+            {configData.relics?.slice(0, 4).map((relic, index) => (
+              <RelicItem key={index} data={relic} mockIndex={index} />
+            ))}
+          </div>
+
+          <div id="2p" className="flex flex-col gap-2">
+            {configData.relics?.slice(-2).map((relic, index) => (
+              <RelicItem key={index} data={relic} mockIndex={index} asSet />
+            ))}
+          </div>
+
+          <p
+            className={cn(
+              "bg-background/80 absolute h-full w-full rounded-md p-4 transition-all duration-500 ease-in-out",
+              open ? "opacity-100" : "opacity-0"
+            )}
+          >
+            2pc Set Effect <br />
+            Increases Lightning DMG by 10%. <br />
+            4pc Set Effect <br />
+            When the wearer uses their Skill, increases the wearer
+            {"'"}s ATK by 20% for 1 turn(s).
+          </p>
         </div>
 
-        <div id="2p" className="flex flex-col gap-4">
-          {configData.relics?.slice(-2).map((relic, index) => (
-            <RelicItem key={index} data={relic} mockIndex={index} asSet />
-          ))}
-        </div>
+        <Button onClick={() => setOpen(!open)}>Set Bonuses</Button>
       </div>
     </div>
   );

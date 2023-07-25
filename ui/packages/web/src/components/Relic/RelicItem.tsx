@@ -30,7 +30,7 @@ const RelicItem = ({ data, mockIndex, asSet = false }: Props) => {
           width={32}
           className="self-center invert-0 dark:invert"
         />
-        <span className="self-center text-center">290</span>
+        <span className="self-center text-center text-lg font-bold">290</span>
       </div>
 
       <Separator className="mx-3" orientation="vertical" />
