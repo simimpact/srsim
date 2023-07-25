@@ -112,7 +112,7 @@ const LogTab = ({ data }: Props) => {
               table={table}
               variant="outline"
               size="sm"
-              className="h-8 lg:flex border-muted-foreground"
+              className="border-muted-foreground h-8 lg:flex"
             />
 
             <ColumnSelectFilter
@@ -180,7 +180,7 @@ const LogTab = ({ data }: Props) => {
 
 const ExpandComponent = ({ row }: { row: Row<SimLog> }) => {
   return (
-    <pre className="text-[16px] whitespace-pre-wrap">
+    <pre className="whitespace-pre-wrap text-[16px]">
       <code>{JSON.stringify(row.original, null, 2)}</code>
     </pre>
   );

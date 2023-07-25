@@ -14,7 +14,7 @@ function DataTablePagination<TData>({ table, allowSelect = false, rowOptions }: 
   return (
     <div className="flex items-center justify-between px-2">
       {allowSelect ? (
-        <div className="flex-1 text-sm text-muted-foreground">
+        <div className="text-muted-foreground flex-1 text-sm">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
@@ -47,7 +47,7 @@ function DataTablePagination<TData>({ table, allowSelect = false, rowOptions }: 
           Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
         </div>
 
-        <div className="flex items-center justify-center text-sm font-medium gap-2">
+        <div className="flex items-center justify-center gap-2 text-sm font-medium">
           <span className="min-w-max">Go to page</span>
           <Input
             className="w-12"

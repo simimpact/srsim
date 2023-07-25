@@ -13,6 +13,7 @@ import (
 	"github.com/simimpact/srsim/pkg/simulation"
 	"github.com/simimpact/srsim/tests/eventchecker"
 	"github.com/simimpact/srsim/tests/eventchecker/battlestart"
+	"github.com/simimpact/srsim/tests/eventchecker/termination"
 	"github.com/simimpact/srsim/tests/testcfg"
 	"github.com/simimpact/srsim/tests/testcfg/testchar"
 	"github.com/simimpact/srsim/tests/testcfg/testeval"
@@ -31,8 +32,9 @@ type Stub struct {
 
 	// AutoRun determines if simulation will automatically run.
 	// When disabled, you must call s.NextTurn() to queue the next TurnStart event.
-	autoRun  bool
-	turnPipe chan TurnCommand
+	autoRun    bool
+	terminated bool // this is a idiot-proof boolean to run s.TerminateRun if the tester (me) forgot to terminate
+	turnPipe   chan TurnCommand
 
 	// cfg and evaluator are used to start a normal run
 	cfg       *model.SimConfig
@@ -57,6 +59,7 @@ func (s *Stub) SetupTest() {
 	s.cfg = testcfg.TestConfigTwoElites()
 	s.autoContinue = true
 	s.autoRun = true
+	s.terminated = false
 	s.Characters = Characters{
 		t:               s.T(),
 		cfg:             s.cfg,
@@ -69,6 +72,10 @@ func (s *Stub) SetupTest() {
 
 func (s *Stub) TearDownTest() {
 	fmt.Println("Test Finished")
+	if !s.autoRun && !s.terminated {
+		s.TerminateRun()
+		s.Expect(termination.ExpectFor())
+	}
 	logging.InitLoggers()
 	s.cfgEval = nil
 	select {

@@ -11,7 +11,7 @@ function ColumnFieldFilter<TData>({ column }: Props<TData>) {
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       value={(column?.getFilterValue() as string) ?? ""}
       onChange={event => column?.setFilterValue(event.target.value)}
-      className="max-w-sm w-64"
+      className="w-64 max-w-sm"
     />
   );
 }
