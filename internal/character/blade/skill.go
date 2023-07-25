@@ -6,5 +6,5 @@ import (
 )
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
-	
+
 }

@@ -6,5 +6,5 @@ import (
 )
 
 func (c *char) Technique(target key.TargetID, state info.ActionState) {
-	
+
 }
