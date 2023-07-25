@@ -8,7 +8,7 @@ const ImpositionIcon = forwardRef<HTMLDivElement, Props>(
   ({ imposition, className, ...props }, ref) => (
     <div
       className={cn(
-        "bg-background rounded-full aspect-square text-center w-6 h-6 font-medium font-[Cinzel]",
+        "bg-background aspect-square rounded-full text-center w-6 h-6 font-medium font-[Cinzel] select-none",
         imposition >= 5 ? "text-[#191919] bg-[#F9CC71]" : "text-[#F9CC71] bg-[#191919]",
         className
       )}
