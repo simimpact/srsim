@@ -1,6 +1,6 @@
+import { cva } from "class-variance-authority";
 import { HTMLAttributes, forwardRef } from "react";
-// import { ElementIcon } from "./ElementIcon";
-// import { PathIcon } from "./PathIcon";
+import SVG from "react-inlinesvg";
 import { Path } from "@/bindings/AvatarConfig";
 import { Element } from "@/bindings/PatchBanner";
 import useCardEffect from "@/hooks/animation/useCardEffect";
@@ -18,6 +18,20 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
 const CharacterFloatCard = forwardRef<HTMLDivElement, Props>(
   ({ rarity, avatar_base_type, avatar_name, damage_type, imgUrl, className, ...props }, ref) => {
     const { glowRef, flowRef, rotateToMouse, removeListener } = useCardEffect();
+    const elementVariants = cva("", {
+      variants: {
+        variant: {
+          Fire: "text-fire",
+          Ice: "text-ice",
+          Wind: "text-wind",
+          Physical: "text-physical",
+          Lightning: "text-lightning",
+          Quantum: "text-quantum",
+          Imaginary: "text-imaginary",
+        },
+      },
+    });
+
     return (
       <div
         className={cn("relative", className)}
@@ -45,20 +59,24 @@ const CharacterFloatCard = forwardRef<HTMLDivElement, Props>(
             width={374}
             height={512}
           />
-          {/*damage_type && (
-           <ElementIcon
-           element={damage_type}
-           size="15%"
-           className="absolute left-1 top-0"
-           ignoreTheme
-           />
-           )*/}
-          {/* <PathIcon */}
-          {/*   path={avatar_base_type} */}
-          {/*   size="15%" */}
-          {/*   className={cn("absolute left-1 text-white", damage_type ? "top-[15%]" : "top-0")} */}
-          {/*   ignoreTheme */}
-          {/* /> */}
+          <div className="absolute left-1 top-0 w-[15%] h-[15%]">
+            <SVG
+              src={`/public/icons/${damage_type ?? "Physical"}.svg`}
+              className={cn("w-full h-full", elementVariants({ variant: damage_type }))}
+              style={{ filter: "drop-shadow(1px 1px 1px rgb(0 0 0 / 1))" }}
+              viewBox="0 0 14 14"
+            />
+          </div>
+          <div
+            className={cn("absolute left-1 w-[15%] h-[15%]", damage_type ? "top-[15%]" : "top-0")}
+          >
+            <SVG
+              src={`/public/icons/${avatar_base_type}.svg`}
+              className="w-full h-full"
+              style={{ filter: "drop-shadow(1px 1px 1px rgb(0 0 0 / 1))" }}
+              viewBox="0 0 14 14"
+            />
+          </div>
           <RarityIcon rarity={rarity} className="top-[85%] h-6 w-full" />
           <div ref={glowRef} className={cn("rounded-tr-3xl", "glow")} />
         </div>

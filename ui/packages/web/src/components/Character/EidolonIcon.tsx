@@ -28,6 +28,7 @@ const EidolonIcon = (props: Props) => {
       </PopoverTrigger>
       {!props.disablePopover && (
         <PopoverContent className="w-96">
+          <span className="text-lg font-semibold text-accent-foreground">{props.data.name}</span>
           <EidolonDescription data={props.data} />
         </PopoverContent>
       )}

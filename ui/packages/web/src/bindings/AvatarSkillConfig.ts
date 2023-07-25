@@ -49,6 +49,7 @@ export interface AvatarSkillConfig {
   skill_trigger_key: string;
   skill_type_desc: string;
   spbase?: Param | null;
+  spneed?: Param | null;
   spmultiple_ratio: Param;
   stance_damage_type?: Element | null;
   ultra_skill_icon: AssetPath;

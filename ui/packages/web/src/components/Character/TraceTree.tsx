@@ -5,6 +5,7 @@ import { SkillTreeConfig } from "@/bindings/SkillTreeConfig";
 import { cn } from "@/utils/classname";
 import { Popover, PopoverContent, PopoverTrigger } from "../Primitives/Popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../Primitives/Tooltip";
+import { SkillDescription } from "./SkillDescription";
 
 interface Props {
   traces: SkillTreeConfig[];
@@ -38,21 +39,41 @@ const TraceTree = ({
     );
 
   return (
-    <div className={cn("flex flex-col items-center", emptyBigTrace ? "pt-12" : "")}>
-      {toRenderTraces?.map((traceNode, index) => (
-        <Popover key={index}>
-          <PopoverTrigger asChild>
-            <IconWithTooltip
-              node={traceNode}
-              className={cn(
-                "rounded-full invert dark:invert-0",
-                !charTraces.includes(traceNode.point_id) ? "brightness-[.25]" : ""
-              )}
-            />
-          </PopoverTrigger>
-          <PopoverContent>{traceNode.point_id}</PopoverContent>
-        </Popover>
-      ))}
+    <div className={cn("flex flex-col items-center gap-2", emptyBigTrace ? "pt-[56px]" : "")}>
+      {toRenderTraces?.map((traceNode, index) =>
+        getNodeType(traceNode) !== "SMALL" ? (
+          <Popover key={index}>
+            <PopoverTrigger asChild>
+              <IconWithTooltip
+                node={traceNode}
+                className={cn(
+                  "rounded-full invert dark:invert-0",
+                  !charTraces.includes(traceNode.point_id) ? "brightness-[.25]" : ""
+                )}
+              />
+            </PopoverTrigger>
+            <PopoverContent className="w-96">
+              <span className="text-lg font-semibold text-accent-foreground">
+                {traceNode.point_name}
+              </span>
+              <SkillDescription
+                skillDesc={traceNode.point_desc}
+                paramList={traceNode.param_list}
+                slv={0}
+              />
+            </PopoverContent>
+          </Popover>
+        ) : (
+          <IconWithTooltip
+            key={index}
+            node={traceNode}
+            className={cn(
+              "rounded-full invert dark:invert-0",
+              !charTraces.includes(traceNode.point_id) ? "brightness-[.25]" : ""
+            )}
+          />
+        )
+      )}
     </div>
   );
 };
@@ -62,7 +83,7 @@ interface IconProps extends HTMLAttributes<HTMLButtonElement> {
 }
 const IconWithTooltip = forwardRef<HTMLButtonElement, IconProps>(
   ({ node, className, ...props }, ref) => (
-    <Tooltip>
+    <Tooltip disableHoverableContent>
       <TooltipTrigger asChild>
         <button
           ref={ref}
@@ -80,7 +101,7 @@ const IconWithTooltip = forwardRef<HTMLButtonElement, IconProps>(
           {asPercentage(node)}
         </button>
       </TooltipTrigger>
-      <TooltipContent>{node.point_name}</TooltipContent>
+      <TooltipContent className="select-none">{node.point_name}</TooltipContent>
     </Tooltip>
   )
 );

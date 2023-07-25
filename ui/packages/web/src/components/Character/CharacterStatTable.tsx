@@ -40,8 +40,14 @@ const CharacterStatTable = forwardRef<HTMLDivElement, Props>(
       <div className={className} ref={ref} {...props}>
         {MOCK_DATA.map(({ prop: property, label, val: value, bonus, merge }) => (
           <Fragment key={property}>
-            <div className="flex">
-              <img src={iconUrl(property)} alt={property} className="invert-0 dark:invert" />
+            <div className="flex gap-2 items-center">
+              <img
+                src={iconUrl(property)}
+                alt={property}
+                width={24}
+                height={24}
+                className="h-6 w-6 invert-0 dark:invert aspect-square"
+              />
               <div>{label}</div>
             </div>
             {merge ? (
