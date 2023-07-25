@@ -14,7 +14,7 @@ const (
 	SkillWeakType key.Modifier = "silverwolf-skill-weak-type"
 )
 
-var damageType_ResProperty = map[model.DamageType]prop.Property{
+var damageTypeToResProperty = map[model.DamageType]prop.Property{
 	model.DamageType_PHYSICAL:  prop.PhysicalDamageRES,
 	model.DamageType_FIRE:      prop.FireDamageRES,
 	model.DamageType_ICE:       prop.IceDamageRES,
@@ -23,6 +23,8 @@ var damageType_ResProperty = map[model.DamageType]prop.Property{
 	model.DamageType_QUANTUM:   prop.QuantumDamageRES,
 	model.DamageType_IMAGINARY: prop.ImaginaryDamageRES,
 }
+
+const Skill key.Attack = "silverwolf-skill"
 
 func init() {
 	modifier.Register(SkillResDown, modifier.Config{
@@ -36,14 +38,14 @@ func init() {
 		Stacking:      modifier.Replace,
 		StatusType:    model.StatusType_STATUS_DEBUFF,
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				dmgType, ok := chooseWeaknessType(mod.Engine(), mod.Owner())
 				if !ok {
 					mod.RemoveSelf()
 					return
 				}
 				mod.AddWeakness(dmgType)
-				mod.SetProperty(damageType_ResProperty[dmgType], -0.2)
+				mod.SetProperty(damageTypeToResProperty[dmgType], -0.2)
 			},
 		},
 	})
@@ -78,7 +80,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	//	used, then the Skill decreases the enemy's All-Type RES by an additional
 	//	3%.
 	allDamageDown := -skillResDown[c.info.SkillLevelIndex()]
-	if c.info.Traces["1006103"] && c.engine.ModifierCount(target, model.StatusType_STATUS_DEBUFF) >= 3 {
+	if c.info.Traces["103"] && c.engine.ModifierStatusCount(target, model.StatusType_STATUS_DEBUFF) >= 3 {
 		allDamageDown -= 0.03
 	}
 	c.engine.AddModifier(target, info.Modifier{
@@ -93,7 +95,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	//	The duration of the Weakness implanted by Silver Wolf's Skill increases
 	//	by 1 turn(s).
 	duration := 2
-	if c.info.Traces["1006102"] {
+	if c.info.Traces["102"] {
 		duration += 1
 	}
 	c.engine.AddModifier(target, info.Modifier{
@@ -104,6 +106,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	})
 
 	c.engine.Attack(info.Attack{
+		Key:        Skill,
 		Source:     c.id,
 		Targets:    []key.TargetID{target},
 		DamageType: model.DamageType_QUANTUM,

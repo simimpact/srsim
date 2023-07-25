@@ -2,3 +2,5 @@
 
 .yarnrc.yml
 .yarn/*
+
+**/bindings/*

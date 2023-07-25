@@ -3,43 +3,85 @@ package combat
 import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 )
 
+// PERFORMHIT
+// Updates states of all involved parties based upon given hit info.
+// 1. Calculates damage to be dealt based upon given hit info
+// 2. If shield is present, absorb as much damage as possible using shield.AbsorbDamage
+// 3. If shield is not present/cannot take all damage, apply damage to target HP
+// 4. Modify stance and energy based upon hit info
+// 5. Emit DamageResultEvent (includes modified state and logging variables)
+
 func (mgr *Manager) performHit(hit *info.Hit) {
-	mgr.event.HitStart.Emit(event.HitStartEvent{
+	mgr.event.HitStart.Emit(event.HitStart{
 		Attacker: hit.Attacker.ID(),
 		Defender: hit.Defender.ID(),
 		Hit:      hit,
 	})
 
-	// ACTUAL DAMAGE STUFF GOES HERE:
-	// 1. Calculate Damage given the hit info (using stats contained within the hit)
-	// 2. Given calc'd damage, call shield.AbsorbDamage(hit.defender, amt) float64
-	// 3. AbsorbDamage returns the remaining damage
-	// 4. ModifyHP of the remaining damage
-	// 5. Emit DamageResultEvent
+	crit := crit(hit, mgr.rdm)
 
-	// remainingDamage := mgr.shld.AbsorbDamage(hit.Defender.ID(), damage)
+	base := baseDamage(hit)*hit.HitRatio + hit.DamageValue
+	bonus := bonusDamage(hit)
+	defMult := defMult(hit)
+	res := res(hit)
+	vul := vul(hit)
+	toughnessMultiplier := toughness(hit)
+	fatigue := 1 - hit.Attacker.GetProperty(prop.Fatigue)
+	allDamageReduce := damageReduce(hit)
+	critDmg := critDmg(hit, crit)
 
-	// NOTE:
-	// * BaseDamage multipliers, EnergyGain, and StanceDamage should be scaled by HitRatio
-	// * dots & element damage do not crit (unknown if also ByPureDamage?)
-	// * ByPureDamage = true means a "simplified" damage function (the break damage equation)
+	total := base * bonus * defMult * res * vul * toughnessMultiplier * fatigue * allDamageReduce * critDmg
 
-	mgr.event.HitEnd.Emit(event.HitEndEvent{
-		Attacker:         hit.Attacker.ID(),
-		Defender:         hit.Defender.ID(),
-		AttackType:       hit.AttackType,
-		DamageType:       hit.DamageType,
-		BaseDamage:       0, // TODO
-		BonusDamage:      0, // TODO
-		TotalDamage:      0, // TODO
-		ShieldDamage:     0, // TODO
-		HPDamage:         0, // TODO
-		HPRatioRemaining: mgr.attr.HPRatio(hit.Defender.ID()),
-		IsCrit:           false, // TODO
-		UseSnapshot:      hit.UseSnapshot,
+	hpUpdate := mgr.shld.AbsorbDamage(hit.Defender.ID(), total)
+
+	modify := info.ModifyAttribute{
+		Key:    key.Reason(hit.Key),
+		Target: hit.Defender.ID(),
+		Source: hit.Attacker.ID(),
+		Amount: 0,
+	}
+
+	modify.Amount = -hpUpdate
+	mgr.attr.ModifyHPByAmount(modify, true)
+
+	modify.Amount = -hit.StanceDamage * hit.HitRatio
+	mgr.attr.ModifyStance(modify)
+
+	modify.Amount = hit.EnergyGain * hit.HitRatio
+	if mgr.target.IsCharacter(hit.Attacker.ID()) {
+		// for character attacks, source and target should be the character
+		modify.Target = hit.Attacker.ID()
+		mgr.attr.ModifyEnergy(modify)
+	} else {
+		mgr.attr.ModifyEnergy(modify)
+	}
+
+	mgr.event.HitEnd.Emit(event.HitEnd{
+		Key:                 hit.Key,
+		HitIndex:            hit.HitIndex,
+		Attacker:            hit.Attacker.ID(),
+		Defender:            hit.Defender.ID(),
+		AttackType:          hit.AttackType,
+		DamageType:          hit.DamageType,
+		TotalDamage:         total,
+		ShieldDamage:        total - hpUpdate,
+		HPDamage:            hpUpdate,
+		HPRatioRemaining:    mgr.attr.HPRatio(hit.Defender.ID()),
+		BaseDamage:          base,
+		BonusDamage:         bonus,
+		DefenceMultiplier:   defMult,
+		Resistance:          res,
+		Vulnerability:       vul,
+		ToughnessMultiplier: toughnessMultiplier,
+		Fatigue:             fatigue,
+		AllDamageReduce:     allDamageReduce,
+		CritDamage:          critDmg,
+		IsCrit:              crit,
+		UseSnapshot:         hit.UseSnapshot,
 	})
 }
 
@@ -57,6 +99,8 @@ func (mgr *Manager) newHit(target key.TargetID, atk info.Attack) *info.Hit {
 	}
 
 	return &info.Hit{
+		Key:          atk.Key,
+		HitIndex:     atk.HitIndex,
 		Attacker:     mgr.attr.Stats(atk.Source),
 		Defender:     mgr.attr.Stats(target),
 		AttackType:   atk.AttackType,

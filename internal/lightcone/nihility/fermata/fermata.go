@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	mod key.Modifier = "fermata"
+	name = "fermata"
 )
 
 // Increases the Break Effect dealt by the wearer by 16%/20%/24%/28%/32%, and increases their DMG
@@ -25,7 +25,7 @@ func init() {
 		Promotions:    promotions,
 	})
 
-	modifier.Register(mod, modifier.Config{
+	modifier.Register(name, modifier.Config{
 		CanModifySnapshot: true,
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: onBeforeHitAll,
@@ -37,7 +37,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	amt := 0.12 + 0.04*float64(lc.Imposition)
 
 	engine.AddModifier(owner, info.Modifier{
-		Name:   mod,
+		Name:   name,
 		Source: owner,
 		Stats:  info.PropMap{prop.BreakEffect: amt},
 		State:  amt,
@@ -49,10 +49,10 @@ var triggerFlags = []model.BehaviorFlag{
 	model.BehaviorFlag_STAT_DOT_POISON,
 }
 
-func onBeforeHitAll(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+func onBeforeHitAll(mod *modifier.Instance, e event.HitStart) {
 	amt := mod.State().(float64)
 
 	if mod.Engine().HasBehaviorFlag(e.Defender, triggerFlags...) {
-		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, amt)
+		e.Hit.Attacker.AddProperty(name, prop.AllDamagePercent, amt)
 	}
 }

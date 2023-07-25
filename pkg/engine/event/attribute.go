@@ -5,59 +5,63 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-type HPChangeEventHandler = handler.EventHandler[HPChangeEvent]
-type HPChangeEvent struct {
-	Target             key.TargetID
-	OldHPRatio         float64
-	NewHPRatio         float64
-	OldHP              float64
-	NewHP              float64
-	IsHPChangeByDamage bool
+type HPChangeEventHandler = handler.EventHandler[HPChange]
+type HPChange struct {
+	Key                key.Reason   `json:"key"`
+	Target             key.TargetID `json:"target"`
+	OldHPRatio         float64      `json:"old_hp_ratio"`
+	NewHPRatio         float64      `json:"new_hp_ratio"`
+	OldHP              float64      `json:"old_hp"`
+	NewHP              float64      `json:"new_hp"`
+	IsHPChangeByDamage bool         `json:"is_hp_change_by_damage"`
 }
 
-type LimboWaitHealEventHandler = handler.CancelableEventHandler[LimboWaitHealEvent]
-type LimboWaitHealEvent struct {
-	Target      key.TargetID
-	IsCancelled bool
+type LimboWaitHealEventHandler = handler.CancelableEventHandler[LimboWaitHeal]
+type LimboWaitHeal struct {
+	Target      key.TargetID `json:"target"`
+	IsCancelled bool         `exhaustruct:"optional" json:"is_cancelled"`
 }
 
-func (e LimboWaitHealEvent) Cancelled() {
+func (e LimboWaitHeal) Cancelled() handler.CancellableEvent {
 	e.IsCancelled = true
+	return e
 }
 
-type TargetDeathEventHandler = handler.EventHandler[TargetDeathEvent]
-type TargetDeathEvent struct {
-	Target key.TargetID
-	Killer key.TargetID
+type EnergyChangeEventHandler = handler.EventHandler[EnergyChange]
+type EnergyChange struct {
+	Key       key.Reason   `json:"key"`
+	Target    key.TargetID `json:"target"`
+	Source    key.TargetID `json:"source"`
+	OldEnergy float64      `json:"old_energy"`
+	NewEnergy float64      `json:"new_energy"`
 }
 
-type EnergyChangeEventHandler = handler.EventHandler[EnergyChangeEvent]
-type EnergyChangeEvent struct {
-	Target    key.TargetID
-	OldEnergy float64
-	NewEnergy float64
+type StanceChangeEventHandler = handler.EventHandler[StanceChange]
+type StanceChange struct {
+	Key       key.Reason   `json:"key"`
+	Target    key.TargetID `json:"target"`
+	Source    key.TargetID `json:"source"`
+	OldStance float64      `json:"old_stance"`
+	NewStance float64      `json:"new_stance"`
 }
 
-type StanceChangeEventHandler = handler.EventHandler[StanceChangeEvent]
-type StanceChangeEvent struct {
-	Target    key.TargetID
-	OldStance float64
-	NewStance float64
+type StanceBreakEventHandler = handler.EventHandler[StanceBreak]
+type StanceBreak struct {
+	Key    key.Reason   `json:"key"`
+	Target key.TargetID `json:"target"`
+	Source key.TargetID `json:"source"`
 }
 
-type StanceBreakEventHandler = handler.EventHandler[StanceBreakEvent]
-type StanceBreakEvent struct {
-	Target key.TargetID
-	Source key.TargetID
+type StanceResetEventHandler = handler.EventHandler[StanceReset]
+type StanceReset struct {
+	Key    key.Reason   `json:"key"`
+	Target key.TargetID `json:"target"`
 }
 
-type StanceBreakEndEventHandler = handler.EventHandler[StanceBreakEndEvent]
-type StanceBreakEndEvent struct {
-	Target key.TargetID
-}
-
-type SPChangeEventHandler = handler.EventHandler[SPChangeEvent]
-type SPChangeEvent struct {
-	OldSP int
-	NewSP int
+type SPChangeEventHandler = handler.EventHandler[SPChange]
+type SPChange struct {
+	Key    key.Reason   `json:"key"`
+	Source key.TargetID `json:"source"`
+	OldSP  int          `json:"old_sp"`
+	NewSP  int          `json:"new_sp"`
 }

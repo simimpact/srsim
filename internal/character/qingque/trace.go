@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	A2 key.Modifier = "qingque-a2"
+	A2              = "qingque-a2"
 	A6 key.Modifier = "qingque-a6"
 )
 
@@ -34,7 +34,7 @@ func init() {
 }
 
 func (c *char) initTraces() {
-	if c.info.Traces["1201101"] {
+	if c.info.Traces["101"] {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:   A2,
 			Source: c.id,
@@ -42,15 +42,19 @@ func (c *char) initTraces() {
 	}
 }
 
-func A2ActionEndListener(mod *modifier.ModifierInstance, e event.ActionEvent) {
+func A2ActionEndListener(mod *modifier.Instance, e event.ActionEnd) {
 	if e.AttackType == model.AttackType_SKILL {
-		mod.Engine().ModifySP(1)
+		mod.Engine().ModifySP(info.ModifySP{
+			Key:    A2,
+			Source: mod.Owner(),
+			Amount: 1,
+		})
 		mod.RemoveSelf()
 	}
 }
 
 func (c *char) a6() {
-	if c.info.Traces["1201103"] {
+	if c.info.Traces["103"] {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:     A6,
 			Source:   c.id,

@@ -1,0 +1,34 @@
+settings:
+  cycle_limit: 10
+  ttk_mode: true
+
+characters:
+- key: danheng
+  level: 80
+  max_level: 80
+  eidols: 0
+  traces:
+  - "101"
+  - "102"
+  - "103"
+  abilities:
+    attack: 1
+    skill: 1
+    ult: 1
+    talent: 1
+  light_cone:
+    key: only_silence_remains
+    level: 80
+    max_level: 80
+    imposition: 1
+  start_energy: 50
+
+enemies:
+- level: 80
+  hp: 2000
+  toughness: 300
+
+gcsl: |-
+  set_default_action(danheng, attack(LowestHP));
+  register_skill_cb(danheng, fn () { return skill(LowestHP); });
+  register_ult_cb(danheng, fn () { return ult(LowestHP); });

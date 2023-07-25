@@ -8,7 +8,7 @@ import (
 
 func (mgr *Manager) RemoveModifier(target key.TargetID, modifier key.Modifier) {
 	i := 0
-	var removedMods []*ModifierInstance
+	var removedMods []*Instance
 	for _, mod := range mgr.targets[target] {
 		if mod.name == modifier {
 			removedMods = append(removedMods, mod)
@@ -23,7 +23,7 @@ func (mgr *Manager) RemoveModifier(target key.TargetID, modifier key.Modifier) {
 
 func (mgr *Manager) RemoveModifierFromSource(target, source key.TargetID, modifier key.Modifier) {
 	i := 0
-	var removedMods []*ModifierInstance
+	var removedMods []*Instance
 	for _, mod := range mgr.targets[target] {
 		if mod.name == modifier && mod.source == source {
 			removedMods = append(removedMods, mod)
@@ -36,22 +36,24 @@ func (mgr *Manager) RemoveModifierFromSource(target, source key.TargetID, modifi
 	mgr.emitRemove(target, removedMods)
 }
 
-func (mgr *Manager) RemoveSelf(target key.TargetID, instance *ModifierInstance) {
+func (mgr *Manager) RemoveSelf(target key.TargetID, instance *Instance) {
 	for i, mod := range mgr.targets[target] {
-		if mod == instance {
-			last := len(mgr.targets[target]) - 1
-			mgr.targets[target][i] = mgr.targets[target][last]
-			mgr.targets[target] = mgr.targets[target][:last]
-			mgr.emitRemove(target, []*ModifierInstance{instance})
-			return
+		if mod != instance {
+			continue
 		}
+
+		last := len(mgr.targets[target]) - 1
+		mgr.targets[target][i] = mgr.targets[target][last]
+		mgr.targets[target] = mgr.targets[target][:last]
+		mgr.emitRemove(target, []*Instance{instance})
+		return
 	}
 }
 
 func (mgr *Manager) DispelStatus(target key.TargetID, dispel info.Dispel) {
 	idx := 0
 	idsToRemove := mgr.dispelIds(target, dispel)
-	removedMods := make([]*ModifierInstance, 0, len(idsToRemove))
+	removedMods := make([]*Instance, 0, len(idsToRemove))
 
 	for i, mod := range mgr.targets[target] {
 		if _, ok := idsToRemove[i]; ok {

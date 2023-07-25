@@ -1,0 +1,4 @@
+*.yml
+*.gz
+result/*
+srsim

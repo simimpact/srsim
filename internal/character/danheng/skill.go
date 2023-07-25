@@ -12,6 +12,7 @@ import (
 const (
 	SkillCritCheck key.Modifier = "dan-heng-skill-crit-check"
 	SkillSpeedDown key.Modifier = "dan-heng-skill-speed-down"
+	SkillAttack    key.Attack   = "dan-heng-skill"
 )
 
 func init() {
@@ -23,7 +24,7 @@ func init() {
 
 	modifier.Register(SkillCritCheck, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAfterHit: func(mod *modifier.ModifierInstance, e event.HitEndEvent) {
+			OnAfterHit: func(mod *modifier.Instance, e event.HitEnd) {
 				if e.IsCrit {
 					slowAmt := mod.State().(float64)
 					mod.Engine().AddModifier(e.Defender, info.Modifier{
@@ -54,8 +55,10 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	})
 
 	// 4 hits
-	for _, hitRatio := range skillHits {
+	for i, hitRatio := range skillHits {
 		c.engine.Attack(info.Attack{
+			Key:        SkillAttack,
+			HitIndex:   i,
 			Source:     c.id,
 			Targets:    []key.TargetID{target},
 			DamageType: model.DamageType_WIND,

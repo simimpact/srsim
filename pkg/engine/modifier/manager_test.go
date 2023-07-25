@@ -8,7 +8,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
-	"github.com/simimpact/srsim/pkg/mock"
+	"github.com/simimpact/srsim/tests/mock"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,7 +20,8 @@ func NewTestManager(t *testing.T) (*modifier.Manager, *gomock.Controller) {
 	engine.EXPECT().
 		Stats(gomock.Any()).
 		DoAndReturn(func(target key.TargetID) *info.Stats {
-			attr := &info.Attributes{}
+			attr := new(info.Attributes)
+			*attr = info.DefaultAttribute()
 			mods := manager.EvalModifiers(target)
 			return info.NewStats(target, attr, mods)
 		}).
@@ -39,12 +40,12 @@ func TestOnPropertyChangeBuff(t *testing.T) {
 	conditionalMod := key.Modifier("TestOnPropertyChangeBuffMod1")
 	otherMod := key.Modifier("TestOnPropertyChangeBuffMod2")
 	target := key.TargetID(1)
-	var mods info.ModifierState
+	var mods *info.ModifierState
 	var expectedProps info.PropMap
 
 	modifier.Register(conditionalMod, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnPropertyChange: func(mod *modifier.ModifierInstance) {
+			OnPropertyChange: func(mod *modifier.Instance) {
 				stats := mod.Engine().Stats(mod.Owner())
 				if stats.GetProperty(prop.DEFPercent) >= 0.1 {
 					mod.SetProperty(prop.AllDamagePercent, 0.1)
@@ -96,7 +97,7 @@ func TestReplaceStacking(t *testing.T) {
 
 	mod := key.Modifier("TestReplaceStacking")
 	target := key.TargetID(1)
-	var mods info.ModifierState
+	var mods *info.ModifierState
 	var expectedProps info.PropMap
 
 	modifier.Register(mod, modifier.Config{
@@ -105,7 +106,7 @@ func TestReplaceStacking(t *testing.T) {
 		TickMoment:        modifier.ModifierPhase1End,
 		Stacking:          modifier.Replace,
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				mod.AddProperty(prop.CritChance, 0.05*mod.Count())
 			},
 		},
@@ -131,6 +132,7 @@ func TestReplaceStacking(t *testing.T) {
 	})
 	manager.AddModifier(target, info.Modifier{
 		Name:     mod,
+		Source:   target,
 		Duration: 2,
 	})
 
@@ -178,7 +180,7 @@ func TestReplaceStackingBySource(t *testing.T) {
 	modifier.Register(mod, modifier.Config{
 		Stacking: modifier.ReplaceBySource,
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				mod.AddProperty(prop.QuantumPEN, 0.1)
 			},
 		},
@@ -209,7 +211,7 @@ func TestTickImmediatelyBeforeAction(t *testing.T) {
 	manager, mockCtrl := NewTestManager(t)
 	defer mockCtrl.Finish()
 
-	var mods info.ModifierState
+	var mods *info.ModifierState
 	mod := key.Modifier("TestTickImmediatelyBeforeAction")
 	target := key.TargetID(3)
 
@@ -242,7 +244,7 @@ func TestTickImmediatelyAfterAction(t *testing.T) {
 	manager, mockCtrl := NewTestManager(t)
 	defer mockCtrl.Finish()
 
-	var mods info.ModifierState
+	var mods *info.ModifierState
 	mod := key.Modifier("TestTickImmediatelyBeforeAction")
 	target := key.TargetID(3)
 
@@ -265,4 +267,82 @@ func TestTickImmediatelyAfterAction(t *testing.T) {
 
 	mods = manager.EvalModifiers(target)
 	assert.Equal(t, expectedProps, mods.Props)
+}
+
+func TestModifierRemovesInListener(t *testing.T) {
+	// 1. add modifier a
+	// 2. add modifier b
+	// 3. add modiifer c
+	// 4. a, b, and c listen for the same event
+	// 5. a removes b
+	// 6. assert that a and c are called
+	manager, mockCtrl := NewTestManager(t)
+	defer mockCtrl.Finish()
+
+	modA := key.Modifier("TestModifierRemovesInListener-A")
+	modB := key.Modifier("TestModifierRemovesInListener-B")
+	modC := key.Modifier("TestModifierRemovesInListener-C")
+	target := key.TargetID(1)
+
+	calls := make(map[key.Modifier]int, 3)
+
+	listener := func(mod *modifier.Instance) {
+		calls[mod.Name()] += 1
+		if mod.Name() == modA {
+			manager.RemoveModifier(target, modB)
+		}
+	}
+
+	// register mods w/ listener
+	modifier.Register(modA, modifier.Config{
+		Listeners: modifier.Listeners{
+			OnPhase1: listener,
+		},
+	})
+	modifier.Register(modB, modifier.Config{
+		Listeners: modifier.Listeners{
+			OnPhase1: listener,
+		},
+	})
+	modifier.Register(modC, modifier.Config{
+		Listeners: modifier.Listeners{
+			OnPhase1: listener,
+		},
+	})
+
+	// add A
+	manager.AddModifier(target, info.Modifier{
+		Name:   modA,
+		Source: target,
+	})
+
+	// add B
+	manager.AddModifier(target, info.Modifier{
+		Name:   modB,
+		Source: target,
+	})
+
+	// add C
+	manager.AddModifier(target, info.Modifier{
+		Name:   modC,
+		Source: target,
+	})
+
+	manager.Tick(target, info.ModifierPhase1)
+
+	expectedCalls := map[key.Modifier]int{
+		modA: 1,
+		modB: 1,
+		modC: 1,
+	}
+	expectedRemaining := []key.Modifier{modA, modC}
+	state := manager.EvalModifiers(target)
+
+	actual := make([]key.Modifier, 0)
+	for _, m := range state.Modifiers {
+		actual = append(actual, m.Name)
+	}
+
+	assert.Equal(t, expectedCalls, calls)
+	assert.ElementsMatch(t, expectedRemaining, actual)
 }

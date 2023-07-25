@@ -10,8 +10,10 @@ import (
 )
 
 const (
+	E1 key.Reason   = "silverwolf-e1"
 	E2 key.Modifier = "silverwolf-e2"
-	E6 key.Modifier = "silverwolf-e6"
+	E4 key.Attack   = "silverwolf-e4"
+	E6              = "silverwolf-e6"
 )
 
 func init() {
@@ -21,7 +23,7 @@ func init() {
 		StatusType: model.StatusType_STATUS_DEBUFF,
 		TickMoment: modifier.ModifierPhase1End,
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.ModifierInstance) {
+			OnAdd: func(mod *modifier.Instance) {
 				mod.SetProperty(prop.EffectRES, -0.2)
 			},
 		},
@@ -33,14 +35,15 @@ func init() {
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_DEBUFF,
 		Listeners: modifier.Listeners{
-			OnBeforeHitAll: func(mod *modifier.ModifierInstance, e event.HitStartEvent) {
-				debuffCount := mod.Engine().ModifierCount(e.Defender, model.StatusType_STATUS_DEBUFF)
+			OnBeforeHitAll: func(mod *modifier.Instance, e event.HitStart) {
+				debuffCount := mod.Engine().ModifierStatusCount(e.Defender, model.StatusType_STATUS_DEBUFF)
 				if debuffCount > 5 {
 					debuffCount = 5
 				}
-				e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.2*float64(debuffCount))
+				e.Hit.Attacker.AddProperty(E6, prop.AllDamagePercent, 0.2*float64(debuffCount))
 			},
 		},
+		CanModifySnapshot: true,
 	})
 }
 
@@ -49,11 +52,16 @@ func init() {
 // can be triggered up to 5 time(s) in each use of her Ultimate.
 func (c *char) e1(target key.TargetID) {
 	if c.info.Eidolon >= 1 {
-		debuffCount := c.engine.ModifierCount(target, model.StatusType_STATUS_DEBUFF)
+		debuffCount := c.engine.ModifierStatusCount(target, model.StatusType_STATUS_DEBUFF)
 		if debuffCount > 5 {
 			debuffCount = 5
 		}
-		c.engine.ModifyEnergy(c.id, float64(7*debuffCount))
+		c.engine.ModifyEnergy(info.ModifyAttribute{
+			Key:    E1,
+			Target: c.id,
+			Source: c.id,
+			Amount: float64(7 * debuffCount),
+		})
 	}
 }
 
@@ -63,12 +71,14 @@ func (c *char) e1(target key.TargetID) {
 // each use of her Ultimate.
 func (c *char) e4(target key.TargetID) {
 	if c.info.Eidolon >= 4 {
-		debuffCount := c.engine.ModifierCount(target, model.StatusType_STATUS_DEBUFF)
+		debuffCount := c.engine.ModifierStatusCount(target, model.StatusType_STATUS_DEBUFF)
 		if debuffCount > 5 {
 			debuffCount = 5
 		}
 		for i := 0; i < debuffCount; i++ {
 			c.engine.Attack(info.Attack{
+				Key:        E4,
+				HitIndex:   i,
 				Source:     c.id,
 				Targets:    []key.TargetID{target},
 				DamageType: model.DamageType_QUANTUM,
@@ -83,11 +93,21 @@ func (c *char) e4(target key.TargetID) {
 
 func (c *char) initEidolons() {
 	if c.info.Eidolon >= 2 {
-		c.engine.Events().EnemyAdded.Subscribe(func(e event.EnemyAddedEvent) {
-			c.engine.AddModifier(e.Id, info.Modifier{
-				Name:   E2,
-				Source: c.id,
-			})
+		c.engine.Events().EnemiesAdded.Subscribe(func(e event.EnemiesAdded) {
+			for _, enemy := range e.Enemies {
+				c.engine.AddModifier(enemy.ID, info.Modifier{
+					Name:   E2,
+					Source: c.id,
+				})
+			}
+		})
+
+		c.engine.Events().TargetDeath.Subscribe(func(event event.TargetDeath) {
+			if event.Target == c.id {
+				for _, trg := range c.engine.Enemies() {
+					c.engine.RemoveModifier(trg, E2)
+				}
+			}
 		})
 	}
 

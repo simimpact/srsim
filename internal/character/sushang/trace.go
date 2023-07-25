@@ -21,8 +21,9 @@ import (
 const (
 	A2Check key.Modifier = "sushang-a2-check"
 	A2Buff  key.Modifier = "sushang-a2-buff"
-	A4Mod   key.Modifier = "sushang-a4-mod"
-	A4Buff  key.Modifier = "sushang-a4-buff"
+	A4Mod                = "sushang-a4"
+	A4Buff  key.Modifier = "sushang-a4-stacks"
+	A6      key.Reason   = "sushang-a6"
 )
 
 func init() {
@@ -30,7 +31,7 @@ func init() {
 	modifier.Register(A2Check, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAdd: a2HPCheck,
-			OnHPChange: func(mod *modifier.ModifierInstance, e event.HPChangeEvent) {
+			OnHPChange: func(mod *modifier.Instance, e event.HPChange) {
 				a2HPCheck(mod)
 			},
 		},
@@ -59,7 +60,7 @@ func init() {
 
 // add A2 on init
 func (c *char) initTraces() {
-	if c.info.Traces["1206101"] {
+	if c.info.Traces["101"] {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:   A2Check,
 			Source: c.id,
@@ -67,7 +68,7 @@ func (c *char) initTraces() {
 	}
 }
 
-func a2HPCheck(mod *modifier.ModifierInstance) {
+func a2HPCheck(mod *modifier.Instance) {
 	if mod.Engine().HPRatio(mod.Owner()) <= 0.5 {
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 			Name:   A2Buff,
@@ -79,31 +80,31 @@ func a2HPCheck(mod *modifier.ModifierInstance) {
 	}
 }
 
-func a4OnBeforeHitAll(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+func a4OnBeforeHitAll(mod *modifier.Instance, e event.HitStart) {
 	stacks := mod.State().(float64)
-	e.Hit.Attacker.AddProperty(prop.AllDamagePercent, stacks*0.025)
+	e.Hit.Attacker.AddProperty(A4Mod, prop.AllDamagePercent, stacks*0.025)
 }
 
 func (c *char) a4AddStack() {
-	if c.engine.HasModifier(c.id, A4Buff) {
-		stacks := c.engine.GetModifiers(c.id, A4Buff)[0].Count
-		if stacks == 10 {
-			return
-		}
+	if c.engine.ModifierStackCount(c.id, c.id, A4Buff) == 10 {
+		return
 	}
 
 	c.engine.AddModifier(c.id, info.Modifier{
 		Name:   A4Buff,
 		Source: c.id,
 	})
-
 }
 
 func (c *char) a6() {
-	if c.info.Traces["1206103"] {
+	if c.info.Traces["103"] {
 		for _, enemy := range c.engine.Enemies() {
 			if c.engine.Stats(enemy).Stance() == 0 {
-				c.engine.ModifyCurrentGaugeCost(-0.15)
+				c.engine.ModifyCurrentGaugeCost(info.ModifyCurrentGaugeCost{
+					Key:    A6,
+					Source: c.id,
+					Amount: -0.15,
+				})
 				break
 			}
 		}

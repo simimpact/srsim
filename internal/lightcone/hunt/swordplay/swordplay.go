@@ -12,9 +12,9 @@ import (
 )
 
 const (
-	Check  key.Modifier = "swordplay_check"
-	Buff   key.Modifier = "swordplay_buff"
-	Target key.Modifier = "swordplay_target"
+	Check               = "swordplay"
+	Buff   key.Modifier = "swordplay-buff"
+	Target key.Modifier = "swordplay-target"
 )
 
 // For each time the wearer hits the same target, DMG dealt increases by
@@ -58,13 +58,11 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func onBeforeHit(mod *modifier.ModifierInstance, e event.HitStartEvent) {
-	if !hasModifierFromSource(mod.Engine(), e.Defender, mod.Owner(), Target) {
-		if mod.Engine().HasModifier(mod.Owner(), Buff) {
-			stacks := mod.Engine().GetModifiers(mod.Owner(), Buff)[0].Count
-			e.Hit.Attacker.AddProperty(prop.AllDamagePercent, -mod.State().(float64)*stacks)
-			mod.Engine().RemoveModifier(mod.Owner(), Buff)
-		}
+func onBeforeHit(mod *modifier.Instance, e event.HitStart) {
+	if !mod.Engine().HasModifierFromSource(e.Defender, mod.Owner(), Target) {
+		stacks := mod.Engine().ModifierStackCount(mod.Owner(), mod.Owner(), Buff)
+		e.Hit.Attacker.AddProperty(Check, prop.AllDamagePercent, -mod.State().(float64)*stacks)
+		mod.Engine().RemoveModifier(mod.Owner(), Buff)
 
 		for _, enemy := range mod.Engine().Enemies() {
 			mod.Engine().RemoveModifierFromSource(enemy, mod.Owner(), Target)
@@ -77,21 +75,9 @@ func onBeforeHit(mod *modifier.ModifierInstance, e event.HitStartEvent) {
 	}
 }
 
-func hasModifierFromSource(engine engine.Engine, target, source key.TargetID, key key.Modifier) bool {
-	for _, mod := range engine.GetModifiers(target, key) {
-		if mod.Source == source {
-			return true
-		}
-	}
-	return false
-}
-
-func onAfterHit(mod *modifier.ModifierInstance, e event.HitEndEvent) {
-	if mod.Engine().HasModifier(mod.Owner(), Buff) {
-		stacks := mod.Engine().GetModifiers(mod.Owner(), Buff)[0].Count
-		if stacks == 5 {
-			return
-		}
+func onAfterHit(mod *modifier.Instance, e event.HitEnd) {
+	if mod.Engine().ModifierStackCount(mod.Owner(), mod.Owner(), Buff) == 5 {
+		return
 	}
 
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
@@ -101,7 +87,7 @@ func onAfterHit(mod *modifier.ModifierInstance, e event.HitEndEvent) {
 	})
 }
 
-func buffOnAdd(mod *modifier.ModifierInstance) {
+func buffOnAdd(mod *modifier.Instance) {
 	amt := mod.State().(float64)
 	mod.AddProperty(prop.AllDamagePercent, amt*mod.Count())
 }

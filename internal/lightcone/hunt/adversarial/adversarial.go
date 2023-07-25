@@ -46,7 +46,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func onTriggerDeath(mod *modifier.ModifierInstance, target key.TargetID) {
+func onTriggerDeath(mod *modifier.Instance, target key.TargetID) {
 	amt := mod.State().(float64)
 
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{

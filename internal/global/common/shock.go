@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	Shock      key.Modifier = "common_shock"
-	BreakShock key.Modifier = "break_shock"
+	Shock      = "common-shock"
+	BreakShock = "break-shock"
 )
 
 // This is the state that should be passed in when folks call AddModifier
@@ -56,7 +56,7 @@ func init() {
 	})
 }
 
-func shockPhase1(mod *modifier.ModifierInstance) {
+func shockPhase1(mod *modifier.Instance) {
 	state, ok := mod.State().(ShockState)
 	if !ok {
 		panic("incorrect state used for shock modifier")
@@ -64,6 +64,7 @@ func shockPhase1(mod *modifier.ModifierInstance) {
 
 	// perform shock damage
 	mod.Engine().Attack(info.Attack{
+		Key:        Shock,
 		Source:     mod.Source(),
 		Targets:    []key.TargetID{mod.Owner()},
 		AttackType: model.AttackType_DOT,
@@ -76,7 +77,7 @@ func shockPhase1(mod *modifier.ModifierInstance) {
 	})
 }
 
-func breakShockPhase1(mod *modifier.ModifierInstance) {
+func breakShockPhase1(mod *modifier.Instance) {
 	state, ok := mod.State().(BreakShockState)
 	if !ok {
 		panic("incorrect state used for break shock modifier")
@@ -84,6 +85,7 @@ func breakShockPhase1(mod *modifier.ModifierInstance) {
 
 	// perform break shock damage
 	mod.Engine().Attack(info.Attack{
+		Key:        BreakShock,
 		Source:     mod.Source(),
 		Targets:    []key.TargetID{mod.Owner()},
 		AttackType: model.AttackType_DOT,

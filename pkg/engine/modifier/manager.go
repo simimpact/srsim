@@ -7,10 +7,10 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-type activeModifiers []*ModifierInstance
+type activeModifiers []*Instance
 
-type ModifierEval interface {
-	EvalModifiers(target key.TargetID) info.ModifierState
+type Eval interface {
+	EvalModifiers(target key.TargetID) *info.ModifierState
 }
 
 type Manager struct {
@@ -21,8 +21,9 @@ type Manager struct {
 
 func NewManager(engine engine.Engine) *Manager {
 	mgr := &Manager{
-		engine:  engine,
-		targets: make(map[key.TargetID]activeModifiers, 10),
+		engine:    engine,
+		targets:   make(map[key.TargetID]activeModifiers, 10),
+		turnCount: 0,
 	}
 	mgr.subscribe()
 	return mgr
@@ -53,6 +54,15 @@ func (mgr *Manager) HasModifier(target key.TargetID, name key.Modifier) bool {
 	return false
 }
 
+func (mgr *Manager) HasModifierFromSource(target, source key.TargetID, name key.Modifier) bool {
+	for _, mod := range mgr.targets[target] {
+		if mod.name == name && mod.source == source {
+			return true
+		}
+	}
+	return false
+}
+
 func (mgr *Manager) GetModifiers(target key.TargetID, name key.Modifier) []info.Modifier {
 	out := make([]info.Modifier, 0, 5)
 	for _, mod := range mgr.targets[target] {
@@ -60,5 +70,22 @@ func (mgr *Manager) GetModifiers(target key.TargetID, name key.Modifier) []info.
 			out = append(out, mod.ToModel())
 		}
 	}
+	return out
+}
+
+func (mgr *Manager) ModifierStackCount(target, source key.TargetID, modifier key.Modifier) float64 {
+	count := 0.0
+	for _, mod := range mgr.targets[target] {
+		if mod.name == modifier && mod.source == source {
+			count += mod.count
+		}
+	}
+	return count
+}
+
+// makes a copy for safe iteration
+func (mgr *Manager) itr(target key.TargetID) activeModifiers {
+	out := make(activeModifiers, len(mgr.targets[target]))
+	copy(out, mgr.targets[target])
 	return out
 }

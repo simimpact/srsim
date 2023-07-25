@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	IntheNight key.Modifier = "in_the_night"
+	IntheNight = "in-the-night"
 )
 
 type Amts struct {
@@ -54,7 +54,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func onBeforeHit(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+func onBeforeHit(mod *modifier.Instance, e event.HitStart) {
 	spd := e.Hit.Attacker.SPD()
 
 	if spd >= 110 {
@@ -67,10 +67,13 @@ func onBeforeHit(mod *modifier.ModifierInstance, e event.HitStartEvent) {
 		}
 
 		// modify damage
-		if e.Hit.AttackType == model.AttackType_NORMAL || e.Hit.AttackType == model.AttackType_SKILL {
-			e.Hit.Attacker.AddProperty(prop.AllDamagePercent, float64(stacks)*mod.State().(Amts).dmg)
-		} else if e.Hit.AttackType == model.AttackType_ULT {
-			e.Hit.Attacker.AddProperty(prop.CritDMG, float64(stacks)*mod.State().(Amts).cd)
+		switch e.Hit.AttackType {
+		case model.AttackType_NORMAL, model.AttackType_SKILL:
+			e.Hit.Attacker.AddProperty(
+				IntheNight, prop.AllDamagePercent, float64(stacks)*mod.State().(Amts).dmg)
+		case model.AttackType_ULT:
+			e.Hit.Attacker.AddProperty(
+				IntheNight, prop.CritDMG, float64(stacks)*mod.State().(Amts).cd)
 		}
 	}
 }

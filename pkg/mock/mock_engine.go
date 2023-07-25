@@ -105,6 +105,21 @@ func (mr *MockEngineMockRecorder) Attack(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Attack", reflect.TypeOf((*MockEngine)(nil).Attack), arg0)
 }
 
+// CanUseSkill mocks base method.
+func (m *MockEngine) CanUseSkill(arg0 key.TargetID) (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CanUseSkill", arg0)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CanUseSkill indicates an expected call of CanUseSkill.
+func (mr *MockEngineMockRecorder) CanUseSkill(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CanUseSkill", reflect.TypeOf((*MockEngine)(nil).CanUseSkill), arg0)
+}
+
 // CharacterInfo mocks base method.
 func (m *MockEngine) CharacterInfo(arg0 key.TargetID) (info.Character, error) {
 	m.ctrl.T.Helper()
@@ -214,6 +229,20 @@ func (m *MockEngine) Energy(arg0 key.TargetID) float64 {
 func (mr *MockEngineMockRecorder) Energy(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Energy", reflect.TypeOf((*MockEngine)(nil).Energy), arg0)
+}
+
+// EnergyRatio mocks base method.
+func (m *MockEngine) EnergyRatio(arg0 key.TargetID) float64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EnergyRatio", arg0)
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// EnergyRatio indicates an expected call of EnergyRatio.
+func (mr *MockEngineMockRecorder) EnergyRatio(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnergyRatio", reflect.TypeOf((*MockEngine)(nil).EnergyRatio), arg0)
 }
 
 // Events mocks base method.
@@ -419,6 +448,20 @@ func (m *MockEngine) IsValid(arg0 key.TargetID) bool {
 func (mr *MockEngineMockRecorder) IsValid(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsValid", reflect.TypeOf((*MockEngine)(nil).IsValid), arg0)
+}
+
+// MaxEnergy mocks base method.
+func (m *MockEngine) MaxEnergy(arg0 key.TargetID) float64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MaxEnergy", arg0)
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// MaxEnergy indicates an expected call of MaxEnergy.
+func (mr *MockEngineMockRecorder) MaxEnergy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MaxEnergy", reflect.TypeOf((*MockEngine)(nil).MaxEnergy), arg0)
 }
 
 // ModifierCount mocks base method.
@@ -633,6 +676,20 @@ func (m *MockEngine) RemoveShield(arg0 key.Shield, arg1 key.TargetID) {
 func (mr *MockEngineMockRecorder) RemoveShield(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveShield", reflect.TypeOf((*MockEngine)(nil).RemoveShield), arg0, arg1)
+}
+
+// Retarget mocks base method.
+func (m *MockEngine) Retarget(arg0 info.Retarget) []key.TargetID {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Retarget", arg0)
+	ret0, _ := ret[0].([]key.TargetID)
+	return ret0
+}
+
+// Retarget indicates an expected call of Retarget.
+func (mr *MockEngineMockRecorder) Retarget(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Retarget", reflect.TypeOf((*MockEngine)(nil).Retarget), arg0)
 }
 
 // SP mocks base method.

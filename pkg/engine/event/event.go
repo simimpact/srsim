@@ -7,14 +7,18 @@ import "github.com/simimpact/srsim/pkg/engine/event/handler"
 type System struct {
 	Initialize  InitializeEventHandler
 	BattleStart BattleStartEventHandler
-	TurnEnd     TurnEndEventHandler
 	Termination TerminationEventHandler
+	Phase1Start Phase1StartEventHandler
+	Phase1End   Phase1EndEventHandler
+	Phase2Start Phase2StartEventHandler
+	Phase2End   Phase2EndEventHandler
+	TurnStart   TurnStartEventHandler
+	TurnEnd     TurnEndEventHandler
 	ActionStart ActionStartEventHandler
 	ActionEnd   ActionEndEventHandler
-	UltStart    UltStartEventHandler
-	UltEnd      UltEndEventHandler
 	InsertStart InsertStartEventHandler
 	InsertEnd   InsertEndEventHandler
+	TargetDeath TargetDeathEventHandler
 
 	AttackStart AttackStartEventHandler
 	AttackEnd   AttackEndEventHandler
@@ -23,8 +27,8 @@ type System struct {
 	HealStart   HealStartEventHandler
 	HealEnd     HealEndEventHandler
 
-	CharacterAdded CharacterAddedEventHandler
-	EnemyAdded     EnemyAddedEventHandler
+	CharactersAdded CharactersAddedEventHandler
+	EnemiesAdded    EnemiesAddedEventHandler
 
 	ModifierAdded            ModifierAddedEventHandler
 	ModifierResisted         ModifierResistedEventHandler
@@ -36,17 +40,15 @@ type System struct {
 	ShieldRemoved ShieldRemovedEventHandler
 	ShieldChange  ShieldChangeEventHandler
 
-	HPChange       HPChangeEventHandler
-	LimboWaitHeal  LimboWaitHealEventHandler
-	TargetDeath    TargetDeathEventHandler
-	EnergyChange   EnergyChangeEventHandler
-	StanceChange   StanceChangeEventHandler
-	StanceBreak    StanceBreakEventHandler
-	StanceBreakEnd StanceBreakEndEventHandler
-	SPChange       SPChangeEventHandler
+	HPChange      HPChangeEventHandler
+	LimboWaitHeal LimboWaitHealEventHandler
+	EnergyChange  EnergyChangeEventHandler
+	StanceChange  StanceChangeEventHandler
+	StanceBreak   StanceBreakEventHandler
+	StanceReset   StanceResetEventHandler
+	SPChange      SPChangeEventHandler
 
 	TurnTargetsAdded       TurnTargetsAddedEventHandler
-	TurnStart              TurnStartEventHandler
 	TurnReset              TurnResetEventHandler
 	GaugeChange            GaugeChangeEventHandler
 	CurrentGaugeCostChange CurrentGaugeCostChangeEventHandler

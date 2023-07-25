@@ -3,8 +3,6 @@ package prop
 //go:generate stringer -type=Property
 
 import (
-	"encoding/json"
-
 	"github.com/simimpact/srsim/pkg/model"
 )
 
@@ -123,6 +121,10 @@ const (
 	MinFatigue      Property = 92
 )
 
+func Total() int {
+	return len(model.Property_name)
+}
+
 func FromProto(p model.Property) Property {
 	return Property(p)
 }
@@ -131,80 +133,66 @@ func (p Property) ToProto() model.Property {
 	return model.Property(p)
 }
 
-func (p Property) MarshalJSON() ([]byte, error) {
-	return json.Marshal(model.Property_name[int32(p)])
+func (p Property) MarshalText() ([]byte, error) {
+	return []byte(model.Property_name[int32(p)]), nil
 }
 
-// Use for scripts and reference when implementing
-var GameToProp = map[string]Property{
-	"Unknow":                    Invalid,
-	"BaseHP":                    HPBase,
-	"HPAddedRatio":              HPPercent,
-	"HPDelta":                   HPFlat,
-	"HPConvert":                 HPConvert,
-	"BaseAttack":                ATKBase,
-	"AttackAddedRatio":          ATKPercent,
-	"AttackDelta":               ATKFlat,
-	"AttackConvert":             ATKConvert,
-	"BaseDefence":               DEFBase,
-	"DefenceAddedRatio":         DEFPercent,
-	"DefenceDelta":              DEFFlat,
-	"DefenceConvert":            DEFConvert,
-	"BaseSpeed":                 SPDBase,
-	"SpeedAddedRatio":           SPDPercent,
-	"SpeedDelta":                SPDFlat,
-	"SpeedConvert":              SPDConvert,
-	"AllDamageTypeAddedRatio":   AllDamagePercent,
-	"AllDamageReduce":           AllDamageReduce,
-	"DotDamageAddedRatio":       DOTDamagePercent,
-	"FatigueRatio":              Fatigue,
-	"CriticalChanceBase":        CritChance,
-	"CriticalDamageBase":        CritDMG,
-	"PhysicalAddedRatio":        PhysicalDamagePercent,
-	"FireAddedRatio":            FireDamagePercent,
-	"IceAddedRatio":             IceDamagePercent,
-	"ThunderAddedRatio":         ThunderDamagePercent,
-	"QuantumAddedRatio":         QuantumDamagePercent,
-	"ImaginaryAddedRatio":       ImaginaryDamagePercent,
-	"WindAddedRatio":            WindDamagePercent,
-	"PhysicalResistanceDelta":   PhysicalDamageRES,
-	"FireResistanceDelta":       FireDamageRES,
-	"IceResistanceDelta":        IceDamageRES,
-	"ThunderResistanceDelta":    ThunderDamageRES,
-	"QuantumResistanceDelta":    QuantumDamageRES,
-	"ImaginaryResistanceDelta":  ImaginaryDamageRES,
-	"WindResistanceDelta":       WindDamageRES,
-	"AllDamageTypeResistance":   AllDamageRES,
-	"PhysicalPenetrate":         PhysicalPEN,
-	"FirePenetrate":             FirePEN,
-	"IcePenetrate":              IcePEN,
-	"ThunderPenetrate":          ThunderPEN,
-	"QuantumPenetrate":          QuantumPEN,
-	"ImaginaryPenetrate":        ImaginaryPEN,
-	"WindPenetrate":             WindPEN,
-	"PhysicalTakenRatio":        PhysicalDamageTaken,
-	"FireTakenRatio":            FireDamageTaken,
-	"IceTakenRatio":             IceDamageTaken,
-	"ThunderTakenRatio":         ThunderDamageTaken,
-	"QuantumTakenRatio":         QuantumDamageTaken,
-	"ImaginaryTakenRatio":       ImaginaryDamageTaken,
-	"WindTakenRatio":            WindDamageTaken,
-	"AllDamageTypeTakenRatio":   AllDamageTaken,
-	"MinimumFatigueRatio":       MinFatigue,
-	"StanceBreakAddedRatio":     AllStanceDMGPercent,
-	"HealRatioBase":             HealBoost,
-	"HealRatioConvert":          HealBoostConvert,
-	"HealTakenRatio":            HealTaken,
-	"ShieldAddedRatio":          ShieldBoost,
-	"ShieldTakenRatio":          ShieldTaken,
-	"StatusProbabilityBase":     EffectHitRate,
-	"StatusProbabilityConvert":  EffectHitRateConvert,
-	"StatusResistanceBase":      EffectRES,
-	"StatusResistanceConvert":   EffectRESConvert,
-	"SPRatioBase":               EnergyRegen,
-	"SPRatioConvert":            EnergyRegenConvert,
-	"BreakDamageAddedRatioBase": BreakEffect,
-	"AggroBase":                 AggroBase,
-	"AggroAddedRatio":           AggroPercent,
-	"AggroDelta":                AggroFlat,
+// For converting damage type to damage percent
+var damageTypeToDMGPercent = map[model.DamageType]Property{
+	model.DamageType_PHYSICAL:  PhysicalDamagePercent,
+	model.DamageType_FIRE:      FireDamagePercent,
+	model.DamageType_ICE:       IceDamagePercent,
+	model.DamageType_WIND:      WindDamagePercent,
+	model.DamageType_THUNDER:   ThunderDamagePercent,
+	model.DamageType_QUANTUM:   QuantumDamagePercent,
+	model.DamageType_IMAGINARY: ImaginaryDamagePercent,
+}
+
+func DamagePercent(dmgType model.DamageType) Property {
+	return damageTypeToDMGPercent[dmgType]
+}
+
+// For converting damage type to damage RES
+var damageTypeToDMGRES = map[model.DamageType]Property{
+	model.DamageType_PHYSICAL:  PhysicalDamageRES,
+	model.DamageType_FIRE:      FireDamageRES,
+	model.DamageType_ICE:       IceDamageRES,
+	model.DamageType_WIND:      WindDamageRES,
+	model.DamageType_THUNDER:   ThunderDamageRES,
+	model.DamageType_QUANTUM:   QuantumDamageRES,
+	model.DamageType_IMAGINARY: ImaginaryDamageRES,
+}
+
+func DamageRES(dmgType model.DamageType) Property {
+	return damageTypeToDMGRES[dmgType]
+}
+
+// For converting damage type to damage PEN
+var damageTypeToDMGPEN = map[model.DamageType]Property{
+	model.DamageType_PHYSICAL:  PhysicalPEN,
+	model.DamageType_FIRE:      FirePEN,
+	model.DamageType_ICE:       IcePEN,
+	model.DamageType_WIND:      WindPEN,
+	model.DamageType_THUNDER:   ThunderPEN,
+	model.DamageType_QUANTUM:   QuantumPEN,
+	model.DamageType_IMAGINARY: ImaginaryPEN,
+}
+
+func DamagePEN(dmgType model.DamageType) Property {
+	return damageTypeToDMGPEN[dmgType]
+}
+
+// For converting damage type to damage taken
+var damageTypeToDMGTaken = map[model.DamageType]Property{
+	model.DamageType_PHYSICAL:  PhysicalDamageTaken,
+	model.DamageType_FIRE:      FireDamageTaken,
+	model.DamageType_ICE:       IceDamageTaken,
+	model.DamageType_WIND:      WindDamageTaken,
+	model.DamageType_THUNDER:   ThunderDamageTaken,
+	model.DamageType_QUANTUM:   QuantumDamageTaken,
+	model.DamageType_IMAGINARY: ImaginaryDamageTaken,
+}
+
+func DamageTaken(dmgType model.DamageType) Property {
+	return damageTypeToDMGTaken[dmgType]
 }

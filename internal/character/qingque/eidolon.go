@@ -10,25 +10,32 @@ import (
 )
 
 const (
-	E1      key.Modifier = "qingque-e1"
+	E1                   = "qingque-e1"
+	E2      key.Reason   = "qingque-e2"
 	Autarky key.Modifier = "qingque-e4"
 )
 
 func init() {
 	modifier.Register(E1, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHit: func(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+			OnBeforeHit: func(mod *modifier.Instance, e event.HitStart) {
 				if e.Hit.AttackType != model.AttackType_ULT {
 					return
 				}
-				e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.1)
+				e.Hit.Attacker.AddProperty(E1, prop.AllDamagePercent, 0.1)
 			},
 		},
 	})
 }
+
 func (c *char) e2() {
 	if c.info.Eidolon >= 2 {
-		c.engine.ModifyEnergy(c.id, 1)
+		c.engine.ModifyEnergy(info.ModifyAttribute{
+			Key:    E2,
+			Target: c.id,
+			Source: c.id,
+			Amount: 1,
+		})
 	}
 }
 func (c *char) initEidolons() {

@@ -5,27 +5,27 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
-	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
-	E1 key.Modifier = "arlan-e1"
-	E4 key.Modifier = "arlan-e4"
-	E6 key.Modifier = "arlan-e6"
+	E1     = "arlan-e1"
+	E4     = "arlan-e4"
+	E6     = "arlan-e6"
+	Revive = "arlan-revive"
 )
 
 func init() {
 	// When HP is lower than or equal to 50% of Max HP, increases Skill's DMG by 10%.
 	modifier.Register(E1, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHit: func(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+			OnBeforeHit: func(mod *modifier.Instance, e event.HitStart) {
 				if e.Hit.AttackType != model.AttackType_SKILL {
 					return
 				}
 
 				if mod.Engine().HPRatio(mod.Owner()) <= 0.5 {
-					e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.1)
+					e.Hit.Attacker.AddProperty(E1, prop.AllDamagePercent, 0.1)
 				}
 			},
 		},
@@ -38,8 +38,7 @@ func init() {
 		Duration:   2,
 		StatusType: model.StatusType_STATUS_BUFF,
 		Listeners: modifier.Listeners{
-			OnLimboWaitHeal: func(mod *modifier.ModifierInstance) bool {
-
+			OnLimboWaitHeal: func(mod *modifier.Instance) bool {
 				// Dispel all debuffs
 				mod.Engine().DispelStatus(mod.Owner(), info.Dispel{
 					Status: model.StatusType_STATUS_DEBUFF,
@@ -49,11 +48,17 @@ func init() {
 				// Queue Heal
 				mod.Engine().InsertAbility(info.Insert{
 					Execute: func() {
-						mod.Engine().SetHP(
-							mod.Owner(), mod.Owner(), mod.OwnerStats().MaxHP()*0.25)
+						mod.Engine().SetHP(info.ModifyAttribute{
+							Key:    Revive,
+							Target: mod.Owner(),
+							Source: mod.Owner(),
+							Amount: mod.OwnerStats().MaxHP() * 0.25,
+						})
 					},
-					Source:   mod.Owner(),
-					Priority: info.CharReviveSelf,
+					Key:        Revive,
+					Source:     mod.Owner(),
+					Priority:   info.CharReviveSelf,
+					AbortFlags: nil,
 				})
 
 				mod.RemoveSelf()
@@ -66,18 +71,17 @@ func init() {
 	// DMG taken by the target enemy now applies to adjacent enemies as well.
 	modifier.Register(E6, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHit: func(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+			OnBeforeHit: func(mod *modifier.Instance, e event.HitStart) {
 				if e.Hit.AttackType != model.AttackType_ULT {
 					return
 				}
 
 				if mod.Engine().HPRatio(mod.Owner()) <= 0.5 {
-					e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.2)
+					e.Hit.Attacker.AddProperty(E6, prop.AllDamagePercent, 0.2)
 				}
 			},
 		},
 	})
-
 }
 
 func (c *char) e2() {

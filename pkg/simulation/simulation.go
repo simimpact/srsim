@@ -1,118 +1,117 @@
 package simulation
 
 import (
+	crypto "crypto/rand"
 	"encoding/binary"
-	"github.com/simimpact/srsim/pkg/engine/logging"
 	"math/rand"
 
 	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/combat"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/logging"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/queue"
 	"github.com/simimpact/srsim/pkg/engine/shield"
 	"github.com/simimpact/srsim/pkg/engine/target/character"
 	"github.com/simimpact/srsim/pkg/engine/target/enemy"
 	"github.com/simimpact/srsim/pkg/engine/turn"
-	"github.com/simimpact/srsim/pkg/gcs/eval"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/logic"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-type Target interface {
-	Exec(key.ActionType)
+type RunOpts struct {
+	Config  *model.SimConfig
+	Eval    logic.Eval
+	Seed    int64
+	Loggers []logging.Logger `exhaustruct:"optional"`
 }
 
-type simulation struct {
+type Simulation struct {
 	cfg  *model.SimConfig
-	eval *eval.Eval
+	eval logic.Eval
 	seed int64
 
 	// services
-	idGen    *key.TargetIDGenerator
-	rand     *rand.Rand
-	event    *event.System
-	queue    *queue.Handler
-	modifier *modifier.Manager
-	attr     *attribute.Service
-	char     *character.Manager
-	enemy    *enemy.Manager
-	turn     *turn.Manager
-	combat   *combat.Manager
-	shield   *shield.Manager
+	IDGen    *key.TargetIDGenerator
+	Random   *rand.Rand
+	Event    *event.System
+	Queue    *queue.Handler
+	Modifier *modifier.Manager
+	Attr     attribute.Manager
+	Char     *character.Manager
+	Enemy    *enemy.Manager
+	Turn     turn.Manager
+	Combat   *combat.Manager
+	Shield   *shield.Manager
 
 	// state
-	sp            int
-	tp            int
-	targets       map[key.TargetID]info.TargetClass
+	Targets       map[key.TargetID]info.TargetClass
 	characters    []key.TargetID
 	enemies       []key.TargetID
 	neutrals      []key.TargetID
-	totalAV       float64
-	active        key.TargetID
-	actionTargets map[key.TargetID]bool
+	TotalAV       float64
+	Active        key.TargetID
+	ActionTargets map[key.TargetID]bool
 }
 
-func RunWithLog(logger logging.Logger, cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationResult, error) {
-	logging.InitLogger(logger)
-	return Run(cfg, eval, seed)
+func Run(opts *RunOpts) (*model.IterationResult, error) {
+	logging.InitLoggers(opts.Loggers...)
+	return NewSimulation(opts.Config, opts.Eval, opts.Seed).Run()
 }
 
-func Run(cfg *model.SimConfig, eval *eval.Eval, seed int64) (*model.IterationResult, error) {
-	s := &simulation{
+func NewSimulation(cfg *model.SimConfig, eval logic.Eval, seed int64) *Simulation {
+	s := &Simulation{
 		cfg:  cfg,
 		eval: eval,
 		seed: seed,
 
-		event: &event.System{},
-		queue: queue.New(),
-		rand:  rand.New(rand.NewSource(seed)),
-		idGen: key.NewTargetIDGenerator(),
+		Event:  &event.System{},
+		Queue:  queue.New(),
+		Random: rand.New(rand.NewSource(seed)),
+		IDGen:  key.NewTargetIDGenerator(),
 
-		sp:            3,
-		tp:            4, // TODO: define starting amount in config?
-		targets:       make(map[key.TargetID]info.TargetClass, 15),
+		Targets:       make(map[key.TargetID]info.TargetClass, 15),
 		characters:    make([]key.TargetID, 0, 4),
 		enemies:       make([]key.TargetID, 0, 5),
 		neutrals:      make([]key.TargetID, 0, 5),
-		actionTargets: make(map[key.TargetID]bool, 10),
+		ActionTargets: make(map[key.TargetID]bool, 10),
 	}
-	s.eval.Engine = s
 
 	// init services
 
 	// core stats
-	s.modifier = modifier.NewManager(s)
-	s.attr = attribute.New(s.event, s.modifier)
+	s.Modifier = modifier.NewManager(s)
+	s.Attr = attribute.New(s.Event, s.Modifier)
 
 	// target management
-	s.char = character.New(s, s.attr, s.eval)
-	s.enemy = enemy.New(s, s.attr)
+	s.Char = character.New(s, s.Attr, s.eval)
+	s.Enemy = enemy.New(s, s.Attr)
 
 	// game logic
-	s.turn = turn.New(s.event, s.attr)
-	s.shield = shield.New(s.event, s.attr)
-	s.combat = combat.New(s.event, s.attr, s.shield)
+	s.Turn = turn.New(s.Event, s.Attr)
+	s.Shield = shield.New(s.Event, s.Attr)
+	s.Combat = combat.New(s.Event, s.Attr, s.Shield, s, s.Random)
 
-	return s.run()
+	return s
 }
 
 // TODO: RunWithDebug
 
 func RandSeed() (int64, error) {
 	var b [8]byte
-	_, err := rand.Read(b[:])
+	_, err := crypto.Read(b[:])
 	if err != nil {
 		return 0, err
 	}
 	return int64(binary.LittleEndian.Uint64(b[:])), nil
 }
 
-func (sim *simulation) Events() *event.System {
-	return sim.event
+func (sim *Simulation) Events() *event.System {
+	return sim.Event
 }
 
-func (sim *simulation) Rand() *rand.Rand {
-	return sim.rand
+func (sim *Simulation) Rand() *rand.Rand {
+	return sim.Random
 }

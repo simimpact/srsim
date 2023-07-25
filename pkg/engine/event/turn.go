@@ -5,43 +5,39 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-type TurnTargetsAddedEventHandler = handler.EventHandler[TurnTargetsAddedEvent]
-type TurnTargetsAddedEvent struct {
-	Targets   []key.TargetID
-	TurnOrder []TurnStatus
+type TurnTargetsAddedEventHandler = handler.EventHandler[TurnTargetsAdded]
+type TurnTargetsAdded struct {
+	Targets   []key.TargetID `json:"targets"`
+	TurnOrder []TurnStatus   `json:"turn_order"`
 }
 
-type TurnStartEventHandler = handler.EventHandler[TurnStartEvent]
-type TurnStartEvent struct {
-	Active    key.TargetID
-	DeltaAV   float64
-	TotalAV   float64
-	TurnOrder []TurnStatus
+type TurnResetEventHandler = handler.EventHandler[TurnReset]
+type TurnReset struct {
+	ResetTarget key.TargetID `json:"reset_target"`
+	GaugeCost   float64      `json:"gauge_cost"`
+	TurnOrder   []TurnStatus `json:"turn_order"`
 }
 
-type TurnResetEventHandler = handler.EventHandler[TurnResetEvent]
-type TurnResetEvent struct {
-	ResetTarget key.TargetID
-	GaugeCost   float64
-	TurnOrder   []TurnStatus
+type GaugeChangeEventHandler = handler.EventHandler[GaugeChange]
+type GaugeChange struct {
+	Key       key.Reason   `json:"key"`
+	Target    key.TargetID `json:"target"`
+	Source    key.TargetID `json:"source"`
+	OldGauge  float64      `json:"old_gauge"`
+	NewGauge  float64      `json:"new_gauge"`
+	TurnOrder []TurnStatus `json:"turn_order"`
 }
 
-type GaugeChangeEventHandler = handler.EventHandler[GaugeChangeEvent]
-type GaugeChangeEvent struct {
-	Target    key.TargetID
-	OldGauge  float64
-	NewGauge  float64
-	TurnOrder []TurnStatus
-}
-
-type CurrentGaugeCostChangeEventHandler = handler.EventHandler[CurrentGaugeCostChangeEvent]
-type CurrentGaugeCostChangeEvent struct {
-	OldCost float64
-	NewCost float64
+type CurrentGaugeCostChangeEventHandler = handler.EventHandler[CurrentGaugeCostChange]
+type CurrentGaugeCostChange struct {
+	Key     key.Reason   `json:"key"`
+	Source  key.TargetID `json:"source"`
+	OldCost float64      `json:"old_cost"`
+	NewCost float64      `json:"new_cost"`
 }
 
 type TurnStatus struct {
-	ID    key.TargetID
-	Gauge float64
-	AV    float64
+	ID    key.TargetID `json:"id"`
+	Gauge float64      `json:"gauge"`
+	AV    float64      `json:"av"`
 }

@@ -20,7 +20,7 @@ const (
 	A2Check key.Modifier = "dan-heng-a2-check"
 	A2Buff  key.Modifier = "dan-heng-a2-buff"
 	A4      key.Modifier = "dan-heng-a4"
-	A6      key.Modifier = "dan-heng-a6"
+	A6                   = "dan-heng-a6"
 )
 
 func init() {
@@ -28,7 +28,7 @@ func init() {
 	modifier.Register(A2Check, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAdd: a2HPCheck,
-			OnHPChange: func(mod *modifier.ModifierInstance, e event.HPChangeEvent) {
+			OnHPChange: func(mod *modifier.Instance, e event.HPChange) {
 				a2HPCheck(mod)
 			},
 		},
@@ -50,13 +50,13 @@ func init() {
 
 	modifier.Register(A6, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHit: func(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+			OnBeforeHit: func(mod *modifier.Instance, e event.HitStart) {
 				if e.Hit.AttackType != model.AttackType_NORMAL {
 					return
 				}
 
 				if mod.Engine().HasBehaviorFlag(e.Defender, model.BehaviorFlag_STAT_SPEED_DOWN) {
-					e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.4)
+					e.Hit.Attacker.AddProperty(A6, prop.AllDamagePercent, 0.4)
 				}
 			},
 		},
@@ -65,14 +65,14 @@ func init() {
 
 // add A2 & A6 on init
 func (c *char) initTraces() {
-	if c.info.Traces["1002101"] {
+	if c.info.Traces["101"] {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:   A2Check,
 			Source: c.id,
 		})
 	}
 
-	if c.info.Traces["1002103"] {
+	if c.info.Traces["103"] {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:   A6,
 			Source: c.id,
@@ -80,7 +80,7 @@ func (c *char) initTraces() {
 	}
 }
 
-func a2HPCheck(mod *modifier.ModifierInstance) {
+func a2HPCheck(mod *modifier.Instance) {
 	if mod.Engine().HPRatio(mod.Owner()) <= 0.5 {
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 			Name:   A2Buff,
@@ -94,7 +94,7 @@ func a2HPCheck(mod *modifier.ModifierInstance) {
 
 // attempt to apply A4 for 2 turns w/ 50% fixed chance
 func (c *char) a4() {
-	if c.info.Traces["1002102"] && c.engine.Rand().Float64() < 0.5 {
+	if c.info.Traces["102"] && c.engine.Rand().Float64() < 0.5 {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:     A4,
 			Source:   c.id,

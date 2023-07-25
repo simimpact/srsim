@@ -4,11 +4,16 @@ type LightCone string
 
 // Destruction
 const (
-	TheMolesWelcomeYou LightCone = "the_moles_welcome_you"
-	NowheretoRun       LightCone = "nowhere_to_run"
-	MutualDemise       LightCone = "mutual_demise"
-	ASecretVow         LightCone = "a_secret_vow"
-	ShatteredHome      LightCone = "shattered_home"
+	TheMolesWelcomeYou     LightCone = "the_moles_welcome_you"
+	NowheretoRun           LightCone = "nowhere_to_run"
+	MutualDemise           LightCone = "mutual_demise"
+	ASecretVow             LightCone = "a_secret_vow"
+	ShatteredHome          LightCone = "shattered_home"
+	SomethingIrreplaceable LightCone = "something_irreplaceable"
+	UndertheBlueSky        LightCone = "under_the_blue_sky"
+	CollapsingSky          LightCone = "collapsing_sky"
+	OntheFallofanAeon      LightCone = "on_the_fall_of_an_aeon"
+	WoofWalkTime           LightCone = "woof_walk_time"
 )
 
 // Hunt
@@ -28,16 +33,25 @@ const (
 
 // Nihility
 const (
-	Fermata               LightCone = "fermata"
-	EyesofthePrey         LightCone = "eyes_of_the_prey"
-	GoodNightandSleepWell LightCone = "good_night_and_sleep_well"
+	Fermata                        LightCone = "fermata"
+	EyesofthePrey                  LightCone = "eyes_of_the_prey"
+	GoodNightandSleepWell          LightCone = "good_night_and_sleep_well"
+	IncessantRain                  LightCone = "incessant_rain"
+	BeforetheTutorialMissionStarts LightCone = "before_the_tutorial_mission_starts"
+	Loop                           LightCone = "loop"
+	HiddenShadow                   LightCone = "hidden_shadow"
+	IntheNameoftheWorld            LightCone = "in_the_name_of_the_world"
 )
 
 // Erudition
 const (
-	Passkey    LightCone = "passkey"
-	DataBank   LightCone = "data_bank"
-	BeforeDawn LightCone = "before_dawn"
+	Passkey                   LightCone = "passkey"
+	DataBank                  LightCone = "data_bank"
+	BeforeDawn                LightCone = "before_dawn"
+	TodayIsAnotherPeacefulDay LightCone = "today_is_another_peaceful_day"
+	TheSeriousnessofBreakfast LightCone = "the_seriousness_of_breakfast"
+	GeniusesRepose            LightCone = "geniuses_repose"
+	NightontheMilkyWay        LightCone = "night_on_the_milky_way"
 )
 
 // Harmony
@@ -48,7 +62,16 @@ const (
 
 // Preservation
 const (
-	MomentOfVictory LightCone = "moment_of_victory"
+	MomentOfVictory           LightCone = "moment_of_victory"
+	Amber                     LightCone = "amber"
+	DayOneofMyNewLife         LightCone = "day_one_of_my_new_life"
+	Defense                   LightCone = "defense"
+	TextureofMemories         LightCone = "texture_of_memories"
+	ThisIsMe                  LightCone = "this_is_me"
+	TrendoftheUniversalMarket LightCone = "trend_of_the_universal_market"
+	Pioneering                LightCone = "pioneering"
+	WeAreWildfire             LightCone = "we_are_wildfire"
+	LandausChoice             LightCone = "landaus_choice"
 )
 
 // Abundance
@@ -60,6 +83,9 @@ const (
 	PostOpConversation       LightCone = "post_op_conversation"
 	SharedFeeling            LightCone = "shared_feeling"
 	QuidProQuo               LightCone = "quid_pro_quo"
+	PerfectTiming            LightCone = "perfect_timing"
+	TimeWaitsforNoOne        LightCone = "time_waits_for_no_one"
+	EchoesoftheCoffin        LightCone = "echoes_of_the_coffin"
 )
 
 func (l LightCone) String() string {

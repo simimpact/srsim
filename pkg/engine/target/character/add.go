@@ -3,10 +3,8 @@ package character
 import (
 	"fmt"
 
-	"github.com/simimpact/srsim/pkg/engine/attribute"
 	"github.com/simimpact/srsim/pkg/engine/equip/lightcone"
 	"github.com/simimpact/srsim/pkg/engine/equip/relic"
-	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
@@ -20,19 +18,26 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 	}
 
 	lvl := int(char.Level)
-	asc := config.ascension(int(char.MaxLevel))
+	if lvl <= 0 {
+		lvl = 1
+	}
+	asc := config.ascension(int(char.MaxLevel), lvl)
 
 	// add char base stats from curve + traces
 	baseStats := newBaseStats(config.Promotions[asc], lvl)
 	traces := processTraces(config.Traces, baseStats, char.Traces, asc, lvl)
 
 	// add lightcone base stats
-	lcLvl := int(char.Cone.Level)
-	lcConfig, err := lightcone.Get(key.LightCone(char.Cone.Key))
+	lcLvl := int(char.LightCone.Level)
+	if lcLvl <= 0 {
+		lcLvl = 1
+	}
+
+	lcConfig, err := lightcone.Get(key.LightCone(char.LightCone.Key))
 	if err != nil {
 		return err
 	}
-	lcAsc := lcConfig.Ascension(int(char.Cone.MaxLevel))
+	lcAsc := lcConfig.Ascension(int(char.LightCone.MaxLevel), lcLvl)
 	lightcone.AddBaseStats(baseStats, lcConfig.Promotions[lcAsc], lcLvl)
 
 	// add relic stats from sim config
@@ -64,12 +69,22 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 		}
 	}
 
+	hp := char.StartHp
+	if hp <= 0 || hp > 1.0 {
+		hp = 1.0
+	}
+
 	// Give the base stats to the attribute manager so Stats calls can work as expected
-	err = mgr.attr.AddTarget(id, attribute.BaseStats{
-		Level:       lvl,
-		Stats:       baseStats,
-		MaxEnergy:   config.MaxEnergy,
-		StartEnergy: char.StartEnergy,
+	err = mgr.attr.AddTarget(id, info.Attributes{
+		Level:         lvl,
+		BaseStats:     baseStats,
+		MaxEnergy:     config.MaxEnergy,
+		Energy:        char.StartEnergy,
+		BaseDebuffRES: info.NewDebuffRESMap(),
+		Weakness:      info.NewWeaknessMap(),
+		HPRatio:       hp,
+		Stance:        0,
+		MaxStance:     0,
 	})
 	if err != nil {
 		return err
@@ -83,12 +98,12 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 		Path:         config.Path,
 		Element:      config.Element,
 		Traces:       traces,
-		AbilityLevel: abilityLevels(char.Talents),
+		AbilityLevel: abilityLevels(char.Abilities),
 		LightCone: info.LightCone{
-			Key:        key.LightCone(char.Cone.Key),
+			Key:        key.LightCone(char.LightCone.Key),
 			Level:      lcLvl,
 			Ascension:  lcAsc,
-			Imposition: int(char.Cone.Imposition),
+			Imposition: int(char.LightCone.Imposition),
 			Path:       lcConfig.Path,
 		},
 		Relics: relics,
@@ -106,11 +121,6 @@ func (mgr *Manager) AddCharacter(id key.TargetID, char *model.Character) error {
 	for _, f := range relicCBs {
 		f(mgr.engine, id)
 	}
-
-	mgr.engine.Events().CharacterAdded.Emit(event.CharacterAddedEvent{
-		Id:   id,
-		Info: info,
-	})
 	return nil
 }
 
@@ -126,7 +136,7 @@ func newBaseStats(data PromotionData, level int) info.PropMap {
 	return out
 }
 
-func processTraces(traces TraceMap, stats info.PropMap, wanted []string, asc int, level int) map[string]bool {
+func processTraces(traces TraceMap, stats info.PropMap, wanted []string, asc, level int) map[string]bool {
 	active := make(map[string]bool)
 	for _, id := range wanted {
 		if dup := active[id]; dup {
@@ -151,27 +161,17 @@ func processTraces(traces TraceMap, stats info.PropMap, wanted []string, asc int
 	return active
 }
 
-func abilityLevels(levels []uint32) info.AbilityLevel {
+func abilityLevels(levels *model.Abilities) info.AbilityLevel {
+	if levels == nil {
+		return info.AbilityLevel{Attack: 1, Skill: 1, Ult: 1, Talent: 1}
+	}
+
 	out := info.AbilityLevel{
-		Attack: 1,
-		Skill:  1,
-		Ult:    1,
-		Talent: 1,
+		Attack: limitAbilityLevel(int(levels.Attack), 9),
+		Skill:  limitAbilityLevel(int(levels.Skill), 15),
+		Ult:    limitAbilityLevel(int(levels.Ult), 15),
+		Talent: limitAbilityLevel(int(levels.Talent), 15),
 	}
-
-	for i, level := range levels {
-		switch i {
-		case 0:
-			out.Attack = limitAbilityLevel(int(level), 9)
-		case 1:
-			out.Skill = limitAbilityLevel(int(level), 15)
-		case 2:
-			out.Ult = limitAbilityLevel(int(level), 15)
-		case 3:
-			out.Talent = limitAbilityLevel(int(level), 15)
-		}
-	}
-
 	return out
 }
 

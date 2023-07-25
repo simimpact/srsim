@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	Talent   key.Modifier = "dan-heng-talent"
+	Talent                = "dan-heng-talent"
 	TalentCD key.Modifier = "dan-heng-talent-cd"
 )
 
@@ -30,7 +30,7 @@ func init() {
 }
 
 // subscribe to all action ends to see if dan heng was ever the target of an ally action
-func (c *char) talentActionEndListener(e event.ActionEvent) {
+func (c *char) talentActionEndListener(e event.ActionEnd) {
 	// must be an ally (neutral targets dont count)
 	if !c.engine.IsCharacter(e.Owner) {
 		return
@@ -66,19 +66,19 @@ func (c *char) talentActionEndListener(e event.ActionEvent) {
 	})
 }
 
-func talentBeforeHitAll(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+func talentBeforeHitAll(mod *modifier.Instance, e event.HitStart) {
 	state := mod.State().(talentState)
 
 	/// only give pen to normal, skill, and ult hits. pursued will not be buffed
 	if e.Hit.AttackType == model.AttackType_NORMAL ||
 		e.Hit.AttackType == model.AttackType_SKILL ||
 		e.Hit.AttackType == model.AttackType_ULT {
-		e.Hit.Attacker.AddProperty(prop.WindPEN, state.penAmt)
+		e.Hit.Attacker.AddProperty(Talent, prop.WindPEN, state.penAmt)
 	}
 }
 
 // after buffed action completes, add CD and remove talent buff
-func talentAfterAction(mod *modifier.ModifierInstance, e event.ActionEvent) {
+func talentAfterAction(mod *modifier.Instance, e event.ActionEnd) {
 	state := mod.State().(talentState)
 
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{

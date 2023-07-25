@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	Ult key.Modifier = "bronya-ult"
+	Ult = "bronya-ult"
 )
 
 func init() {
@@ -36,5 +36,10 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		})
 	}
 
-	c.engine.ModifyEnergy(c.id, 5.0)
+	c.engine.ModifyEnergy(info.ModifyAttribute{
+		Key:    Ult,
+		Target: c.id,
+		Source: c.id,
+		Amount: 5.0,
+	})
 }

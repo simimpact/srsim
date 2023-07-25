@@ -8,22 +8,22 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
- 
+
 const (
-	QPQCheck key.Modifier = "quid-pro-quo"
+	QPQ = "quid-pro-quo"
 )
 
-//At the start of the wearer's turn, regenerates 8 Energy for a randomly chosen ally
-//(excluding the wearer) whose current Energy is lower than 50%.
-func init() { 
+// At the start of the wearer's turn, regenerates 8 Energy for a randomly chosen ally
+// (excluding the wearer) whose current Energy is lower than 50%.
+func init() {
 	lightcone.Register(key.QuidProQuo, lightcone.Config{
 		CreatePassive: Create,
 		Rarity:        4,
 		Path:          model.Path_ABUNDANCE,
 		Promotions:    promotions,
 	})
-	//OnPhase1. checker. refill 1 char's energy randomly. (condition : <50% + not LC holder)
-	modifier.Register(QPQCheck, modifier.Config{
+	// OnPhase1. checker. refill 1 char's energy randomly. (condition : <50% + not LC holder)
+	modifier.Register(QPQ, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnPhase1: randomlyAddEnergy,
 		},
@@ -31,31 +31,32 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	engine.AddModifier(owner, info.Modifier{ 
-		Name:   QPQCheck,
+	engine.AddModifier(owner, info.Modifier{
+		Name:   QPQ,
 		Source: owner,
-		State:  6 + 2 * float64(lc.Imposition),
+		State:  6 + 2*float64(lc.Imposition),
 	})
 }
 
-func randomlyAddEnergy(mod *modifier.ModifierInstance) {
+func randomlyAddEnergy(mod *modifier.Instance) {
 	allyList := mod.Engine().Characters()
-	amt := 	mod.State().(float64)
 	var validAllyList []key.TargetID
-	
-	for _, char := range allyList{
-		//check if energy is <50% and current char isn't LC's holder.
-		//NOTE : Engine().CharacterInfo() don't have .MaxEnergy(). 
-		//currently using .Stats which is not efficient.
-		if (mod.Engine().Energy(char) < mod.Engine().Stats(char).MaxEnergy() / 2 && 
-		char != mod.Owner()) {
+
+	for _, char := range allyList {
+		// check if energy is <50% and current char isn't LC's holder.
+		if mod.Engine().EnergyRatio(char) < 0.5 && char != mod.Owner() {
 			validAllyList = append(validAllyList, char)
 		}
 	}
-	//add in checker to add energy only if validAllyList isn't empty
+	// add in checker to add energy only if validAllyList isn't empty
 	if validAllyList != nil {
-		//randomly choose 1 char to add energy to from validAllyList.
+		// randomly choose 1 char to add energy to from validAllyList.
 		chosenOne := validAllyList[mod.Engine().Rand().Intn(len(validAllyList))]
-		mod.Engine().ModifyEnergy(chosenOne, amt)
+		mod.Engine().ModifyEnergy(info.ModifyAttribute{
+			Key:    QPQ,
+			Target: chosenOne,
+			Source: mod.Owner(),
+			Amount: mod.State().(float64),
+		})
 	}
 }

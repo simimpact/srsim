@@ -5,19 +5,19 @@ import (
 
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/prop"
-	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-func (s *Service) SetHP(target, source key.TargetID, amt float64, isDamage bool) error {
-	attr, ok := s.targets[target]
+func (s *Service) SetHP(data info.ModifyAttribute, isDamage bool) error {
+	t, ok := s.targets[data.Target]
 	if !ok {
-		return fmt.Errorf("unknown target: %v", target)
+		return fmt.Errorf("unknown target: %v", data.Target)
 	}
+	attr := t.attributes
 
 	oldRatio := attr.HPRatio
-	stats := s.Stats(target)
-	attr.HPRatio = amt / stats.MaxHP()
+	stats := s.Stats(data.Target)
+	attr.HPRatio = data.Amount / stats.MaxHP()
 
 	// TODO: unsure if there are limits on min and max
 	if attr.HPRatio > 1 {
@@ -26,19 +26,21 @@ func (s *Service) SetHP(target, source key.TargetID, amt float64, isDamage bool)
 		attr.HPRatio = 0
 	}
 
-	return s.emitHPChangeEvents(target, source, oldRatio, attr.HPRatio, stats.MaxHP(), isDamage)
+	return s.emitHPChangeEvents(
+		data.Key, data.Target, data.Source, oldRatio, attr.HPRatio, stats.MaxHP(), isDamage)
 }
 
-func (s *Service) ModifyHPByAmount(target, source key.TargetID, amt float64, isDamage bool) error {
-	attr, ok := s.targets[target]
+func (s *Service) ModifyHPByAmount(data info.ModifyAttribute, isDamage bool) error {
+	t, ok := s.targets[data.Target]
 	if !ok {
-		return fmt.Errorf("unknown target: %v", target)
+		return fmt.Errorf("unknown target: %v", data.Target)
 	}
+	attr := t.attributes
 
 	oldRatio := attr.HPRatio
-	stats := s.Stats(target)
+	stats := s.Stats(data.Target)
 
-	newHP := stats.CurrentHP() + amt
+	newHP := stats.CurrentHP() + data.Amount
 	attr.HPRatio = newHP / stats.MaxHP()
 
 	// TODO: unsure if there are limits on min and max
@@ -48,14 +50,16 @@ func (s *Service) ModifyHPByAmount(target, source key.TargetID, amt float64, isD
 		attr.HPRatio = 0
 	}
 
-	return s.emitHPChangeEvents(target, source, oldRatio, attr.HPRatio, stats.MaxHP(), isDamage)
+	return s.emitHPChangeEvents(
+		data.Key, data.Target, data.Source, oldRatio, attr.HPRatio, stats.MaxHP(), isDamage)
 }
 
-func (s *Service) ModifyHPByRatio(target, source key.TargetID, data info.ModifyHPByRatio, isDamage bool) error {
-	attr, ok := s.targets[target]
+func (s *Service) ModifyHPByRatio(data info.ModifyHPByRatio, isDamage bool) error {
+	t, ok := s.targets[data.Target]
 	if !ok {
-		return fmt.Errorf("unknown target: %v", target)
+		return fmt.Errorf("unknown target: %v", data.Target)
 	}
+	attr := t.attributes
 
 	oldRatio := attr.HPRatio
 
@@ -68,9 +72,14 @@ func (s *Service) ModifyHPByRatio(target, source key.TargetID, data info.ModifyH
 		return fmt.Errorf("unknown ratio type: %v", data.RatioType)
 	}
 
-	stats := s.Stats(target)
+	stats := s.Stats(data.Target)
 	if stats.CurrentHP() < data.Floor {
-		return s.SetHP(target, source, data.Floor, isDamage)
+		return s.SetHP(info.ModifyAttribute{
+			Key:    data.Key,
+			Target: data.Target,
+			Source: data.Source,
+			Amount: data.Floor,
+		}, isDamage)
 	}
 
 	// TODO: unsure if there are limits on min and max
@@ -78,68 +87,99 @@ func (s *Service) ModifyHPByRatio(target, source key.TargetID, data info.ModifyH
 		attr.HPRatio = 1.0
 	}
 
-	return s.emitHPChangeEvents(target, source, oldRatio, attr.HPRatio, stats.MaxHP(), isDamage)
+	return s.emitHPChangeEvents(
+		data.Key, data.Target, data.Source, oldRatio, attr.HPRatio, stats.MaxHP(), isDamage)
 }
 
-func (s *Service) SetStance(target, source key.TargetID, amt float64) error {
-	attr, ok := s.targets[target]
+func (s *Service) SetStance(data info.ModifyAttribute) error {
+	t, ok := s.targets[data.Target]
 	if !ok {
-		return fmt.Errorf("unknown target: %v", target)
+		return fmt.Errorf("unknown target: %v", data.Target)
 	}
+	attr := t.attributes
 
 	prev := attr.Stance
-	attr.Stance = amt
+	attr.Stance = data.Amount
 	if attr.Stance > attr.MaxStance {
 		attr.Stance = attr.MaxStance
 	} else if attr.Stance < 0 {
 		attr.Stance = 0
 	}
 
-	return s.emitStanceChange(target, source, prev, attr.Stance)
+	return s.emitStanceChange(data.Key, data.Target, data.Source, prev, attr.Stance)
 }
 
-func (s *Service) ModifyStance(target, source key.TargetID, amt float64) error {
-	attr, ok := s.targets[target]
+func (s *Service) ModifyStance(data info.ModifyAttribute) error {
+	t, ok := s.targets[data.Target]
 	if !ok {
-		return fmt.Errorf("unknown target: %v", target)
+		return fmt.Errorf("unknown target: %v", data.Target)
 	}
+	attr := t.attributes
 
-	stats := s.Stats(target)
-	new := attr.Stance + amt*(1+stats.GetProperty(prop.AllStanceDMGPercent))
-	return s.SetStance(target, source, new)
+	stats := s.Stats(data.Target)
+	newStance := attr.Stance + data.Amount*(1+stats.GetProperty(prop.AllStanceDMGPercent))
+	return s.SetStance(info.ModifyAttribute{
+		Key:    data.Key,
+		Target: data.Target,
+		Source: data.Source,
+		Amount: newStance,
+	})
 }
 
-func (s *Service) SetEnergy(target key.TargetID, amt float64) error {
-	attr, ok := s.targets[target]
+func (s *Service) SetEnergy(data info.ModifyAttribute) error {
+	t, ok := s.targets[data.Target]
 	if !ok {
-		return fmt.Errorf("unknown target: %v", target)
+		return fmt.Errorf("unknown target: %v", data.Target)
 	}
+	attr := t.attributes
 
 	prev := attr.Energy
-	attr.Energy = amt
+	attr.Energy = data.Amount
 	if attr.Energy > attr.MaxEnergy {
 		attr.Energy = attr.MaxEnergy
 	} else if attr.Energy < 0 {
 		attr.Energy = 0
 	}
 
-	return s.emitEnergyChange(target, prev, attr.Energy)
+	return s.emitEnergyChange(data.Key, data.Target, data.Source, prev, attr.Energy)
 }
 
-func (s *Service) ModifyEnergy(target key.TargetID, amt float64) error {
-	attr, ok := s.targets[target]
+func (s *Service) ModifyEnergy(data info.ModifyAttribute) error {
+	t, ok := s.targets[data.Target]
 	if !ok {
-		return fmt.Errorf("unknown target: %v", target)
+		return fmt.Errorf("unknown target: %v", data.Target)
 	}
+	attr := t.attributes
 
-	stats := s.Stats(target)
-	return s.SetEnergy(target, attr.Energy+amt*(1+stats.EnergyRegen()))
+	stats := s.Stats(data.Target)
+	return s.SetEnergy(info.ModifyAttribute{
+		Key:    data.Key,
+		Target: data.Target,
+		Source: data.Source,
+		Amount: attr.Energy + data.Amount*(1+stats.EnergyRegen()),
+	})
 }
 
-func (s *Service) ModifyEnergyFixed(target key.TargetID, amt float64) error {
-	attr, ok := s.targets[target]
+func (s *Service) ModifyEnergyFixed(data info.ModifyAttribute) error {
+	t, ok := s.targets[data.Target]
 	if !ok {
-		return fmt.Errorf("unknown target: %v", target)
+		return fmt.Errorf("unknown target: %v", data.Target)
 	}
-	return s.SetEnergy(target, attr.Energy+amt)
+	return s.SetEnergy(info.ModifyAttribute{
+		Key:    data.Key,
+		Target: data.Target,
+		Source: data.Source,
+		Amount: t.attributes.Energy + data.Amount,
+	})
+}
+
+func (s *Service) ModifySP(data info.ModifySP) error {
+	old := s.sp
+	s.sp += data.Amount
+	if s.sp > 5 {
+		s.sp = 5
+	} else if s.sp < 0 {
+		s.sp = 0
+	}
+	return s.emitSPChange(data.Key, data.Source, old, s.sp)
 }

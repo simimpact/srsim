@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	Skill key.Modifier = "bronya-skill"
+	Skill = "bronya-skill"
 )
 
 func init() {
@@ -19,7 +19,6 @@ func init() {
 }
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
-
 	// Try E1
 	c.e1()
 
@@ -32,7 +31,12 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 
 	// Action forward
 	if target != c.id {
-		c.engine.SetGauge(target, 0)
+		c.engine.SetGauge(info.ModifyAttribute{
+			Key:    Skill,
+			Target: target,
+			Source: c.id,
+			Amount: 0,
+		})
 	}
 
 	buffDuration := 1
@@ -54,5 +58,10 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	c.e2(target)
 
 	// Add energy
-	c.engine.ModifyEnergy(c.id, 30.0)
+	c.engine.ModifyEnergy(info.ModifyAttribute{
+		Key:    Skill,
+		Target: c.id,
+		Source: c.id,
+		Amount: 30.0,
+	})
 }

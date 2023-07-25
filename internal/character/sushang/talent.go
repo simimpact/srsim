@@ -26,7 +26,7 @@ func init() {
 }
 
 func (c *char) initTalent() {
-	c.engine.Events().StanceBreak.Subscribe(func(e event.StanceBreakEvent) {
+	c.engine.Events().StanceBreak.Subscribe(func(e event.StanceBreak) {
 		c.addTalentBuff()
 	})
 }
@@ -46,6 +46,6 @@ func (c *char) addTalentBuff() {
 	})
 }
 
-func talentOnAdd(mod *modifier.ModifierInstance) {
+func talentOnAdd(mod *modifier.Instance) {
 	mod.AddProperty(prop.SPDPercent, mod.Count()*mod.State().(float64))
 }

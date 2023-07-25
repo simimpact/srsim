@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	Freeze      key.Modifier = "common_freeze"
-	BreakFreeze key.Modifier = "break_freeze"
+	Freeze      = "common-freeze"
+	BreakFreeze = "break-freeze"
 )
 
 type FreezeState struct {
@@ -32,7 +32,7 @@ func init() {
 	})
 }
 
-func freezePhase1(mod *modifier.ModifierInstance) {
+func freezePhase1(mod *modifier.Instance) {
 	state, ok := mod.State().(FreezeState)
 	if !ok {
 		panic("incorrect state used for freeze modifier")
@@ -40,6 +40,7 @@ func freezePhase1(mod *modifier.ModifierInstance) {
 
 	// deal frozen damage
 	mod.Engine().Attack(info.Attack{
+		Key:        Freeze,
 		Source:     mod.Source(),
 		Targets:    []key.TargetID{mod.Owner()},
 		AttackType: model.AttackType_PURSUED,
@@ -53,6 +54,10 @@ func freezePhase1(mod *modifier.ModifierInstance) {
 
 	// if frozen is getting removed this turn, set their next turn to half-cost for the "thaw" effect
 	if mod.Duration() <= 1 {
-		mod.Engine().ModifyCurrentGaugeCost(0.5)
+		mod.Engine().ModifyCurrentGaugeCost(info.ModifyCurrentGaugeCost{
+			Key:    Freeze,
+			Source: mod.Source(),
+			Amount: 0.5,
+		})
 	}
 }

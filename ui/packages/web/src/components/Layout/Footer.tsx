@@ -20,12 +20,12 @@ export const Footer = () => {
 
   return (
     <div className={`w-full ${divider}`}>
-      <div className="px-5 xs:px-16 py-3 flex justify-center gap-2 2xl:mx-auto 2xl:container">
-        <div className="self-center text-right text-gray-400 text-xs grow shrink-0 w-2/3 max-w-fit">
+      <div className="xs:px-16 flex justify-center gap-2 px-5 py-3 2xl:container 2xl:mx-auto">
+        <div className="w-2/3 max-w-fit shrink-0 grow self-center text-right text-xs text-gray-400">
           {t("blah")}
         </div>
         <div className="m-[5px] border-x-[1px] border-[#fff3]" />
-        <div className="flex flex-wrap gap-x-4 gap-y-2 text-lg font-medium shrink grow-0">
+        <div className="flex shrink grow-0 flex-wrap gap-x-4 gap-y-2 text-lg font-medium">
           <IconContext.Provider value={{ size: "32px", color: "inherit" }}>
             <a
               className={linkClass}

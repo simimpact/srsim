@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	SubscribeforMore key.Modifier = "subscribe_for_more"
+	SubscribeforMore = "subscribe-for-more"
 )
 
 // Increases the DMG of the wearer's Basic ATK and Skill by 24/30/36/42/48%.
@@ -41,12 +41,12 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func onBeforeHit(mod *modifier.ModifierInstance, e event.HitStartEvent) {
+func onBeforeHit(mod *modifier.Instance, e event.HitStart) {
 	if e.Hit.AttackType == model.AttackType_NORMAL || e.Hit.AttackType == model.AttackType_SKILL {
 		amt := mod.State().(float64)
 		if e.Hit.Attacker.Energy() == e.Hit.Attacker.MaxEnergy() {
 			amt *= 2
 		}
-		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, amt)
+		e.Hit.Attacker.AddProperty(SubscribeforMore, prop.AllDamagePercent, amt)
 	}
 }
