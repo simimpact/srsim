@@ -19,7 +19,7 @@ func init() {
 		Traces:     traces,
 		SkillInfo: character.SkillInfo{
 			Attack: character.Attack{
-				SPAdd:      1,
+				SPAdd:      0,
 				TargetType: model.TargetType_ENEMIES,
 			},
 			Skill: character.Skill{

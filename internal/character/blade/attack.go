@@ -29,7 +29,22 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 				HitRatio:     hitRatio,
 			})
 		}
+
+		c.engine.ModifySP(info.ModifySP{
+			Key:    key.Reason(Normal),
+			Source: c.id,
+			Amount: 1,
+		})
 	} else {
+		c.engine.ModifyHPByRatio(info.ModifyHPByRatio{
+			Key:       key.Reason(EnhancedNormal),
+			Target:    c.id,
+			Source:    c.id,
+			Ratio:     -0.1,
+			RatioType: model.ModifyHPRatioType_MAX_HP,
+			Floor:     1,
+		})
+
 		// Primary Target
 		for i, hitRatio := range attackHits {
 			c.engine.Attack(info.Attack{
