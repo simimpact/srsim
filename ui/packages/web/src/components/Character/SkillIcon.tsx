@@ -1,5 +1,6 @@
 import { HTMLAttributes, forwardRef } from "react";
 import { AvatarSkillConfig } from "@/bindings/AvatarSkillConfig";
+import { Badge } from "../Primitives/Badge";
 import { Popover, PopoverContent, PopoverTrigger } from "../Primitives/Popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../Primitives/Tooltip";
 import { SkillDescription } from "./SkillDescription";
@@ -27,6 +28,11 @@ const SkillIcon = ({ disableTooltip = false, disablePopover = false, slv, ...pro
         />
       </PopoverTrigger>
       <PopoverContent className="w-[600px]">
+        <div className="text-lg font-semibold text-accent-foreground flex items-center gap-2">
+          <Badge className="h-fit p-1">{props.data.skill_type_desc}</Badge>
+          <span>{props.data.skill_name}</span>
+          {props.data.spneed?.value && <span>({props.data.spneed.value} Energy)</span>}
+        </div>
         <SkillDescription skillDesc={skill_desc} paramList={param_list} slv={slv ?? 0} />
       </PopoverContent>
     </Popover>

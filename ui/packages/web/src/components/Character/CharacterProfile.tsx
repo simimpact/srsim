@@ -11,7 +11,7 @@ import { useLightConeSearch } from "@/hooks/queries/useLightCone";
 import { useTraceTransformer } from "@/hooks/transform/useTraceTransformer";
 import { CharacterConfig } from "@/providers/temporarySimControlTypes";
 import { cn } from "@/utils/classname";
-import { LightConeInfo } from "../LightCone/LightConeInfo";
+import { ImpositionIcon } from "../LightCone/ImpositionIcon";
 import { LightConePortrait } from "../LightCone/LightConePortrait";
 import { Badge } from "../Primitives/Badge";
 import { Button } from "../Primitives/Button";
@@ -32,7 +32,7 @@ const CharacterProfile = ({ data: configData }: Props) => {
   const { traces } = useCharacterTrace(character?.avatar_id);
   const { lightCone } = useLightConeSearch(configData.light_cone.key);
   const { toFullTraces } = useTraceTransformer();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const relicHeight = useRef<HTMLDivElement>(null);
 
   if (!character || !lightCone) return null;
@@ -64,15 +64,11 @@ const CharacterProfile = ({ data: configData }: Props) => {
             {...character}
           />
 
-          <div>
-            {character.avatar_name} - {character.rarity} ✦
-          </div>
-          <div>
-            {character.damage_type} {character.avatar_base_type}
-          </div>
-
-          <div id="level">
-            Lv. {configData.level} / {configData.max_level}
+          <div className="font-bold text-xl flex flex-col justify-center">
+            <span className="text-center">{character.avatar_name}</span>
+            <span className="text-lg text-center">
+              Lv. {configData.level} / {configData.max_level}
+            </span>
           </div>
         </div>
 
@@ -123,11 +119,26 @@ const CharacterProfile = ({ data: configData }: Props) => {
             name={lightConeMetadata.equipment_name}
             imgUrl={lightConeIconUrl(lightConeMetadata.equipment_id)}
           /> */}
-          <div className="p-6">
-            <LightConePortrait data={lightCone} />
+          <div className="flex flex-col justify-center items-center">
+            <div className="font-bold text-xl flex flex-col justify-center">
+              <span className="text-center">{lightCone.equipment_name}</span>
+
+              <div className="text-lg flex gap-2 justify-center items-center">
+                <span>
+                  Lv. {light_cone.level} / {light_cone.max_level}
+                </span>
+
+                <ImpositionIcon imposition={light_cone.imposition} />
+              </div>
+            </div>
+
+            <div className="p-6">
+              <LightConePortrait data={lightCone} />
+            </div>
           </div>
         </div>
 
+        {/*
         <LightConeInfo
           id="lc-info"
           className="col-span-9 flex flex-col"
@@ -136,6 +147,7 @@ const CharacterProfile = ({ data: configData }: Props) => {
           currentLevel={light_cone.level}
           maxLevel={light_cone.max_level}
         />
+        */}
       </div>
 
       <CharacterStatTable
@@ -147,15 +159,17 @@ const CharacterProfile = ({ data: configData }: Props) => {
       <div id="right-relic" className="col-span-3 flex flex-col gap-2">
         <div id="relic-block" className="relative flex flex-col gap-4">
           <div id="4p" className="flex flex-col gap-2" ref={relicHeight}>
-            {configData.relics?.slice(0, 4).map((relic, index) => (
-              <RelicItem key={index} data={relic} mockIndex={index} />
-            ))}
+            {configData.relics
+              ?.slice(0, 4)
+              .map((relic, index) => <RelicItem key={index} data={relic} mockIndex={index} />)}
           </div>
 
           <div id="2p" className="flex flex-col gap-2">
-            {configData.relics?.slice(-2).map((relic, index) => (
-              <RelicItem key={index} data={relic} mockIndex={index} asSet />
-            ))}
+            {configData.relics
+              ?.slice(-2)
+              .map((relic, index) => (
+                <RelicItem key={index} data={relic} mockIndex={index} asSet />
+              ))}
           </div>
 
           <p
