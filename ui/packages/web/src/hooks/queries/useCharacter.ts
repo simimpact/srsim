@@ -41,7 +41,7 @@ export function useCharacterTrace(characterId: number | undefined) {
 export function useCharacterSearch(name: string | undefined) {
   const query = useQuery({
     queryKey: ["character", name],
-    queryFn: async () => await API.characterSearch.get(),
+    queryFn: async () => await API.characterSearch.get(name),
     enabled: !!name,
   });
 
