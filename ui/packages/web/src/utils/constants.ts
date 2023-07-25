@@ -22,7 +22,6 @@ const API = {
   eidolon: route<List<AvatarRankConfig>>("/honkai/avatar/:id/eidolon", "GET"),
   trace: route<List<SkillTreeConfig>>("/honkai/avatar/:id/trace", "GET"),
   relicSet: route<RelicSetConfig>("/honkai/relic_set/search/:id", "GET"),
-  dev: route<RelicSetConfig>("/honkai/avatar/123123/promotion", "GET"),
 };
 
 export interface List<T> {
