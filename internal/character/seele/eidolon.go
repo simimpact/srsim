@@ -10,10 +10,10 @@ import (
 )
 
 const (
-	E1Check  key.Modifier = "seele-e1-check"
-	E4                    = "seele-e4-check"
-	E6                    = "seele-e6"
-	E6Debuff              = "seele-e6-debuff"
+	E1Check  = "seele-e1-check"
+	E4       = "seele-e4"
+	E6       = "seele-e6"
+	E6Debuff = "seele-e6-debuff"
 )
 
 // E1 : When dealing DMG to an enemy whose HP percentage is 80% or lower,
