@@ -50,6 +50,7 @@ export interface AvatarSkillConfig {
   skill_type_desc: string;
   spbase?: Param | null;
   spmultiple_ratio: Param;
+  spneed?: Param | null;
   stance_damage_type?: Element | null;
   ultra_skill_icon: AssetPath;
 }

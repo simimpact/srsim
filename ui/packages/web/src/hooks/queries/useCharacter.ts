@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import API from "@/utils/constants";
+import { useToastError } from "./useToastError";
 
 export function useCharacterSkill(characterId: number | undefined) {
   const query = useQuery({
@@ -7,6 +8,9 @@ export function useCharacterSkill(characterId: number | undefined) {
     queryFn: async () => await API.skillsByCharId.get(characterId),
     enabled: !!characterId,
   });
+
+  useToastError(query);
+
   return { skills: query.data?.list };
 }
 
@@ -16,6 +20,9 @@ export function useCharacterEidolon(characterId: number | undefined) {
     queryFn: async () => await API.eidolon.get(characterId),
     enabled: !!characterId,
   });
+
+  useToastError(query);
+
   return { eidolons: query.data?.list };
 }
 
@@ -25,6 +32,9 @@ export function useCharacterTrace(characterId: number | undefined) {
     queryFn: async () => await API.trace.get(characterId),
     enabled: !!characterId,
   });
+
+  useToastError(query);
+
   return { traces: query.data?.list };
 }
 
@@ -34,6 +44,8 @@ export function useCharacterSearch(name: string | undefined) {
     queryFn: async () => await API.characterSearch.get(name),
     enabled: !!name,
   });
+
+  useToastError(query);
 
   return { character: query.data };
 }

@@ -29,11 +29,7 @@ function DataTableInner<TData>(
   ref: ForwardedRef<HTMLDivElement>
 ) {
   return (
-    <div
-      ref={ref}
-      className={cn("border-muted-foreground rounded-md border", className)}
-      {...props}
-    >
+    <div ref={ref} className={cn("border-border rounded-md border", className)} {...props}>
       <Table className="border-separate border-spacing-0">
         <TableHeader
           className={cn(stickyHeader ? "[&_th]:bg-muted [&_th]:sticky [&_th]:top-0" : "")}
@@ -44,7 +40,7 @@ function DataTableInner<TData>(
                 return (
                   <TableHead
                     key={header.id}
-                    className="border-b-muted-foreground border-b"
+                    className="border-b-border border-b"
                     style={{
                       width:
                         header.getSize() === Number.MAX_SAFE_INTEGER ? "auto" : header.getSize(),
@@ -59,7 +55,7 @@ function DataTableInner<TData>(
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody className="[&_td]:border-b-muted-foreground [&_td]:border-b [&_tr:last-child_td]:border-0">
+        <TableBody className="[&_td]:border-b-border [&_td]:border-b [&_tr:last-child_td]:border-0">
           {table.getRowModel().rows.length ? (
             table.getRowModel().rows.map(row => (
               <Fragment key={row.id}>
@@ -89,7 +85,7 @@ function DataTableInner<TData>(
               </Fragment>
             ))
           ) : (
-            <TableRow className="[&_tr]:border-muted-foreground">
+            <TableRow className="[&_tr]:border-border">
               <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center">
                 No results. Please run the simulation
               </TableCell>

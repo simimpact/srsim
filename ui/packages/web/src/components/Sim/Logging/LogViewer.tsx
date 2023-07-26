@@ -17,7 +17,7 @@ const LogViewer = ({ placeholder }: Props) => {
   const { simulationData, simulationResult, getResult } = useContext(SimControlContext);
 
   return (
-    <div>
+    <div className="w-full">
       <Tabs value={tab ?? "log"} onValueChange={setTab}>
         <TabsList className="h-full w-full">
           <TabsTrigger value="log" className="w-full">

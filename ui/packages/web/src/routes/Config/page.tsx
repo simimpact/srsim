@@ -62,8 +62,8 @@ const Config = () => {
                 </TabsTrigger>
               </TabsList>
 
-              <div className="bg-muted my-2 rounded-md p-2 px-4">
-                <TabsContent value="profile">
+              <div className="my-2 rounded-md border px-2">
+                <TabsContent value="profile" className="my-2">
                   {currentCharacterConfig && <CharacterProfile data={currentCharacterConfig} />}
                 </TabsContent>
                 <TabsContent value="relic">todo</TabsContent>
