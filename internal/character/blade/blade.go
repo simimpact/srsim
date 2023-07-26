@@ -27,6 +27,10 @@ func init() {
 			Skill: character.Skill{
 				SPNeed:     1,
 				TargetType: model.TargetType_SELF,
+				CanUse: func(engine engine.Engine, instance info.CharInstance) bool {
+					c := instance.(*char)
+					return (!c.engine.HasModifier(c.id, Hellscape))
+				},
 			},
 			Ult: character.Ult{
 				TargetType: model.TargetType_ENEMIES,
