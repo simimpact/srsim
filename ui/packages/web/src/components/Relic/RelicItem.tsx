@@ -5,20 +5,19 @@ import { asPercentage } from "@/utils/helpers";
 import { Badge } from "../Primitives/Badge";
 import { Separator } from "../Primitives/Separator";
 
+type RelicType = "HEAD" | "HAND" | "BODY" | "FOOT" | "OBJECT" | "NECK" | undefined;
 interface Props {
   data: Relic;
-  mockIndex: number;
-  asSet?: boolean;
+  type: RelicType;
 }
-const RelicItem = ({ data, mockIndex, asSet = false }: Props) => {
+const RelicItem = ({ data, type }: Props) => {
   const { relicSetConfig } = useRelicSearch(data.key);
 
   if (!relicSetConfig) return null;
 
-  // TODO: render case for isSet
   return (
     <div className="flex rounded-md border p-2">
-      <img src={url(relicSetConfig.set_id, mockIndex, asSet)} width={96} height={96} />
+      <img src={url(relicSetConfig.set_id, type)} width={96} height={96} />
 
       <Badge className="-ml-4 h-min rounded-full px-1">+15</Badge>
 
@@ -54,8 +53,30 @@ const RelicItem = ({ data, mockIndex, asSet = false }: Props) => {
   );
 };
 
-function url(setId: number, mockIndex: number, isSet: boolean) {
-  const value = isSet ? setId : `${setId}_${mockIndex}`;
+function url(setId: number, type: RelicType | undefined) {
+  let index: number | undefined = undefined;
+  switch (type) {
+    case "HEAD":
+      index = 0;
+      break;
+    case "HAND":
+      index = 1;
+      break;
+    case "BODY":
+      index = 2;
+      break;
+    case "FOOT":
+      index = 3;
+      break;
+    case "OBJECT":
+      index = 0;
+      break;
+    case "NECK":
+      index = 1;
+      break;
+  }
+
+  const value = !index ? setId : `${setId}_${index}`;
   return `https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/relic/${value}.png`;
 }
 

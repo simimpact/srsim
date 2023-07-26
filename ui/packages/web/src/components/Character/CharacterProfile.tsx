@@ -1,3 +1,4 @@
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { cva } from "class-variance-authority";
 import { useRef, useState } from "react";
 import { AvatarSkillConfig, SkillType } from "@/bindings/AvatarSkillConfig";
@@ -8,14 +9,17 @@ import {
   useCharacterTrace,
 } from "@/hooks/queries/useCharacter";
 import { useLightConeSearch } from "@/hooks/queries/useLightCone";
+import { useRelicAnalyze } from "@/hooks/transform/useRelic";
 import { useTraceTransformer } from "@/hooks/transform/useTraceTransformer";
 import { CharacterConfig } from "@/providers/temporarySimControlTypes";
 import { cn } from "@/utils/classname";
+import API from "@/utils/constants";
 import { ImpositionIcon } from "../LightCone/ImpositionIcon";
 import { LightConePortrait } from "../LightCone/LightConePortrait";
 import { Badge } from "../Primitives/Badge";
 import { Button } from "../Primitives/Button";
 import { RelicItem } from "../Relic/RelicItem";
+import { RelicSetBonus } from "../Relic/RelicSetBonus";
 import { CharacterFloatCard } from "./CharacterFloatCard";
 import { CharacterStatTable } from "./CharacterStatTable";
 import { EidolonIcon } from "./EidolonIcon";
@@ -34,6 +38,23 @@ const CharacterProfile = ({ data: configData }: Props) => {
   const { toFullTraces } = useTraceTransformer();
   const [open, setOpen] = useState(false);
   const relicHeight = useRef<HTMLDivElement>(null);
+  const { planarData, cavernData, setBonuses } = useRelicAnalyze(configData.relics);
+  console.log(configData.relics);
+
+  const relicMetadataQuery = useQueries({
+    queries: setBonuses.map(e => ({
+      queryKey: ["relicSet", e.setKey],
+      queryFn: async () => await API.relicSet.get(e.setKey),
+    })),
+  });
+
+  const relicIds = relicMetadataQuery.map(e => e.data?.set_id);
+  const relicBonusQuery = useQuery({
+    queryKey: ["relicBonuses", relicIds],
+    queryFn: async () =>
+      await API.relicSetBonuses.post({ payload: { list: relicIds.map(e => e ?? 101) } }),
+    enabled: relicIds.every(e => !!e),
+  });
 
   if (!character || !lightCone) return null;
 
@@ -61,12 +82,14 @@ const CharacterProfile = ({ data: configData }: Props) => {
           <CharacterFloatCard
             className="p-6"
             imgUrl={`https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/image/character_preview/${character.avatar_id}.png`}
-            {...character}
+            rarity={character.rarity}
+            avatar_base_type={character.avatar_base_type}
+            avatar_name={character.avatar_name}
           />
 
-          <div className="font-bold text-xl flex flex-col justify-center">
+          <div className="flex flex-col justify-center text-xl font-bold">
             <span className="text-center">{character.avatar_name}</span>
-            <span className="text-lg text-center">
+            <span className="text-center text-lg">
               Lv. {configData.level} / {configData.max_level}
             </span>
           </div>
@@ -119,11 +142,11 @@ const CharacterProfile = ({ data: configData }: Props) => {
             name={lightConeMetadata.equipment_name}
             imgUrl={lightConeIconUrl(lightConeMetadata.equipment_id)}
           /> */}
-          <div className="flex flex-col justify-center items-center">
-            <div className="font-bold text-xl flex flex-col justify-center">
+          <div className="flex flex-col items-center justify-center">
+            <div className="flex flex-col justify-center text-xl font-bold">
               <span className="text-center">{lightCone.equipment_name}</span>
 
-              <div className="text-lg flex gap-2 justify-center items-center">
+              <div className="flex items-center justify-center gap-2 text-lg">
                 <span>
                   Lv. {light_cone.level} / {light_cone.max_level}
                 </span>
@@ -152,38 +175,39 @@ const CharacterProfile = ({ data: configData }: Props) => {
 
       <CharacterStatTable
         id="mid-stats"
-        className="col-span-3 grid h-fit grid-cols-2 gap-y-2 rounded-md border p-2"
+        className="col-span-3 grid h-fit grid-cols-6 gap-y-2 rounded-md border p-2"
         style={{ height: relicHeight.current?.clientHeight ?? "auto" }}
       />
 
       <div id="right-relic" className="col-span-3 flex flex-col gap-2">
         <div id="relic-block" className="relative flex flex-col gap-4">
           <div id="4p" className="flex flex-col gap-2" ref={relicHeight}>
-            {configData.relics
-              ?.slice(0, 4)
-              .map((relic, index) => <RelicItem key={index} data={relic} mockIndex={index} />)}
+            {cavernData.map(({ relic, ttype }, index) => (
+              <RelicItem key={index} data={relic} type={ttype} />
+            ))}
           </div>
 
           <div id="2p" className="flex flex-col gap-2">
-            {configData.relics
-              ?.slice(-2)
-              .map((relic, index) => (
-                <RelicItem key={index} data={relic} mockIndex={index} asSet />
-              ))}
+            {planarData.map(({ relic, ttype }, index) => (
+              <RelicItem key={index} data={relic} type={ttype} />
+            ))}
           </div>
 
-          <p
+          <div
             className={cn(
               "bg-background/80 absolute h-full w-full rounded-md p-4 transition-all duration-500 ease-in-out",
               open ? "opacity-100" : "opacity-0"
             )}
           >
-            2pc Set Effect <br />
-            Increases Lightning DMG by 10%. <br />
-            4pc Set Effect <br />
-            When the wearer uses their Skill, increases the wearer
-            {"'"}s ATK by 20% for 1 turn(s).
-          </p>
+            {setBonuses.map(({ pieceActivated }, index) => (
+              <RelicSetBonus
+                key={index}
+                pieceActivated={pieceActivated}
+                bonusCfg={relicBonusQuery.data?.list.find(e => e.set_id === relicIds[index])}
+                setCfg={relicMetadataQuery[index].data}
+              />
+            ))}
+          </div>
         </div>
 
         <Button onClick={() => setOpen(!open)}>Set Bonuses</Button>

@@ -4,24 +4,26 @@ import { AvatarRankConfig } from "@/bindings/AvatarRankConfig";
 import { AvatarSkillConfig } from "@/bindings/AvatarSkillConfig";
 import { EquipmentConfig } from "@/bindings/EquipmentConfig";
 import { RelicSetConfig } from "@/bindings/RelicSetConfig";
+import { RelicSetSkillConfig } from "@/bindings/RelicSetSkillConfig";
 import { SkillTreeConfig } from "@/bindings/SkillTreeConfig";
 
 // NOTE: othi: ping me on discord if remote api is out of date/500/404s
-// export const OTHI_API = "https://api.othiremote.synology.me";
-export const OTHI_API = "http://127.0.0.1:5005";
+export const OTHI_API = "https://api.othiremote.synology.me";
+// export const OTHI_API = "http://127.0.0.1:5005";
 
 const API = {
   // WARN: :id does not actually mean id number, just a tag for regexing to
   // string params (`danheng` in characterSearch)
   characterSearch: route<AvatarConfig>("/honkai/character/search/:id", "GET"),
   lightConeSearch: route<EquipmentConfig>("/honkai/light_cone/search/:id", "GET"),
-  // mockHsrStat: route<MvpWrapper>("/utils/mock_hsr_stat", "GET"),
   skillsByCharId: route<List<AvatarSkillConfig>>("/honkai/avatar/:id/skill", "GET"),
   character: route<AvatarConfig>("/honkai/avatar", "GET"),
   properties: route<List<AvatarPropertyConfig>>("/honkai/properties", "GET"),
   eidolon: route<List<AvatarRankConfig>>("/honkai/avatar/:id/eidolon", "GET"),
   trace: route<List<SkillTreeConfig>>("/honkai/avatar/:id/trace", "GET"),
   relicSet: route<RelicSetConfig>("/honkai/relic_set/search/:id", "GET"),
+  relicSetBonuses: route<List<number>, List<RelicSetSkillConfig>>("/honkai/relic_set/bonus"),
+  relicSetBonus: route<RelicSetSkillConfig>("/honkai/relic_set/bonus/:id", "GET"),
 };
 
 export interface List<T> {

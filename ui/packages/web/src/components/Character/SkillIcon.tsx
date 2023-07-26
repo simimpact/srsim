@@ -20,7 +20,7 @@ const SkillIcon = ({ disableTooltip = false, disablePopover = false, slv, ...pro
   const { skill_desc, param_list } = props.data;
   return (
     <Popover>
-      <PopoverTrigger>
+      <PopoverTrigger asChild>
         <IconWithTooltip
           disableTooltip={disableTooltip}
           disablePopover={disablePopover}
@@ -28,7 +28,7 @@ const SkillIcon = ({ disableTooltip = false, disablePopover = false, slv, ...pro
         />
       </PopoverTrigger>
       <PopoverContent className="w-[600px]">
-        <div className="text-lg font-semibold text-accent-foreground flex items-center gap-2">
+        <div className="text-accent-foreground flex items-center gap-2 text-lg font-semibold">
           <Badge className="h-fit p-1">{props.data.skill_type_desc}</Badge>
           <span>{props.data.skill_name}</span>
           {props.data.spneed?.value && <span>({props.data.spneed.value} Energy)</span>}
