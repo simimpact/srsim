@@ -12,7 +12,7 @@ const (
 )
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
-	if c.engine.HasModifier(c.id, Hellscape) {
+	if !c.engine.HasModifier(c.id, Hellscape) {
 		c.engine.ModifyHPByRatio(info.ModifyHPByRatio{
 			Key:       key.Reason(Hellscape),
 			Target:    c.id,
