@@ -42,5 +42,7 @@ func reduceAggro(mod *modifier.Instance, e event.HPChange) {
 			Source: mod.Owner(),
 			Stats:  info.PropMap{prop.AggroPercent: -0.5},
 		})
+	} else {
+		mod.Engine().RemoveModifier(mod.Owner(), A2Aggro)
 	}
 }
