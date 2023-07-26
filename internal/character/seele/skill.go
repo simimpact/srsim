@@ -27,11 +27,9 @@ func init() {
 var skillHits = []float64{0.2, 0.1, 0.1, 0.6}
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
-	// add speed buff to self.
-	spdAmt := 0.25
+	// E2 : The SPD Boost effect of Seele's Skill can stack up to 2 time(s).
 	maxCountAmt := 1.0
 	countAddAmt := 0.0
-	// E2 : The SPD Boost effect of Seele's Skill can stack up to 2 time(s).
 	if c.info.Eidolon >= 2 {
 		maxCountAmt = 2.0
 		countAddAmt = 1.0
@@ -40,7 +38,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		Name:              SkillSpeedBuff,
 		Source:            c.id,
 		Duration:          2,
-		Stats:             info.PropMap{prop.SPDPercent: spdAmt},
+		Stats:             info.PropMap{prop.SPDPercent: 0.25},
 		MaxCount:          maxCountAmt,
 		CountAddWhenStack: countAddAmt,
 	})
