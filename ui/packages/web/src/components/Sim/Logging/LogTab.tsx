@@ -168,7 +168,7 @@ const LogTab = ({ data }: Props) => {
         <DataTable
           stickyHeader
           table={table}
-          className="bg-background h-[1000px] overflow-auto"
+          className="h-[1000px] overflow-auto"
           renderSubComponent={ExpandComponent}
         />
 

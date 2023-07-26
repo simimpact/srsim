@@ -16,8 +16,9 @@ const SimActionBar = () => {
   const verticalHelper = cva("w-full justify-center", {
     variants: {
       variant: {
-        run: "bg-green-500 data-[state=open]:bg-green-500/90 focus:bg-green-500/90",
-        destructive: "bg-red-500 data-[state=open]:bg-red-500/90 focus:bg-red-500/90",
+        run: "bg-green-500 data-[state=open]:bg-green-500/90 focus:bg-green-500/90 hover:bg-green-500/90",
+        destructive:
+          "bg-red-500 data-[state=open]:bg-red-500/90 focus:bg-red-500/90 hover:bg-red-500/90",
       },
     },
   });

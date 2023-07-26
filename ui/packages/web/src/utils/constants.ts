@@ -4,6 +4,7 @@ import { AvatarRankConfig } from "@/bindings/AvatarRankConfig";
 import { AvatarSkillConfig } from "@/bindings/AvatarSkillConfig";
 import { EquipmentConfig } from "@/bindings/EquipmentConfig";
 import { RelicSetConfig } from "@/bindings/RelicSetConfig";
+import { RelicSetSkillConfig } from "@/bindings/RelicSetSkillConfig";
 import { SkillTreeConfig } from "@/bindings/SkillTreeConfig";
 
 // NOTE: othi: ping me on discord if remote api is out of date/500/404s
@@ -15,13 +16,14 @@ const API = {
   // string params (`danheng` in characterSearch)
   characterSearch: route<AvatarConfig>("/honkai/character/search/:id", "GET"),
   lightConeSearch: route<EquipmentConfig>("/honkai/light_cone/search/:id", "GET"),
-  // mockHsrStat: route<MvpWrapper>("/utils/mock_hsr_stat", "GET"),
   skillsByCharId: route<List<AvatarSkillConfig>>("/honkai/avatar/:id/skill", "GET"),
   character: route<AvatarConfig>("/honkai/avatar", "GET"),
   properties: route<List<AvatarPropertyConfig>>("/honkai/properties", "GET"),
   eidolon: route<List<AvatarRankConfig>>("/honkai/avatar/:id/eidolon", "GET"),
   trace: route<List<SkillTreeConfig>>("/honkai/avatar/:id/trace", "GET"),
   relicSet: route<RelicSetConfig>("/honkai/relic_set/search/:id", "GET"),
+  relicSetBonuses: route<List<number>, List<RelicSetSkillConfig>>("/honkai/relic_set/bonus"),
+  relicSetBonus: route<RelicSetSkillConfig>("/honkai/relic_set/bonus/:id", "GET"),
 };
 
 export interface List<T> {
@@ -100,40 +102,48 @@ export async function serverFetch<TPayload, TResponse>(
 
   // POST
   if (opt) {
-    const { payload, method } = opt;
-    const body = JSON.stringify(payload);
-    const res = await fetch(url, {
-      body,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method,
-    });
+    try {
+      const { payload, method } = opt;
+      const body = JSON.stringify(payload);
+      const res = await fetch(url, {
+        body,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method,
+      });
 
-    if (res.ok) {
-      return res.json() as Promise<TResponse>;
-    } else {
-      console.error("api fetch failed, code:", res.status);
-      console.error("url:", url);
-      const errText = await res.text();
-      console.error("unknown error", errText);
-      return Promise.reject(`unknown error ${errText}`);
+      if (res.ok) {
+        return res.json() as Promise<TResponse>;
+      } else {
+        console.error("api fetch failed, code:", res.status);
+        console.error("url:", url);
+        const errText = await res.text();
+        console.error("unknown error", errText);
+        return Promise.reject(`unknown error ${errText}`);
+      }
+    } catch (error) {
+      return Promise.reject(String(error));
     }
   } else {
-    // GET
-    const res = await fetch(url, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "GET",
-    });
+    try {
+      // GET
+      const res = await fetch(url, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "GET",
+      });
 
-    if (res.ok) {
-      return res.json() as Promise<TResponse>;
-    } else {
-      console.error("api fetch failed, code:", res.status);
-      console.error("url:", url);
-      return Promise.reject(`unknown error ${await res.text()}`);
+      if (res.ok) {
+        return res.json() as Promise<TResponse>;
+      } else {
+        console.error("api fetch failed, code:", res.status);
+        console.error("url:", url);
+        return Promise.reject(`${await res.text()}`);
+      }
+    } catch (error) {
+      return Promise.reject(String(error));
     }
   }
 }
