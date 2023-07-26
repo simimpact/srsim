@@ -1,7 +1,6 @@
 package seele
 
 import (
-	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
@@ -35,20 +34,20 @@ func init() {
 	})
 }
 
-// add mod to add and check for resurgence turns
-func (c *char) talentActionEndListener(e event.ActionEnd) {
+// add mod to check for resurgence turns and add extra action
+func (c *char) initTalent() {
 	modState := state{
 		c:      c,
 		dmgAmt: talent[c.info.TalentLevelIndex()],
 	}
 	c.engine.AddModifier(c.id, info.Modifier{
 		Name:   Resurgence,
-		Source: e.Owner,
+		Source: c.id,
 		State:  &modState,
 	})
 }
 
-// add buffedState mod, add extra turn if turn not on resurgence
+// enter buffed state and add extra turn if not on resurgence
 func applyResurgence(mod *modifier.Instance, target key.TargetID) {
 	state := mod.State().(*state)
 	// A4 : While Seele is in the buffed state, her Quantum RES PEN increases by 20%.
@@ -56,7 +55,6 @@ func applyResurgence(mod *modifier.Instance, target key.TargetID) {
 	if state.c.info.Traces["102"] {
 		penAmt = 0.2
 	}
-	// add dmg% buff
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 		Name:   BuffedState,
 		Source: mod.Owner(),
@@ -65,14 +63,11 @@ func applyResurgence(mod *modifier.Instance, target key.TargetID) {
 			prop.QuantumPEN:       penAmt,
 		},
 	})
-	switch state.c.resurgence {
-	case true:
+	// if current turn is resurgence, don't add extra turn. otherwise add extra turn.
+	if state.c.resurgence {
 		state.c.resurgence = false
-	case false:
-		// enter resurgence turn.
+	} else {
 		state.c.resurgence = true
-
-		// TODO : implement extra turn mechanic here
 		state.c.engine.InsertAction(state.c.id)
 	}
 }

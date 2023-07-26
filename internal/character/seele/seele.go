@@ -52,8 +52,7 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 		resurgence: false,
 	}
 
-	// track resurgence turns
-	engine.Events().ActionEnd.Subscribe(c.talentActionEndListener)
+	c.initTalent()
 	c.initTraces()
 	c.initEidolons()
 
