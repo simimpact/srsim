@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { HelmetProvider } from "react-helmet-async";
 import { BrowserRouter } from "react-router-dom";
+import { Toaster } from "@/components/Primitives/Toast/Toaster";
 import { TooltipProvider } from "@/components/Primitives/Tooltip";
 import { SimControl } from "./SimControl";
 
@@ -17,19 +18,20 @@ const ErrorFallback = () => (
   </div>
 );
 const queryClient = new QueryClient({
-  defaultOptions: { queries: { refetchOnWindowFocus: false } },
+  defaultOptions: { queries: { refetchOnWindowFocus: false, retry: false } },
 });
 
 export const AppProvider = ({ children }: Props) => {
-  // const simControl = useSimControl();
-
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <HelmetProvider>
         <BrowserRouter>
           <QueryClientProvider client={queryClient}>
             <SimControl>
-              <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
+              <TooltipProvider delayDuration={0}>
+                {children}
+                <Toaster />
+              </TooltipProvider>
             </SimControl>
           </QueryClientProvider>
         </BrowserRouter>

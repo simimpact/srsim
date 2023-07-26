@@ -28,7 +28,12 @@ const CharacterLineup = ({ isEnemy = false, header, onCharacterSelect }: Props) 
   if (characterQueries.map(e => e.data).every(e => !e)) return null;
 
   return (
-    <div className={cn("flex flex-col rounded-md p-2", isEnemy ? "bg-destructive" : "bg-accent")}>
+    <div
+      className={cn(
+        "flex flex-col rounded-md p-2 border",
+        isEnemy ? "border border-destructive" : ""
+      )}
+    >
       {/* NOTE: CharacterCard is based for now, not yet implemented */}
       <div className="flex justify-center">{header}</div>
       <div className="flex gap-2">

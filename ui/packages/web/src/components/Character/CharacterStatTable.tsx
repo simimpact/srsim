@@ -40,16 +40,22 @@ const CharacterStatTable = forwardRef<HTMLDivElement, Props>(
       <div className={className} ref={ref} {...props}>
         {MOCK_DATA.map(({ prop: property, label, val: value, bonus, merge }) => (
           <Fragment key={property}>
-            <div className="flex">
-              <img src={iconUrl(property)} alt={property} className="invert-0 dark:invert" />
+            <div className="col-span-4 flex items-center gap-2">
+              <img
+                src={iconUrl(property)}
+                alt={property}
+                width={24}
+                height={24}
+                className="aspect-square h-6 w-6 invert-0 dark:invert"
+              />
               <div>{label}</div>
             </div>
             {merge ? (
-              <span>
+              <span className="col-span-2">
                 {getPropertyMap(property).isPercent ? asPercentage(value + bonus) : value + bonus}
               </span>
             ) : (
-              <span className="whitespace-nowrap">
+              <span className="col-span-2 whitespace-nowrap">
                 {value} + <span className="text-wind">{bonus}</span>{" "}
                 {getPropertyMap(property).isPercent && "%"}
               </span>

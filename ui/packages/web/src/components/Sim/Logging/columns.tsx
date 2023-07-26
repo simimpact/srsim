@@ -94,7 +94,7 @@ export const columns = [
           <SheetHeader>
             <SheetTitle>{getValue()}</SheetTitle>
           </SheetHeader>
-          <p>{JSON.stringify(row, null, 2)}</p>
+          <p>{JSON.stringify(row.original, null, 2)}</p>
         </SheetContent>
       </Sheet>
     ),

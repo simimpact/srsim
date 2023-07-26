@@ -28,7 +28,7 @@ export const IconMap = {
   SPD_PERCENT: "IconSpeed",
   SPD_FLAT: "IconSpeed",
   SPD_CONVERT: "IconSpeed",
-  CRIT_CHANCE: "IconCriticalDamage",
+  CRIT_CHANCE: "IconCriticalChance",
   CRIT_DMG: "IconCriticalDamage",
   ENERGY_REGEN: "IconEnergyRecovery",
   ENERGY_REGEN_CONVERT: "IconEnergyLimit",

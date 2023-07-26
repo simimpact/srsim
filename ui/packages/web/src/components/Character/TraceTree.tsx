@@ -1,17 +1,37 @@
+import { cva } from "class-variance-authority";
 import { HTMLAttributes, forwardRef } from "react";
 import { Path } from "@/bindings/AvatarConfig";
 import { SkillTreeConfig } from "@/bindings/SkillTreeConfig";
 import { cn } from "@/utils/classname";
 import { Popover, PopoverContent, PopoverTrigger } from "../Primitives/Popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../Primitives/Tooltip";
+import { SkillDescription } from "./SkillDescription";
 
 interface Props {
   traces: SkillTreeConfig[];
   bigTraceAscension: number;
   path: Path;
   charTraces: number[];
+  emptyBigTrace?: boolean;
 }
-const TraceTree = ({ bigTraceAscension, traces, path, charTraces }: Props) => {
+
+const iconWrapVariant = cva("flex flex-col items-center", {
+  variants: {
+    variant: {
+      SMALL: "",
+      BIG: "bg-zinc-300",
+      CORE: "",
+    },
+  },
+});
+
+const TraceTree = ({
+  bigTraceAscension,
+  traces,
+  path,
+  charTraces,
+  emptyBigTrace = false,
+}: Props) => {
   const toRenderTraces = pointTable(path)
     .find(e => e.ascension === bigTraceAscension)
     ?.points.map(
@@ -19,21 +39,41 @@ const TraceTree = ({ bigTraceAscension, traces, path, charTraces }: Props) => {
     );
 
   return (
-    <div className="flex flex-col items-center">
-      {toRenderTraces?.map((traceNode, index) => (
-        <Popover key={index}>
-          <PopoverTrigger asChild>
-            <IconWithTooltip
-              node={traceNode}
-              className={cn(
-                "rounded-full invert dark:invert-0",
-                !charTraces.includes(traceNode.point_id) ? "brightness-[.25]" : ""
-              )}
-            />
-          </PopoverTrigger>
-          <PopoverContent>{traceNode.point_id}</PopoverContent>
-        </Popover>
-      ))}
+    <div className={cn("flex flex-col items-center gap-2", emptyBigTrace ? "pt-[56px]" : "")}>
+      {toRenderTraces?.map((traceNode, index) =>
+        getNodeType(traceNode) !== "SMALL" ? (
+          <Popover key={index}>
+            <PopoverTrigger asChild>
+              <IconWithTooltip
+                node={traceNode}
+                className={cn(
+                  "rounded-full invert dark:invert-0",
+                  !charTraces.includes(traceNode.point_id) ? "brightness-[.25]" : ""
+                )}
+              />
+            </PopoverTrigger>
+            <PopoverContent className="w-96">
+              <span className="text-lg font-semibold text-accent-foreground">
+                {traceNode.point_name}
+              </span>
+              <SkillDescription
+                skillDesc={traceNode.point_desc}
+                paramList={traceNode.param_list}
+                slv={0}
+              />
+            </PopoverContent>
+          </Popover>
+        ) : (
+          <IconWithTooltip
+            key={index}
+            node={traceNode}
+            className={cn(
+              "rounded-full invert dark:invert-0",
+              !charTraces.includes(traceNode.point_id) ? "brightness-[.25]" : ""
+            )}
+          />
+        )
+      )}
     </div>
   );
 };
@@ -43,19 +83,28 @@ interface IconProps extends HTMLAttributes<HTMLButtonElement> {
 }
 const IconWithTooltip = forwardRef<HTMLButtonElement, IconProps>(
   ({ node, className, ...props }, ref) => (
-    <Tooltip>
+    <Tooltip disableHoverableContent>
       <TooltipTrigger asChild>
-        <button ref={ref} className={cn("flex flex-col items-center", className)} {...props}>
-          <img src={traceIconUrl(node)} alt={String(node.point_id)} width={32} height={32} />
+        <button
+          ref={ref}
+          className={cn(iconWrapVariant({ variant: getNodeType(node) }), className)}
+          {...props}
+        >
+          <img
+            src={traceIconUrl(node)}
+            alt={String(node.point_id)}
+            width={getNodeType(node) === "BIG" ? 48 : 32}
+            height={getNodeType(node) === "BIG" ? 48 : 32}
+            className={getNodeType(node) === "BIG" ? "invert" : ""}
+          />
           {/* percentage */}
           {asPercentage(node)}
         </button>
       </TooltipTrigger>
-      <TooltipContent>{node.point_name}</TooltipContent>
+      <TooltipContent className="select-none">{node.point_name}</TooltipContent>
     </Tooltip>
   )
 );
-IconWithTooltip.displayName = "IconWithTooltip";
 
 function getNodeType(node: SkillTreeConfig): "CORE" | "SMALL" | "BIG" {
   if (node.icon_path.includes("_SkillTree")) return "BIG";
