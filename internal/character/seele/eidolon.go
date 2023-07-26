@@ -31,6 +31,7 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: boostCR,
 		},
+		CanModifySnapshot: true,
 	})
 	modifier.Register(E4, modifier.Config{
 		Listeners: modifier.Listeners{
@@ -40,12 +41,12 @@ func init() {
 	modifier.Register(E6, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAfterAttack: inflictDebuffOnUlt,
+			OnBeforeDying: removeDebuffOnEnemies,
 		},
 	})
 
 	modifier.Register(E6Debuff, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeAction:       removeMod,
 			OnAfterBeingAttacked: addPursuedDmg,
 		},
 		StatusType: model.StatusType_STATUS_DEBUFF,
@@ -100,12 +101,11 @@ func inflictDebuffOnUlt(mod *modifier.Instance, e event.AttackEnd) {
 	})
 }
 
-func removeMod(mod *modifier.Instance, e event.ActionStart) {
-	mod.Engine().Events().TargetDeath.Subscribe(func(event event.TargetDeath) {
-		if event.Target == mod.Source() {
-			mod.RemoveSelf()
-		}
-	})
+// when seele is dying, remove all instances of e6 debuffs on all enemies.
+func removeDebuffOnEnemies(mod *modifier.Instance) {
+	for _, enemy := range mod.Engine().Enemies() {
+		mod.Engine().RemoveModifier(enemy, E6Debuff)
+	}
 }
 
 func addPursuedDmg(mod *modifier.Instance, e event.AttackEnd) {
