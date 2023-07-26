@@ -38,17 +38,24 @@ func init() {
 }
 
 type char struct {
-	engine engine.Engine
-	id     key.TargetID
-	info   info.Character
+	engine     engine.Engine
+	id         key.TargetID
+	info       info.Character
+	resurgence bool
 }
 
 func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character) info.CharInstance {
 	c := &char{
-		engine: engine,
-		id:     id,
-		info:   charInfo,
+		engine:     engine,
+		id:         id,
+		info:       charInfo,
+		resurgence: false,
 	}
+
+	// track resurgence turns
+	engine.Events().ActionEnd.Subscribe(c.talentActionEndListener)
+	c.initTraces()
+	c.initEidolons()
 
 	return c
 }

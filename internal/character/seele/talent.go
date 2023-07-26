@@ -14,8 +14,8 @@ const (
 )
 
 type state struct {
-	isResurgence bool
-	dmgAmt       float64
+	c      *char
+	dmgAmt float64
 }
 
 // Enters the buffed state upon defeating an enemy with Basic ATK, Skill, or Ultimate,
@@ -38,8 +38,8 @@ func init() {
 // add mod to add and check for resurgence turns
 func (c *char) talentActionEndListener(e event.ActionEnd) {
 	modState := state{
-		isResurgence: false,
-		dmgAmt:       talent[c.info.TalentLevelIndex()],
+		c:      c,
+		dmgAmt: talent[c.info.TalentLevelIndex()],
 	}
 	c.engine.AddModifier(c.id, info.Modifier{
 		Name:   Resurgence,
@@ -51,20 +51,28 @@ func (c *char) talentActionEndListener(e event.ActionEnd) {
 // add buffedState mod, add extra turn if turn not on resurgence
 func applyResurgence(mod *modifier.Instance, target key.TargetID) {
 	state := mod.State().(*state)
+	// A4 : While Seele is in the buffed state, her Quantum RES PEN increases by 20%.
+	penAmt := 0.0
+	if state.c.info.Traces["102"] {
+		penAmt = 0.2
+	}
 	// add dmg% buff
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 		Name:   BuffedState,
 		Source: mod.Owner(),
 		Stats: info.PropMap{
 			prop.AllDamagePercent: state.dmgAmt,
-			// A4 : While Seele is in the buffed state, her Quantum RES PEN increases by 20%.
-			prop.QuantumPEN: 0.2,
+			prop.QuantumPEN:       penAmt,
 		},
 	})
-	if !state.isResurgence {
+	switch state.c.resurgence {
+	case true:
+		state.c.resurgence = false
+	case false:
 		// enter resurgence turn.
-		state.isResurgence = true
+		state.c.resurgence = true
 
 		// TODO : implement extra turn mechanic here
+		state.c.engine.InsertAction(state.c.id)
 	}
 }
