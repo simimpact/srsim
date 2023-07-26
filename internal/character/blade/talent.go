@@ -14,6 +14,13 @@ const (
 )
 
 func (c *char) Talent() {
+	e6AddMod := 0.0
+
+	// E6
+	if c.info.Eidolon >= 6 {
+		e6AddMod = 0.5
+	}
+
 	// Follow-up Attack
 	c.engine.InsertAbility(info.Insert{
 		Execute: func() {
@@ -25,7 +32,7 @@ func (c *char) Talent() {
 				AttackType: model.AttackType_INSERT,
 				BaseDamage: info.DamageMap{
 					model.DamageFormula_BY_ATK:    talentAtk[c.info.TalentLevelIndex()],
-					model.DamageFormula_BY_MAX_HP: talentHP[c.info.TalentLevelIndex()],
+					model.DamageFormula_BY_MAX_HP: (talentHP[c.info.TalentLevelIndex()] + e6AddMod),
 				},
 				StanceDamage: 30.0,
 				EnergyGain:   10.0,

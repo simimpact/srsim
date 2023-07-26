@@ -1,6 +1,8 @@
 package blade
 
 import (
+	"math"
+
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
@@ -18,6 +20,15 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		Amount: c.engine.Stats(c.id).MaxHP() * 0.5,
 	})
 
+	hpTally := math.Min(c.hpLoss, 0.9*c.engine.Stats(c.id).MaxHP())
+
+	// TODO: Seperate Tally?
+	e1TallyMod := 0.0
+
+	if c.info.Eidolon >= 1 {
+		e1TallyMod = 1.5
+	}
+
 	// Primary Target
 	c.engine.Attack(info.Attack{
 		Key:        Ult,
@@ -29,7 +40,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			model.DamageFormula_BY_ATK:    ultSingleAtk[c.info.UltLevelIndex()],
 			model.DamageFormula_BY_MAX_HP: ultSingleHP[c.info.UltLevelIndex()],
 		},
-		DamageValue:  c.hpLoss * ultSingleTally[c.info.UltLevelIndex()],
+		DamageValue:  hpTally * (ultSingleTally[c.info.UltLevelIndex()] + e1TallyMod),
 		StanceDamage: 60.0,
 		EnergyGain:   5.0,
 	})
@@ -45,7 +56,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			model.DamageFormula_BY_ATK:    ultBlastAtk[c.info.UltLevelIndex()],
 			model.DamageFormula_BY_MAX_HP: ultBlastHP[c.info.UltLevelIndex()],
 		},
-		DamageValue:  c.hpLoss * ultBlastTally[c.info.UltLevelIndex()],
+		DamageValue:  hpTally * ultBlastTally[c.info.UltLevelIndex()],
 		StanceDamage: 60.0,
 	})
 

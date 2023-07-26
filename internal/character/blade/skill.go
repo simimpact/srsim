@@ -22,11 +22,18 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 			Floor:     1,
 		})
 
+		statsPropMap := info.PropMap{prop.AllDamagePercent: skill[c.info.SkillLevelIndex()]}
+
+		// E2
+		if c.info.Eidolon >= 2 {
+			statsPropMap.Modify(prop.CritChance, 0.15)
+		}
+
 		// TODO: Duration Behaviour?
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:     Hellscape,
 			Source:   c.id,
-			Stats:    info.PropMap{prop.AllDamagePercent: skill[c.info.SkillLevelIndex()]},
+			Stats:    statsPropMap,
 			Duration: 3,
 		})
 

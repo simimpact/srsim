@@ -4,6 +4,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/engine/target/character"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
@@ -47,6 +48,10 @@ type char struct {
 	maxCharge int
 }
 
+const (
+	E4 key.Modifier = "blade-e4"
+)
+
 func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character) info.CharInstance {
 	c := &char{
 		engine:    engine,
@@ -60,6 +65,8 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 	if c.info.Eidolon >= 6 {
 		c.maxCharge = 4
 	}
+
+	c.initTraces()
 
 	engine.Events().HPChange.Subscribe(c.hpLossListener)
 	engine.Events().AttackStart.Subscribe(c.onBeforeBeingHitListener)
@@ -96,4 +103,16 @@ func (c *char) hpLossListener(e event.HPChange) {
 
 	hpChange := e.NewHP - e.OldHP
 	c.hpLoss += hpChange
+
+	// E4
+	// TODO: Determine Timing?
+
+	if c.engine.HPRatio(c.id) <= 0.5 {
+		c.engine.AddModifier(c.id, info.Modifier{
+			Name:     E4,
+			Source:   c.id,
+			Stats:    info.PropMap{prop.HPPercent: 0.2},
+			MaxCount: 2,
+		})
+	}
 }
