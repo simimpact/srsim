@@ -12,31 +12,29 @@ const (
 )
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
-	if !c.engine.HasModifier(c.id, Hellscape) {
-		c.engine.ModifyHPByRatio(info.ModifyHPByRatio{
-			Key:       key.Reason(Hellscape),
-			Target:    c.id,
-			Source:    c.id,
-			Ratio:     -0.3,
-			RatioType: model.ModifyHPRatioType_MAX_HP,
-			Floor:     1,
-		})
+	c.engine.ModifyHPByRatio(info.ModifyHPByRatio{
+		Key:       key.Reason(Hellscape),
+		Target:    c.id,
+		Source:    c.id,
+		Ratio:     -0.3,
+		RatioType: model.ModifyHPRatioType_MAX_HP,
+		Floor:     1,
+	})
 
-		statsPropMap := info.PropMap{prop.AllDamagePercent: skill[c.info.SkillLevelIndex()]}
+	statsPropMap := info.PropMap{prop.AllDamagePercent: skill[c.info.SkillLevelIndex()]}
 
-		// E2
-		if c.info.Eidolon >= 2 {
-			statsPropMap.Modify(prop.CritChance, 0.15)
-		}
-
-		// TODO: Duration Behaviour?
-		c.engine.AddModifier(c.id, info.Modifier{
-			Name:     Hellscape,
-			Source:   c.id,
-			Stats:    statsPropMap,
-			Duration: 3,
-		})
-
-		c.engine.InsertAction(c.id)
+	// E2
+	if c.info.Eidolon >= 2 {
+		statsPropMap.Modify(prop.CritChance, 0.15)
 	}
+
+	// TODO: Duration Behaviour?
+	c.engine.AddModifier(c.id, info.Modifier{
+		Name:     Hellscape,
+		Source:   c.id,
+		Stats:    statsPropMap,
+		Duration: 3,
+	})
+
+	c.engine.InsertAction(c.id)
 }

@@ -29,7 +29,7 @@ func init() {
 				TargetType: model.TargetType_SELF,
 				CanUse: func(engine engine.Engine, instance info.CharInstance) bool {
 					c := instance.(*char)
-					return (!c.engine.HasModifier(c.id, Hellscape))
+					return !c.engine.HasModifier(c.id, Hellscape)
 				},
 			},
 			Ult: character.Ult{
