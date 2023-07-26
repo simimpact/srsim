@@ -26,6 +26,15 @@ func init() {
 	})
 }
 
+func (c *char) initTraces() {
+	if c.info.Traces["101"] {
+		c.engine.AddModifier(c.id, info.Modifier{
+			Name:   A2Check,
+			Source: c.id,
+		})
+	}
+}
+
 func reduceAggro(mod *modifier.Instance, e event.HPChange) {
 	if mod.Engine().HPRatio(mod.Owner()) <= 0.5 {
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{

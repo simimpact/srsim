@@ -31,6 +31,9 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 		})
 	}
 	// A6 : After using a Basic ATK, Seele's next action will be Advanced Forward by 20%.
+	if !c.info.Traces["103"] {
+		return
+	}
 	c.engine.ModifyCurrentGaugeCost(info.ModifyCurrentGaugeCost{
 		Key:    A2,
 		Source: c.id,

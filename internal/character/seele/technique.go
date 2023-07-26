@@ -18,13 +18,17 @@ const (
 // IMPL : ignore maze stealth. set to onBattleStart : add buffedState mod to seele.
 
 func (c *char) Technique(target key.TargetID, state info.ActionState) {
+	// A4 : While Seele is in the buffed state, her Quantum RES PEN increases by 20%.
+	resPenAmt := 0.0
+	if c.info.Traces["102"] {
+		resPenAmt = 0.2
+	}
 	c.engine.AddModifier(c.id, info.Modifier{
 		Name:   BuffedState,
 		Source: c.id,
 		Stats: info.PropMap{
 			prop.AllDamagePercent: talent[c.info.TalentLevelIndex()],
-			// A4 : While Seele is in the buffed state, her Quantum RES PEN increases by 20%.
-			prop.QuantumPEN: 0.2,
+			prop.QuantumPEN:       resPenAmt,
 		},
 	})
 	// add the minimal toughness damage atk? (observed effect, not in the DM?)
