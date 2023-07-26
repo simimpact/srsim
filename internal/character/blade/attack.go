@@ -6,8 +6,10 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-const Normal key.Attack = "blade-normal"
-const EnhancedNormal key.Attack = "blade-enhanced-normal"
+const (
+	Normal         key.Attack = "blade-normal"
+	EnhancedNormal key.Attack = "blade-enhanced-normal"
+)
 
 var attackHits = []float64{0.5, 0.5}
 
