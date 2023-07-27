@@ -15,6 +15,11 @@ const (
 	memories key.Modifier = "memories-of-the-past"
 )
 
+type state struct {
+	onCooldown bool
+	energyAmt  float64
+}
+
 // Increases the wearer's Break Effect by 28%. When the wearer attacks,
 // additionally regenerates 4 Energy. This effect can only be triggered 1 time per turn.
 
@@ -35,14 +40,17 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
+	modState := state{
+		onCooldown: false,
+		energyAmt:  3.0 + 1.0*float64(lc.Imposition),
+	}
 	beAmt := 0.21 + 0.07*float64(lc.Imposition)
-	energyAmt := 3.0 + 1.0*float64(lc.Imposition)
 
 	engine.AddModifier(owner, info.Modifier{
 		Name:   memories,
 		Source: owner,
 		Stats:  info.PropMap{prop.BreakEffect: beAmt},
-		State:  energyAmt,
+		State:  &modState,
 	})
 }
 
