@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	memories key.Modifier = "memories-of-the-past"
+	memories = "memories-of-the-past"
 )
 
 type state struct {
@@ -34,7 +34,7 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnAfterAttack: addEnergy,
 			// DM uses OnListenTurnEnd. try to imitate with normal and skill action check.
-			OnAfterAction: trackCooldown,
+			OnAfterAction: resetCooldown,
 		},
 	})
 }
@@ -56,10 +56,25 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 
 // add energy on attack IF not on cd.
 func addEnergy(mod *modifier.Instance, e event.AttackEnd) {
-
+	state := mod.State().(*state)
+	if state.onCooldown {
+		return
+	}
+	mod.Engine().ModifyEnergy(info.ModifyAttribute{
+		Key:    memories,
+		Target: mod.Owner(),
+		Source: mod.Owner(),
+		Amount: state.energyAmt,
+	})
+	// enter cd
+	state.onCooldown = true
 }
 
 // if action = basic/skill, reset cd.
-func trackCooldown(mod *modifier.Instance, e event.ActionEnd) {
-
+func resetCooldown(mod *modifier.Instance, e event.ActionEnd) {
+	state := mod.State().(*state)
+	if e.AttackType == model.AttackType_NORMAL ||
+		e.AttackType == model.AttackType_SKILL {
+		state.onCooldown = false
+	}
 }
