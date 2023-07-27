@@ -42,6 +42,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/erudition/theseriousnessofbreakfast"
 	_ "github.com/simimpact/srsim/internal/lightcone/erudition/todayisanotherpeacefulday"
 	_ "github.com/simimpact/srsim/internal/lightcone/harmony/chorus"
+	_ "github.com/simimpact/srsim/internal/lightcone/harmony/memoriesofthepast"
 	_ "github.com/simimpact/srsim/internal/lightcone/harmony/meshingcogs"
 	_ "github.com/simimpact/srsim/internal/lightcone/hunt/adversarial"
 	_ "github.com/simimpact/srsim/internal/lightcone/hunt/arrows"
