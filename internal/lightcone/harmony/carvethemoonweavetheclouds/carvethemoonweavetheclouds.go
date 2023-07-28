@@ -4,8 +4,16 @@ import (
 	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/equip/lightcone"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
+)
+
+const (
+	carveCheck key.Modifier = "carve-the-moon-weave-the-cloud"
+	carveAtk   key.Modifier = "carve-the-moon-weave-the-cloud-atk"
+	carveCDmg  key.Modifier = "carve-the-moon-weave-the-cloud-cdmg"
+	carveERR   key.Modifier = "carve-the-moon-weave-the-cloud-err"
 )
 
 // At the start of the battle and whenever the wearer's turn begins,
@@ -22,8 +30,34 @@ func init() {
 		Path:          model.Path_HARMONY,
 		Promotions:    promotions,
 	})
+	modifier.Register(carveCheck, modifier.Config{
+		Listeners: modifier.Listeners{
+			OnBeforeDying: removeBuffs,
+			OnPhase1:      applyTeamBuffRandomly,
+		},
+	})
+	modifier.Register(carveAtk, modifier.Config{
+		Stacking:   modifier.ReplaceBySource,
+		StatusType: model.StatusType_STATUS_BUFF,
+	})
+	modifier.Register(carveCDmg, modifier.Config{
+		Stacking:   modifier.ReplaceBySource,
+		StatusType: model.StatusType_STATUS_BUFF,
+	})
+	modifier.Register(carveERR, modifier.Config{
+		Stacking:   modifier.ReplaceBySource,
+		StatusType: model.StatusType_STATUS_BUFF,
+	})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
+
+}
+
+func removeBuffs(mod *modifier.Instance) {
+
+}
+
+func applyTeamBuffRandomly(mod *modifier.Instance) {
 
 }
