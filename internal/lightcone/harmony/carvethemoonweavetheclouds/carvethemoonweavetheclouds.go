@@ -13,9 +13,16 @@ import (
 const (
 	carveCheck key.Modifier = "carve-the-moon-weave-the-cloud"
 	carveAtk   key.Modifier = "carve-the-moon-weave-the-cloud-atk"
-	carveCDmg  key.Modifier = "carve-the-moon-weave-the-cloud-cdmg"
+	carveCDmg  key.Modifier = "carve-the-moon-weave-the-cloud-crit-dmg"
 	carveERR   key.Modifier = "carve-the-moon-weave-the-cloud-err"
 )
+
+type state struct {
+	currentBuff int
+	atkAmt      float64
+	cDmgAmt     float64
+	errAmt      float64
+}
 
 // At the start of the battle and whenever the wearer's turn begins,
 // one of the following effects is applied randomly: All allies' ATK increases by 10%,
@@ -52,16 +59,18 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	atkAmt := 0.075 + 0.025*float64(lc.Imposition)
-	cDmgAmt := 0.09 + 0.03*float64(lc.Imposition)
-	ErrAmt := 0.045 + 0.015*float64(lc.Imposition)
+	modState := state{
+		currentBuff: 0,
+		atkAmt:      0.075 + 0.025*float64(lc.Imposition),
+		cDmgAmt:     0.09 + 0.03*float64(lc.Imposition),
+		errAmt:      0.045 + 0.015*float64(lc.Imposition),
+	}
 
 	// add checker. apply random team buff once onBattleStart.
 	engine.AddModifier(owner, info.Modifier{
 		Name:   carveCheck,
 		Source: owner,
-		// TODO : add state struct.
-		State: 0.0,
+		State:  &modState,
 	})
 	engine.Events().BattleStart.Subscribe(func(event event.BattleStart) {
 		for _, char := range engine.Characters() {
