@@ -6,6 +6,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -17,11 +18,13 @@ const (
 	carveERR   key.Modifier = "carve-the-moon-weave-the-cloud-err"
 )
 
+type singleBuff struct {
+	name       key.Modifier
+	statsField info.PropMap
+}
 type state struct {
 	currentBuff int
-	atkAmt      float64
-	cDmgAmt     float64
-	errAmt      float64
+	buffList    []singleBuff
 }
 
 // At the start of the battle and whenever the wearer's turn begins,
@@ -59,22 +62,47 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
+	atkAmt := 0.075 + 0.025*float64(lc.Imposition)
+	cDmgAmt := 0.09 + 0.03*float64(lc.Imposition)
+	errAmt := 0.045 + 0.015*float64(lc.Imposition)
+	// init state. populate with default vals.
 	modState := state{
 		currentBuff: 0,
-		atkAmt:      0.075 + 0.025*float64(lc.Imposition),
-		cDmgAmt:     0.09 + 0.03*float64(lc.Imposition),
-		errAmt:      0.045 + 0.015*float64(lc.Imposition),
+		buffList: []singleBuff{
+			{
+				name:       carveAtk,
+				statsField: info.PropMap{prop.ATKPercent: atkAmt},
+			},
+			{
+				name:       carveCDmg,
+				statsField: info.PropMap{prop.CritDMG: cDmgAmt},
+			},
+			{
+				name:       carveERR,
+				statsField: info.PropMap{prop.EnergyRegen: errAmt},
+			},
+		},
 	}
 
-	// add checker. apply random team buff once onBattleStart.
+	// add checker.
 	engine.AddModifier(owner, info.Modifier{
 		Name:   carveCheck,
 		Source: owner,
 		State:  &modState,
 	})
+
+	// apply random team buff once onBattleStart.
 	engine.Events().BattleStart.Subscribe(func(event event.BattleStart) {
+		// randomly pick between 3 available buffs.
+		chosenBuff := engine.Rand().Intn(len(modState.buffList))
+
+		// add picked buff to all chars
 		for _, char := range engine.Characters() {
-			// take prev buff #, remove that instance, randomly add the other 2 buffs
+			engine.AddModifier(char, info.Modifier{
+				Name:   modState.buffList[chosenBuff].name,
+				Source: owner,
+				Stats:  modState.buffList[chosenBuff].statsField,
+			})
 		}
 	})
 }
