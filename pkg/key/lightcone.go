@@ -56,8 +56,9 @@ const (
 
 // Harmony
 const (
-	Chorus      LightCone = "chorus"
-	MeshingCogs LightCone = "meshing_cogs"
+	Chorus                     LightCone = "chorus"
+	MeshingCogs                LightCone = "meshing_cogs"
+	CarvetheMoonWeavetheClouds LightCone = "carve_the_moon_weave_the_clouds"
 )
 
 // Preservation
