@@ -3,6 +3,7 @@ package carvethemoonweavetheclouds
 import (
 	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/equip/lightcone"
+	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/key"
@@ -51,7 +52,22 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
+	atkAmt := 0.075 + 0.025*float64(lc.Imposition)
+	cDmgAmt := 0.09 + 0.03*float64(lc.Imposition)
+	ErrAmt := 0.045 + 0.015*float64(lc.Imposition)
 
+	// add checker. apply random team buff once onBattleStart.
+	engine.AddModifier(owner, info.Modifier{
+		Name:   carveCheck,
+		Source: owner,
+		// TODO : add state struct.
+		State: 0.0,
+	})
+	engine.Events().BattleStart.Subscribe(func(event event.BattleStart) {
+		for _, char := range engine.Characters() {
+			// take prev buff #, remove that instance, randomly add the other 2 buffs
+		}
+	})
 }
 
 func removeBuffs(mod *modifier.Instance) {
