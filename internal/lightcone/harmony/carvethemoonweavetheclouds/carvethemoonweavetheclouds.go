@@ -119,11 +119,32 @@ func removeBuffs(mod *modifier.Instance) {
 
 func applyTeamBuffRandomly(mod *modifier.Instance) {
 	// remove currently applied buff
+	for _, char := range mod.Engine().Characters() {
+		mod.Engine().RemoveModifierFromSource(char, mod.Owner(), carveAtk)
+		mod.Engine().RemoveModifierFromSource(char, mod.Owner(), carveCDmg)
+		mod.Engine().RemoveModifierFromSource(char, mod.Owner(), carveERR)
+	}
 
 	// create modstate slice (- previously applied buff)
+	state := mod.State().(*state)
+	var validBuffs []singleBuff
+	for _, buff := range state.buffList {
+		if buff.name != state.buffList[state.currentBuff].name {
+			validBuffs = append(validBuffs, buff)
+		}
+	}
 
 	// pick between qualified buffs
+	chosenBuff := mod.Engine().Rand().Intn(len(validBuffs))
 
 	// apply chosen buff to all chars
-
+	for _, char := range mod.Engine().Characters() {
+		mod.Engine().AddModifier(char, info.Modifier{
+			Name:   state.buffList[chosenBuff].name,
+			Source: mod.Owner(),
+			Stats:  state.buffList[chosenBuff].statsField,
+		})
+	}
+	// track current applied buff
+	state.currentBuff = chosenBuff
 }
