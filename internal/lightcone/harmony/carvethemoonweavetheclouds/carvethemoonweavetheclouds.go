@@ -104,13 +104,26 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 				Stats:  modState.buffList[chosenBuff].statsField,
 			})
 		}
+		// track current applied buff
+		modState.currentBuff = chosenBuff
 	})
 }
 
 func removeBuffs(mod *modifier.Instance) {
-
+	for _, char := range mod.Engine().Characters() {
+		mod.Engine().RemoveModifierFromSource(char, mod.Owner(), carveAtk)
+		mod.Engine().RemoveModifierFromSource(char, mod.Owner(), carveCDmg)
+		mod.Engine().RemoveModifierFromSource(char, mod.Owner(), carveERR)
+	}
 }
 
 func applyTeamBuffRandomly(mod *modifier.Instance) {
+	// remove currently applied buff
+
+	// create modstate slice (- previously applied buff)
+
+	// pick between qualified buffs
+
+	// apply chosen buff to all chars
 
 }
