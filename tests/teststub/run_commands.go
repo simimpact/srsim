@@ -20,15 +20,10 @@ func (s *Stub) SetAutoRun(cont bool) {
 
 // TerminateRun pipes a command with an astronomical AV to immediately exceed the cycle limit, ending the run
 func (s *Stub) TerminateRun() {
-	s.terminated = true
-	go func() {
-		s.turnPipe <- TurnCommand{Next: s.Characters.testChars[0].ID(), Av: 100000}
-	}()
+	s.Turn.queue(-1)
 }
 
-// NextTurn queues the next turn without using up any AV cost
-func (s *Stub) NextTurn(char *Character) {
-	go func() {
-		s.turnPipe <- TurnCommand{Next: char.ID(), Av: 0}
-	}()
+// QueueTurn queues the next turn without using up any AV cost
+func (s *Stub) QueueTurn(char *Character) {
+	s.Turn.queue(char.ID())
 }

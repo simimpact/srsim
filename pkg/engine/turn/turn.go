@@ -19,6 +19,7 @@ type Manager interface {
 	RemoveTarget(id key.TargetID)
 	StartTurn() (key.TargetID, float64, []event.TurnStatus, error)
 	ResetTurn() error
+	TurnOrder() []key.TargetID
 	engine.Turn
 }
 
@@ -71,6 +72,11 @@ func New(e *event.System, attr attribute.Getter) Manager {
 
 func (mgr *manager) TotalAV() float64 {
 	return mgr.totalAV
+}
+
+func (mgr *manager) TurnOrder() []key.TargetID {
+	// todo: implement issue 187
+	return nil
 }
 
 func (mgr *manager) target(id key.TargetID) *target {

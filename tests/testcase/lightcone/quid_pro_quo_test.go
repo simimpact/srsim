@@ -29,7 +29,7 @@ func (t *QPQTest) Test_EnergyAdd() {
 	t.SetAutoRun(false)
 	t.SetAutoContinue(false)
 	t.StartSimulation()
-	t.NextTurn(dummy)
+	t.QueueTurn(dummy)
 	t.Expect(turnstart.ExpectFor(), turnstart.CurrentTurnIs(dummy.ID()))
 	t.Continue()
 	t.Expect(turnend.ExpectFor())
