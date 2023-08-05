@@ -16,20 +16,16 @@ const (
 	MarchCounterAttack = "march7th-counter"
 )
 
-type counterState struct {
-	countersLeft   int
-	counterScaling float64
-}
-
 /*
-Note to self:
+Note:
 High level breakdown of how March's talent works, as far as I can tell from the DM:
 When March joins batttle, she is given a modifier that represents her actual talent.
 This modifier, when added, adds another modifier to all of March's teammates, which I called MarchAllyMark
 MarchAllyMark listens for whenever the person it is attached to is about to be attacked. If at least one of the targets in
 that attack is shielded, AND the attacker is an enenmy, add a modifier called MarchCounterMark to the attacker
 MarchCounterMark listens for when whoever it is attached to is done attacking.
-Afterwards, it tells March to counter attack. If successful, March will counter
+Afterwards, it tells March to counter attack. If successful, March will counter, and (?) remove
+one stack from the modifier that determines if march can counter or not
 MarchCounterMark will not be added to an enemy if March does not have enough counters left.
 March regenerates her counters on Phase2End.
 */
@@ -47,6 +43,11 @@ func init() {
 		},
 	})
 
+	modifier.Register(TalentCount, modifier.Config{
+		Count:    2,
+		MaxCount: 3,
+	})
+
 	//The actual talent modifier
 	modifier.Register(Talent, modifier.Config{
 		Listeners: modifier.Listeners{
@@ -59,11 +60,24 @@ func init() {
 				}
 			},
 			OnPhase2: func(mod *modifier.Instance) {
-				/*mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-					Name: TalentCount,
-				})*/
+				march7th, _ := mod.Engine().CharacterInfo(mod.Source())
+				talentCount := 2
+				if march7th.Eidolon >= 4 {
+					talentCount = 3
+				}
+				mod.Engine().AddModifier(mod.Owner(), info.Modifier{
+					Name:   TalentCount,
+					Source: mod.Source(),
+					Count:  float64(talentCount),
+				})
+
 				//TODO : Implement logic for keeping track of how many counters march has left, note below
 
+			},
+			OnBeforeDying: func(mod *modifier.Instance) {
+				for _, teammate := range mod.Engine().Characters() {
+					mod.Engine().RemoveModifier(teammate, MarchAllyMark)
+				}
 			},
 		},
 	})
@@ -77,17 +91,9 @@ func (c *char) initTalent() {
 	})
 }
 
-func (c *char) talentCounterListener(e event.CharactersAdded) {
-
-}
-
 func checkToApplyCounterMark(mod *modifier.Instance, e event.AttackStart) {
-	//Check all targets of any attack an enemy makes on someone holding the MarchAllyMark
-	atLeastOneTargetShielded := false
-	for _, target := range e.Targets {
-		atLeastOneTargetShielded = mod.Engine().IsShielded(target) || atLeastOneTargetShielded
-	}
-
+	hasEnoughCounterStacks := mod.Engine().HasModifier(mod.Source(), TalentCount)
+	qualifiesForCounter := mod.Engine().IsShielded(mod.Owner()) && mod.Engine().IsEnemy(e.Attacker) && hasEnoughCounterStacks
 	//TODO: Add support for checking how many counters March's talent has left:
 	/*
 		Thinking there are two main ways to do this:
@@ -99,7 +105,7 @@ func checkToApplyCounterMark(mod *modifier.Instance, e event.AttackStart) {
 		via the count/stacks, or the count/stacks of another modifier it creates/adds to March every Phase2 (Similar to DM)
 	*/
 
-	if atLeastOneTargetShielded && mod.Engine().IsEnemy(e.Attacker) {
+	if qualifiesForCounter {
 		mod.Engine().AddModifier(e.Attacker, info.Modifier{
 			Name:   MarchCounterMark,
 			Source: mod.Source(),
@@ -113,14 +119,21 @@ func talentCounterAttack(mod *modifier.Instance, e event.AttackEnd) {
 	mod.Engine().InsertAbility(info.Insert{
 		Key: MarchCounterAttack,
 		Execute: func() {
+			march7th, _ := mod.Engine().CharacterInfo(mod.Source())
 			mod.Engine().Attack(info.Attack{
 				Source:     mod.Source(),
 				Targets:    []key.TargetID{mod.Owner()},
 				AttackType: model.AttackType_INSERT,
 				DamageType: model.DamageType_ICE,
+				BaseDamage: info.DamageMap{
+					model.DamageFormula_BY_ATK: ult[march7th.TalentLevelIndex()],
+					model.DamageFormula_BY_DEF: 0.3,
+				},
 			})
 			//Remove this modifier from the enemy it is attached to
 			mod.Engine().RemoveModifier(mod.Owner(), MarchCounterMark)
+			//Probably not right
+			mod.Engine().ExtendModifierCount(mod.Source(), TalentCount, -1)
 		},
 		AbortFlags: []model.BehaviorFlag{
 			model.BehaviorFlag_DISABLE_ACTION,
