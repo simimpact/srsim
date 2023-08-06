@@ -9,6 +9,7 @@ import (
 
 const (
 	MarchUltFreeze = "march7th-ultfreeze"
+	Ult            = "march7th-ult"
 )
 
 func init() {
@@ -51,4 +52,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			Duration: 1,
 		})
 	}
+
+	c.e1()
+
 }
