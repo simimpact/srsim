@@ -48,7 +48,7 @@ func advForwardOnUlt(mod *modifier.Instance, e event.ActionEnd) {
 			Key:    dance,
 			Target: char,
 			Source: mod.Owner(),
-			Amount: mod.State().(float64),
+			Amount: -mod.State().(float64),
 		})
 	}
 }
