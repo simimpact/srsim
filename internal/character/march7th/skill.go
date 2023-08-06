@@ -35,7 +35,6 @@ func init() {
 				if mod.Engine().Stats(mod.Owner()).CurrentHPRatio() >= 30 {
 					mod.AddProperty(prop.AggroPercent, 5)
 				}
-
 			},
 			OnRemove: func(mod *modifier.Instance) {
 				mod.Engine().RemoveShield(Skill, mod.Owner())
@@ -57,12 +56,10 @@ func init() {
 			},
 		},
 	})
-
 }
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
-
-	//A2 check
+	// A2 check
 	if c.info.Traces["101"] {
 		c.engine.DispelStatus(target, info.Dispel{
 			Status: model.StatusType_STATUS_DEBUFF,
@@ -71,7 +68,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		})
 	}
 
-	//A4 check
+	// A4 check
 	shieldDur := 3
 	if c.info.Traces["102"] {
 		shieldDur += 1

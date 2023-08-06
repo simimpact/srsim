@@ -45,7 +45,6 @@ func (c *char) initEidolons() {
 		Name:   MarchE2,
 		Source: c.id,
 	})
-
 }
 
 func (c *char) e1() {
@@ -68,14 +67,14 @@ func determineE2Target(mod *modifier.Instance) {
 			lowestHpRatio = mod.Engine().HPRatio(Target)
 		}
 	}
-	E2Target := mod.Engine().Retarget(info.Retarget{
+	e2Target := mod.Engine().Retarget(info.Retarget{
 		Targets: mod.Engine().Characters(),
 		Max:     1,
 		Filter: func(target key.TargetID) bool {
 			return mod.Engine().HPRatio(target) == lowestHpRatio
 		},
 	})[0]
-	mod.Engine().AddModifier(E2Target, info.Modifier{
+	mod.Engine().AddModifier(e2Target, info.Modifier{
 		Name:     MarchE2Shield,
 		Source:   mod.Source(),
 		Duration: 3,

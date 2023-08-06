@@ -48,7 +48,7 @@ func init() {
 		MaxCount: 3,
 	})
 
-	//The actual talent modifier
+	// The actual talent modifier
 	modifier.Register(Talent, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.Instance) {
@@ -70,9 +70,7 @@ func init() {
 					Source: mod.Source(),
 					Count:  float64(talentCount),
 				})
-
-				//TODO : Implement logic for keeping track of how many counters march has left, note below
-
+				// TODO : Implement logic for keeping track of how many counters march has left, note below
 			},
 			OnBeforeDying: func(mod *modifier.Instance) {
 				for _, teammate := range mod.Engine().Characters() {
@@ -81,7 +79,6 @@ func init() {
 			},
 		},
 	})
-
 }
 
 func (c *char) initTalent() {
@@ -96,13 +93,11 @@ func checkToApplyCounterMark(mod *modifier.Instance, e event.AttackStart) {
 	qualifiesForCounter := mod.Engine().IsShielded(mod.Owner()) && mod.Engine().IsEnemy(e.Attacker) && hasEnoughCounterStacks
 	//TODO: Add support for checking how many counters March's talent has left:
 	/*
-		Thinking there are two main ways to do this:
-		First would be to have a state struct that keeps track of how many counters March has already shot. Do not think
-		this is a good way since there's no easy way to pass this information to each of the instances of the modifier march gives to her
-		teammates.
+	   Thinking there are two main ways to do this:
+	   First would be to have a state struct that keeps track of how many counters March has already shot. Do not think
+	   this is a good way since there's no easy way to pass this information to each of the instances of the modifier march gives to her                teammates.
 
-		Other better way I am leaning towards is to have March's talent modifier itself keep track of how many counters she has remaining
-		via the count/stacks, or the count/stacks of another modifier it creates/adds to March every Phase2 (Similar to DM)
+	   Other better way I am leaning towards is to have March's talent modifier itself keep track of how many counters she has remaining                via the count/stacks, or the count/stacks of another modifier it creates/adds to March every Phase2 (Similar to DM)
 	*/
 
 	if qualifiesForCounter {
@@ -115,24 +110,27 @@ func checkToApplyCounterMark(mod *modifier.Instance, e event.AttackStart) {
 
 // Actual counter attack logic
 func talentCounterAttack(mod *modifier.Instance, e event.AttackEnd) {
-	//Counter attack
+	// Counter attack
 	mod.Engine().InsertAbility(info.Insert{
-		Key: MarchCounterAttack,
+		Source:   mod.Source(),
+		Priority: info.CharInsertAttackSelf,
+		Key:      MarchCounterAttack,
 		Execute: func() {
 			march7th, _ := mod.Engine().CharacterInfo(mod.Source())
 			mod.Engine().Attack(info.Attack{
+				Key:        MarchCounterAttack,
 				Source:     mod.Source(),
 				Targets:    []key.TargetID{mod.Owner()},
 				AttackType: model.AttackType_INSERT,
 				DamageType: model.DamageType_ICE,
 				BaseDamage: info.DamageMap{
-					model.DamageFormula_BY_ATK: ult[march7th.TalentLevelIndex()],
+					model.DamageFormula_BY_ATK: talent[march7th.TalentLevelIndex()],
 					model.DamageFormula_BY_DEF: 0.3,
 				},
 			})
-			//Remove this modifier from the enemy it is attached to
+			// Remove this modifier from the enemy it is attached to
 			mod.Engine().RemoveModifier(mod.Owner(), MarchCounterMark)
-			//Probably not right
+			// Probably not right
 			mod.Engine().ExtendModifierCount(mod.Source(), TalentCount, -1)
 		},
 		AbortFlags: []model.BehaviorFlag{

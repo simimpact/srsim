@@ -25,6 +25,8 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 
 	for i, hitRatio := range ultHits {
 		c.engine.Attack(info.Attack{
+			Key:          Ult,
+			Source:       c.id,
 			Targets:      targets,
 			HitIndex:     i,
 			HitRatio:     hitRatio,
@@ -36,7 +38,6 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 				model.DamageFormula_BY_ATK: ult[c.info.UltLevelIndex()],
 			},
 		})
-
 	}
 
 	freezeChance := 0.5
@@ -52,7 +53,5 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			Duration: 1,
 		})
 	}
-
 	c.e1()
-
 }
