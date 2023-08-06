@@ -33,8 +33,6 @@ func init() {
 	modifier.Register(memories, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAfterAttack: addEnergy,
-			// DM uses OnListenTurnEnd. try to imitate with normal and skill action check.
-			OnAfterAction: resetCooldown,
 		},
 	})
 }
@@ -52,6 +50,17 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		Stats:  info.PropMap{prop.BreakEffect: beAmt},
 		State:  &modState,
 	})
+
+	// REPLACE : currently uses mod listener. change it to subscriber.
+	// NOTE : might want to change cooldown to a separate Mod.
+
+	// Resets CD on all turn end
+	engine.Events().TurnEnd.Subscribe(func(e event.TurnEnd) {
+		modState.onCooldown = false
+	})
+
+	// add energy on all attack end (for ults etc.)
+	// engine.Events().AttackEnd.Subscribe()
 }
 
 // add energy on attack IF not on cd.
@@ -68,13 +77,4 @@ func addEnergy(mod *modifier.Instance, e event.AttackEnd) {
 	})
 	// enter cd
 	state.onCooldown = true
-}
-
-// if action = basic/skill, reset cd.
-func resetCooldown(mod *modifier.Instance, e event.ActionEnd) {
-	state := mod.State().(*state)
-	if e.AttackType == model.AttackType_NORMAL ||
-		e.AttackType == model.AttackType_SKILL {
-		state.onCooldown = false
-	}
 }
