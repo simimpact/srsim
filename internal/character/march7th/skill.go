@@ -20,7 +20,7 @@ type shieldState struct {
 
 func init() {
 	modifier.Register(Skill, modifier.Config{
-		Duration: 2,
+		Duration: 3,
 		Stacking: modifier.Replace,
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.Instance) {
@@ -41,8 +41,8 @@ func init() {
 				mod.Engine().RemoveShield(Skill, mod.Owner())
 			},
 			OnPhase1: func(mod *modifier.Instance) {
-				owner, _ := mod.Engine().CharacterInfo(mod.Owner())
-				if owner.Eidolon >= 6 {
+				march7th, _ := mod.Engine().CharacterInfo(mod.Source())
+				if march7th.Eidolon >= 6 {
 					mod.Engine().Heal(info.Heal{
 						Key:     E6heal,
 						Targets: []key.TargetID{mod.Owner()},
@@ -62,7 +62,7 @@ func init() {
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
 
-	//Check if A2, to perform dispel
+	//A2 check
 	if c.info.Traces["101"] {
 		c.engine.DispelStatus(target, info.Dispel{
 			Status: model.StatusType_STATUS_DEBUFF,
@@ -87,4 +87,10 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		Duration: shieldDur,
 	})
 
+	c.engine.ModifyEnergy(info.ModifyAttribute{
+		Source: c.id,
+		Target: c.id,
+		Amount: 30,
+		Key:    Skill,
+	})
 }
