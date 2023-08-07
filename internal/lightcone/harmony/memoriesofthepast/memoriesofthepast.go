@@ -16,11 +16,6 @@ const (
 	memoriesCD = "memories-of-the-past-cd" // for better tracability
 )
 
-type state struct {
-	onCooldown bool
-	energyAmt  float64
-}
-
 // Increases the wearer's Break Effect by 28%. When the wearer attacks,
 // additionally regenerates 4 Energy. This effect can only be triggered 1 time per turn.
 
@@ -39,10 +34,7 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-	modState := state{
-		onCooldown: false,
-		energyAmt:  3.0 + 1.0*float64(lc.Imposition),
-	}
+	energyAmt := 3.0 + 1.0*float64(lc.Imposition)
 	beAmt := 0.21 + 0.07*float64(lc.Imposition)
 
 	engine.AddModifier(owner, info.Modifier{
@@ -56,7 +48,6 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 
 	// Resets CD on all turn end (does it not needed anymore?)
 	engine.Events().TurnEnd.Subscribe(func(e event.TurnEnd) {
-		modState.onCooldown = false
 		engine.RemoveModifier(owner, memoriesCD)
 	})
 
@@ -69,7 +60,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 			Key:    memories,
 			Target: owner,
 			Source: owner,
-			Amount: modState.energyAmt,
+			Amount: energyAmt,
 		})
 		// enter cd
 		engine.AddModifier(owner, info.Modifier{
