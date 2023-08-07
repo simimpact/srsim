@@ -12,7 +12,8 @@ import (
 )
 
 const (
-	memories = "memories-of-the-past"
+	memories   = "memories-of-the-past"
+	memoriesCD = "memories-of-the-past-cd" // for better tracability
 )
 
 type state struct {
@@ -31,6 +32,10 @@ func init() {
 		Promotions:    promotions,
 	})
 	modifier.Register(memories, modifier.Config{})
+
+	modifier.Register(memoriesCD, modifier.Config{
+		Stacking: modifier.ReplaceBySource,
+	})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
@@ -49,14 +54,15 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	// REPLACE : currently uses mod listener. change it to subscriber.
 	// NOTE : might want to change cooldown to a separate Mod.
 
-	// Resets CD on all turn end
+	// Resets CD on all turn end (does it not needed anymore?)
 	engine.Events().TurnEnd.Subscribe(func(e event.TurnEnd) {
 		modState.onCooldown = false
+		engine.RemoveModifier(owner, memoriesCD)
 	})
 
 	// add energy on all attack end (for ults etc.)
 	engine.Events().AttackEnd.Subscribe(func(event event.AttackEnd) {
-		if modState.onCooldown {
+		if engine.HasModifier(owner, memoriesCD) {
 			return
 		}
 		engine.ModifyEnergy(info.ModifyAttribute{
@@ -66,6 +72,10 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 			Amount: modState.energyAmt,
 		})
 		// enter cd
-		modState.onCooldown = true
+		engine.AddModifier(owner, info.Modifier{
+			Name:     memoriesCD,
+			Source:   owner,
+			Duration: 1,
+		})
 	})
 }
