@@ -13,7 +13,6 @@ import (
 	"github.com/simimpact/srsim/pkg/simulation"
 	"github.com/simimpact/srsim/tests/eventchecker"
 	"github.com/simimpact/srsim/tests/eventchecker/battlestart"
-	"github.com/simimpact/srsim/tests/eventchecker/termination"
 	"github.com/simimpact/srsim/tests/testcfg"
 	"github.com/simimpact/srsim/tests/testcfg/testchar"
 	"github.com/simimpact/srsim/tests/testcfg/testeval"
@@ -32,9 +31,7 @@ type Stub struct {
 
 	// AutoRun determines if simulation will automatically run.
 	// When disabled, you must call s.NextTurn() to queue the next TurnStart event.
-	autoRun    bool
-	terminated bool // this is a idiot-proof boolean to run s.TerminateRun if the tester (me) forgot to terminate
-	turnPipe   chan TurnCommand
+	autoRun bool
 
 	// cfg and evaluator are used to start a normal run
 	cfg       *model.SimConfig
@@ -44,6 +41,7 @@ type Stub struct {
 
 	// Characters gives access to various character-related testing actions
 	Characters Characters
+	Turn       *mockTurnManager
 
 	// Assert wraps common assertion methods for convenience
 	Assert assertion
@@ -55,11 +53,10 @@ func (s *Stub) SetupTest() {
 	}
 	s.eventPipe = make(chan handler.Event)
 	s.haltSignaller = make(chan struct{})
-	s.turnPipe = make(chan TurnCommand)
 	s.cfg = testcfg.TestConfigTwoElites()
 	s.autoContinue = true
 	s.autoRun = true
-	s.terminated = false
+	s.Turn = newMockManager(s.T())
 	s.Characters = Characters{
 		t:               s.T(),
 		cfg:             s.cfg,
@@ -72,10 +69,6 @@ func (s *Stub) SetupTest() {
 
 func (s *Stub) TearDownTest() {
 	fmt.Println("Test Finished")
-	if !s.autoRun && !s.terminated {
-		s.TerminateRun()
-		s.Expect(termination.ExpectFor())
-	}
 	logging.InitLoggers()
 	s.cfgEval = nil
 	select {
@@ -85,7 +78,6 @@ func (s *Stub) TearDownTest() {
 	}
 	close(s.eventPipe)
 	close(s.haltSignaller)
-	close(s.turnPipe)
 }
 
 // StartSimulation handles the setup for starting the asynchronous sim run.
@@ -104,7 +96,7 @@ func (s *Stub) StartSimulation() {
 	}
 	s.simulator = simulation.NewSimulation(s.cfg, evalToUse, 0)
 	if !s.autoRun {
-		s.simulator.Turn = newMockManager(s.T(), s.turnPipe)
+		s.simulator.Turn = s.Turn
 	}
 	s.Characters.attributes = s.simulator.Attr
 	go func() {
