@@ -32,5 +32,9 @@
     {
       "mode": "auto"
     }
-  ]
+  ],
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-workflow.json": "file:///root/srsim/srsim/.github/workflows/deploy.yml"
+  }
 }
+

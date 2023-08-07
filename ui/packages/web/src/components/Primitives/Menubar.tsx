@@ -6,23 +6,20 @@ import { Check, ChevronRight, Circle } from "lucide-react";
 import * as React from "react";
 import { cn } from "@/utils/classname";
 
-const menubarVariants = cva(
-  "flex items-center rounded-md border bg-background text-foreground p-1",
-  {
-    variants: {
-      orientation: {
-        horizontal: "h-10 space-x-1",
-        vertical: "flex-col h-fit",
-      },
+const menubarVariants = cva("flex items-center rounded-md bg-muted text-foreground p-1", {
+  variants: {
+    orientation: {
+      horizontal: "h-10 space-x-1",
+      vertical: "flex-col h-fit",
     },
-    defaultVariants: {
-      orientation: "horizontal",
-    },
-  }
-);
+  },
+  defaultVariants: {
+    orientation: "horizontal",
+  },
+});
 
 const triggerVariants = cva(
-  "flex cursor-default select-none items-center rounded-sm px-3 py-1.5 text-sm font-medium outline-none focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"
+  "flex cursor-default select-none items-center rounded-sm px-3 py-1.5 text-sm font-medium outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"
 );
 
 const subTriggerVariants = cva(

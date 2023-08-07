@@ -1,5 +1,6 @@
 import { Column } from "@tanstack/react-table";
 import { Check, LucideIcon } from "lucide-react";
+import { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/utils/classname";
 import { Button } from "../Button";
 import {
@@ -18,7 +19,7 @@ interface OptionItem {
   value: string;
   icon?: LucideIcon;
 }
-interface Props<TData> {
+interface Props<TData> extends ComponentPropsWithoutRef<typeof Button> {
   placeholder: string;
   buttonPlaceholder?: string;
   options: OptionItem[];
@@ -30,6 +31,7 @@ function ColumnSelectFilter<TData>({
   options,
   placeholder,
   buttonPlaceholder,
+  ...props
 }: Props<TData>) {
   const selectedValues = new Set(column?.getFilterValue() as string[]);
   const facets = column?.getFacetedUniqueValues();
@@ -37,13 +39,11 @@ function ColumnSelectFilter<TData>({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="border-dashed">
-          {buttonPlaceholder}
-        </Button>
+        <Button {...props}>{buttonPlaceholder}</Button>
       </PopoverTrigger>
       <PopoverContent>
         <Command>
-          <CommandInput placeholder={placeholder} />
+          <CommandInput placeholder={placeholder} className="border-none" />
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup>
@@ -62,7 +62,7 @@ function ColumnSelectFilter<TData>({
                   >
                     <div
                       className={cn(
-                        "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                        "border-primary mr-2 flex h-4 w-4 items-center justify-center rounded-sm border",
                         isSelected
                           ? "bg-primary text-primary-foreground"
                           : "opacity-50 [&_svg]:invisible"
@@ -70,7 +70,7 @@ function ColumnSelectFilter<TData>({
                     >
                       <Check className={cn("h-4 w-4")} />
                     </div>
-                    {option.icon && <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />}
+                    {option.icon && <option.icon className="text-muted-foreground mr-2 h-4 w-4" />}
                     <span>{option.label}</span>
                     {facets?.get(option.value) && (
                       <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">

@@ -38,7 +38,9 @@ const (
 	GoodNightandSleepWell          LightCone = "good_night_and_sleep_well"
 	IncessantRain                  LightCone = "incessant_rain"
 	BeforetheTutorialMissionStarts LightCone = "before_the_tutorial_mission_starts"
+	Loop                           LightCone = "loop"
 	HiddenShadow                   LightCone = "hidden_shadow"
+	IntheNameoftheWorld            LightCone = "in_the_name_of_the_world"
 )
 
 // Erudition
@@ -49,12 +51,15 @@ const (
 	TodayIsAnotherPeacefulDay LightCone = "today_is_another_peaceful_day"
 	TheSeriousnessofBreakfast LightCone = "the_seriousness_of_breakfast"
 	GeniusesRepose            LightCone = "geniuses_repose"
+	NightontheMilkyWay        LightCone = "night_on_the_milky_way"
 )
 
 // Harmony
 const (
-	Chorus      LightCone = "chorus"
-	MeshingCogs LightCone = "meshing_cogs"
+	Chorus            LightCone = "chorus"
+	MeshingCogs       LightCone = "meshing_cogs"
+	MemoriesofthePast LightCone = "memories_of_the_past"
+	DanceDanceDance   LightCone = "dance_dance_dance"
 )
 
 // Preservation
@@ -82,6 +87,7 @@ const (
 	QuidProQuo               LightCone = "quid_pro_quo"
 	PerfectTiming            LightCone = "perfect_timing"
 	TimeWaitsforNoOne        LightCone = "time_waits_for_no_one"
+	EchoesoftheCoffin        LightCone = "echoes_of_the_coffin"
 )
 
 func (l LightCone) String() string {

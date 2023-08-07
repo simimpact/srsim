@@ -1,42 +1,46 @@
-import { useMutation } from "@tanstack/react-query";
+import { useContext } from "react";
 import { Button } from "@/components/Primitives/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Primitives/Tabs";
-import { ENDPOINT } from "@/utils/constants";
-import { fetchLog } from "@/utils/fetchLog";
+import { useTabRouteHelper } from "@/hooks/useTabRouteHelper";
+import { SimControlContext } from "@/providers/SimControl";
 import { LogTab } from "./LogTab";
-import { MvpTab } from "./MvpTab";
+// import { MvpTab } from "./MvpTab";
+import { ResultTab } from "./ResultTab";
 
 interface Props {
-  placeholder: string;
+  placeholder?: string;
 }
 const LogViewer = ({ placeholder }: Props) => {
-  console.log(placeholder);
-  const logger = useMutation({
-    mutationKey: [ENDPOINT.logMock],
-    mutationFn: async () => await fetchLog(),
-    onSuccess: data => console.log(data),
-  });
+  if (placeholder) console.log(placeholder);
+  const { tab, setTab } = useTabRouteHelper();
+
+  const { simulationData, simulationResult, getResult } = useContext(SimControlContext);
 
   return (
-    <div>
-      <Button className="my-4" onClick={() => logger.mutate()}>
-        Generate Log (Make sure your CLI is running)
-      </Button>
-      <Tabs defaultValue="mvp">
-        <TabsList className="w-full h-full">
-          <TabsTrigger value="mvp" className="w-full">
-            MVP tab
-          </TabsTrigger>
+    <div className="w-full">
+      <Tabs value={tab ?? "log"} onValueChange={setTab}>
+        <TabsList className="h-full w-full">
           <TabsTrigger value="log" className="w-full">
             Logging/Debugging
           </TabsTrigger>
+          <TabsTrigger value="result" className="w-full">
+            Result tab
+          </TabsTrigger>
+          <TabsTrigger value="mvp" className="w-full">
+            MVP tab
+          </TabsTrigger>
         </TabsList>
-        <TabsContent value="mvp">
-          <MvpTab name="test" />
-        </TabsContent>
+
         <TabsContent value="log">
-          <LogTab data={logger.data ?? []} />
+          <LogTab data={simulationData} />
         </TabsContent>
+        <TabsContent value="result">
+          <Button size="sm" onClick={() => getResult()}>
+            Get Results
+          </Button>
+          <ResultTab data={simulationResult} />
+        </TabsContent>
+        <TabsContent value="mvp">{/* <MvpTab name="test" /> */}</TabsContent>
       </Tabs>
     </div>
   );

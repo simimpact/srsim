@@ -2,16 +2,15 @@ package teststub
 
 import (
 	"testing"
-	"time"
 
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-type mockManager struct {
-	t        *testing.T
-	turnPipe chan TurnCommand
+type mockTurnManager struct {
+	t            *testing.T
+	turnSequence []key.TargetID
 }
 
 type TurnCommand struct {
@@ -19,51 +18,62 @@ type TurnCommand struct {
 	Av   float64
 }
 
-func newMockManager(t *testing.T, pipe chan TurnCommand) *mockManager {
-	return &mockManager{
-		t:        t,
-		turnPipe: pipe,
+func newMockManager(t *testing.T) *mockTurnManager {
+	return &mockTurnManager{
+		t:            t,
+		turnSequence: nil,
 	}
 }
 
-func (m *mockManager) TotalAV() float64 {
+func (m *mockTurnManager) queue(ids ...key.TargetID) {
+	m.turnSequence = append(m.turnSequence, ids...)
+}
+
+func (m *mockTurnManager) TotalAV() float64 {
 	return 0
 }
 
-func (m *mockManager) AddTargets(ids ...key.TargetID) {
+func (m *mockTurnManager) AddTargets(ids ...key.TargetID) {
 }
 
-func (m *mockManager) RemoveTarget(id key.TargetID) {
+func (m *mockTurnManager) RemoveTarget(id key.TargetID) {
 }
 
-func (m *mockManager) StartTurn() (key.TargetID, float64, []event.TurnStatus, error) {
-	select {
-	case t := <-m.turnPipe:
-		return t.Next, t.Av, nil, nil
-	case <-time.After(1 * time.Second):
-		LogError(m.t, "mockManager StartTurn did not receive next turn command")
-		panic("Test failed, be sure to call NextTurn")
+func (m *mockTurnManager) StartTurn() (key.TargetID, float64, []event.TurnStatus, error) {
+	if len(m.turnSequence) == 0 {
+		LogError(m.t, "mockTurnManager StartTurn is called without any TargetID in the sequence. Run is terminated. (Use QueueTurn)")
+		return 1, 100000, nil, nil
 	}
+	if m.turnSequence[0] == -1 {
+		return 1, 100000, nil, nil
+	}
+	tgt := m.turnSequence[0]
+	m.turnSequence = m.turnSequence[1:]
+	return tgt, 0, nil, nil
 }
 
-func (m *mockManager) ResetTurn() error {
+func (m *mockTurnManager) TurnOrder() []key.TargetID {
+	return m.turnSequence
+}
+
+func (m *mockTurnManager) ResetTurn() error {
 	return nil
 }
 
-func (m *mockManager) SetGauge(data info.ModifyAttribute) error {
+func (m *mockTurnManager) SetGauge(data info.ModifyAttribute) error {
 	return nil
 }
 
-func (m *mockManager) ModifyGaugeNormalized(data info.ModifyAttribute) error {
+func (m *mockTurnManager) ModifyGaugeNormalized(data info.ModifyAttribute) error {
 	return nil
 }
 
-func (m *mockManager) ModifyGaugeAV(data info.ModifyAttribute) error {
+func (m *mockTurnManager) ModifyGaugeAV(data info.ModifyAttribute) error {
 	return nil
 }
 
-func (m *mockManager) SetCurrentGaugeCost(data info.ModifyCurrentGaugeCost) {
+func (m *mockTurnManager) SetCurrentGaugeCost(data info.ModifyCurrentGaugeCost) {
 }
 
-func (m *mockManager) ModifyCurrentGaugeCost(data info.ModifyCurrentGaugeCost) {
+func (m *mockTurnManager) ModifyCurrentGaugeCost(data info.ModifyCurrentGaugeCost) {
 }

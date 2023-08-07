@@ -3,6 +3,7 @@ package turn
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/attribute"
@@ -18,6 +19,7 @@ type Manager interface {
 	RemoveTarget(id key.TargetID)
 	StartTurn() (key.TargetID, float64, []event.TurnStatus, error)
 	ResetTurn() error
+	TurnOrder() []key.TargetID
 	engine.Turn
 }
 
@@ -26,14 +28,26 @@ type target struct {
 	gauge float64
 }
 
+type turnOrder struct {
+	attr  attribute.Getter
+	order []*target
+}
+
+func (a *turnOrder) av(i int) float64 {
+	return a.order[i].gauge / a.attr.Stats(a.order[i].id).SPD()
+}
+
+func (a *turnOrder) Len() int           { return len(a.order) }
+func (a *turnOrder) Swap(i, j int)      { a.order[i], a.order[j] = a.order[j], a.order[i] }
+func (a *turnOrder) Less(i, j int) bool { return a.av(i) < a.av(j) }
+
 type manager struct {
 	event *event.System
 	attr  attribute.Getter
 
 	// TODO: I'd create a custom data type/struct that contains both order & targetIndex. It then
 	// manages all operations on the order array and keeps the index map up to date for easy access
-	order        []*target
-	targetIndex  map[key.TargetID]int
+	order        *turnOrder
 	gaugeCost    float64
 	activeTurn   bool
 	activeTarget key.TargetID
@@ -42,10 +56,12 @@ type manager struct {
 
 func New(e *event.System, attr attribute.Getter) Manager {
 	mgr := &manager{
-		event:        e,
-		attr:         attr,
-		order:        make([]*target, 0, 10),
-		targetIndex:  make(map[key.TargetID]int, 10),
+		event: e,
+		attr:  attr,
+		order: &turnOrder{
+			attr:  attr,
+			order: make([]*target, 0, 10),
+		},
 		gaugeCost:    1.0,
 		activeTurn:   false,
 		activeTarget: 0,
@@ -58,8 +74,18 @@ func (mgr *manager) TotalAV() float64 {
 	return mgr.totalAV
 }
 
+func (mgr *manager) TurnOrder() []key.TargetID {
+	// todo: implement issue 187
+	return nil
+}
+
 func (mgr *manager) target(id key.TargetID) *target {
-	return mgr.order[mgr.targetIndex[id]]
+	for _, t := range mgr.order.order {
+		if t.id == id {
+			return t
+		}
+	}
+	return nil
 }
 
 // returns the current AV of the given target based on their current gauge and speed.
@@ -76,12 +102,12 @@ func (mgr *manager) AddTargets(ids ...key.TargetID) {
 			id:    id,
 			gauge: BaseGauge,
 		}
-		mgr.order = append(mgr.order, t)
-		mgr.targetIndex[id] = len(mgr.order) - 1
+		mgr.order.order = append(mgr.order.order, t)
 	}
 
 	// TODO: sort the order array based on each target's AV. This sort algorithm must be stable.
 	//		update targetIndexes based off the new positions post sort.
+	sort.Stable(mgr.order)
 
 	mgr.event.TurnTargetsAdded.Emit(event.TurnTargetsAdded{
 		Targets:   ids,
@@ -90,13 +116,14 @@ func (mgr *manager) AddTargets(ids ...key.TargetID) {
 }
 
 func (mgr *manager) RemoveTarget(id key.TargetID) {
-	idx := mgr.targetIndex[id]
-	delete(mgr.targetIndex, id)
-
-	mgr.order = append(mgr.order[:idx], mgr.order[idx+1:]...)
-	for i, t := range mgr.order {
-		mgr.targetIndex[t.id] = i
+	idx := 0
+	for i, t := range mgr.order.order {
+		if t.id == id {
+			idx = i
+			break
+		}
 	}
+	mgr.order.order = append(mgr.order.order[:idx], mgr.order.order[idx+1:]...)
 }
 
 func (mgr *manager) StartTurn() (key.TargetID, float64, []event.TurnStatus, error) {
@@ -107,10 +134,14 @@ func (mgr *manager) StartTurn() (key.TargetID, float64, []event.TurnStatus, erro
 	// reset gauge cost for this new turn
 	mgr.gaugeCost = 1.0
 	mgr.activeTurn = true
-	mgr.activeTarget = mgr.order[0].id
+	mgr.activeTarget = mgr.order.order[0].id
 	av := mgr.av(mgr.activeTarget)
 
-	mgr.order[0].gauge = 0 // set gauge/av of active to 0
+	// mgr.order.order[0].gauge = 0 // set gauge/av of active to 0
+
+	for _, t := range mgr.order.order {
+		t.gauge -= av * mgr.attr.Stats(t.id).SPD()
+	}
 
 	// TODO: Set the active turn to the target at the top of the order (target with lowest AV).
 	//		Get the current AV of this target and subtract it from all targets in the order to simulate
@@ -129,10 +160,11 @@ func (mgr *manager) StartTurn() (key.TargetID, float64, []event.TurnStatus, erro
 func (mgr *manager) ResetTurn() error {
 	if !mgr.activeTurn {
 		return fmt.Errorf(
-			"target at top of order must have 0 gauge to call reset (their turn is active) %+v", mgr.order[0])
+			"target at top of order must have 0 gauge to call reset (their turn is active) %+v", mgr.order.order[0])
 	}
 	mgr.activeTurn = false
-	mgr.target(mgr.activeTarget).gauge = BaseGauge * mgr.gaugeCost
+	mgr.order.order[0].gauge = BaseGauge * mgr.gaugeCost
+	sort.Stable(mgr.order)
 
 	// Resets the gauge of the target taking their turn (target at top of stack). New gauge is set at
 	// BaseGauge * gaugeCost
