@@ -9,10 +9,12 @@ import (
 )
 
 func (mgr *Manager) AddShield(id key.Shield, shield info.Shield) {
-
 	// Get the stats for the source and target
 	source := mgr.attr.Stats(shield.Source)
-	maxShield := mgr.targets[shield.Target][mgr.MaxShield(shield.Target)]
+	maxShield := 0.0
+	if mgr.IsShielded(shield.Target) {
+		maxShield = mgr.MaxShield(shield.Target)
+	}
 	target := mgr.attr.Stats(shield.Target)
 
 	// Compute shield baseHP from ShieldMap property values
@@ -29,7 +31,7 @@ func (mgr *Manager) AddShield(id key.Shield, shield info.Shield) {
 		case model.ShieldFormula_SHIELD_BY_TARGET_MAX_HP:
 			baseHP += v * target.HP()
 		case model.ShieldFormula_SHIELD_BY_SHIELDER_TOTAL_SHIELD:
-			baseHP += v * maxShield.hp
+			baseHP += v * maxShield
 		}
 	}
 
@@ -41,10 +43,10 @@ func (mgr *Manager) AddShield(id key.Shield, shield info.Shield) {
 
 	switch isMatching, index := mgr.CheckMatching(id, shield); isMatching {
 	// Replace shield at matching index
-	case isMatching == true:
+	case true:
 		mgr.targets[shield.Target][index] = newInstance
 	// Add new shield to targets list
-	case isMatching == false:
+	case false:
 		mgr.targets[shield.Target] = append(mgr.targets[shield.Target], newInstance)
 	}
 
@@ -63,5 +65,5 @@ func (mgr *Manager) CheckMatching(id key.Shield, shield info.Shield) (bool, int)
 			return true, i
 		}
 	}
-	return false, 0
+	return false, -1
 }

@@ -43,14 +43,15 @@ func (mgr *Manager) IsShielded(target key.TargetID) bool {
 	return false
 }
 
-func (mgr *Manager) MaxShield(target key.TargetID) int {
-	maxShield := mgr.targets[target][0].hp
-	index := 0
-	for i, shield := range mgr.targets[target] {
-		if shield.hp > maxShield {
-			maxShield = shield.hp
-			index = i
+func (mgr *Manager) MaxShield(target key.TargetID) float64 {
+	if mgr.IsShielded(target) {
+		maxShield := mgr.targets[target][0].hp
+		for _, shield := range mgr.targets[target] {
+			if shield.hp > maxShield {
+				maxShield = shield.hp
+			}
 		}
+		return maxShield
 	}
-	return index
+	return 0.0
 }

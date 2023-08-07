@@ -22,7 +22,9 @@ type ShieldRemoved struct {
 type ShieldChangeEventHandler = handler.EventHandler[ShieldChange]
 type ShieldChange struct {
 	Target    key.TargetID `json:"target"`
+	ID        key.Shield   `json:"id"`
 	NewHP     float64      `json:"new_hp"`
+	OldHP     float64      `json:"old_hp"`
 	DamageIn  float64      `json:"damage_in"`
 	DamageOut float64      `json:"damage_out"`
 }
