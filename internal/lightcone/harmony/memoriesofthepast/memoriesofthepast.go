@@ -28,9 +28,7 @@ func init() {
 	})
 	modifier.Register(memories, modifier.Config{})
 
-	modifier.Register(memoriesCD, modifier.Config{
-		Stacking: modifier.ReplaceBySource,
-	})
+	modifier.Register(memoriesCD, modifier.Config{})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
@@ -50,7 +48,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 
 	// add energy on all attack end by lc holder (for ults etc.)
 	engine.Events().AttackEnd.Subscribe(func(event event.AttackEnd) {
-		if engine.HasModifier(owner, memoriesCD) || event.Attacker != owner {
+		if event.Attacker != owner || engine.HasModifier(owner, memoriesCD) {
 			return
 		}
 		engine.ModifyEnergy(info.ModifyAttribute{
@@ -61,9 +59,8 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		})
 		// enter cd
 		engine.AddModifier(owner, info.Modifier{
-			Name:     memoriesCD,
-			Source:   owner,
-			Duration: 1,
+			Name:   memoriesCD,
+			Source: owner,
 		})
 	})
 }
