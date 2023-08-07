@@ -13,7 +13,7 @@ import (
 
 const (
 	memories   = "memories-of-the-past"
-	memoriesCD = "memories-of-the-past-cd" // for better tracability
+	memoriesCD = "memories-of-the-past-cd"
 )
 
 // Increases the wearer's Break Effect by 28%. When the wearer attacks,
@@ -43,17 +43,14 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		Stats:  info.PropMap{prop.BreakEffect: beAmt},
 	})
 
-	// REPLACE : currently uses mod listener. change it to subscriber.
-	// NOTE : might want to change cooldown to a separate Mod.
-
-	// Resets CD on all turn end (does it not needed anymore?)
+	// Resets CD on all turn end
 	engine.Events().TurnEnd.Subscribe(func(e event.TurnEnd) {
 		engine.RemoveModifier(owner, memoriesCD)
 	})
 
-	// add energy on all attack end (for ults etc.)
+	// add energy on all attack end by lc holder (for ults etc.)
 	engine.Events().AttackEnd.Subscribe(func(event event.AttackEnd) {
-		if engine.HasModifier(owner, memoriesCD) {
+		if engine.HasModifier(owner, memoriesCD) || event.Attacker != owner {
 			return
 		}
 		engine.ModifyEnergy(info.ModifyAttribute{
