@@ -30,11 +30,7 @@ func init() {
 		Path:          model.Path_HARMONY,
 		Promotions:    promotions,
 	})
-	modifier.Register(memories, modifier.Config{
-		Listeners: modifier.Listeners{
-			OnAfterAttack: addEnergy,
-		},
-	})
+	modifier.Register(memories, modifier.Config{})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
@@ -48,7 +44,6 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		Name:   memories,
 		Source: owner,
 		Stats:  info.PropMap{prop.BreakEffect: beAmt},
-		State:  &modState,
 	})
 
 	// REPLACE : currently uses mod listener. change it to subscriber.
@@ -60,21 +55,17 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 
 	// add energy on all attack end (for ults etc.)
-	// engine.Events().AttackEnd.Subscribe()
-}
-
-// add energy on attack IF not on cd.
-func addEnergy(mod *modifier.Instance, e event.AttackEnd) {
-	state := mod.State().(*state)
-	if state.onCooldown {
-		return
-	}
-	mod.Engine().ModifyEnergy(info.ModifyAttribute{
-		Key:    memories,
-		Target: mod.Owner(),
-		Source: mod.Owner(),
-		Amount: state.energyAmt,
+	engine.Events().AttackEnd.Subscribe(func(event event.AttackEnd) {
+		if modState.onCooldown {
+			return
+		}
+		engine.ModifyEnergy(info.ModifyAttribute{
+			Key:    memories,
+			Target: owner,
+			Source: owner,
+			Amount: modState.energyAmt,
+		})
+		// enter cd
+		modState.onCooldown = true
 	})
-	// enter cd
-	state.onCooldown = true
 }
