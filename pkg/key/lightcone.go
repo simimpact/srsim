@@ -59,6 +59,8 @@ const (
 	Chorus                     LightCone = "chorus"
 	MeshingCogs                LightCone = "meshing_cogs"
 	CarvetheMoonWeavetheClouds LightCone = "carve_the_moon_weave_the_clouds"
+	MemoriesofthePast          LightCone = "memories_of_the_past"
+	DanceDanceDance            LightCone = "dance_dance_dance"
 )
 
 // Preservation
