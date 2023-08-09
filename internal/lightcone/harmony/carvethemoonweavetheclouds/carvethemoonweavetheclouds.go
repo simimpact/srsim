@@ -43,7 +43,7 @@ func init() {
 	})
 	modifier.Register(carveCheck, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeDying: removeBuffs,
+			OnBeforeDying: removeBuffsOnDeath,
 			OnPhase1:      applyTeamBuffRandomly,
 		},
 	})
@@ -109,21 +109,22 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func removeBuffs(mod *modifier.Instance) {
-	for _, char := range mod.Engine().Characters() {
-		mod.Engine().RemoveModifierFromSource(char, mod.Owner(), carveAtk)
-		mod.Engine().RemoveModifierFromSource(char, mod.Owner(), carveCDmg)
-		mod.Engine().RemoveModifierFromSource(char, mod.Owner(), carveERR)
+func removeBuffsOnDeath(mod *modifier.Instance) {
+	removeBuffs(mod.Engine().Characters(), mod.Source(), mod.Engine())
+}
+
+// REWRITE : DRY : make remove buffs its own function.
+func removeBuffs(characters []key.TargetID, source key.TargetID, engine engine.Engine) {
+	for _, char := range characters {
+		engine.RemoveModifierFromSource(char, source, carveAtk)
+		engine.RemoveModifierFromSource(char, source, carveCDmg)
+		engine.RemoveModifierFromSource(char, source, carveERR)
 	}
 }
 
 func applyTeamBuffRandomly(mod *modifier.Instance) {
 	// remove currently applied buff
-	for _, char := range mod.Engine().Characters() {
-		mod.Engine().RemoveModifierFromSource(char, mod.Owner(), carveAtk)
-		mod.Engine().RemoveModifierFromSource(char, mod.Owner(), carveCDmg)
-		mod.Engine().RemoveModifierFromSource(char, mod.Owner(), carveERR)
-	}
+	removeBuffs(mod.Engine().Characters(), mod.Source(), mod.Engine())
 
 	// create modstate slice (- previously applied buff)
 	state := mod.State().(*state)
