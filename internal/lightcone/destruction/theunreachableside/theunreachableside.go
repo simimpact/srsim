@@ -6,6 +6,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -35,7 +36,17 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-
+	crNHpAmt := 0.15 + 0.03*float64(lc.Imposition)
+	dmgAmt := 0.20 + 0.04*float64(lc.Imposition)
+	engine.AddModifier(owner, info.Modifier{
+		Name:   side,
+		Source: owner,
+		Stats: info.PropMap{
+			prop.CritChance: crNHpAmt,
+			prop.HPPercent:  crNHpAmt,
+		},
+		State: dmgAmt,
+	})
 }
 
 func buffOnHPConsume(mod *modifier.Instance, e event.HPChange) {
