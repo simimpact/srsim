@@ -55,19 +55,19 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 
 func buffOnAttacked(mod *modifier.Instance, e event.AttackEnd) {
 	dmgAmt := mod.State().(float64)
-	// TODO : DRY : make addModifier its own separate func.
+	// add damage buff here.
 	addDmgBuff(mod.Engine(), dmgBuff, mod.Owner(), dmgAmt)
 }
 
 func buffOnHPConsume(mod *modifier.Instance, e event.HPChange) {
 	// only add dmg buff if hp change is not from being attacked.
-	// NOTE : confirm if need to check if hp change is increase(heal) or decrease(hp consume).
+	// NOTE : confirm if need to check if only apply on hp decrease(not on heal) or all hpChange
 	// first glance at DM don't seem to check for it.
 	if e.IsHPChangeByDamage {
 		return
 	}
 	dmgAmt := mod.State().(float64)
-	// TODO : DRY : make addModifier its own separate func.
+	// add damage buff here.
 	addDmgBuff(mod.Engine(), dmgBuff, mod.Owner(), dmgAmt)
 }
 
