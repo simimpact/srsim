@@ -110,7 +110,7 @@ func applyTeamBuffRandomly(mod *modifier.Instance) {
 	// make possible buffs list
 	validBuffs := make([]singleBuff, 0, 3)
 	for _, buff := range state.buffList {
-		if buff.name != state.buffList[state.currentBuff].name {
+		if buff.name != currentBuff {
 			validBuffs = append(validBuffs, buff)
 		}
 	}
