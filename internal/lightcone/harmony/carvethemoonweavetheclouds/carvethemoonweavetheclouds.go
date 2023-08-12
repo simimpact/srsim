@@ -65,7 +65,6 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	atkAmt := 0.075 + 0.025*float64(lc.Imposition)
 	cDmgAmt := 0.09 + 0.03*float64(lc.Imposition)
 	errAmt := 0.045 + 0.015*float64(lc.Imposition)
-	// init state. populate with default vals.
 	modState := state{
 		currentBuff: 0,
 		buffList: []singleBuff{
@@ -84,7 +83,6 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		},
 	}
 
-	// add checker.
 	engine.AddModifier(owner, info.Modifier{
 		Name:   carveCheck,
 		Source: owner,
@@ -93,7 +91,6 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 
 	// apply random team buff once onBattleStart.
 	engine.Events().BattleStart.Subscribe(func(event event.BattleStart) {
-		// TODO : DRY : make separate func to apply buffs from a list of valid buffs.
 		randomlyApplyTeamBuff(&modState, engine, modState.buffList, owner)
 	})
 }
@@ -110,7 +107,7 @@ func applyTeamBuffRandomly(mod *modifier.Instance) {
 	currentBuff := state.buffList[state.currentBuff].name
 	removeBuffs(mod.Engine().Characters(), mod.Source(), currentBuff, mod.Engine())
 
-	// create modstate slice (- previously applied buff)
+	// make possible buffs list
 	validBuffs := make([]singleBuff, 0, 3)
 	for _, buff := range state.buffList {
 		if buff.name != state.buffList[state.currentBuff].name {
@@ -118,18 +115,15 @@ func applyTeamBuffRandomly(mod *modifier.Instance) {
 		}
 	}
 
-	// TODO : DRY : make separate func to apply buffs from a list of valid buffs.
 	randomlyApplyTeamBuff(state, mod.Engine(), validBuffs, mod.Source())
 }
 
 func removeBuffs(characters []key.TargetID, source key.TargetID, currentBuff key.Modifier, engine engine.Engine) {
-	// only remove mod that's applied(from state.currentBuff)
 	for _, char := range characters {
 		engine.RemoveModifierFromSource(char, source, currentBuff)
 	}
 }
 
-// move team buff logic here.
 func randomlyApplyTeamBuff(state *state, engine engine.Engine, validBuffs []singleBuff, source key.TargetID) {
 	// randomly pick between valid buffs.
 	chosenBuff := engine.Rand().Intn(len(validBuffs))
