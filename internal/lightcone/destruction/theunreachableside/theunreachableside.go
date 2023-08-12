@@ -55,11 +55,8 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 
 func buffOnAttacked(mod *modifier.Instance, e event.AttackEnd) {
 	dmgAmt := mod.State().(float64)
-	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-		Name:   dmgBuff,
-		Source: mod.Owner(),
-		Stats:  info.PropMap{prop.AllDamagePercent: dmgAmt},
-	})
+	// TODO : DRY : make addModifier its own separate func.
+	addDmgBuff(mod.Engine(), dmgBuff, mod.Owner(), dmgAmt)
 }
 
 func buffOnHPConsume(mod *modifier.Instance, e event.HPChange) {
@@ -70,13 +67,18 @@ func buffOnHPConsume(mod *modifier.Instance, e event.HPChange) {
 		return
 	}
 	dmgAmt := mod.State().(float64)
-	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-		Name:   dmgBuff,
-		Source: mod.Owner(),
-		Stats:  info.PropMap{prop.AllDamagePercent: dmgAmt},
-	})
+	// TODO : DRY : make addModifier its own separate func.
+	addDmgBuff(mod.Engine(), dmgBuff, mod.Owner(), dmgAmt)
 }
 
 func removeBuff(mod *modifier.Instance, e event.AttackEnd) {
 	mod.Engine().RemoveModifierFromSource(mod.Owner(), mod.Source(), dmgBuff)
+}
+
+func addDmgBuff(engine engine.Engine, dmgBuff key.Modifier, owner key.TargetID, dmgAmt float64) {
+	engine.AddModifier(owner, info.Modifier{
+		Name:   dmgBuff,
+		Source: owner,
+		Stats:  info.PropMap{prop.AllDamagePercent: dmgAmt},
+	})
 }
