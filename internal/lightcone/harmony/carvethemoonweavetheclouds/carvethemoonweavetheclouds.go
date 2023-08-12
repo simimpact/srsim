@@ -48,15 +48,15 @@ func init() {
 		},
 	})
 	modifier.Register(carveAtk, modifier.Config{
-		Stacking:   modifier.ReplaceBySource,
+		Stacking:   modifier.Replace,
 		StatusType: model.StatusType_STATUS_BUFF,
 	})
 	modifier.Register(carveCDmg, modifier.Config{
-		Stacking:   modifier.ReplaceBySource,
+		Stacking:   modifier.Replace,
 		StatusType: model.StatusType_STATUS_BUFF,
 	})
 	modifier.Register(carveERR, modifier.Config{
-		Stacking:   modifier.ReplaceBySource,
+		Stacking:   modifier.Replace,
 		StatusType: model.StatusType_STATUS_BUFF,
 	})
 }
@@ -116,7 +116,7 @@ func removeBuffsOnDeath(mod *modifier.Instance) {
 }
 
 func removeBuffs(characters []key.TargetID, source key.TargetID, currentBuff key.Modifier, engine engine.Engine) {
-	// TODO : remove useless calls. only remove mod that's applied(from state.currentBuff)
+	// only remove mod that's applied(from state.currentBuff)
 	for _, char := range characters {
 		engine.RemoveModifierFromSource(char, source, currentBuff)
 	}
@@ -129,7 +129,7 @@ func applyTeamBuffRandomly(mod *modifier.Instance) {
 	removeBuffs(mod.Engine().Characters(), mod.Source(), currentBuff, mod.Engine())
 
 	// create modstate slice (- previously applied buff)
-	var validBuffs []singleBuff
+	validBuffs := make([]singleBuff, 0, 3)
 	for _, buff := range state.buffList {
 		if buff.name != state.buffList[state.currentBuff].name {
 			validBuffs = append(validBuffs, buff)
