@@ -93,19 +93,8 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 
 	// apply random team buff once onBattleStart.
 	engine.Events().BattleStart.Subscribe(func(event event.BattleStart) {
-		// randomly pick between 3 available buffs.
-		chosenBuff := engine.Rand().Intn(len(modState.buffList))
-
-		// add picked buff to all chars
-		for _, char := range engine.Characters() {
-			engine.AddModifier(char, info.Modifier{
-				Name:   modState.buffList[chosenBuff].name,
-				Source: owner,
-				Stats:  modState.buffList[chosenBuff].statsField,
-			})
-		}
-		// track current applied buff
-		modState.currentBuff = chosenBuff
+		// TODO : DRY : make separate func to apply buffs from a list of valid buffs.
+		randomlyApplyTeamBuff(&modState, engine, modState.buffList, owner)
 	})
 }
 
@@ -113,13 +102,6 @@ func removeBuffsOnDeath(mod *modifier.Instance) {
 	state := mod.State().(*state)
 	currentBuff := state.buffList[state.currentBuff].name
 	removeBuffs(mod.Engine().Characters(), mod.Source(), currentBuff, mod.Engine())
-}
-
-func removeBuffs(characters []key.TargetID, source key.TargetID, currentBuff key.Modifier, engine engine.Engine) {
-	// only remove mod that's applied(from state.currentBuff)
-	for _, char := range characters {
-		engine.RemoveModifierFromSource(char, source, currentBuff)
-	}
 }
 
 func applyTeamBuffRandomly(mod *modifier.Instance) {
@@ -136,15 +118,28 @@ func applyTeamBuffRandomly(mod *modifier.Instance) {
 		}
 	}
 
-	// pick between qualified buffs
-	chosenBuff := mod.Engine().Rand().Intn(len(validBuffs))
+	// TODO : DRY : make separate func to apply buffs from a list of valid buffs.
+	randomlyApplyTeamBuff(state, mod.Engine(), validBuffs, mod.Source())
+}
 
-	// apply chosen buff to all chars
-	for _, char := range mod.Engine().Characters() {
-		mod.Engine().AddModifier(char, info.Modifier{
-			Name:   state.buffList[chosenBuff].name,
-			Source: mod.Owner(),
-			Stats:  state.buffList[chosenBuff].statsField,
+func removeBuffs(characters []key.TargetID, source key.TargetID, currentBuff key.Modifier, engine engine.Engine) {
+	// only remove mod that's applied(from state.currentBuff)
+	for _, char := range characters {
+		engine.RemoveModifierFromSource(char, source, currentBuff)
+	}
+}
+
+// move team buff logic here.
+func randomlyApplyTeamBuff(state *state, engine engine.Engine, validBuffs []singleBuff, source key.TargetID) {
+	// randomly pick between valid buffs.
+	chosenBuff := engine.Rand().Intn(len(validBuffs))
+
+	// add picked buff to all chars
+	for _, char := range engine.Characters() {
+		engine.AddModifier(char, info.Modifier{
+			Name:   validBuffs[chosenBuff].name,
+			Source: source,
+			Stats:  validBuffs[chosenBuff].statsField,
 		})
 	}
 	// track current applied buff
