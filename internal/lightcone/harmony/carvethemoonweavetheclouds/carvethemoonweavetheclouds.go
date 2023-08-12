@@ -110,24 +110,25 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 func removeBuffsOnDeath(mod *modifier.Instance) {
-	removeBuffs(mod.Engine().Characters(), mod.Source(), mod.Engine())
+	state := mod.State().(*state)
+	currentBuff := state.buffList[state.currentBuff].name
+	removeBuffs(mod.Engine().Characters(), mod.Source(), currentBuff, mod.Engine())
 }
 
-// REWRITE : DRY : make remove buffs its own function.
-func removeBuffs(characters []key.TargetID, source key.TargetID, engine engine.Engine) {
+func removeBuffs(characters []key.TargetID, source key.TargetID, currentBuff key.Modifier, engine engine.Engine) {
+	// TODO : remove useless calls. only remove mod that's applied(from state.currentBuff)
 	for _, char := range characters {
-		engine.RemoveModifierFromSource(char, source, carveAtk)
-		engine.RemoveModifierFromSource(char, source, carveCDmg)
-		engine.RemoveModifierFromSource(char, source, carveERR)
+		engine.RemoveModifierFromSource(char, source, currentBuff)
 	}
 }
 
 func applyTeamBuffRandomly(mod *modifier.Instance) {
 	// remove currently applied buff
-	removeBuffs(mod.Engine().Characters(), mod.Source(), mod.Engine())
+	state := mod.State().(*state)
+	currentBuff := state.buffList[state.currentBuff].name
+	removeBuffs(mod.Engine().Characters(), mod.Source(), currentBuff, mod.Engine())
 
 	// create modstate slice (- previously applied buff)
-	state := mod.State().(*state)
 	var validBuffs []singleBuff
 	for _, buff := range state.buffList {
 		if buff.name != state.buffList[state.currentBuff].name {
