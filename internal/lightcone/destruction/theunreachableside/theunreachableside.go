@@ -12,7 +12,8 @@ import (
 )
 
 const (
-	side key.Modifier = "the-unreachable-side"
+	side    key.Modifier = "the-unreachable-side"
+	dmgBuff key.Modifier = "the-unreachable-side-dmg-buff"
 )
 
 // Increases the wearer's CRIT rate by 18% and increases their Max HP by 18%.
@@ -28,10 +29,13 @@ func init() {
 	})
 	modifier.Register(side, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnHPChange:           buffOnHPConsume,
 			OnAfterBeingAttacked: buffOnAttacked,
+			OnHPChange:           buffOnHPConsume,
 			OnAfterAttack:        removeBuff,
 		},
+	})
+	modifier.Register(dmgBuff, modifier.Config{
+		Stacking: modifier.ReplaceBySource,
 	})
 }
 
@@ -49,14 +53,30 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func buffOnHPConsume(mod *modifier.Instance, e event.HPChange) {
-
+func buffOnAttacked(mod *modifier.Instance, e event.AttackEnd) {
+	dmgAmt := mod.State().(float64)
+	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
+		Name:   dmgBuff,
+		Source: mod.Owner(),
+		Stats:  info.PropMap{prop.AllDamagePercent: dmgAmt},
+	})
 }
 
-func buffOnAttacked(mod *modifier.Instance, e event.AttackEnd) {
-
+func buffOnHPConsume(mod *modifier.Instance, e event.HPChange) {
+	// only add dmg buff if hp change is not from being attacked.
+	// NOTE : confirm if need to check if hp change is increase(heal) or decrease(hp consume).
+	// first glance at DM don't seem to check for it.
+	if e.IsHPChangeByDamage {
+		return
+	}
+	dmgAmt := mod.State().(float64)
+	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
+		Name:   dmgBuff,
+		Source: mod.Owner(),
+		Stats:  info.PropMap{prop.AllDamagePercent: dmgAmt},
+	})
 }
 
 func removeBuff(mod *modifier.Instance, e event.AttackEnd) {
-
+	mod.Engine().RemoveModifierFromSource(mod.Owner(), mod.Source(), dmgBuff)
 }
