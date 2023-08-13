@@ -6,12 +6,13 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
-	mod key.Modifier = "the-birth-of-the-self"
+	birth = "the-birth-of-the-self"
 )
 
 // Increases DMG dealt by the wearer's follow-up attacks by 24%.
@@ -25,7 +26,7 @@ func init() {
 		Path:          model.Path_ERUDITION,
 		Promotions:    promotions,
 	})
-	modifier.Register(mod, modifier.Config{
+	modifier.Register(birth, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeHit: buffFollowUpAtk,
 		},
@@ -33,9 +34,24 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
+	dmgAmt := 0.18 + 0.06*float64(lc.Imposition)
 
+	engine.AddModifier(owner, info.Modifier{
+		Name:   birth,
+		Source: owner,
+		State:  dmgAmt,
+	})
 }
 
 func buffFollowUpAtk(mod *modifier.Instance, e event.HitStart) {
-
+	// if hit not follow-up : bypass.
+	if e.Hit.AttackType != model.AttackType_INSERT {
+		return
+	}
+	dmgAmt := mod.State().(float64)
+	// 2x damage buff if hit enemy hp <50%
+	if mod.Engine().HPRatio(e.Defender) <= 0.5 {
+		dmgAmt = 2 * dmgAmt
+	}
+	e.Hit.Attacker.AddProperty(birth, prop.AllDamagePercent, dmgAmt)
 }
