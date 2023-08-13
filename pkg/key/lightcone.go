@@ -52,6 +52,7 @@ const (
 	TheSeriousnessofBreakfast LightCone = "the_seriousness_of_breakfast"
 	GeniusesRepose            LightCone = "geniuses_repose"
 	NightontheMilkyWay        LightCone = "night_on_the_milky_way"
+	TheBirthoftheSelf         LightCone = "the_birth_of_the_self"
 )
 
 // Harmony
