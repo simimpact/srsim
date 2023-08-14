@@ -18,11 +18,6 @@ const (
 // After entering battle, if an ally deals the same DMG Type as the wearer,
 // DMG dealt increases by 12%.
 
-// IMPL NOTES :
-// DM is a mess.
-// OnBattleStart : check for each char on the field. use subscribe.
-// if char dmg type is same as lc holder, add permanent dmg buff modifier.
-
 func init() {
 	lightcone.Register(key.PlanetaryRendezvous, lightcone.Config{
 		CreatePassive: Create,
@@ -35,8 +30,8 @@ func init() {
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	dmgAmt := 0.09 + 0.03*float64(lc.Imposition)
-	// init elements list. use maps for (hopefully) more compact code.
-	elementList := map[model.DamageType]info.PropMap{
+	// init elements list. use maps for more compact code.
+	statsMap := map[model.DamageType]info.PropMap{
 		model.DamageType_FIRE:      {prop.FireDamagePercent: dmgAmt},
 		model.DamageType_ICE:       {prop.IceDamagePercent: dmgAmt},
 		model.DamageType_IMAGINARY: {prop.ImaginaryDamagePercent: dmgAmt},
@@ -52,11 +47,11 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 			// check current char element against lc holder
 			charInfo, _ := engine.CharacterInfo(char)
 			if charInfo.Element == holderInfo.Element {
-				// if element matches. add perm dmg buff.
+				// if element matches. add perm element specific dmg buff.
 				engine.AddModifier(char, info.Modifier{
 					Name:   dmgBuff,
 					Source: owner,
-					Stats:  elementList[holderInfo.Element],
+					Stats:  statsMap[holderInfo.Element],
 				})
 			}
 		}
