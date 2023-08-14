@@ -6,14 +6,19 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
 	sweat    key.Modifier = "resolution-shines-as-pearls-of-sweat"
-	Ensnared key.Modifier = "resolution-shines-as-pearls-of-sweat-ensnared"
+	ensnared key.Modifier = "resolution-shines-as-pearls-of-sweat-ensnared"
 )
+
+type state struct {
+	debuffChance, defDownAmt float64
+}
 
 // When the wearer hits an enemy and if the hit enemy is not already Ensnared,
 // then there is a 60% base chance to Ensnare the hit enemy.
@@ -31,12 +36,41 @@ func init() {
 			OnBeforeHit: applyEnsnared,
 		},
 	})
+	modifier.Register(ensnared, modifier.Config{
+		Stacking: modifier.ReplaceBySource,
+		BehaviorFlags: []model.BehaviorFlag{
+			model.BehaviorFlag_STAT_DEF_DOWN,
+		},
+	})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
+	debuffChance := 0.5 + 0.1*float64(lc.Imposition)
+	defDownAmt := 0.1 + 0.01*float64(lc.Imposition)
 
+	modState := state{
+		debuffChance: debuffChance,
+		defDownAmt:   defDownAmt,
+	}
+
+	engine.AddModifier(owner, info.Modifier{
+		Name:   sweat,
+		Source: owner,
+		State:  &modState,
+	})
 }
 
 func applyEnsnared(mod *modifier.Instance, e event.HitStart) {
-
+	state := mod.State().(*state)
+	// only apply ensnared if target not yet ensnared.
+	if mod.Engine().HasModifierFromSource(e.Defender, mod.Owner(), ensnared) {
+		return
+	}
+	mod.Engine().AddModifier(e.Defender, info.Modifier{
+		Name:     ensnared,
+		Source:   mod.Owner(),
+		Stats:    info.PropMap{prop.DEFPercent: -state.defDownAmt},
+		Chance:   state.debuffChance,
+		Duration: 1,
+	})
 }
