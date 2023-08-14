@@ -15,13 +15,6 @@ const (
 	dmgBuff key.Modifier = "planetary-rendezvous"
 )
 
-// TODO : try to implement for each element cases.
-
-type elementBuff struct {
-	element model.DamageType
-	stats   info.PropMap
-}
-
 // After entering battle, if an ally deals the same DMG Type as the wearer,
 // DMG dealt increases by 12%.
 
@@ -60,12 +53,10 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 			charInfo, _ := engine.CharacterInfo(char)
 			if charInfo.Element == holderInfo.Element {
 				// if element matches. add perm dmg buff.
-				// TODO : confirm if the buff is all dmg percent or specific element percent
-				// is it mechanically different or nah?
 				engine.AddModifier(char, info.Modifier{
 					Name:   dmgBuff,
 					Source: owner,
-					Stats:  info.PropMap{prop.AllDamagePercent: dmgAmt},
+					Stats:  elementList[holderInfo.Element],
 				})
 			}
 		}
