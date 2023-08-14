@@ -17,22 +17,9 @@ const (
 
 // TODO : try to implement for each element cases.
 
-type element struct {
-}
-type elementList struct {
-	// fire
-
-	// ice
-
-	// img
-
-	// lightning
-
-	// phys
-
-	// qua
-
-	// wind
+type elementBuff struct {
+	element model.DamageType
+	stats   info.PropMap
 }
 
 // After entering battle, if an ally deals the same DMG Type as the wearer,
@@ -55,6 +42,16 @@ func init() {
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	dmgAmt := 0.09 + 0.03*float64(lc.Imposition)
+	// init elements list. use maps for (hopefully) more compact code.
+	elementList := map[model.DamageType]info.PropMap{
+		model.DamageType_FIRE:      {prop.FireDamagePercent: dmgAmt},
+		model.DamageType_ICE:       {prop.IceDamagePercent: dmgAmt},
+		model.DamageType_IMAGINARY: {prop.ImaginaryDamagePercent: dmgAmt},
+		model.DamageType_THUNDER:   {prop.ThunderDamagePercent: dmgAmt},
+		model.DamageType_PHYSICAL:  {prop.PhysicalDamagePercent: dmgAmt},
+		model.DamageType_QUANTUM:   {prop.QuantumDamagePercent: dmgAmt},
+		model.DamageType_WIND:      {prop.WindDamagePercent: dmgAmt},
+	}
 
 	engine.Events().BattleStart.Subscribe(func(event event.BattleStart) {
 		holderInfo, _ := engine.CharacterInfo(owner)
