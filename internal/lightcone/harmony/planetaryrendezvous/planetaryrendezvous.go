@@ -15,6 +15,26 @@ const (
 	dmgBuff key.Modifier = "planetary-rendezvous"
 )
 
+// TODO : try to implement for each element cases.
+
+type element struct {
+}
+type elementList struct {
+	// fire
+
+	// ice
+
+	// img
+
+	// lightning
+
+	// phys
+
+	// qua
+
+	// wind
+}
+
 // After entering battle, if an ally deals the same DMG Type as the wearer,
 // DMG dealt increases by 12%.
 
