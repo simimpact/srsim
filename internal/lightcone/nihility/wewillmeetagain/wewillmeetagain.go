@@ -39,7 +39,13 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
+	extraDmgAmt := 0.36 + 0.12*float64(lc.Imposition)
 
+	engine.AddModifier(owner, info.Modifier{
+		Name:   meet,
+		Source: owner,
+		State:  extraDmgAmt,
+	})
 }
 
 func activateTrigger(mod *modifier.Instance, e event.ActionStart) {
