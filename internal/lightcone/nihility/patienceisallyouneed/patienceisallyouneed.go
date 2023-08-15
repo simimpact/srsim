@@ -73,7 +73,15 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 func addSpeedBuff(mod *modifier.Instance, e event.AttackEnd) {
-
+	state := mod.State().(*state)
+	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
+		Name:              spdBuff,
+		Source:            mod.Owner(),
+		Chance:            1,
+		MaxCount:          3,
+		CountAddWhenStack: 1,
+		Stats:             info.PropMap{prop.SPDPercent: state.spdBuff},
+	})
 }
 
 func inflictErode(mod *modifier.Instance, e event.HitEnd) {
