@@ -77,7 +77,6 @@ func addSpeedBuff(mod *modifier.Instance, e event.AttackEnd) {
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 		Name:              spdBuff,
 		Source:            mod.Owner(),
-		Chance:            1,
 		MaxCount:          3,
 		CountAddWhenStack: 1,
 		Stats:             info.PropMap{prop.SPDPercent: state.spdBuff},
@@ -85,7 +84,18 @@ func addSpeedBuff(mod *modifier.Instance, e event.AttackEnd) {
 }
 
 func inflictErode(mod *modifier.Instance, e event.HitEnd) {
-
+	state := mod.State().(*state)
+	// if already inflicted by erode, bypass
+	if mod.Engine().HasModifier(e.Defender, erode) {
+		return
+	}
+	mod.Engine().AddModifier(e.Defender, info.Modifier{
+		Name:     erode,
+		Source:   mod.Owner(),
+		Duration: 1,
+		Chance:   1,
+		State:    state,
+	})
 }
 
 func addDotDmg(mod *modifier.Instance) {
