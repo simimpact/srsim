@@ -94,10 +94,20 @@ func inflictErode(mod *modifier.Instance, e event.HitEnd) {
 		Source:   mod.Owner(),
 		Duration: 1,
 		Chance:   1,
-		State:    state,
+		State:    state.dotDmg,
 	})
 }
 
 func addDotDmg(mod *modifier.Instance) {
-
+	dotDmg := mod.State().(float64)
+	mod.Engine().Attack(info.Attack{
+		Key:        erode,
+		Targets:    []key.TargetID{mod.Owner()},
+		Source:     mod.Source(),
+		AttackType: model.AttackType_DOT,
+		DamageType: model.DamageType_THUNDER,
+		BaseDamage: info.DamageMap{
+			model.DamageFormula_BY_ATK: dotDmg,
+		},
+	})
 }
