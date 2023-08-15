@@ -66,10 +66,14 @@ func addExtraDmgOnTrigger(mod *modifier.Instance, e event.AttackEnd) {
 	if !state.procced {
 		return
 	}
+	chosenTarget := mod.Engine().Retarget(info.Retarget{
+		Targets: e.Targets,
+		Max:     1,
+	})
 
 	mod.Engine().Attack(info.Attack{
 		Key:        meet,
-		Targets:    e.Targets,
+		Targets:    chosenTarget,
 		Source:     mod.Owner(),
 		AttackType: model.AttackType_PURSUED,
 		DamageType: e.DamageType,
