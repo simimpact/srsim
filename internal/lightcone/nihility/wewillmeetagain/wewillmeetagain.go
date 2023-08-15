@@ -14,6 +14,11 @@ const (
 	meet = "we-will-meet-again"
 )
 
+type state struct {
+	procced     bool
+	extraDmgAmt float64
+}
+
 // After the wearer uses Basic ATK or Skill, deals Additional DMG
 // equal to 48% of the wearer's ATK to a random enemy that has been attacked.
 
@@ -40,11 +45,15 @@ func init() {
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	extraDmgAmt := 0.36 + 0.12*float64(lc.Imposition)
+	modState := state{
+		procced:     false,
+		extraDmgAmt: extraDmgAmt,
+	}
 
 	engine.AddModifier(owner, info.Modifier{
 		Name:   meet,
 		Source: owner,
-		State:  extraDmgAmt,
+		State:  &modState,
 	})
 }
 
