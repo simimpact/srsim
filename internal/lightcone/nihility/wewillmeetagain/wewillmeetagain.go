@@ -58,9 +58,27 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 func activateTrigger(mod *modifier.Instance, e event.ActionStart) {
-
+	state := mod.State().(*state)
+	// if action is basic atk/skill, set procced to true
+	if e.AttackType == model.AttackType_NORMAL ||
+		e.AttackType == model.AttackType_SKILL {
+		state.procced = true
+	}
 }
 
 func addExtraDmgOnTrigger(mod *modifier.Instance, e event.AttackEnd) {
+	state := mod.State().(*state)
+	// if procced, add pursued atk to 1 random attacked enemy.
+	if !state.procced {
+		return
+	}
 
+	mod.Engine().Attack(info.Attack{
+		Key:        meet,
+		Targets:    e.Targets,
+		Source:     mod.Owner(),
+		AttackType: model.AttackType_PURSUED,
+		DamageType: e.DamageType,
+		BaseDamage: info.DamageMap{model.DamageFormula_BY_ATK: state.extraDmgAmt},
+	})
 }
