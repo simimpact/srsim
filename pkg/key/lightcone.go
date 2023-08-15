@@ -44,6 +44,7 @@ const (
 	ResolutionShinesAsPearlsofSweat LightCone = "resolution_shines_as_pearls_of_sweat"
 	WeWillMeetAgain                 LightCone = "we_will_meet_again"
 	Void                            LightCone = "void"
+	PatienceIsAllYouNeed            LightCone = "patience_is_all_you_need"
 )
 
 // Erudition
