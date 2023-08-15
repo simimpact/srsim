@@ -6,6 +6,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -15,6 +16,10 @@ const (
 	spdBuff  key.Modifier = "patience-is-all-you-need-spd-buff"
 	erode                 = "patience-is-all-you-need-erode"
 )
+
+type state struct {
+	spdBuff, dotDmg float64
+}
 
 // Increases DMG dealt by the wearer by 24%. After every attack launched by wearer,
 // their SPD increases by 4.8%, stacking up to 3 times. If the wearer hits an enemy target
@@ -53,7 +58,18 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
+	dmgBuff := 0.2 + 0.04*float64(lc.Imposition)
+	modState := state{
+		spdBuff: 0.04 + 0.008*float64(lc.Imposition),
+		dotDmg:  0.5 + 0.1*float64(lc.Imposition),
+	}
 
+	engine.AddModifier(owner, info.Modifier{
+		Name:   patience,
+		Source: owner,
+		Stats:  info.PropMap{prop.AllDamagePercent: dmgBuff},
+		State:  &modState,
+	})
 }
 
 func addSpeedBuff(mod *modifier.Instance, e event.AttackEnd) {
