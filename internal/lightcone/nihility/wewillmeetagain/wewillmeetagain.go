@@ -22,12 +22,6 @@ type state struct {
 // After the wearer uses Basic ATK or Skill, deals Additional DMG
 // equal to 48% of the wearer's ATK to a random enemy that has been attacked.
 
-// IMPL NOTES :
-// OnAfterAttack, if flag = 1, retarget max 1, add pursued attack.
-// attack : type same as atker, indirect, pursued, can trigger last kill.
-// OnBeforeSkillUse, if = basic atk/skill, set flag to 1.
-// OnAfterSkillUse, define flag.
-
 func init() {
 	lightcone.Register(key.WeWillMeetAgain, lightcone.Config{
 		CreatePassive: Create,
@@ -81,4 +75,6 @@ func addExtraDmgOnTrigger(mod *modifier.Instance, e event.AttackEnd) {
 		DamageType: e.DamageType,
 		BaseDamage: info.DamageMap{model.DamageFormula_BY_ATK: state.extraDmgAmt},
 	})
+	// reset proc value
+	state.procced = false
 }
