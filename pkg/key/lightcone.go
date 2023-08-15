@@ -43,6 +43,7 @@ const (
 	IntheNameoftheWorld             LightCone = "in_the_name_of_the_world"
 	ResolutionShinesAsPearlsofSweat LightCone = "resolution_shines_as_pearls_of_sweat"
 	WeWillMeetAgain                 LightCone = "we_will_meet_again"
+	Void                            LightCone = "void"
 )
 
 // Erudition
