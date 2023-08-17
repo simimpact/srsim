@@ -165,7 +165,7 @@ func (mgr *manager) StartTurn() (key.TargetID, float64, []event.TurnStatus, erro
 	}
 
 	mgr.totalAV += av
-	return mgr.activeTarget, av, nil, nil
+	return mgr.activeTarget, av, mgr.EventTurnStatus(), nil
 }
 
 // ResetTurn resets the gauge of the target taking their turn (target at top of stack) and updates the Manager's turnOrder.
