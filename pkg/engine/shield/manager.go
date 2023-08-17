@@ -27,9 +27,9 @@ func New(event *event.System, attr attribute.Getter) *Manager {
 	}
 }
 
-func (mgr *Manager) HasShield(target key.TargetID, shield key.Shield) bool {
-	for _, shields := range mgr.targets[target] {
-		if shields.name == shield {
+func (mgr *Manager) HasShield(target key.TargetID, shieldKey key.Shield) bool {
+	for _, shield := range mgr.targets[target] {
+		if shield.name == shieldKey {
 			return true
 		}
 	}
@@ -44,14 +44,11 @@ func (mgr *Manager) IsShielded(target key.TargetID) bool {
 }
 
 func (mgr *Manager) MaxShield(target key.TargetID) float64 {
-	if mgr.IsShielded(target) {
-		maxShield := mgr.targets[target][0].hp
-		for _, shield := range mgr.targets[target] {
-			if shield.hp > maxShield {
-				maxShield = shield.hp
-			}
+	maxShield := 0.0
+	for _, shield := range mgr.targets[target] {
+		if shield.hp > maxShield {
+			maxShield = shield.hp
 		}
-		return maxShield
 	}
-	return 0.0
+	return maxShield
 }

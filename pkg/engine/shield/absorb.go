@@ -20,7 +20,7 @@ func (mgr *Manager) AbsorbDamage(target key.TargetID, damage float64) float64 {
 	oldMaxShieldHP := mgr.MaxShield(target)
 	var maxShieldID key.Shield
 	// Apply damage to all shields attached to entity
-	for j, shield := range mgr.targets[target] {
+	for _, shield := range mgr.targets[target] {
 		remaining := math.Dim(damage, shield.hp)
 		shield.hp = math.Dim(shield.hp, damage)
 		// Outgoing damage is always the lowest damage remaining after initial damage is subtracted from shields
@@ -30,7 +30,7 @@ func (mgr *Manager) AbsorbDamage(target key.TargetID, damage float64) float64 {
 		// Max shield is always the highest shield hp remaining after damage is applied
 		if shield.hp > newMaxShieldHP {
 			newMaxShieldHP = shield.hp
-			maxShieldID = mgr.targets[target][j].name
+			maxShieldID = shield.name
 		}
 		// Generate list of shields to remove
 		if shield.hp == 0 {

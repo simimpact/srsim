@@ -11,10 +11,7 @@ import (
 func (mgr *Manager) AddShield(id key.Shield, shield info.Shield) {
 	// Get the stats for the source and target
 	source := mgr.attr.Stats(shield.Source)
-	maxShield := 0.0
-	if mgr.IsShielded(shield.Target) {
-		maxShield = mgr.MaxShield(shield.Target)
-	}
+	maxShield := mgr.MaxShield(shield.Target)
 	target := mgr.attr.Stats(shield.Target)
 
 	// Compute shield baseHP from ShieldMap property values
@@ -59,9 +56,9 @@ func (mgr *Manager) AddShield(id key.Shield, shield info.Shield) {
 }
 
 // Check list of shields for a matching shield
-func (mgr *Manager) CheckMatching(id key.Shield, shield info.Shield) (bool, int) {
-	for i, shields := range mgr.targets[shield.Target] {
-		if shields.name == id {
+func (mgr *Manager) CheckMatching(id key.Shield, shieldInfo info.Shield) (bool, int) {
+	for i, shield := range mgr.targets[shieldInfo.Target] {
+		if shield.name == id {
 			return true, i
 		}
 	}
