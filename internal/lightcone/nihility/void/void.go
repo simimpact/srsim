@@ -3,7 +3,6 @@ package void
 import (
 	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/equip/lightcone"
-	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
@@ -29,13 +28,11 @@ func init() {
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	ehrAmt := 0.15 + 0.05*float64(lc.Imposition)
-	// onBattleStart : add ehr buff.
-	engine.Events().BattleStart.Subscribe(func(event event.BattleStart) {
-		engine.AddModifier(owner, info.Modifier{
-			Name:     ehrBuff,
-			Source:   owner,
-			Stats:    info.PropMap{prop.EffectHitRate: ehrAmt},
-			Duration: 3,
-		})
+
+	engine.AddModifier(owner, info.Modifier{
+		Name:     ehrBuff,
+		Source:   owner,
+		Stats:    info.PropMap{prop.EffectHitRate: ehrAmt},
+		Duration: 3,
 	})
 }
