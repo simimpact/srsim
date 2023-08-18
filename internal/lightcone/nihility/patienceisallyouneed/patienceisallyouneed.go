@@ -93,7 +93,8 @@ func addSpeedBuff(mod *modifier.Instance, e event.AttackEnd) {
 }
 
 func recalcSpeedBuff(mod *modifier.Instance) {
-
+	spdAmt := mod.State().(float64) * mod.Count()
+	mod.AddProperty(prop.SPDPercent, spdAmt)
 }
 
 func inflictErode(mod *modifier.Instance, e event.HitEnd) {
