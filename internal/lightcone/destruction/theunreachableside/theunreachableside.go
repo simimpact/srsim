@@ -60,10 +60,8 @@ func buffOnAttacked(mod *modifier.Instance, e event.AttackEnd) {
 }
 
 func buffOnHPConsume(mod *modifier.Instance, e event.HPChange) {
-	// only add dmg buff if hp change is not from being attacked.
-	// NOTE : confirm if need to check if only apply on hp decrease(not on heal) or all hpChange
-	// first glance at DM don't seem to check for it.
-	if e.IsHPChangeByDamage {
+	// bypass if: hpchangebydmg is true, hpchange source isn't lc holder, hpchange increase hp.
+	if e.IsHPChangeByDamage || e.Target != mod.Owner() || e.NewHP > e.OldHP {
 		return
 	}
 	dmgAmt := mod.State().(float64)
