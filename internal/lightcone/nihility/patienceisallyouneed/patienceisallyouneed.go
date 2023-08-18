@@ -44,7 +44,13 @@ func init() {
 		BehaviorFlags: []model.BehaviorFlag{
 			model.BehaviorFlag_STAT_SPEED_UP,
 		},
-		Stacking: modifier.ReplaceBySource,
+		Stacking:          modifier.ReplaceBySource,
+		StatusType:        model.StatusType_STATUS_BUFF,
+		MaxCount:          3,
+		CountAddWhenStack: 1,
+		Listeners: modifier.Listeners{
+			OnAdd: recalcSpeedBuff,
+		},
 	})
 	modifier.Register(erode, modifier.Config{
 		Listeners: modifier.Listeners{
@@ -80,12 +86,14 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 func addSpeedBuff(mod *modifier.Instance, e event.AttackEnd) {
 	state := mod.State().(*state)
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-		Name:              spdBuff,
-		Source:            mod.Owner(),
-		MaxCount:          3,
-		CountAddWhenStack: 1,
-		Stats:             info.PropMap{prop.SPDPercent: state.spdBuff},
+		Name:   spdBuff,
+		Source: mod.Owner(),
+		State:  state.spdBuff,
 	})
+}
+
+func recalcSpeedBuff(mod *modifier.Instance) {
+
 }
 
 func inflictErode(mod *modifier.Instance, e event.HitEnd) {
