@@ -44,4 +44,12 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 			})
 		}
 	})
+	// remove buff from all chars on lc holder's death
+	engine.Events().TargetDeath.Subscribe(func(e event.TargetDeath) {
+		if e.Target == owner {
+			for _, char := range engine.Characters() {
+				engine.RemoveModifierFromSource(char, owner, dmgBuff)
+			}
+		}
+	})
 }
