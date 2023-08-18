@@ -31,10 +31,12 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnAfterBeingAttacked: buffOnAttacked,
 			OnHPChange:           buffOnHPConsume,
-			OnAfterAttack:        removeBuff,
 		},
 	})
 	modifier.Register(dmgBuff, modifier.Config{
+		Listeners: modifier.Listeners{
+			OnAfterAttack: removeBuff,
+		},
 		StatusType: model.StatusType_STATUS_BUFF,
 	})
 }
@@ -70,7 +72,7 @@ func buffOnHPConsume(mod *modifier.Instance, e event.HPChange) {
 }
 
 func removeBuff(mod *modifier.Instance, e event.AttackEnd) {
-	mod.Engine().RemoveModifierFromSource(mod.Owner(), mod.Source(), dmgBuff)
+	mod.RemoveSelf()
 }
 
 func addDmgBuff(engine engine.Engine, dmgBuff key.Modifier, owner key.TargetID, dmgAmt float64) {
