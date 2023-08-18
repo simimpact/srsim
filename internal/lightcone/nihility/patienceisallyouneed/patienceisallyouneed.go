@@ -14,7 +14,7 @@ import (
 const (
 	patience key.Modifier = "patience-is-all-you-need"
 	spdBuff  key.Modifier = "patience-is-all-you-need-spd-buff"
-	erode                 = "patience-is-all-you-need-erode"
+	erode                 = "erode"
 )
 
 type state struct {
@@ -52,8 +52,13 @@ func init() {
 		},
 		BehaviorFlags: []model.BehaviorFlag{
 			model.BehaviorFlag_STAT_DOT_ELECTRIC,
+			model.BehaviorFlag_STAT_DOT,
 		},
-		Stacking: modifier.ReplaceBySource,
+		Stacking:          modifier.ReplaceBySource,
+		TickMoment:        modifier.ModifierPhase1End,
+		StatusType:        model.StatusType_STATUS_DEBUFF,
+		MaxCount:          1,
+		CountAddWhenStack: 1,
 	})
 }
 
