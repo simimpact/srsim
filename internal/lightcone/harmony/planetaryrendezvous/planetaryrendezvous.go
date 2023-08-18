@@ -25,7 +25,9 @@ func init() {
 		Path:          model.Path_HARMONY,
 		Promotions:    promotions,
 	})
-	modifier.Register(dmgBuff, modifier.Config{})
+	modifier.Register(dmgBuff, modifier.Config{
+		Stacking: modifier.ReplaceBySource,
+	})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
