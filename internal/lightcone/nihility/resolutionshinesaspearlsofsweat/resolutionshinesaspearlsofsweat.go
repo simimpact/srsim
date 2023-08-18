@@ -37,16 +37,16 @@ func init() {
 		},
 	})
 	modifier.Register(ensnared, modifier.Config{
-		Stacking: modifier.ReplaceBySource,
 		BehaviorFlags: []model.BehaviorFlag{
 			model.BehaviorFlag_STAT_DEF_DOWN,
 		},
+		StatusType: model.StatusType_STATUS_DEBUFF,
 	})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	debuffChance := 0.5 + 0.1*float64(lc.Imposition)
-	defDownAmt := 0.1 + 0.01*float64(lc.Imposition)
+	defDownAmt := 0.11 + 0.01*float64(lc.Imposition)
 
 	modState := state{
 		debuffChance: debuffChance,
