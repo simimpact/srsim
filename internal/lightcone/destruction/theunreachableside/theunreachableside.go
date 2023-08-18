@@ -35,7 +35,7 @@ func init() {
 		},
 	})
 	modifier.Register(dmgBuff, modifier.Config{
-		Stacking: modifier.ReplaceBySource,
+		StatusType: model.StatusType_STATUS_BUFF,
 	})
 }
 
