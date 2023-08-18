@@ -33,6 +33,7 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnBeforeAction: activateTrigger,
 			OnAfterAttack:  addExtraDmgOnTrigger,
+			OnAfterAction:  resetProc,
 		},
 	})
 }
@@ -77,6 +78,9 @@ func addExtraDmgOnTrigger(mod *modifier.Instance, e event.AttackEnd) {
 		DamageType: e.DamageType,
 		BaseDamage: info.DamageMap{model.DamageFormula_BY_ATK: state.extraDmgAmt},
 	})
-	// reset proc value
+}
+
+func resetProc(mod *modifier.Instance, e event.ActionEnd) {
+	state := mod.State().(*state)
 	state.proceed = false
 }
