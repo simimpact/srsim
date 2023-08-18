@@ -114,5 +114,6 @@ func addDotDmg(mod *modifier.Instance) {
 		BaseDamage: info.DamageMap{
 			model.DamageFormula_BY_ATK: dotDmg,
 		},
+		UseSnapshot: true,
 	})
 }
