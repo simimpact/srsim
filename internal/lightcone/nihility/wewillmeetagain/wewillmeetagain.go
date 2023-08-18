@@ -15,7 +15,7 @@ const (
 )
 
 type state struct {
-	procced     bool
+	proceed     bool
 	extraDmgAmt float64
 }
 
@@ -40,7 +40,7 @@ func init() {
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	extraDmgAmt := 0.36 + 0.12*float64(lc.Imposition)
 	modState := state{
-		procced:     false,
+		proceed:     false,
 		extraDmgAmt: extraDmgAmt,
 	}
 
@@ -53,17 +53,15 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 
 func activateTrigger(mod *modifier.Instance, e event.ActionStart) {
 	state := mod.State().(*state)
-	// if action is basic atk/skill, set procced to true
-	if e.AttackType == model.AttackType_NORMAL ||
-		e.AttackType == model.AttackType_SKILL {
-		state.procced = true
-	}
+	// if action is basic atk/skill, set proceed to true. else set to false.
+	state.proceed = e.AttackType == model.AttackType_NORMAL ||
+		e.AttackType == model.AttackType_SKILL
 }
 
 func addExtraDmgOnTrigger(mod *modifier.Instance, e event.AttackEnd) {
 	state := mod.State().(*state)
-	// if procced, add pursued atk to 1 random attacked enemy.
-	if !state.procced {
+	// if proceed, add pursued atk to 1 random attacked enemy.
+	if !state.proceed {
 		return
 	}
 	chosenTarget := mod.Engine().Retarget(info.Retarget{
@@ -80,5 +78,5 @@ func addExtraDmgOnTrigger(mod *modifier.Instance, e event.AttackEnd) {
 		BaseDamage: info.DamageMap{model.DamageFormula_BY_ATK: state.extraDmgAmt},
 	})
 	// reset proc value
-	state.procced = false
+	state.proceed = false
 }
