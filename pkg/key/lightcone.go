@@ -52,12 +52,16 @@ const (
 	TheSeriousnessofBreakfast LightCone = "the_seriousness_of_breakfast"
 	GeniusesRepose            LightCone = "geniuses_repose"
 	NightontheMilkyWay        LightCone = "night_on_the_milky_way"
+	TheBirthoftheSelf         LightCone = "the_birth_of_the_self"
 )
 
 // Harmony
 const (
-	Chorus      LightCone = "chorus"
-	MeshingCogs LightCone = "meshing_cogs"
+	Chorus                     LightCone = "chorus"
+	MeshingCogs                LightCone = "meshing_cogs"
+	CarvetheMoonWeavetheClouds LightCone = "carve_the_moon_weave_the_clouds"
+	MemoriesofthePast          LightCone = "memories_of_the_past"
+	DanceDanceDance            LightCone = "dance_dance_dance"
 )
 
 // Preservation
