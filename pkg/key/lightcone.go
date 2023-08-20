@@ -14,6 +14,7 @@ const (
 	CollapsingSky          LightCone = "collapsing_sky"
 	OntheFallofanAeon      LightCone = "on_the_fall_of_an_aeon"
 	WoofWalkTime           LightCone = "woof_walk_time"
+	TheUnreachableSide     LightCone = "the_unreachable_side"
 )
 
 // Hunt
@@ -62,6 +63,7 @@ const (
 	CarvetheMoonWeavetheClouds LightCone = "carve_the_moon_weave_the_clouds"
 	MemoriesofthePast          LightCone = "memories_of_the_past"
 	DanceDanceDance            LightCone = "dance_dance_dance"
+	PlanetaryRendezvous        LightCone = "planetary_rendezvous"
 )
 
 // Preservation
