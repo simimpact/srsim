@@ -8,16 +8,16 @@ import (
 )
 
 const (
-	MarchE1       = "march7th-e1"
-	MarchE2       = "march7th-e2"
-	MarchE2Shield = "march7th-e2-shield"
+	E1       = "march7th-e1"
+	E2       = "march7th-e2"
+	E2Shield = "march7th-e2-shield"
 )
 
 func init() {
-	modifier.Register(MarchE2Shield, modifier.Config{
+	modifier.Register(E2Shield, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.Instance) {
-				mod.Engine().AddShield(MarchE2Shield, info.Shield{
+				mod.Engine().AddShield(E2Shield, info.Shield{
 					Source: mod.Source(),
 					Target: mod.Owner(),
 					BaseShield: info.ShieldMap{
@@ -27,12 +27,12 @@ func init() {
 				})
 			},
 			OnRemove: func(mod *modifier.Instance) {
-				mod.Engine().RemoveShield(MarchE2Shield, mod.Owner())
+				mod.Engine().RemoveShield(E2Shield, mod.Owner())
 			},
 		},
 	})
 
-	modifier.Register(MarchE2, modifier.Config{
+	modifier.Register(E2, modifier.Config{
 		Stacking: modifier.Replace,
 		Listeners: modifier.Listeners{
 			OnAdd: determineE2Target,
@@ -42,22 +42,9 @@ func init() {
 
 func (c *char) initEidolons() {
 	c.engine.AddModifier(c.id, info.Modifier{
-		Name:   MarchE2,
+		Name:   E2,
 		Source: c.id,
 	})
-}
-
-func (c *char) e1() {
-	for _, target := range c.engine.Enemies() {
-		if c.engine.HasModifier(target, MarchUltFreeze) {
-			c.engine.ModifyEnergy(info.ModifyAttribute{
-				Key:    MarchE1,
-				Source: c.id,
-				Target: target,
-				Amount: 6,
-			})
-		}
-	}
 }
 
 func determineE2Target(mod *modifier.Instance) {
@@ -75,7 +62,7 @@ func determineE2Target(mod *modifier.Instance) {
 		},
 	})[0]
 	mod.Engine().AddModifier(e2Target, info.Modifier{
-		Name:     MarchE2Shield,
+		Name:     E2Shield,
 		Source:   mod.Source(),
 		Duration: 3,
 	})
