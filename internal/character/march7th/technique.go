@@ -4,13 +4,15 @@ import (
 	"github.com/simimpact/srsim/internal/global/common"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/model"
 )
 
 func (c *char) Technique(target key.TargetID, state info.ActionState) {
 	freezeTarget := c.engine.Retarget(info.Retarget{
 		Targets: c.engine.Enemies(),
 		Filter: func(target key.TargetID) bool {
-			return c.engine.Stats(target).EffectRES() <= 0.8000000007450581
+			return c.engine.Stats(target).GetDebuffRES(model.BehaviorFlag_STAT_CTRL_FROZEN) <= 0.8 &&
+				c.engine.Stats(target).GetDebuffRES(model.BehaviorFlag_STAT_CTRL) <= 0.8
 		},
 		Max: 1,
 	})
