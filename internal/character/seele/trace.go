@@ -46,3 +46,22 @@ func reduceAggro(mod *modifier.Instance, e event.HPChange) {
 		mod.Engine().RemoveModifier(mod.Owner(), A2Aggro)
 	}
 }
+
+func (c *char) advanceForward(key key.Reason, isInsert bool) {
+	// if not insert : modifygaugecost -20%
+	// if insert : modifynormalized -20%
+	if isInsert {
+		c.engine.ModifyGaugeNormalized(info.ModifyAttribute{
+			Key:    key,
+			Source: c.id,
+			Target: c.id,
+			Amount: -0.2,
+		})
+	} else {
+		c.engine.ModifyCurrentGaugeCost(info.ModifyCurrentGaugeCost{
+			Key:    key,
+			Source: c.id,
+			Amount: -0.2,
+		})
+	}
+}

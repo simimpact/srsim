@@ -30,17 +30,9 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 			HitRatio:     hitRatio,
 		})
 	}
-	// call attackEnd
 	state.EndAttack()
 	// A6 : After using a Basic ATK, Seele's next action will be Advanced Forward by 20%.
-	if !c.info.Traces["103"] { // NOTE : flip this (?)
-		return
+	if c.info.Traces["103"] {
+		c.advanceForward(A6, state.IsInsert())
 	}
-	// if not insert : modifygaugecost -20%
-	// if insert : modifynormalized -20%
-	c.engine.ModifyCurrentGaugeCost(info.ModifyCurrentGaugeCost{
-		Key:    A6,
-		Source: c.id,
-		Amount: -0.2,
-	})
 }
