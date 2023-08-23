@@ -43,7 +43,6 @@ func init() {
 			OnAfterBeingAttacked: addPursuedDmg,
 		},
 		StatusType: model.StatusType_STATUS_DEBUFF,
-		Stacking:   modifier.ReplaceBySource,
 	})
 }
 
