@@ -63,7 +63,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 func applyEnsnared(mod *modifier.Instance, e event.HitStart) {
 	state := mod.State().(*state)
 	// only apply ensnared if target not yet ensnared.
-	if mod.Engine().HasModifierFromSource(e.Defender, mod.Owner(), ensnared) {
+	if mod.Engine().HasModifier(e.Defender, ensnared) {
 		return
 	}
 	mod.Engine().AddModifier(e.Defender, info.Modifier{
