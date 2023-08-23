@@ -31,7 +31,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		StanceDamage: 90.0,
 		EnergyGain:   5.0,
 	})
-
+	state.EndAttack()
 	// add e6 debuff inflict
 	if c.info.Eidolon >= 6 {
 		// a bit hacky, but it's seele and we know she's ST
