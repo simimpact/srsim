@@ -10,9 +10,8 @@ import (
 )
 
 const (
-	E1Check  = "seele-e1-check"
+	E1       = "seele-e1-check"
 	E4       = "seele-e4"
-	E6       = "seele-e6"
 	E6Debuff = "seele-e6-debuff"
 )
 
@@ -27,7 +26,7 @@ const (
 // When Seele is knocked down, the Butterfly Flurry inflicted on the enemies will be removed.
 
 func init() {
-	modifier.Register(E1Check, modifier.Config{
+	modifier.Register(E1, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: boostCR,
 		},
@@ -36,11 +35,6 @@ func init() {
 	modifier.Register(E4, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnTriggerDeath: addFlatEnergy,
-		},
-	})
-	modifier.Register(E6, modifier.Config{
-		Listeners: modifier.Listeners{
-			OnBeforeDying: removeDebuffOnEnemies,
 		},
 	})
 
@@ -56,7 +50,7 @@ func init() {
 func (c *char) initEidolons() {
 	if c.info.Eidolon >= 1 {
 		c.engine.AddModifier(c.id, info.Modifier{
-			Name:   E1Check,
+			Name:   E1,
 			Source: c.id,
 		})
 	}
@@ -66,17 +60,19 @@ func (c *char) initEidolons() {
 			Source: c.id,
 		})
 	}
-	if c.info.Eidolon >= 6 {
-		c.engine.AddModifier(c.id, info.Modifier{
-			Name:   E6,
-			Source: c.id,
-		})
-	}
+	// add onDeath subscriber to remove e6 debuffs on seele death
+	c.engine.Events().TargetDeath.Subscribe(func(e event.TargetDeath) {
+		if c.id == e.Target {
+			for _, enemy := range c.engine.Enemies() {
+				c.engine.RemoveModifier(enemy, E6Debuff)
+			}
+		}
+	})
 }
 
 func boostCR(mod *modifier.Instance, e event.HitStart) {
 	if mod.Engine().HPRatio(e.Defender) <= 0.8 {
-		e.Hit.Attacker.AddProperty(E6, prop.CritChance, 0.15)
+		e.Hit.Attacker.AddProperty(E1, prop.CritChance, 0.15)
 	}
 }
 
@@ -87,13 +83,6 @@ func addFlatEnergy(mod *modifier.Instance, target key.TargetID) {
 		Source: mod.Owner(),
 		Amount: 15.0,
 	})
-}
-
-// when seele is dying, remove all instances of e6 debuffs on all enemies.
-func removeDebuffOnEnemies(mod *modifier.Instance) {
-	for _, enemy := range mod.Engine().Enemies() {
-		mod.Engine().RemoveModifier(enemy, E6Debuff)
-	}
 }
 
 func addPursuedDmg(mod *modifier.Instance, e event.AttackEnd) {
