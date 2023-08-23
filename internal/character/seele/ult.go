@@ -31,4 +31,13 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		StanceDamage: 90.0,
 		EnergyGain:   5.0,
 	})
+
+	// add e6 debuff inflict
+	if c.info.Eidolon >= 6 {
+		// a bit hacky, but it's seele and we know she's ST
+		c.engine.AddModifier(target, info.Modifier{
+			Name:   E6Debuff,
+			Source: c.id,
+		})
+	}
 }

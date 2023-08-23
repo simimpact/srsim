@@ -40,7 +40,6 @@ func init() {
 	})
 	modifier.Register(E6, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAfterAttack: inflictDebuffOnUlt,
 			OnBeforeDying: removeDebuffOnEnemies,
 		},
 	})
@@ -87,17 +86,6 @@ func addFlatEnergy(mod *modifier.Instance, target key.TargetID) {
 		Target: mod.Owner(),
 		Source: mod.Owner(),
 		Amount: 15.0,
-	})
-}
-
-func inflictDebuffOnUlt(mod *modifier.Instance, e event.AttackEnd) {
-	if e.AttackType != model.AttackType_ULT {
-		return
-	}
-	// a bit hacky, but it's seele and we know she's ST
-	mod.Engine().AddModifier(e.Targets[0], info.Modifier{
-		Name:   E6Debuff,
-		Source: mod.Owner(),
 	})
 }
 
