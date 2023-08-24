@@ -1,6 +1,7 @@
 package seele
 
 import (
+	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
@@ -72,5 +73,34 @@ func applyResurgence(mod *modifier.Instance, target key.TargetID) {
 	} else {
 		state.c.resurgence = true
 		state.c.engine.InsertAction(state.c.id)
+	}
+}
+
+// TODO : refactor resurgence logic into a separate single func that all impl will use
+// TODO : and merge buffedstate and resurgence appl.
+func (c *char) enterResurgence(engine engine.Engine, owner key.TargetID, addExtraTurn bool) {
+	// A4 : While Seele is in the buffed state, her Quantum RES PEN increases by 20%.
+	penAmt := 0.0
+	if c.info.Traces["102"] {
+		penAmt = 0.2
+	}
+	engine.AddModifier(owner, info.Modifier{
+		Name:   BuffedState,
+		Source: owner,
+		Stats: info.PropMap{
+			prop.AllDamagePercent: talent[c.info.TalentLevelIndex()],
+			prop.QuantumPEN:       penAmt,
+		},
+	})
+	// if addExtraTurn, run extra turn logic. if not(just enter buffedState), then bypass.
+	if !addExtraTurn {
+		return
+	}
+	// if current turn is resurgence, don't add extra turn. otherwise add extra turn.
+	if c.resurgence {
+		c.resurgence = false
+	} else {
+		c.resurgence = true
+		c.engine.InsertAction(c.id)
 	}
 }
