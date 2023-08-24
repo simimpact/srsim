@@ -18,9 +18,10 @@ const (
 
 func init() {
 	modifier.Register(SkillSpeedBuff, modifier.Config{
-		Stacking:      modifier.ReplaceBySource,
-		StatusType:    model.StatusType_STATUS_BUFF,
-		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_UP},
+		Stacking:          modifier.ReplaceBySource,
+		StatusType:        model.StatusType_STATUS_BUFF,
+		BehaviorFlags:     []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_UP},
+		CountAddWhenStack: 1,
 	})
 }
 
@@ -29,18 +30,15 @@ var skillHits = []float64{0.2, 0.1, 0.1, 0.6}
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	// E2 : The SPD Boost effect of Seele's Skill can stack up to 2 time(s).
 	maxCountAmt := 1.0
-	countAddAmt := 0.0
 	if c.info.Eidolon >= 2 {
 		maxCountAmt = 2.0
-		countAddAmt = 1.0
 	}
 	c.engine.AddModifier(c.id, info.Modifier{
-		Name:              SkillSpeedBuff,
-		Source:            c.id,
-		Duration:          2,
-		Stats:             info.PropMap{prop.SPDPercent: 0.25},
-		MaxCount:          maxCountAmt,
-		CountAddWhenStack: countAddAmt,
+		Name:     SkillSpeedBuff,
+		Source:   c.id,
+		Duration: 2,
+		Stats:    info.PropMap{prop.SPDPercent: 0.25},
+		MaxCount: maxCountAmt,
 	})
 
 	// attack
