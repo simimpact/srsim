@@ -19,7 +19,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		penAmt = 0.2
 	}
 	c.engine.AddModifier(c.id, info.Modifier{
-		Name:   BuffedState,
+		Name:   Resurgence,
 		Source: c.id,
 		Stats: info.PropMap{
 			prop.AllDamagePercent: talent[c.info.TalentLevelIndex()],

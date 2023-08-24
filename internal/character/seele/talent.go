@@ -1,6 +1,7 @@
 package seele
 
 import (
+	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
@@ -9,8 +10,7 @@ import (
 )
 
 const (
-	Resurgence  key.Modifier = "seele-resurgence"
-	BuffedState key.Modifier = "seele-buffed-state"
+	Resurgence key.Modifier = "seele-resurgence"
 )
 
 type state struct {
@@ -26,11 +26,6 @@ type state struct {
 
 func init() {
 	modifier.Register(Resurgence, modifier.Config{
-		Listeners: modifier.Listeners{
-			OnTriggerDeath: applyResurgence,
-		},
-	})
-	modifier.Register(BuffedState, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_BUFF,
 		Duration:   1,
@@ -49,15 +44,13 @@ func (c *char) initTalent() {
 		State:  &modState,
 	})
 	// TODO : move onTriggerDeath logic to onDeath event subs to use the new resurgence func
+	// enter buffed state and add extra turn if not on resurgence
+	c.engine.Events().TargetDeath.Subscribe(func(e event.TargetDeath) {
+
+	})
 }
 
-// enter buffed state and add extra turn if not on resurgence
-func applyResurgence(mod *modifier.Instance, target key.TargetID) {
-	enterResurgence(true)
-}
-
-// TODO : refactor resurgence logic into a separate single func that all impl will use
-// TODO : and merge buffedstate and resurgence appl.
+// enter "buffed state", insert extra turn right after if addExtraTurn is true.
 func (c *char) enterResurgence(addExtraTurn bool) {
 	// A4 : While Seele is in the buffed state, her Quantum RES PEN increases by 20%.
 	penAmt := 0.0
@@ -65,7 +58,7 @@ func (c *char) enterResurgence(addExtraTurn bool) {
 		penAmt = 0.2
 	}
 	c.engine.AddModifier(c.id, info.Modifier{
-		Name:   BuffedState,
+		Name:   Resurgence,
 		Source: c.id,
 		Stats: info.PropMap{
 			prop.AllDamagePercent: talent[c.info.TalentLevelIndex()],
