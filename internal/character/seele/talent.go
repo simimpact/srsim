@@ -1,7 +1,6 @@
 package seele
 
 import (
-	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
@@ -49,58 +48,37 @@ func (c *char) initTalent() {
 		Source: c.id,
 		State:  &modState,
 	})
+	// TODO : move onTriggerDeath logic to onDeath event subs to use the new resurgence func
 }
 
 // enter buffed state and add extra turn if not on resurgence
 func applyResurgence(mod *modifier.Instance, target key.TargetID) {
-	state := mod.State().(*state)
-	// A4 : While Seele is in the buffed state, her Quantum RES PEN increases by 20%.
-	penAmt := 0.0
-	if state.c.info.Traces["102"] {
-		penAmt = 0.2
-	}
-	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-		Name:   BuffedState,
-		Source: mod.Owner(),
-		Stats: info.PropMap{
-			prop.AllDamagePercent: state.dmgAmt,
-			prop.QuantumPEN:       penAmt,
-		},
-	})
-	// if current turn is resurgence, don't add extra turn. otherwise add extra turn.
-	if state.c.resurgence {
-		state.c.resurgence = false
-	} else {
-		state.c.resurgence = true
-		state.c.engine.InsertAction(state.c.id)
-	}
+	enterResurgence(true)
 }
 
 // TODO : refactor resurgence logic into a separate single func that all impl will use
 // TODO : and merge buffedstate and resurgence appl.
-func (c *char) enterResurgence(engine engine.Engine, owner key.TargetID, addExtraTurn bool) {
+func (c *char) enterResurgence(addExtraTurn bool) {
 	// A4 : While Seele is in the buffed state, her Quantum RES PEN increases by 20%.
 	penAmt := 0.0
 	if c.info.Traces["102"] {
 		penAmt = 0.2
 	}
-	engine.AddModifier(owner, info.Modifier{
+	c.engine.AddModifier(c.id, info.Modifier{
 		Name:   BuffedState,
-		Source: owner,
+		Source: c.id,
 		Stats: info.PropMap{
 			prop.AllDamagePercent: talent[c.info.TalentLevelIndex()],
 			prop.QuantumPEN:       penAmt,
 		},
 	})
-	// if addExtraTurn, run extra turn logic. if not(just enter buffedState), then bypass.
-	if !addExtraTurn {
-		return
-	}
-	// if current turn is resurgence, don't add extra turn. otherwise add extra turn.
-	if c.resurgence {
-		c.resurgence = false
-	} else {
-		c.resurgence = true
-		c.engine.InsertAction(c.id)
+	// if addExtraTurn true, run extra turn logic. if not(just enter buffedState), then bypass.
+	if addExtraTurn {
+		if c.resurgence {
+			c.resurgence = false
+		} else {
+			c.resurgence = true
+			c.engine.InsertAction(c.id)
+		}
 	}
 }
