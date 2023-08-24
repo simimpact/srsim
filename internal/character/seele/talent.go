@@ -13,11 +13,6 @@ const (
 	Resurgence key.Modifier = "seele-resurgence"
 )
 
-type state struct {
-	c      *char
-	dmgAmt float64
-}
-
 // Enters the buffed state upon defeating an enemy with Basic ATK, Skill, or Ultimate,
 // and receives an extra turn. While in the buffed state,
 // the DMG of Seele's attacks increases by 80% for 1 turn(s).
@@ -32,20 +27,9 @@ func init() {
 	})
 }
 
-// add mod to check for resurgence turns and add extra action
 func (c *char) initTalent() {
-	modState := state{
-		c:      c,
-		dmgAmt: talent[c.info.TalentLevelIndex()],
-	}
-	c.engine.AddModifier(c.id, info.Modifier{
-		Name:   Resurgence,
-		Source: c.id,
-		State:  &modState,
-	})
-	// enter buffed state and add extra turn if not on resurgence
+	// listen to death events. If killer is seele, enter resurgence.
 	c.engine.Events().TargetDeath.Subscribe(func(e event.TargetDeath) {
-		// only enter resurgence if cause of death is seele's attacks.
 		if e.Killer == c.id {
 			c.enterResurgence(true)
 		}
