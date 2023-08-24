@@ -10,16 +10,15 @@ import (
 )
 
 const (
-	E1       = "seele-e1-check"
+	E1       = "seele-e1"
 	E4       = "seele-e4"
-	E6Debuff = "seele-e6-debuff"
+	E6Debuff = "seele-e6"
 )
 
 // E1 : When dealing DMG to an enemy whose HP percentage is 80% or lower,
 // CRIT Rate increases by 15%.
 // E4 : Seele regenerates 15 Energy when she defeats an enemy.
-// E6 : After Seele uses her Ultimate, inflict the target enemy with Butterfly Flurry
-// for 1 turn(s). Enemies suffering from Butterfly Flurry will take Additional
+// E6 : Enemies suffering from Butterfly Flurry will take Additional
 // Quantum DMG equal to 15% of Seele's Ultimate DMG every time they are attacked.
 // If the target enemy is defeated by the Butterfly Flurry DMG triggered by
 // other allies' attacks, Seele's Talent will not be triggered.
@@ -85,10 +84,8 @@ func addFlatEnergy(mod *modifier.Instance, target key.TargetID) {
 }
 
 func addPursuedDmg(mod *modifier.Instance, e event.AttackEnd) {
-	// fetch seele's atk value. confirm if this is snapshot or dynamic
-	atkAmt := mod.Engine().Stats(mod.Source()).ATK()
-
-	// apply dmg to mod owner from mod applier(source)
+	// apply dmg to mod owner from mod applier(source). 15% of seele's ult dmg.
+	ultAmt := mod.State().(float64)
 	mod.Engine().Attack(info.Attack{
 		Key:        E6Debuff,
 		Source:     mod.Source(),
@@ -96,7 +93,7 @@ func addPursuedDmg(mod *modifier.Instance, e event.AttackEnd) {
 		DamageType: model.DamageType_QUANTUM,
 		AttackType: model.AttackType_PURSUED,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_ATK: atkAmt * 0.15,
+			model.DamageFormula_BY_ATK: 0.15 * ultAmt,
 		},
 	})
 }

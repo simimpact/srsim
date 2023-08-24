@@ -32,12 +32,12 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		EnergyGain:   5.0,
 	})
 	state.EndAttack()
-	// add e6 debuff inflict
+	// E6 : After Ultimate, inflict the target enemy with Butterfly Flurry for 1 turn(s).
 	if c.info.Eidolon >= 6 {
-		// a bit hacky, but it's seele and we know she's ST
 		c.engine.AddModifier(target, info.Modifier{
 			Name:   E6Debuff,
 			Source: c.id,
+			State:  ult[c.info.UltLevelIndex()],
 		})
 	}
 }
