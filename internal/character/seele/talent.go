@@ -43,10 +43,12 @@ func (c *char) initTalent() {
 		Source: c.id,
 		State:  &modState,
 	})
-	// TODO : move onTriggerDeath logic to onDeath event subs to use the new resurgence func
 	// enter buffed state and add extra turn if not on resurgence
 	c.engine.Events().TargetDeath.Subscribe(func(e event.TargetDeath) {
-
+		// only enter resurgence if cause of death is seele's attacks.
+		if e.Killer == c.id {
+			c.enterResurgence(true)
+		}
 	})
 }
 
