@@ -13,10 +13,18 @@ const (
 
 // Enters the buffed state and deals Quantum DMG equal to 425% of her ATK to a single enemy.
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
+	// A4 : While Seele is in the buffed state, her Quantum RES PEN increases by 20%.
+	penAmt := 0.0
+	if c.info.Traces["102"] {
+		penAmt = 0.2
+	}
 	c.engine.AddModifier(c.id, info.Modifier{
 		Name:   BuffedState,
 		Source: c.id,
-		Stats:  info.PropMap{prop.AllDamagePercent: talent[c.info.TalentLevelIndex()]},
+		Stats: info.PropMap{
+			prop.AllDamagePercent: talent[c.info.TalentLevelIndex()],
+			prop.QuantumPEN:       penAmt,
+		},
 	})
 
 	c.engine.Attack(info.Attack{
