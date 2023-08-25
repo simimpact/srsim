@@ -1,6 +1,7 @@
 package march7th
 
 import (
+	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/key"
@@ -32,38 +33,21 @@ func init() {
 		},
 	})
 
-	modifier.Register(E2, modifier.Config{
-		Stacking: modifier.Replace,
-		Listeners: modifier.Listeners{
-			OnAdd: determineE2Target,
-		},
-	})
 }
 
-func (c *char) initEidolons() {
-	c.engine.AddModifier(c.id, info.Modifier{
-		Name:   E2,
-		Source: c.id,
-	})
-}
-
-func determineE2Target(mod *modifier.Instance) {
+func (c *char) addE2Shield(e event.BattleStart) {
 	lowestHpRatio := 1.0
-	for _, Target := range mod.Engine().Characters() {
-		if mod.Engine().HPRatio(Target) <= lowestHpRatio {
-			lowestHpRatio = mod.Engine().HPRatio(Target)
+	var lowestHpTarget key.TargetID
+	for _, Target := range c.engine.Characters() {
+		if c.engine.HPRatio(Target) <= lowestHpRatio {
+			lowestHpRatio = c.engine.HPRatio(Target)
+			lowestHpTarget = Target
 		}
 	}
-	e2Target := mod.Engine().Retarget(info.Retarget{
-		Targets: mod.Engine().Characters(),
-		Max:     1,
-		Filter: func(target key.TargetID) bool {
-			return mod.Engine().HPRatio(target) == lowestHpRatio
-		},
-	})[0]
-	mod.Engine().AddModifier(e2Target, info.Modifier{
+
+	c.engine.AddModifier(lowestHpTarget, info.Modifier{
 		Name:     E2Shield,
-		Source:   mod.Source(),
+		Source:   c.id,
 		Duration: 3,
 	})
 }
