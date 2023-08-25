@@ -51,7 +51,7 @@ func init() {
 	modifier.Register(Talent, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnPhase2: func(mod *modifier.Instance) {
-				//Perhaps keep the max count allowed stored in a state of the Talent modifier, to avoid having to grab with CharacterInfo
+				// Perhaps keep the max count allowed stored in a state of the Talent modifier, to avoid having to grab with CharacterInfo
 				maxCounters := mod.State().(talentState).maxCounters
 				mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 					Name:     TalentCount,
@@ -100,7 +100,6 @@ func (c *char) applyCounterMark(e event.AttackStart) {
 			Source: c.id,
 		})
 	}
-
 }
 
 // Actual counter attack logic

@@ -56,7 +56,6 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			}
 		}
 	}
-
 }
 
 func (c *char) ultHit(hitIndex int, hitRatio float64) {
@@ -94,9 +93,7 @@ func (c *char) ultHit(hitIndex int, hitRatio float64) {
 		Amount: 5 * 0.25,
 	})
 
-	//Unnecessary?
 	for t := range hitTargets {
 		delete(hitTargets, t)
 	}
-
 }

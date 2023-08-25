@@ -74,7 +74,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		shieldDur += 1
 	}
 
-	//E6 Check
+	// E6 Check
 	e6HealPercentage := 0.0
 	e6HealFlat := 0.0
 	if c.info.Eidolon >= 6 {
