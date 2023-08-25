@@ -32,7 +32,6 @@ func init() {
 			},
 		},
 	})
-
 }
 
 func (c *char) addE2Shield(e event.BattleStart) {
