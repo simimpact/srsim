@@ -9,19 +9,22 @@ import (
 )
 
 const (
-	Skill  = "march7th-skill"
+	Skill  = "march7th-shield"
 	E6heal = "march7th-e6hot"
 )
 
 type shieldState struct {
 	shieldPercentage float64
 	shieldFlat       float64
+	healPercentage   float64
+	healFlat         float64
 }
 
 func init() {
 	modifier.Register(Skill, modifier.Config{
-		Duration: 3,
-		Stacking: modifier.Replace,
+		StatusType: model.StatusType_STATUS_BUFF,
+		Duration:   3,
+		Stacking:   modifier.Replace,
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.Instance) {
 				mod.Engine().AddShield(Skill, info.Shield{
@@ -40,19 +43,16 @@ func init() {
 				mod.Engine().RemoveShield(Skill, mod.Owner())
 			},
 			OnPhase1: func(mod *modifier.Instance) {
-				march7th, _ := mod.Engine().CharacterInfo(mod.Source())
-				if march7th.Eidolon >= 6 {
-					mod.Engine().Heal(info.Heal{
-						Key:     E6heal,
-						Targets: []key.TargetID{mod.Owner()},
-						Source:  mod.Source(),
-						BaseHeal: info.HealMap{
-							model.HealFormula_BY_TARGET_MAX_HP: 0.4,
-						},
-						HealValue:   106,
-						UseSnapshot: true,
-					})
-				}
+				mod.Engine().Heal(info.Heal{
+					Key:     E6heal,
+					Targets: []key.TargetID{mod.Owner()},
+					Source:  mod.Source(),
+					BaseHeal: info.HealMap{
+						model.HealFormula_BY_TARGET_MAX_HP: mod.State().(shieldState).healPercentage,
+					},
+					HealValue:   mod.State().(shieldState).healFlat,
+					UseSnapshot: true,
+				})
 			},
 		},
 	})
@@ -74,12 +74,22 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		shieldDur += 1
 	}
 
+	//E6 Check
+	e6HealPercentage := 0.0
+	e6HealFlat := 0.0
+	if c.info.Eidolon >= 6 {
+		e6HealPercentage = 0.04
+		e6HealFlat = 106
+	}
+
 	c.engine.AddModifier(target, info.Modifier{
 		Name:   Skill,
 		Source: c.id,
 		State: shieldState{
 			shieldPercentage: skill[c.info.SkillLevelIndex()],
 			shieldFlat:       skillflat[c.info.SkillLevelIndex()],
+			healPercentage:   e6HealPercentage,
+			healFlat:         e6HealFlat,
 		},
 		Duration: shieldDur,
 	})
