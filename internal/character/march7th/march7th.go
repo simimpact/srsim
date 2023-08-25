@@ -49,8 +49,10 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 		id:     id,
 		info:   charInfo,
 	}
-
-	c.initEidolons()
 	c.initTalent()
+
+	engine.Events().BattleStart.Subscribe(c.addE2Shield)
+	engine.Events().AttackStart.Subscribe(c.applyCounterMark)
+
 	return c
 }
