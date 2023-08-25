@@ -16,6 +16,10 @@ const (
 	MarchCounterAttack = "march7th-counter"
 )
 
+type talentState struct {
+	maxCounters float64
+}
+
 /*
 Note:
 High level breakdown of how March's talent works, as far as I can tell from the DM:
@@ -37,86 +41,80 @@ func init() {
 		},
 	})
 
-	modifier.Register(MarchAllyMark, modifier.Config{
-		Listeners: modifier.Listeners{
-			OnBeforeBeingAttacked: checkToApplyCounterMark,
-		},
-	})
-
 	modifier.Register(TalentCount, modifier.Config{
+		Stacking: modifier.Replace,
 		Count:    2,
-		MaxCount: 3,
+		MaxCount: 2,
 	})
 
 	// The actual talent modifier
 	modifier.Register(Talent, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.Instance) {
-				for _, teammate := range mod.Engine().Characters() {
-					mod.Engine().AddModifier(teammate, info.Modifier{
-						Name:   MarchAllyMark,
-						Source: mod.Owner(),
-					})
-				}
-			},
 			OnPhase2: func(mod *modifier.Instance) {
-				march7th, _ := mod.Engine().CharacterInfo(mod.Source())
-				talentCount := 2
-				if march7th.Eidolon >= 4 {
-					talentCount = 3
-				}
+				//Perhaps keep the max count allowed stored in a state of the Talent modifier, to avoid having to grab with CharacterInfo
+				maxCounters := mod.State().(talentState).maxCounters
 				mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-					Name:   TalentCount,
-					Source: mod.Source(),
-					Count:  float64(talentCount),
+					Name:     TalentCount,
+					Source:   mod.Source(),
+					Count:    maxCounters,
+					MaxCount: maxCounters,
 				})
-				// TODO : Implement logic for keeping track of how many counters march has left, note below
-			},
-			OnBeforeDying: func(mod *modifier.Instance) {
-				for _, teammate := range mod.Engine().Characters() {
-					mod.Engine().RemoveModifier(teammate, MarchAllyMark)
-				}
 			},
 		},
 	})
 }
 
 func (c *char) initTalent() {
+	talentCount := 2.0
+	if c.info.Eidolon >= 4 {
+		talentCount += 1.0
+	}
 	c.engine.AddModifier(c.id, info.Modifier{
 		Name:   Talent,
 		Source: c.id,
+		State: talentState{
+			maxCounters: talentCount,
+		},
+	})
+	c.engine.AddModifier(c.id, info.Modifier{
+		Name:     TalentCount,
+		Source:   c.id,
+		Count:    talentCount,
+		MaxCount: talentCount,
 	})
 }
 
-func checkToApplyCounterMark(mod *modifier.Instance, e event.AttackStart) {
-	hasEnoughCounterStacks := mod.Engine().HasModifier(mod.Source(), TalentCount)
-	qualifiesForCounter := mod.Engine().IsShielded(mod.Owner()) && mod.Engine().IsEnemy(e.Attacker) && hasEnoughCounterStacks
-	//TODO: Add support for checking how many counters March's talent has left:
-	/*
-	   Thinking there are two main ways to do this:
-	   First would be to have a state struct that keeps track of how many counters March has already shot. Do not think
-	   this is a good way since there's no easy way to pass this information to each of the instances of the modifier march gives to her                teammates.
+func (c *char) applyCounterMark(e event.AttackStart) {
+	hasShieldedTarget := false
+	for _, ally := range c.engine.Characters() {
+		hasShieldedTarget = hasShieldedTarget || c.engine.IsShielded(ally)
+	}
 
-	   Other better way I am leaning towards is to have March's talent modifier itself keep track of how many counters she has remaining                via the count/stacks, or the count/stacks of another modifier it creates/adds to March every Phase2 (Similar to DM)
-	*/
+	haveCounters := c.engine.HasModifier(c.id, TalentCount)
 
-	if qualifiesForCounter {
-		mod.Engine().AddModifier(e.Attacker, info.Modifier{
+	canCounter := hasShieldedTarget && c.engine.IsEnemy(e.Attacker) && haveCounters
+
+	if canCounter {
+		c.engine.AddModifier(e.Attacker, info.Modifier{
 			Name:   MarchCounterMark,
-			Source: mod.Source(),
+			Source: c.id,
 		})
 	}
+
 }
 
 // Actual counter attack logic
 func talentCounterAttack(mod *modifier.Instance, e event.AttackEnd) {
-	// Counter attack
 	mod.Engine().InsertAbility(info.Insert{
 		Source:   mod.Source(),
 		Priority: info.CharInsertAttackSelf,
 		Key:      MarchCounterAttack,
 		Execute: func() {
 			march7th, _ := mod.Engine().CharacterInfo(mod.Source())
+			e4Scaling := 0.0
+			if march7th.Eidolon >= 4 {
+				e4Scaling = 0.30
+			}
 			mod.Engine().Attack(info.Attack{
 				Key:        MarchCounterAttack,
 				Source:     mod.Source(),
@@ -125,13 +123,13 @@ func talentCounterAttack(mod *modifier.Instance, e event.AttackEnd) {
 				DamageType: model.DamageType_ICE,
 				BaseDamage: info.DamageMap{
 					model.DamageFormula_BY_ATK: talent[march7th.TalentLevelIndex()],
-					model.DamageFormula_BY_DEF: 0.3,
+					model.DamageFormula_BY_DEF: e4Scaling,
 				},
 			})
+			// Remove a count/stack from the talent counter
+			mod.Engine().ExtendModifierCount(mod.Source(), TalentCount, -1.0)
 			// Remove this modifier from the enemy it is attached to
 			mod.Engine().RemoveModifier(mod.Owner(), MarchCounterMark)
-			// Probably not right
-			mod.Engine().ExtendModifierCount(mod.Source(), TalentCount, -1)
 		},
 		AbortFlags: []model.BehaviorFlag{
 			model.BehaviorFlag_DISABLE_ACTION,
