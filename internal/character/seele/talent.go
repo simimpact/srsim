@@ -23,7 +23,6 @@ func init() {
 	modifier.Register(Resurgence, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_BUFF,
-		Duration:   1,
 	})
 }
 
@@ -50,8 +49,9 @@ func (c *char) enterResurgence(addExtraTurn bool) {
 			prop.AllDamagePercent: talent[c.info.TalentLevelIndex()],
 			prop.QuantumPEN:       penAmt,
 		},
+		Duration: 1,
 	})
-	// if addExtraTurn true, run extra turn logic. if not(just enter buffedState), then bypass.
+	// run extra turn logic only if addExtraTurn is true.
 	if addExtraTurn {
 		if c.resurgence {
 			c.resurgence = false
