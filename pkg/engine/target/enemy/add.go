@@ -14,6 +14,7 @@ func (mgr *Manager) AddEnemy(id key.TargetID, enemy *model.Enemy) error {
 	baseStats := info.NewPropMap()
 	baseStats.Modify(prop.HPBase, enemy.Hp)
 	baseStats.Modify(prop.DEFBase, 200.0+10.0*float64(lvl))
+	baseStats.Modify(prop.SPDBase, 100)
 
 	debuffRES := info.NewDebuffRESMap()
 	for _, res := range enemy.DebuffRes {
