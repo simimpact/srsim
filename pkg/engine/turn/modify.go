@@ -15,7 +15,7 @@ func (mgr *manager) SetGauge(data info.ModifyAttribute) error {
 	}
 
 	// create map of TargetID -> AV so you only need to calc once within this call
-	targetAV := make(map[key.TargetID]float64, len(mgr.order.order))
+	targetAV := make(map[key.TargetID]float64, len(mgr.orderHandler.turnOrder))
 
 	// TODO:
 	// 1. update gauge of target
@@ -26,8 +26,8 @@ func (mgr *manager) SetGauge(data info.ModifyAttribute) error {
 	// 4. emit GaugeChangeEvent
 
 	// TODO: this is also needed for TurnStart emit & TurnReset emit, should be abstracted
-	status := make([]event.TurnStatus, len(mgr.order.order))
-	for i, t := range mgr.order.order {
+	status := make([]event.TurnStatus, len(mgr.orderHandler.turnOrder))
+	for i, t := range mgr.orderHandler.turnOrder {
 		status[i] = event.TurnStatus{
 			ID:    t.id,
 			Gauge: t.gauge,

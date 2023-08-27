@@ -28,23 +28,25 @@ type target struct {
 	gauge float64
 }
 
-type turnOrder struct {
-	attr  attribute.Getter
-	order []*target
+type turnOrderHandler struct {
+	attr      attribute.Getter
+	turnOrder []*target
 }
 
-func (a *turnOrder) av(i int) float64 {
-	return a.order[i].gauge / a.attr.Stats(a.order[i].id).SPD()
+func (a *turnOrderHandler) av(i int) float64 {
+	return a.turnOrder[i].gauge / a.attr.Stats(a.turnOrder[i].id).SPD()
 }
 
-func (a *turnOrder) Len() int           { return len(a.order) }
-func (a *turnOrder) Swap(i, j int)      { a.order[i], a.order[j] = a.order[j], a.order[i] }
-func (a *turnOrder) Less(i, j int) bool { return a.av(i) < a.av(j) }
+func (a *turnOrderHandler) Len() int { return len(a.turnOrder) }
+func (a *turnOrderHandler) Swap(i, j int) {
+	a.turnOrder[i], a.turnOrder[j] = a.turnOrder[j], a.turnOrder[i]
+}
+func (a *turnOrderHandler) Less(i, j int) bool { return a.av(i) < a.av(j) }
 
 type manager struct {
-	event *event.System
-	attr  attribute.Getter
-	order        *turnOrder
+	event        *event.System
+	attr         attribute.Getter
+	orderHandler *turnOrderHandler
 	gaugeCost    float64
 	activeTurn   bool
 	activeTarget key.TargetID
@@ -55,9 +57,9 @@ func New(e *event.System, attr attribute.Getter) Manager {
 	mgr := &manager{
 		event: e,
 		attr:  attr,
-		order: &turnOrder{
-			attr:  attr,
-			order: make([]*target, 0, 10),
+		orderHandler: &turnOrderHandler{
+			attr:      attr,
+			turnOrder: make([]*target, 0, 10),
 		},
 		gaugeCost:    1.0,
 		activeTurn:   false,
@@ -74,8 +76,8 @@ func (mgr *manager) TotalAV() float64 {
 
 // TurnOrder returns an ordered array of TargetIDs from the Manager's turnOrder array.
 func (mgr *manager) TurnOrder() []key.TargetID {
-	targetOrder := make([]key.TargetID, mgr.order.Len())
-	for i, v := range mgr.order.order {
+	targetOrder := make([]key.TargetID, mgr.orderHandler.Len())
+	for i, v := range mgr.orderHandler.turnOrder {
 		targetOrder[i] = v.id
 	}
 	return targetOrder
@@ -83,12 +85,12 @@ func (mgr *manager) TurnOrder() []key.TargetID {
 
 // EventTurnStatus returns an array of event.TurnStatus structs populated with the current ID, Gauge, and AV of each target in the Manager's turnOrder.
 func (mgr *manager) EventTurnStatus() []event.TurnStatus {
-	turnStatus := make([]event.TurnStatus, mgr.order.Len())
-	for i, v := range mgr.order.order {
-		turnStatus[i] = event.TurnStatus {
-			ID : v.id,
-			Gauge : v.gauge,
-			AV : mgr.order.av(i),
+	turnStatus := make([]event.TurnStatus, mgr.orderHandler.Len())
+	for i, v := range mgr.orderHandler.turnOrder {
+		turnStatus[i] = event.TurnStatus{
+			ID:    v.id,
+			Gauge: v.gauge,
+			AV:    mgr.orderHandler.av(i),
 		}
 	}
 	return turnStatus
@@ -97,7 +99,7 @@ func (mgr *manager) EventTurnStatus() []event.TurnStatus {
 // target checks whether a key.TargetID exists in the Manager's turnOrder array.
 // If it exists, it returns a pointer to the target. Otherwise, it returns nil.
 func (mgr *manager) target(id key.TargetID) *target {
-	for _, t := range mgr.order.order {
+	for _, t := range mgr.orderHandler.turnOrder {
 		if t.id == id {
 			return t
 		}
@@ -120,10 +122,10 @@ func (mgr *manager) AddTargets(ids ...key.TargetID) {
 			id:    id,
 			gauge: BaseGauge,
 		}
-		mgr.order.order = append(mgr.order.order, t)
+		mgr.orderHandler.turnOrder = append(mgr.orderHandler.turnOrder, t)
 	}
 
-	sort.Stable(mgr.order)
+	sort.Stable(mgr.orderHandler)
 
 	mgr.event.TurnTargetsAdded.Emit(event.TurnTargetsAdded{
 		Targets:   ids,
@@ -134,22 +136,22 @@ func (mgr *manager) AddTargets(ids ...key.TargetID) {
 // RemoveTarget removes a target from the Manager's turnOrder.
 func (mgr *manager) RemoveTarget(id key.TargetID) {
 	idx := 0
-	for i, t := range mgr.order.order {
+	for i, t := range mgr.orderHandler.turnOrder {
 		if t.id == id {
 			idx = i
 			break
 		}
 	}
 
-	mgr.order.order = append(mgr.order.order[:idx], mgr.order.order[idx+1:]...)
+	mgr.orderHandler.turnOrder = append(mgr.orderHandler.turnOrder[:idx], mgr.orderHandler.turnOrder[idx+1:]...)
 }
 
 // StartTurn processes changes to target's gauges on the start of a new turn.
-//	1. Mark target at top of order as "active"
-//	2. get that target's current AV
-//	3. add AV to "TotalAV" (keeps track of how much AV has progressed over entire sim)
-//	4. loop through all targets in the order, subtracing this AV from them (active target gauge = 0)
-//			new_gauge = current_gauge - av * speed
+//  1. Mark target at top of order as "active"
+//  2. get that target's current AV
+//  3. add AV to "TotalAV" (keeps track of how much AV has progressed over entire sim)
+//  4. loop through all targets in the order, subtracing this AV from them (active target gauge = 0)
+//     new_gauge = current_gauge - av * speed
 func (mgr *manager) StartTurn() (key.TargetID, float64, []event.TurnStatus, error) {
 	if mgr.activeTurn {
 		return -1, 0, nil, fmt.Errorf("cannot start turn when already in an active turn: %+v", mgr)
@@ -157,10 +159,10 @@ func (mgr *manager) StartTurn() (key.TargetID, float64, []event.TurnStatus, erro
 
 	mgr.gaugeCost = 1.0
 	mgr.activeTurn = true
-	mgr.activeTarget = mgr.order.order[0].id
+	mgr.activeTarget = mgr.orderHandler.turnOrder[0].id
 	av := mgr.av(mgr.activeTarget)
 
-	for _, t := range mgr.order.order {
+	for _, t := range mgr.orderHandler.turnOrder {
 		t.gauge -= av * mgr.attr.Stats(t.id).SPD()
 	}
 
@@ -181,17 +183,17 @@ func (mgr *manager) StartTurn() (key.TargetID, float64, []event.TurnStatus, erro
 func (mgr *manager) ResetTurn() error {
 	if !mgr.activeTurn {
 		return fmt.Errorf(
-			"target at top of order must have 0 gauge to call reset (their turn is active) %+v", mgr.order.order[0])
+			"target at top of order must have 0 gauge to call reset (their turn is active) %+v", mgr.orderHandler.turnOrder[0])
 	}
 
 	mgr.activeTurn = false
-	mgr.order.order[0].gauge = BaseGauge * mgr.gaugeCost
-	
+	mgr.orderHandler.turnOrder[0].gauge = BaseGauge * mgr.gaugeCost
+
 	// It would be more efficient to loop through mgr.order ourselves to determine this single target's placement instead of resorting the whole array when no other elements are changing.
 	// Unless we are also checking for other SPD changes that happened during the turn, in which case sort.Stable() is better to use, but only after we move the element to the end
 	// so as to ensure that, in the case of a tie, it is properly at the tail end of the tied elements.
-	mgr.order.order = append(mgr.order.order[1:], mgr.order.order[0])
-	sort.Stable(mgr.order)
+	mgr.orderHandler.turnOrder = append(mgr.orderHandler.turnOrder[1:], mgr.orderHandler.turnOrder[0])
+	sort.Stable(mgr.orderHandler)
 
 	// resetTargetAV := BaseGauge / mgr.attr.Stats(mgr.order.order[0].id).SPD()
 	// for i, _ := range mgr.order.order[1:] {
