@@ -147,15 +147,19 @@ func (mgr *manager) RemoveTarget(id key.TargetID) {
 }
 
 // StartTurn processes changes to target's gauges on the start of a new turn.
-//  1. Mark target at top of order as "active"
-//  2. get that target's current AV
-//  3. add AV to "TotalAV" (keeps track of how much AV has progressed over entire sim)
-//  4. loop through all targets in the order, subtracing this AV from them (active target gauge = 0)
+//  1. Sort the turn order of targets, to account for any Speed or gauge changes that may impact turn order
+//  2. Mark target at top of order as "active"
+//  3. Get that target's current AV
+//  4. Add AV to "TotalAV" (keeps track of how much AV has progressed over entire sim)
+//  5. Loop through all targets in the order, subtracing this AV from them (active target gauge = 0)
 //     new_gauge = current_gauge - av * speed
 func (mgr *manager) StartTurn() (key.TargetID, float64, []event.TurnStatus, error) {
 	if mgr.activeTurn {
 		return -1, 0, nil, fmt.Errorf("cannot start turn when already in an active turn: %+v", mgr)
 	}
+
+	// So as to account for any Speed/gauge changes since the end of the previous turn, re-sort the turn order of targets.
+	sort.Stable(mgr.orderHandler)
 
 	mgr.gaugeCost = 1.0
 	mgr.activeTurn = true
@@ -175,11 +179,11 @@ func (mgr *manager) StartTurn() (key.TargetID, float64, []event.TurnStatus, erro
 // Target should then be moved to the bottom of the turn order and then sorted up to the correct
 // position based on their AV. In the event of ties, this target should be last in the order.
 // Note that this is the same behavior as AddTarget (but different from SetGauge which goes top-down).
-// 1. update gauge of active target
-// 2. move target to bottom of order
-// 3. sort target up based on AV. In the event of tie, this target should be at bottom of order.
-// 4. update targetIndexes for all targets that moved in the order (or just repopulate all)
-// 5. emit TurnResetEvent
+// 1. Update gauge of active target
+// 2. Move target to bottom of order
+// 3. Sort target up based on AV. In the event of tie, this target should be at bottom of order.
+// 4. Update targetIndexes for all targets that moved in the order (or just repopulate all)
+// 5. Emit TurnResetEvent
 func (mgr *manager) ResetTurn() error {
 	if !mgr.activeTurn {
 		return fmt.Errorf(
@@ -194,19 +198,6 @@ func (mgr *manager) ResetTurn() error {
 	// so as to ensure that, in the case of a tie, it is properly at the tail end of the tied elements.
 	mgr.orderHandler.turnOrder = append(mgr.orderHandler.turnOrder[1:], mgr.orderHandler.turnOrder[0])
 	sort.Stable(mgr.orderHandler)
-
-	// resetTargetAV := BaseGauge / mgr.attr.Stats(mgr.order.order[0].id).SPD()
-	// for i, _ := range mgr.order.order[1:] {
-	// 	if mgr.order.av(i) > resetTargetAV {
-	// 		formerActiveTurn := mgr.order.order[0]
-	// 		mgr.order.order = append(mgr.order.order[1:i+1], mgr.order.order[i:]...)
-	// 		mgr.order.order[i] = formerActiveTurn
-	// 		break
-	// 	}
-	// 	if i == mgr.order.Len() {
-	// 		mgr.order.order = append(mgr.order.order[1:], mgr.order.order[0])
-	// 	}
-	// }
 
 	mgr.event.TurnReset.Emit(event.TurnReset{
 		ResetTarget: mgr.activeTarget,
