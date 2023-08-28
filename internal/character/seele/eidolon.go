@@ -85,6 +85,7 @@ func addFlatEnergy(mod *modifier.Instance, target key.TargetID) {
 
 func addPursuedDmg(mod *modifier.Instance, e event.AttackEnd) {
 	// apply dmg to mod owner from mod applier(source). 15% of seele's ult dmg.
+	// NOTE : how to make this atk not trigger talent on target death?
 	ultAmt := mod.State().(float64)
 	mod.Engine().Attack(info.Attack{
 		Key:        E6Debuff,

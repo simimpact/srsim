@@ -48,6 +48,7 @@ func reduceAggro(mod *modifier.Instance, e event.HPChange) {
 	}
 }
 
+// advances forward based on if current turn is an insert or not.
 func (c *char) advanceForward(key key.Reason, isInsert bool) {
 	// if not insert : modifygaugecost -20%
 	// if insert : modifynormalized -20%
