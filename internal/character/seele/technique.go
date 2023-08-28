@@ -14,6 +14,6 @@ const (
 // And when entering battle by attacking enemies, Seele will immediately enter the buffed state.
 
 func (c *char) Technique(target key.TargetID, state info.ActionState) {
-	// enter buffed state w/o adding extra turns
-	c.enterResurgence(false)
+	// enter buffed state
+	c.enterBuffedState()
 }

@@ -30,13 +30,29 @@ func (c *char) initTalent() {
 	// listen to death events. If killer is seele, enter resurgence.
 	c.engine.Events().TargetDeath.Subscribe(func(e event.TargetDeath) {
 		if e.Killer == c.id {
-			c.enterResurgence(true)
+			c.enterBuffedState()
+		}
+	})
+
+	// TODO : add turnEnd sub/afterAction listener to check for resurgence and insert turn
+	// if resurgence == true.
+	// TODO : logic need to ask if seele killed from her action(not from pursued atk.)
+	// TODO : add mechanism to check for isInsert and block inserts until after action ends.
+
+	// wait and listen for actionEnd to insert a resurgence turn.
+	// further check if seele killed an enemy on this turn
+	c.engine.Events().ActionEnd.Subscribe(func(e event.ActionEnd) {
+		// TODO : figure out how to check for enemy death too. or do i make proc-trigger listener?
+		if c.resurgence {
+			c.resurgence = false
+		} else {
+			c.resurgence = true
+			c.engine.InsertAction(c.id)
 		}
 	})
 }
 
-// enter "buffed state", insert extra turn right after if addExtraTurn is true.
-func (c *char) enterResurgence(addExtraTurn bool) {
+func (c *char) enterBuffedState() {
 	// A4 : While Seele is in the buffed state, her Quantum RES PEN increases by 20%.
 	penAmt := 0.0
 	if c.info.Traces["102"] {
@@ -51,13 +67,4 @@ func (c *char) enterResurgence(addExtraTurn bool) {
 		},
 		Duration: 1,
 	})
-	// run extra turn logic only if addExtraTurn is true.
-	if addExtraTurn {
-		if c.resurgence {
-			c.resurgence = false
-		} else {
-			c.resurgence = true
-			c.engine.InsertAction(c.id)
-		}
-	}
 }

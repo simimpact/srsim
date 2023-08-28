@@ -12,8 +12,8 @@ const (
 
 // Enters the buffed state and deals Quantum DMG equal to 425% of her ATK to a single enemy.
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
-	// enter buffed state w/o extra turns.
-	c.enterResurgence(false)
+	// enter buffed state.
+	c.enterBuffedState()
 	// ult attack.
 	c.engine.Attack(info.Attack{
 		Key:        Ult,
