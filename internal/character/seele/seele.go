@@ -38,20 +38,18 @@ func init() {
 }
 
 type char struct {
-	engine     engine.Engine
-	id         key.TargetID
-	info       info.Character
-	resurgence bool
-	hasKilled  bool
+	engine    engine.Engine
+	id        key.TargetID
+	info      info.Character
+	hasKilled bool
 }
 
 func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character) info.CharInstance {
 	c := &char{
-		engine:     engine,
-		id:         id,
-		info:       charInfo,
-		resurgence: false,
-		hasKilled:  false,
+		engine:    engine,
+		id:        id,
+		info:      charInfo,
+		hasKilled: false,
 	}
 
 	c.initTalent()
