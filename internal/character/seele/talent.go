@@ -27,26 +27,22 @@ func init() {
 }
 
 func (c *char) initTalent() {
-	// listen to death events. If killer is seele, enter resurgence.
+	// listen to death events. If killer is seele, enter buffed state.
 	c.engine.Events().TargetDeath.Subscribe(func(e event.TargetDeath) {
 		if e.Killer == c.id {
 			c.enterBuffedState()
 		}
+		// set hasKilled trigger to true
+		c.hasKilled = true
 	})
 
-	// TODO : add turnEnd sub/afterAction listener to check for resurgence and insert turn
-	// if resurgence == true.
-	// TODO : logic need to ask if seele killed from her action(not from pursued atk.)
-	// TODO : add mechanism to check for isInsert and block inserts until after action ends.
-
-	// wait and listen for actionEnd to insert a resurgence turn.
-	// further check if seele killed an enemy on this turn
+	// only add extra turn after an action ends.
 	c.engine.Events().ActionEnd.Subscribe(func(e event.ActionEnd) {
-		// TODO : figure out how to check for enemy death too. or do i make proc-trigger listener?
-		if c.resurgence {
-			c.resurgence = false
-		} else {
-			c.resurgence = true
+		// insert resurgence turn only if action is seele's, hasKilled is triggered,
+		// and not already in an insert/resurgence turn.
+		// TODO : fix hasKilled trigger reset.
+		if e.Owner == c.id && c.hasKilled && !e.IsInsert {
+			c.hasKilled = false
 			c.engine.InsertAction(c.id)
 		}
 	})

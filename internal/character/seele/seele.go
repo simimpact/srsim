@@ -42,6 +42,7 @@ type char struct {
 	id         key.TargetID
 	info       info.Character
 	resurgence bool
+	hasKilled  bool
 }
 
 func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character) info.CharInstance {
@@ -50,6 +51,7 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 		id:         id,
 		info:       charInfo,
 		resurgence: false,
+		hasKilled:  false,
 	}
 
 	c.initTalent()
