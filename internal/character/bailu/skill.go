@@ -19,7 +19,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	healPercent := skillPercent[c.info.SkillLevelIndex()]
 	healFlat := skillFlat[c.info.SkillLevelIndex()]
 	// main targeted heal
-	c.addHeal(healPercent, healFlat, []key.TargetID{target})
+	c.addHeal(Skill, healPercent, healFlat, []key.TargetID{target})
 
 	// 2 randomized heals
 	for i := 0; i < 2; i++ {
@@ -30,13 +30,13 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 			Targets: c.engine.Characters(),
 			Max:     1,
 		})
-		c.addHeal(healPercent, healFlat, chosenTarget)
+		c.addHeal(Skill, healPercent, healFlat, chosenTarget)
 	}
 }
 
-func (c *char) addHeal(healPercent, healFlat float64, target []key.TargetID) {
+func (c *char) addHeal(key key.Heal, healPercent, healFlat float64, target []key.TargetID) {
 	c.engine.Heal(info.Heal{
-		Key:     Skill,
+		Key:     key,
 		Source:  c.id,
 		Targets: target,
 		BaseHeal: info.HealMap{
