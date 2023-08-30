@@ -19,33 +19,29 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	healPercent := skillPercent[c.info.SkillLevelIndex()]
 	healFlat := skillFlat[c.info.SkillLevelIndex()]
 	// main targeted heal
-	c.engine.Heal(info.Heal{
-		Key:     Skill,
-		Source:  c.id,
-		Targets: []key.TargetID{target},
-		BaseHeal: info.HealMap{
-			model.HealFormula_BY_HEALER_MAX_HP: healPercent,
-		},
-		HealValue: healFlat,
-	})
+	c.addHeal(healPercent, healFlat, []key.TargetID{target})
 
 	// 2 randomized heals
 	for i := 0; i < 2; i++ {
-		// reduce heal amt for each subsequent heals
+		// reduce heal amt for each subsequent random heals
 		healPercent = 0.85 * healPercent
 		healFlat = 0.85 * healFlat
 		chosenTarget := c.engine.Retarget(info.Retarget{
 			Targets: c.engine.Characters(),
 			Max:     1,
 		})
-		c.engine.Heal(info.Heal{
-			Key:     Skill,
-			Source:  c.id,
-			Targets: chosenTarget,
-			BaseHeal: info.HealMap{
-				model.HealFormula_BY_HEALER_MAX_HP: healPercent,
-			},
-			HealValue: healFlat,
-		})
+		c.addHeal(healPercent, healFlat, chosenTarget)
 	}
+}
+
+func (c *char) addHeal(healPercent, healFlat float64, target []key.TargetID) {
+	c.engine.Heal(info.Heal{
+		Key:     Skill,
+		Source:  c.id,
+		Targets: target,
+		BaseHeal: info.HealMap{
+			model.HealFormula_BY_HEALER_MAX_HP: healPercent,
+		},
+		HealValue: healFlat,
+	})
 }
