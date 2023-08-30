@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	Skill = "bailu-skill"
+	Skill key.Heal = "bailu-skill"
 )
 
 // Heals a single ally for 11.7% of Bailu's Max HP plus 312.
