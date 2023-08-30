@@ -27,42 +27,22 @@ func init() {
 }
 
 func (c *char) initTalent() {
-	// listen to death events. If killer is seele, enter buffed state.
+	// listen to death events. If killer is seele,
+	// enter buffed state and set trigger for extra/resurgence turn.
 	c.engine.Events().TargetDeath.Subscribe(func(e event.TargetDeath) {
 		if e.Killer == c.id {
 			c.enterBuffedState()
 		}
-		// set hasKilled trigger to true
 		c.hasKilled = true
 	})
 
-	// only add extra turn after an action ends.
 	c.engine.Events().ActionEnd.Subscribe(func(e event.ActionEnd) {
 		// insert resurgence turn only if action is seele's, hasKilled is triggered,
 		// and not already in an insert/resurgence turn.
-		// TODO : fix hasKilled trigger reset.
-		// SCENARIO : seele skill killed an enemy -> trigger targetDeath sub -> set .hasKilled T
-		// -> enter actionEnd, insert condition met -> add extra turn. (IDEAL, works now.)
-		// INSIGHT :
-		// make sure before she killed an enemy .hasKilled always = FALSE
-		// .hasKilled currently only set to FALSE ONLY IF last resurgence is triggered.
-		// -> only good for battleStart -> action -> kill -> action end -> extra turn -> action
-		// -> kill -> action end, IF not met because .IsInsert
-		// CONCLUSION :
-		// need to guard against :
-		// extra turn -> action -> kill, .hasKilled = T -> IF not met -> action
-		// -> IF met, insertAction. even though has not killed this action.
-		// figure out WHEN to reset .hasKilled
-		// if e.Owner == c.id && c.hasKilled && !e.IsInsert {
-		// 	c.hasKilled = false
-		// 	c.engine.InsertAction(c.id)
-		// }
-		if e.Owner == c.id { // only run func on seele's actions
-			if c.hasKilled { // only allows insert logic to run ONLY IF seele has killed an enemy
-				c.hasKilled = false
-				if !e.IsInsert { // allow insert only if not already on insert turn.
-					c.engine.InsertAction(c.id)
-				}
+		if e.Owner == c.id && c.hasKilled {
+			c.hasKilled = false
+			if !e.IsInsert {
+				c.engine.InsertAction(c.id)
 			}
 		}
 	})
