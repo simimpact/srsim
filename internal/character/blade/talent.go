@@ -13,7 +13,7 @@ const (
 	GainedCharge = "blade-gained-charge"
 )
 
-var ultHits = []float64{1 / 3, 1 / 3, 1 / 3}
+var talentHits = []float64{1.0 / 3, 1.0 / 3, 1.0 / 3}
 
 func (c *char) Talent() {
 	e6AddMod := 0.0
@@ -24,7 +24,7 @@ func (c *char) Talent() {
 	}
 
 	// Follow-up Attack
-	for i, hitRatio := range ultHits {
+	for i, hitRatio := range talentHits {
 		c.engine.InsertAbility(info.Insert{
 			Execute: func() {
 				c.engine.Attack(info.Attack{
