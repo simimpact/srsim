@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	Hellscape key.Modifier = "blade-hellscape"
+	Hellscape = "blade-hellscape"
 )
 
 func init() {
@@ -22,7 +22,7 @@ func init() {
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	c.engine.ModifyHPByRatio(info.ModifyHPByRatio{
-		Key:       key.Reason(Hellscape),
+		Key:       Hellscape,
 		Target:    c.id,
 		Source:    c.id,
 		Ratio:     -0.3,

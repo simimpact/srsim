@@ -7,12 +7,12 @@ import (
 )
 
 const (
-	Technique key.Attack = "blade-technique"
+	Technique = "blade-technique"
 )
 
 func (c *char) Technique(target key.TargetID, state info.ActionState) {
 	c.engine.ModifyHPByRatio(info.ModifyHPByRatio{
-		Key:       key.Reason(Technique),
+		Key:       Technique,
 		Target:    c.id,
 		Source:    c.id,
 		Ratio:     -0.2,

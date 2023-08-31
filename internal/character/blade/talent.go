@@ -8,9 +8,9 @@ import (
 )
 
 const (
-	Talent       key.Attack   = "blade-talent"
-	IsAttack     key.Modifier = "blade_is_Attack"
-	GainedCharge key.Modifier = "blade_gained_charge"
+	Talent       = "blade-talent"
+	IsAttack     = "blade-is-Attack"
+	GainedCharge = "blade-gained-charge"
 )
 
 func (c *char) Talent() {
@@ -38,7 +38,7 @@ func (c *char) Talent() {
 				EnergyGain:   10.0,
 			})
 		},
-		Key:        key.Insert(Talent),
+		Key:        Talent,
 		Source:     c.id,
 		Priority:   info.CharInsertAttackSelf,
 		AbortFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL, model.BehaviorFlag_DISABLE_ACTION},
@@ -46,7 +46,7 @@ func (c *char) Talent() {
 
 	// Heal
 	c.engine.Heal(info.Heal{
-		Key:      key.Heal(Talent),
+		Key:      Talent,
 		Targets:  []key.TargetID{c.id},
 		Source:   c.id,
 		BaseHeal: info.HealMap{model.HealFormula_BY_TARGET_MAX_HP: 0.25},

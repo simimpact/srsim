@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	Normal         key.Attack = "blade-normal"
-	EnhancedNormal key.Attack = "blade-enhanced-normal"
+	Normal         = "blade-normal"
+	EnhancedNormal = "blade-enhanced-normal"
 )
 
 var attackHits = []float64{0.5, 0.5}
@@ -18,7 +18,7 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 		c.NormalAttack(target, state)
 
 		c.engine.ModifySP(info.ModifySP{
-			Key:    key.Reason(Normal),
+			Key:    Normal,
 			Source: c.id,
 			Amount: 1,
 		})
@@ -48,7 +48,7 @@ func (c *char) NormalAttack(target key.TargetID, state info.ActionState) {
 
 func (c *char) EnhancedAttack(target key.TargetID, state info.ActionState) {
 	c.engine.ModifyHPByRatio(info.ModifyHPByRatio{
-		Key:       key.Reason(EnhancedNormal),
+		Key:       EnhancedNormal,
 		Target:    c.id,
 		Source:    c.id,
 		Ratio:     -0.1,
