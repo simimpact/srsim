@@ -9,12 +9,14 @@ import (
 )
 
 const (
-	Ult key.Attack = "blade-ult"
+	UltHPChange key.Reason = "blade-ult-hp-change"
+	UltPrimary  key.Attack = "blade-ult-primary"
+	UltAdjacent key.Attack = "blade-ult-adjacent"
 )
 
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	c.engine.SetHP(info.ModifyAttribute{
-		Key:    key.Reason(Ult),
+		Key:    UltHPChange,
 		Target: c.id,
 		Source: c.id,
 		Amount: c.engine.Stats(c.id).MaxHP() * 0.5,
@@ -31,7 +33,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 
 	// Primary Target
 	c.engine.Attack(info.Attack{
-		Key:        Ult,
+		Key:        UltPrimary,
 		Source:     c.id,
 		Targets:    []key.TargetID{target},
 		DamageType: model.DamageType_WIND,
@@ -47,7 +49,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 
 	// Adjacent Targets
 	c.engine.Attack(info.Attack{
-		Key:        Ult,
+		Key:        UltAdjacent,
 		Source:     c.id,
 		Targets:    c.engine.AdjacentTo(target),
 		DamageType: model.DamageType_WIND,

@@ -13,6 +13,7 @@ const (
 	A2Check = "blade-A2-check"
 	A2Buff  = "blade-A2-buff"
 	A4      = "blade-A4"
+	A4CD    = "blade-A4-cd"
 	A6      = "blade-A6"
 )
 
@@ -35,24 +36,32 @@ func init() {
 	modifier.Register(A4, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAfterAttack: func(mod *modifier.Instance, e event.AttackEnd) {
-				if e.Key != EnhancedNormal {
+				if mod.Engine().HasModifier(mod.Owner(), A4CD) {
 					return
 				}
 
-				for _, target := range e.Targets {
-					if mod.Engine().Stance(target) <= 0 {
-						// Heal
-						mod.Engine().Heal(info.Heal{
-							Key:       A4,
-							Targets:   []key.TargetID{mod.Owner()},
-							Source:    mod.Owner(),
-							BaseHeal:  info.HealMap{model.HealFormula_BY_TARGET_MAX_HP: 0.05},
-							HealValue: 100,
-						})
-
-						return
-					}
+				if e.Key != EnhancedNormalPrimary && e.Key != EnhancedNormalAdjacent {
+					return
 				}
+
+				if mod.Engine().Stance(e.Targets[0]) <= 0 {
+					// Heal
+					mod.Engine().Heal(info.Heal{
+						Key:       A4,
+						Targets:   []key.TargetID{mod.Owner()},
+						Source:    mod.Owner(),
+						BaseHeal:  info.HealMap{model.HealFormula_BY_TARGET_MAX_HP: 0.05},
+						HealValue: 100,
+					})
+
+					mod.Engine().AddModifier(mod.Owner(), info.Modifier{
+						Name:   A4CD,
+						Source: mod.Owner(),
+					})
+				}
+			},
+			OnPhase2: func(mod *modifier.Instance) {
+				mod.Engine().RemoveModifier(mod.Owner(), A4CD)
 			},
 		},
 	})

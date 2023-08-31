@@ -7,8 +7,10 @@ import (
 )
 
 const (
-	Normal         = "blade-normal"
-	EnhancedNormal = "blade-enhanced-normal"
+	Normal                 = "blade-normal"
+	EnhancedNormalHPChange = "blade-enhanced-normal-hp-change"
+	EnhancedNormalPrimary  = "blade-enhanced-normal-primary"
+	EnhancedNormalAdjacent = "blade-enhanced-normal-adjacent"
 )
 
 var attackHits = []float64{0.5, 0.5}
@@ -48,7 +50,7 @@ func (c *char) NormalAttack(target key.TargetID, state info.ActionState) {
 
 func (c *char) EnhancedAttack(target key.TargetID, state info.ActionState) {
 	c.engine.ModifyHPByRatio(info.ModifyHPByRatio{
-		Key:       EnhancedNormal,
+		Key:       EnhancedNormalHPChange,
 		Target:    c.id,
 		Source:    c.id,
 		Ratio:     -0.1,
@@ -59,7 +61,7 @@ func (c *char) EnhancedAttack(target key.TargetID, state info.ActionState) {
 	// Primary Target
 	for i, hitRatio := range attackHits {
 		c.engine.Attack(info.Attack{
-			Key:        EnhancedNormal,
+			Key:        EnhancedNormalPrimary,
 			HitIndex:   i,
 			Source:     c.id,
 			Targets:    []key.TargetID{target},
@@ -77,7 +79,7 @@ func (c *char) EnhancedAttack(target key.TargetID, state info.ActionState) {
 
 	// Adjacent Targets
 	c.engine.Attack(info.Attack{
-		Key:        EnhancedNormal,
+		Key:        EnhancedNormalAdjacent,
 		Source:     c.id,
 		Targets:    c.engine.AdjacentTo(target),
 		DamageType: model.DamageType_WIND,
