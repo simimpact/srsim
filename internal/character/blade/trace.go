@@ -73,7 +73,7 @@ func init() {
 func (c *char) initTraces() {
 	if c.info.Traces["101"] {
 		c.engine.AddModifier(c.id, info.Modifier{
-			Name:   A2,
+			Name:   A2Check,
 			Source: c.id,
 		})
 	}
