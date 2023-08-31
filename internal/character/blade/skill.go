@@ -10,17 +10,10 @@ import (
 
 const (
 	Hellscape key.Modifier = "blade-hellscape"
-	E2        key.Modifier = "blade-e2"
 )
 
 func init() {
 	modifier.Register(Hellscape, modifier.Config{
-		Stacking:   modifier.Replace,
-		Duration:   3,
-		StatusType: model.StatusType_STATUS_BUFF,
-	})
-
-	modifier.Register(E2, modifier.Config{
 		Stacking:   modifier.Replace,
 		Duration:   3,
 		StatusType: model.StatusType_STATUS_BUFF,
