@@ -10,9 +10,9 @@ import (
 )
 
 const (
-	A2 key.Modifier = "blade-A2"
-	A4 key.Modifier = "blade-A4"
-	A6 key.Modifier = "blade-A6"
+	A2 = "blade-A2"
+	A4 = "blade-A4"
+	A6 = "blade-A6"
 )
 
 func init() {
@@ -30,23 +30,25 @@ func init() {
 	// A4
 	modifier.Register(A4, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHit: func(mod *modifier.Instance, e event.HitStart) { // TODO: Before or after hit?
-				if mod.Engine().Stance(e.Defender) > 0 {
+			OnAfterAttack: func(mod *modifier.Instance, e event.AttackEnd) {
+				if e.Key != EnhancedNormal {
 					return
 				}
 
-				if e.Hit.Key != EnhancedNormal {
-					return
-				}
+				for _, target := range e.Targets {
+					if mod.Engine().Stance(target) <= 0 {
+						// Heal
+						mod.Engine().Heal(info.Heal{
+							Key:       A4,
+							Targets:   []key.TargetID{mod.Owner()},
+							Source:    mod.Owner(),
+							BaseHeal:  info.HealMap{model.HealFormula_BY_TARGET_MAX_HP: 0.05},
+							HealValue: 100,
+						})
 
-				// Heal
-				mod.Engine().Heal(info.Heal{
-					Key:       key.Heal(Talent),
-					Targets:   []key.TargetID{mod.Owner()},
-					Source:    mod.Owner(),
-					BaseHeal:  info.HealMap{model.HealFormula_BY_TARGET_MAX_HP: 0.05},
-					HealValue: 100,
-				})
+						return
+					}
+				}
 			},
 		},
 	})
