@@ -11,7 +11,7 @@ import (
 func (mgr *Manager) AddShield(id key.Shield, shield info.Shield) {
 	// Get the stats for the source and target
 	source := mgr.attr.Stats(shield.Source)
-	maxShield := mgr.MaxShield(shield.Target)
+	maxShield := mgr.MaxShield(shield.Source)
 	target := mgr.attr.Stats(shield.Target)
 
 	// Compute shield baseHP from ShieldMap property values
