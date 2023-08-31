@@ -85,7 +85,11 @@ func (c *char) hpLossListener(e event.HPChange) {
 
 	if c.engine.HasModifier(c.id, IsAttack) {
 		if !c.engine.HasModifier(c.id, GainedCharge) {
-			c.charge++
+			c.engine.AddModifier(c.id, info.Modifier{
+				Name:     Talent,
+				Source:   c.id,
+				MaxCount: float64(c.maxCharge),
+			})
 			c.engine.AddModifier(c.id, info.Modifier{
 				Name:   GainedCharge,
 				Source: c.id,
