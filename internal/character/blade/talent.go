@@ -13,6 +13,8 @@ const (
 	GainedCharge = "blade-gained-charge"
 )
 
+var ultHits = []float64{1 / 3, 1 / 3, 1 / 3}
+
 func (c *char) Talent() {
 	e6AddMod := 0.0
 
@@ -22,27 +24,33 @@ func (c *char) Talent() {
 	}
 
 	// Follow-up Attack
-	c.engine.InsertAbility(info.Insert{
-		Execute: func() {
-			c.engine.Attack(info.Attack{
-				Key:        Talent,
-				Source:     c.id,
-				Targets:    c.engine.Enemies(),
-				DamageType: model.DamageType_WIND,
-				AttackType: model.AttackType_INSERT,
-				BaseDamage: info.DamageMap{
-					model.DamageFormula_BY_ATK:    talentAtk[c.info.TalentLevelIndex()],
-					model.DamageFormula_BY_MAX_HP: (talentHP[c.info.TalentLevelIndex()] + e6AddMod),
-				},
-				StanceDamage: 30.0,
-				EnergyGain:   10.0,
-			})
-		},
-		Key:        Talent,
-		Source:     c.id,
-		Priority:   info.CharInsertAttackSelf,
-		AbortFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL, model.BehaviorFlag_DISABLE_ACTION},
-	})
+	for i, hitRatio := range attackHits {
+		c.engine.InsertAbility(info.Insert{
+			Execute: func() {
+				c.engine.Attack(info.Attack{
+					Key:        Talent,
+					HitIndex:   i,
+					Source:     c.id,
+					Targets:    c.engine.Enemies(),
+					DamageType: model.DamageType_WIND,
+					AttackType: model.AttackType_INSERT,
+					BaseDamage: info.DamageMap{
+						model.DamageFormula_BY_ATK:    talentAtk[c.info.TalentLevelIndex()],
+						model.DamageFormula_BY_MAX_HP: (talentHP[c.info.TalentLevelIndex()] + e6AddMod),
+					},
+					StanceDamage: 30.0,
+					EnergyGain:   10.0,
+					HitRatio:     hitRatio,
+				})
+			},
+			Key:        Talent,
+			Source:     c.id,
+			Priority:   info.CharInsertAttackSelf,
+			AbortFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL, model.BehaviorFlag_DISABLE_ACTION},
+		})
+	}
+
+	c.engine.EndAttack()
 
 	// Heal
 	c.engine.Heal(info.Heal{
@@ -51,6 +59,8 @@ func (c *char) Talent() {
 		Source:   c.id,
 		BaseHeal: info.HealMap{model.HealFormula_BY_TARGET_MAX_HP: 0.25},
 	})
+
+	c.charge = 0
 }
 
 func (c *char) onBeforeBeingHitListener(e event.AttackStart) {
