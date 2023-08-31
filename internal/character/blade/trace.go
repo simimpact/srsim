@@ -10,21 +10,25 @@ import (
 )
 
 const (
-	A2 = "blade-A2"
-	A4 = "blade-A4"
-	A6 = "blade-A6"
+	A2Check = "blade-A2-check"
+	A2Buff  = "blade-A2-buff"
+	A4      = "blade-A4"
+	A6      = "blade-A6"
 )
 
 func init() {
 	// A2
-	modifier.Register(A2, modifier.Config{
+	modifier.Register(A2Check, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeDealHeal: func(mod *modifier.Instance, e *event.HealStart) {
-				if e.Target.CurrentHPRatio() <= 0.5 {
-					e.Target.AddProperty(key.Reason(A2), prop.HealTaken, 0.2)
-				}
+			OnAdd: a2HPCheck,
+			OnHPChange: func(mod *modifier.Instance, e event.HPChange) {
+				a2HPCheck(mod)
 			},
 		},
+	})
+
+	modifier.Register(A2Buff, modifier.Config{
+		StatusType: model.StatusType_STATUS_BUFF,
 	})
 
 	// A4
@@ -86,5 +90,17 @@ func (c *char) initTraces() {
 			Name:   A6,
 			Source: c.id,
 		})
+	}
+}
+
+func a2HPCheck(mod *modifier.Instance) {
+	if mod.Engine().HPRatio(mod.Owner()) <= 0.5 {
+		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
+			Name:   A2Buff,
+			Source: mod.Owner(),
+			Stats:  info.PropMap{prop.HealTaken: 0.2},
+		})
+	} else {
+		mod.Engine().RemoveModifier(mod.Owner(), A2Buff)
 	}
 }
