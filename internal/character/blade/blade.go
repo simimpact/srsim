@@ -101,14 +101,12 @@ func (c *char) hpLossListener(e event.HPChange) {
 
 	if c.charge >= c.maxCharge {
 		c.Talent()
-		c.charge = 0
 	}
 
 	hpChange := e.NewHP - e.OldHP
 	c.hpLoss += hpChange
 
 	// E4
-	// TODO: Determine Timing?
 
 	if c.info.Eidolon >= 4 {
 		if e.OldHPRatio > 0.5 && e.NewHPRatio <= 0.5 && c.engine.ModifierStackCount(c.id, c.id, E4) < 2 {

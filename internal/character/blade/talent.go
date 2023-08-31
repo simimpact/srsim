@@ -24,7 +24,7 @@ func (c *char) Talent() {
 	}
 
 	// Follow-up Attack
-	for i, hitRatio := range attackHits {
+	for i, hitRatio := range ultHits {
 		c.engine.InsertAbility(info.Insert{
 			Execute: func() {
 				c.engine.Attack(info.Attack{
