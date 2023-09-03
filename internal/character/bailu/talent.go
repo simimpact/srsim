@@ -4,6 +4,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -81,6 +82,17 @@ func healOnBeingHit(mod *modifier.Instance, e event.HitEnd) {
 }
 
 func (c *char) addInvigoration(target key.TargetID, duration int) {
+	// A4 : Invigoration can trigger 1 more time(s).
+	healsLeft := 2
+	if c.info.Traces["102"] {
+		healsLeft = 3
+	}
+	// A6 : Characters with Invigoration receive 10% less DMG.
+	dmgTakenAmt := 0.0
+	if c.info.Traces["103"] {
+		dmgTakenAmt = -0.1
+	}
+
 	c.engine.AddModifier(target, info.Modifier{
 		Name:     invigoration,
 		Source:   c.id,
@@ -88,7 +100,8 @@ func (c *char) addInvigoration(target key.TargetID, duration int) {
 		State: invigStruct{
 			healPercent: talentPercent[c.info.TalentLevelIndex()],
 			healFlat:    talentFlat[c.info.TalentLevelIndex()],
-			healsLeft:   2,
+			healsLeft:   healsLeft,
 		},
+		Stats: info.PropMap{prop.AllDamageTaken: dmgTakenAmt},
 	})
 }
