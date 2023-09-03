@@ -31,20 +31,22 @@ func (c *char) initTalent() {
 	// enter buffed state and set trigger for extra/resurgence turn.
 	c.engine.Events().TargetDeath.Subscribe(func(e event.TargetDeath) {
 		if e.Killer == c.id {
-			c.enterBuffedState()
+			c.hasKilled = true
 		}
-		c.hasKilled = true
 	})
 
+	// only runs on seele basic, skill, or ult. effectively excluding E6 pursued dmg etc.
 	c.engine.Events().ActionEnd.Subscribe(func(e event.ActionEnd) {
-		// insert resurgence turn only if action is seele's, hasKilled is triggered,
-		// and not already in an insert/resurgence turn.
+		// if action is seele's and hasKilled is triggered, reset and enter buffed state.
+		// then if not on insert turn, insertAction. reset .hasKilled on all actionEnd.
 		if e.Owner == c.id && c.hasKilled {
 			c.hasKilled = false
+			c.enterBuffedState()
 			if !e.IsInsert {
 				c.engine.InsertAction(c.id)
 			}
 		}
+		c.hasKilled = false
 	})
 }
 

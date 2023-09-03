@@ -53,6 +53,8 @@ func (c *char) advanceForward(key key.Reason, isInsert bool) {
 	// if not insert : modifygaugecost -20%
 	// if insert : modifynormalized -20%
 	if isInsert {
+		// TODO : create issue for adding TurnOwner helper func to engine
+		// TODO : if current turn is seele's, delay modifyGaugeNormalized to OnTurnEnd.
 		c.engine.ModifyGaugeNormalized(info.ModifyAttribute{
 			Key:    key,
 			Source: c.id,
