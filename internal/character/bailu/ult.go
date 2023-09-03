@@ -6,8 +6,7 @@ import (
 )
 
 const (
-	Ult          key.Heal     = "bailu-ult"
-	invigoration key.Modifier = "invigoration"
+	Ult key.Heal = "bailu-ult"
 )
 
 // Heals all allies for 13.5% of Bailu's Max HP plus 360.
@@ -30,10 +29,6 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		if c.engine.HasModifier(char, invigoration) {
 			duration = 1
 		}
-		c.engine.AddModifier(char, info.Modifier{
-			Name:     invigoration,
-			Source:   c.id,
-			Duration: duration,
-		})
+		c.addInvigoration(char, duration)
 	}
 }
