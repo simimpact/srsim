@@ -9,10 +9,9 @@ import (
 )
 
 const (
-	invigoration key.Modifier = "invigoration"
-	invigLocal   key.Modifier = "invigoration-local"
-	invigHeal    key.Heal     = "invigoration-heal"
-	revive                    = "bailu-revive"
+	invigoration = "invigoration"
+	invigLocal   = "invigoration-local"
+	revive       = "bailu-revive"
 )
 
 type invigStruct struct {
@@ -37,6 +36,7 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnAfterBeingHitAll: healOnBeingHit,
 		},
+		Stacking: modifier.Replace,
 	})
 }
 
@@ -71,7 +71,7 @@ func healOnBeingHit(mod *modifier.Instance, e event.HitEnd) {
 		mod.RemoveSelf()
 	}
 	mod.Engine().Heal(info.Heal{
-		Key:       invigHeal,
+		Key:       invigoration,
 		Source:    mod.Source(),
 		Targets:   []key.TargetID{mod.Owner()},
 		BaseHeal:  info.HealMap{model.HealFormula_BY_HEALER_MAX_HP: state.healPercent},
