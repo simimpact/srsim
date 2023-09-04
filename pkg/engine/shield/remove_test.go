@@ -18,14 +18,17 @@ func TestRemoveShieldWhenHasShield(t *testing.T) {
 	manager := New(events, attr)
 
 	target := key.TargetID(1)
-	shield := &Instance{name: "Shield", hp: 0.0}
-	manager.targets[target] = append(manager.targets[target], shield)
+	otherShield := &Instance{name: "Shield", hp: 0.0}
+	shieldToBeRemoved := &Instance{name: "ShieldToBeRemoved", hp: 0.0}
+	manager.targets[target] = append(manager.targets[target], otherShield, shieldToBeRemoved)
 
 	manager.event.ShieldRemoved.Subscribe(func(event event.ShieldRemoved) {
-		assert.Equal(t, key.Shield("Shield"), event.ID)
+		assert.Equal(t, key.Shield("ShieldToBeRemoved"), event.ID)
+		assert.Equal(t, 1, len(manager.targets[target]))
+		assert.Equal(t, otherShield.name, manager.targets[target][0].name)
 	})
 
-	manager.RemoveShield(key.Shield("Shield"), target)
+	manager.RemoveShield(shieldToBeRemoved.name, target)
 }
 
 func TestRemoveShieldWhenNoShield(t *testing.T) {
