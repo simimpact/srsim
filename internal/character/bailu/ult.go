@@ -2,6 +2,7 @@ package bailu
 
 import (
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 )
 
@@ -30,5 +31,16 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			duration = 1
 		}
 		c.addInvigoration(char, duration)
+	}
+
+	// E2 : After using her Ultimate, Bailu's Outgoing Healing increases
+	// by an additional 15% for 2 turn(s).
+	if c.info.Eidolon >= 2 {
+		c.engine.AddModifier(c.id, info.Modifier{
+			Name:     E2,
+			Source:   c.id,
+			Stats:    info.PropMap{prop.HealBoost: 0.15},
+			Duration: 2,
+		})
 	}
 }
