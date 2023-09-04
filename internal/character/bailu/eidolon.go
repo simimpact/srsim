@@ -9,8 +9,6 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-// E6 : Bailu can heal allies who received a killing blow 1 more time(s) in a single battle.
-
 const (
 	E2 key.Modifier = "bailu-e2"
 	E4 key.Modifier = "bailu-e4"

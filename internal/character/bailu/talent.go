@@ -45,6 +45,10 @@ func init() {
 func (c *char) initTalent() {
 	// team revive logic
 	reviveCountLeft := 1
+	// E6 : Bailu can heal allies who received a killing blow 1 more time(s) in a single battle.
+	if c.info.Eidolon >= 6 {
+		reviveCountLeft = 2
+	}
 	revPercent := revivePercent[c.info.TalentLevelIndex()]
 	revFlat := reviveFlat[c.info.TalentLevelIndex()]
 	c.engine.Events().LimboWaitHeal.Subscribe(func(e event.LimboWaitHeal) bool {
