@@ -12,7 +12,7 @@ import (
 )
 
 // Unit Tests for HasShield()
-func TestHasShieldWhenShield(t *testing.T) {
+func TestHasShieldWhenShieldIsInShieldArray(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	events := &event.System{}
 	attr := mock.NewMockAttribute(mockCtrl)
@@ -26,7 +26,7 @@ func TestHasShieldWhenShield(t *testing.T) {
 	assert.Equal(t, true, isTrue)
 }
 
-func TestHasShieldWhenNoShield(t *testing.T) {
+func TestHasShieldWhenNoShieldArrayAttachedToTarget(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	events := &event.System{}
 	attr := mock.NewMockAttribute(mockCtrl)
@@ -35,6 +35,20 @@ func TestHasShieldWhenNoShield(t *testing.T) {
 	target := key.TargetID(1)
 
 	isTrue := manager.HasShield(target, key.Shield("Shield"))
+	assert.Equal(t, false, isTrue)
+}
+
+func TestHasShieldWhenShieldDoesNotExistInShieldArray(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	events := &event.System{}
+	attr := mock.NewMockAttribute(mockCtrl)
+	manager := New(events, attr)
+
+	target := key.TargetID(1)
+	shield := &Instance{name: "Shield", hp: 0.0}
+	manager.targets[target] = append(manager.targets[target], shield)
+
+	isTrue := manager.HasShield(target, key.Shield("WrongShield"))
 	assert.Equal(t, false, isTrue)
 }
 
