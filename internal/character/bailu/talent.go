@@ -30,7 +30,8 @@ func init() {
 	modifier.Register(invigoration, modifier.Config{
 		Stacking: modifier.Prolong,
 		Listeners: modifier.Listeners{
-			OnAdd: addInvigLocal,
+			OnAdd:    addInvigLocal,
+			OnRemove: energyOnInvigExpire,
 		},
 	})
 	modifier.Register(invigLocal, modifier.Config{
@@ -79,6 +80,23 @@ func healOnBeingHit(mod *modifier.Instance, e event.HitEnd) {
 		HealValue: state.healFlat,
 	})
 	state.healsLeft--
+}
+
+// E1 : If the target ally's current HP is equal to their Max HP when Invigoration ends,
+// regenerates 8 extra Energy for this target.
+func energyOnInvigExpire(mod *modifier.Instance) {
+	charInfo, _ := mod.Engine().CharacterInfo(mod.Owner())
+	if charInfo.Eidolon < 1 {
+		return
+	}
+	if mod.Engine().HPRatio(mod.Owner()) == 1.0 {
+		mod.Engine().ModifyEnergy(info.ModifyAttribute{
+			Key:    invigoration,
+			Target: mod.Owner(),
+			Source: mod.Source(),
+			Amount: 8.0,
+		})
+	}
 }
 
 func (c *char) addInvigoration(target key.TargetID, duration int) {

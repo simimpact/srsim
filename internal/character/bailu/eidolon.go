@@ -1,7 +1,5 @@
 package bailu
 
-// E1 : If the target ally's current HP is equal to their Max HP when Invigoration ends,
-//      regenerates 8 extra Energy for this target.
 // E2 : After using her Ultimate, Bailu's Outgoing Healing increases
 //      by an additional 15% for 2 turn(s).
 // E4 : Every healing provided by the Skill makes the recipient deal 10% more DMG for 2 turn(s).
