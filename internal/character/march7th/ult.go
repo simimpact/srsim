@@ -39,6 +39,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			Source: c.id,
 			State: common.FreezeState{
 				DamagePercentage: ultFreeze[c.info.UltLevelIndex()],
+				DamageValue:      0,
 			},
 			Chance:   freezeChance,
 			Duration: 1,
@@ -83,6 +84,10 @@ func (c *char) ultHit(hitIndex int, hitRatio float64) {
 				model.DamageFormula_BY_ATK: ult[c.info.UltLevelIndex()],
 			},
 		})
+		// Log the targets as hit in the map
+		for _, t := range targets {
+			hitTargets[t] = true
+		}
 	}
 
 	c.engine.ModifyEnergy(info.ModifyAttribute{
@@ -91,8 +96,4 @@ func (c *char) ultHit(hitIndex int, hitRatio float64) {
 		Source: c.id,
 		Amount: 5 * 0.25,
 	})
-
-	for t := range hitTargets {
-		delete(hitTargets, t)
-	}
 }

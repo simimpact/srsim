@@ -23,6 +23,7 @@ func (c *char) Technique(target key.TargetID, state info.ActionState) {
 		Chance: 1,
 		State: common.FreezeState{
 			DamagePercentage: 0.5,
+			DamageValue:      0,
 		},
 		Duration: 1,
 	})
