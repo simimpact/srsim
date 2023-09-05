@@ -13,14 +13,21 @@ const (
 	BreakEntanglement = "break-entanglement"
 )
 
-type EntangleState struct {
+type EntanglementState struct {
 	DelayRatio       float64
 	DamagePercentage float64
 	DamageValue      float64
-	count            float64
+	HitsTakenCount   float64
+}
+
+type BreakEntanglementState struct {
+	DelayRatio                float64
+	HitsTakenCount            float64
+	TargetMaxStanceMultiplier float64
 }
 
 func init() {
+	/// entanglement
 	modifier.Register(Entanglement, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
 		TickMoment: modifier.ModifierPhase1End,
@@ -33,19 +40,37 @@ func init() {
 			model.BehaviorFlag_STAT_CTRL,
 		},
 		Listeners: modifier.Listeners{
-			OnAdd:                entangleAdd,
-			OnPhase1:             entanglePhase1,
-			OnAfterBeingAttacked: entangleAfterAttack,
+			OnAdd:                entanglementAdd,
+			OnPhase1:             entanglementPhase1,
+			OnAfterBeingAttacked: entanglementAfterAttack,
 		},
 	})
 
-	// TODO: Break Entanglement
+	// break entanglement
+	modifier.Register(BreakEntanglement, modifier.Config{
+		Stacking:   modifier.ReplaceBySource,
+		TickMoment: modifier.ModifierPhase1End,
+		Duration:   1,
+		Count:      1,
+		StatusType: model.StatusType_STATUS_DEBUFF,
+		BehaviorFlags: []model.BehaviorFlag{
+			model.BehaviorFlag_DISABLE_ACTION,
+			model.BehaviorFlag_STAT_ENTANGLE,
+			model.BehaviorFlag_STAT_CTRL,
+		},
+		Listeners: modifier.Listeners{
+			OnAdd:                breakEntanglementAdd,
+			OnPhase1:             breakEntanglementPhase1,
+			OnAfterBeingAttacked: breakEntanglementAfterAttack,
+		},
+	})
 }
 
-func entangleAdd(mod *modifier.Instance) {
-	state, ok := mod.State().(EntangleState)
+func entanglementAdd(mod *modifier.Instance) {
+	state, ok := mod.State().(EntanglementState)
+
 	if !ok {
-		panic("incorrect state used for Entanglement modifier")
+		panic("incorrect state used for entanglement modifier")
 	}
 
 	mod.Engine().ModifyGaugeNormalized(info.ModifyAttribute{
@@ -56,20 +81,28 @@ func entangleAdd(mod *modifier.Instance) {
 	})
 }
 
-func entangleAfterAttack(mod *modifier.Instance, e event.AttackEnd) {
-	state := mod.State().(EntangleState)
+func entanglementAfterAttack(mod *modifier.Instance, e event.AttackEnd) {
+	state, ok := mod.State().(EntanglementState)
+
+	if !ok {
+		panic("incorrect state used for entanglement modifier")
+	}
 
 	// increase count by 1 for each attack within this state
-	state.count += 1
-	if state.count > 4 {
-		state.count = 4
+	state.HitsTakenCount += 1
+	if state.HitsTakenCount > 4 {
+		state.HitsTakenCount = 4
 	}
 }
 
-func entanglePhase1(mod *modifier.Instance) {
-	state := mod.State().(EntangleState)
+func entanglementPhase1(mod *modifier.Instance) {
+	state, ok := mod.State().(EntanglementState)
 
-	// perform quantum damage
+	if !ok {
+		panic("incorrect state used for entanglement modifier")
+	}
+
+	// perform entanglement damage
 	mod.Engine().Attack(info.Attack{
 		Key:        Entanglement,
 		Source:     mod.Source(),
@@ -77,9 +110,59 @@ func entanglePhase1(mod *modifier.Instance) {
 		AttackType: model.AttackType_PURSUED,
 		DamageType: model.DamageType_QUANTUM,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_ATK: (1 + state.count) * state.DamagePercentage,
+			model.DamageFormula_BY_ATK: (1 + state.HitsTakenCount) * state.DamagePercentage,
 		},
 		DamageValue: state.DamageValue,
+		UseSnapshot: true,
+	})
+}
+
+func breakEntanglementAdd(mod *modifier.Instance) {
+	state, ok := mod.State().(BreakEntanglementState)
+
+	if !ok {
+		panic("incorrect state used for entanglement modifier")
+	}
+
+	mod.Engine().ModifyGaugeNormalized(info.ModifyAttribute{
+		Key:    BreakEntanglement,
+		Target: mod.Owner(),
+		Source: mod.Source(),
+		Amount: state.DelayRatio,
+	})
+}
+
+func breakEntanglementAfterAttack(mod *modifier.Instance, e event.AttackEnd) {
+	state, ok := mod.State().(BreakEntanglementState)
+
+	if !ok {
+		panic("incorrect state used for entanglement modifier")
+	}
+
+	// increase count by 1 for each attack within this state
+	state.HitsTakenCount += 1
+	if state.HitsTakenCount > 4 {
+		state.HitsTakenCount = 4
+	}
+}
+
+func breakEntanglementPhase1(mod *modifier.Instance) {
+	state, ok := mod.State().(BreakEntanglementState)
+
+	if !ok {
+		panic("incorrect state used for entanglement modifier")
+	}
+
+	// perform entanglement damage
+	mod.Engine().Attack(info.Attack{
+		Key:        BreakEntanglement,
+		Source:     mod.Source(),
+		Targets:    []key.TargetID{mod.Owner()},
+		AttackType: model.AttackType_PURSUED,
+		DamageType: model.DamageType_QUANTUM,
+		BaseDamage: info.DamageMap{
+			model.DamageFormula_BY_BREAK_DAMAGE: state.HitsTakenCount * state.TargetMaxStanceMultiplier * 0.6,
+		},
 		UseSnapshot: true,
 	})
 }
