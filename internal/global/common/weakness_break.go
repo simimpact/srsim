@@ -74,6 +74,7 @@ func ApplyWeaknessBreakEffects(engine engine.Engine, characterId key.TargetID, e
 				BaseDamageValue: bleedBaseDmg,
 			},
 			Duration: 2,
+			Chance:   1.5,
 		})
 	case model.DamageType_FIRE:
 		dealWeaknessBreakDamage(engine, WeaknessBreakFire, characterId, enemyId, damageType, 2*maxStanceMultiplier)
@@ -82,6 +83,7 @@ func ApplyWeaknessBreakEffects(engine engine.Engine, characterId key.TargetID, e
 			Name:     BreakBurn,
 			Source:   characterId,
 			Duration: 2,
+			Chance:   1.5,
 		})
 	case model.DamageType_ICE:
 		dealWeaknessBreakDamage(engine, WeaknessBreakIce, characterId, enemyId, damageType, maxStanceMultiplier)
@@ -90,6 +92,7 @@ func ApplyWeaknessBreakEffects(engine engine.Engine, characterId key.TargetID, e
 			Name:     BreakFreeze,
 			Source:   characterId,
 			Duration: 1,
+			Chance:   1.5,
 		})
 	case model.DamageType_THUNDER:
 		dealWeaknessBreakDamage(engine, WeaknessBreakThunder, characterId, enemyId, damageType, maxStanceMultiplier)
@@ -98,6 +101,7 @@ func ApplyWeaknessBreakEffects(engine engine.Engine, characterId key.TargetID, e
 			Name:     BreakShock,
 			Source:   characterId,
 			Duration: 2,
+			Chance:   1.5,
 		})
 	case model.DamageType_WIND:
 		dealWeaknessBreakDamage(engine, WeaknessBreakWind, characterId, enemyId, damageType, 1.5*maxStanceMultiplier)
@@ -115,6 +119,7 @@ func ApplyWeaknessBreakEffects(engine engine.Engine, characterId key.TargetID, e
 			Source:   characterId,
 			Duration: 2,
 			Count:    windShearStacksCount,
+			Chance:   1.5,
 		})
 	case model.DamageType_QUANTUM:
 		dealWeaknessBreakDamage(engine, WeaknessBreakQuantum, characterId, enemyId, damageType, 0.5*maxStanceMultiplier)
@@ -128,6 +133,7 @@ func ApplyWeaknessBreakEffects(engine engine.Engine, characterId key.TargetID, e
 				TargetMaxStanceMultiplier: maxStanceMultiplier,
 			},
 			Duration: 1,
+			Chance:   1.5,
 		})
 	case model.DamageType_IMAGINARY:
 		dealWeaknessBreakDamage(engine, WeaknessBreakImaginary, characterId, enemyId, damageType, 0.5*maxStanceMultiplier)
@@ -139,6 +145,7 @@ func ApplyWeaknessBreakEffects(engine engine.Engine, characterId key.TargetID, e
 				DelayRatio: 0.2 * (1 + engine.Stats(characterId).BreakEffect()),
 			},
 			Duration: 1,
+			Chance:   1.5,
 		})
 	}
 }
