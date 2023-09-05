@@ -163,6 +163,7 @@ func breakEntanglementPhase1(mod *modifier.Instance) {
 		BaseDamage: info.DamageMap{
 			model.DamageFormula_BY_BREAK_DAMAGE: state.HitsTakenCount * state.TargetMaxStanceMultiplier * 0.6,
 		},
-		UseSnapshot: true,
+		AsPureDamage: true,
+		UseSnapshot:  true,
 	})
 }
