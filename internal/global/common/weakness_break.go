@@ -53,6 +53,13 @@ func ApplyWeaknessBreakEffects(engine engine.Engine, characterId key.TargetID, e
 	case model.DamageType_PHYSICAL:
 		dealWeaknessBreakDamage(engine, WeaknessBreakPhysical, characterId, enemyId, damageType, 2*maxStanceMultiplier)
 
+		engine.ModifyGaugeNormalized(info.ModifyAttribute{
+			Key:    WeaknessBreakPhysical,
+			Target: enemyId,
+			Source: characterId,
+			Amount: 0.25,
+		})
+
 		enemyMaxHP := engine.Stats(enemyId).MaxHP()
 		maxBleedBaseDmg := 2 * maxStanceMultiplier * combat.BreakBaseDamage[characterInfo.Level]
 		var bleedBaseDmg float64
@@ -79,6 +86,13 @@ func ApplyWeaknessBreakEffects(engine engine.Engine, characterId key.TargetID, e
 	case model.DamageType_FIRE:
 		dealWeaknessBreakDamage(engine, WeaknessBreakFire, characterId, enemyId, damageType, 2*maxStanceMultiplier)
 
+		engine.ModifyGaugeNormalized(info.ModifyAttribute{
+			Key:    WeaknessBreakFire,
+			Target: enemyId,
+			Source: characterId,
+			Amount: 0.25,
+		})
+
 		engine.AddModifier(enemyId, info.Modifier{
 			Name:     BreakBurn,
 			Source:   characterId,
@@ -87,6 +101,13 @@ func ApplyWeaknessBreakEffects(engine engine.Engine, characterId key.TargetID, e
 		})
 	case model.DamageType_ICE:
 		dealWeaknessBreakDamage(engine, WeaknessBreakIce, characterId, enemyId, damageType, maxStanceMultiplier)
+
+		engine.ModifyGaugeNormalized(info.ModifyAttribute{
+			Key:    WeaknessBreakIce,
+			Target: enemyId,
+			Source: characterId,
+			Amount: 0.25,
+		})
 
 		engine.AddModifier(enemyId, info.Modifier{
 			Name:     BreakFreeze,
@@ -97,6 +118,13 @@ func ApplyWeaknessBreakEffects(engine engine.Engine, characterId key.TargetID, e
 	case model.DamageType_THUNDER:
 		dealWeaknessBreakDamage(engine, WeaknessBreakThunder, characterId, enemyId, damageType, maxStanceMultiplier)
 
+		engine.ModifyGaugeNormalized(info.ModifyAttribute{
+			Key:    WeaknessBreakThunder,
+			Target: enemyId,
+			Source: characterId,
+			Amount: 0.25,
+		})
+
 		engine.AddModifier(enemyId, info.Modifier{
 			Name:     BreakShock,
 			Source:   characterId,
@@ -105,6 +133,13 @@ func ApplyWeaknessBreakEffects(engine engine.Engine, characterId key.TargetID, e
 		})
 	case model.DamageType_WIND:
 		dealWeaknessBreakDamage(engine, WeaknessBreakWind, characterId, enemyId, damageType, 1.5*maxStanceMultiplier)
+
+		engine.ModifyGaugeNormalized(info.ModifyAttribute{
+			Key:    WeaknessBreakWind,
+			Target: enemyId,
+			Source: characterId,
+			Amount: 0.25,
+		})
 
 		var windShearStacksCount float64
 
@@ -124,6 +159,13 @@ func ApplyWeaknessBreakEffects(engine engine.Engine, characterId key.TargetID, e
 	case model.DamageType_QUANTUM:
 		dealWeaknessBreakDamage(engine, WeaknessBreakQuantum, characterId, enemyId, damageType, 0.5*maxStanceMultiplier)
 
+		engine.ModifyGaugeNormalized(info.ModifyAttribute{
+			Key:    WeaknessBreakQuantum,
+			Target: enemyId,
+			Source: characterId,
+			Amount: 0.25,
+		})
+
 		engine.AddModifier(enemyId, info.Modifier{
 			Name:   BreakEntanglement,
 			Source: characterId,
@@ -137,6 +179,13 @@ func ApplyWeaknessBreakEffects(engine engine.Engine, characterId key.TargetID, e
 		})
 	case model.DamageType_IMAGINARY:
 		dealWeaknessBreakDamage(engine, WeaknessBreakImaginary, characterId, enemyId, damageType, 0.5*maxStanceMultiplier)
+
+		engine.ModifyGaugeNormalized(info.ModifyAttribute{
+			Key:    WeaknessBreakImaginary,
+			Target: enemyId,
+			Source: characterId,
+			Amount: 0.25,
+		})
 
 		engine.AddModifier(enemyId, info.Modifier{
 			Name:   BreakImprisonment,
