@@ -47,7 +47,7 @@ func init() {
 			model.BehaviorFlag_STAT_DOT_BURN,
 		},
 		Listeners: modifier.Listeners{
-			OnPhase1: breakBleedPhase1,
+			OnPhase1: breakBurnPhase1,
 		},
 	})
 }
