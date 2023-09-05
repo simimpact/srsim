@@ -18,7 +18,7 @@ const (
 	WeaknessBreakQuantum   = "weakness-break-quantum"
 )
 
-func dealWeaknessBreakDamage(engine engine.Engine, attackKey key.Attack, characterId key.TargetID, enemyId key.TargetID, damageType model.DamageType, damageMultiplier float64) {
+func dealWeaknessBreakDamage(engine engine.Engine, attackKey key.Attack, characterId, enemyId key.TargetID, damageType model.DamageType, damageMultiplier float64) {
 	engine.Attack(info.Attack{
 		Key:        attackKey,
 		Source:     characterId,
@@ -33,7 +33,7 @@ func dealWeaknessBreakDamage(engine engine.Engine, attackKey key.Attack, charact
 	})
 }
 
-func ApplyWeaknessBreakEffects(engine engine.Engine, characterId key.TargetID, enemyId key.TargetID) {
+func ApplyWeaknessBreakEffects(engine engine.Engine, characterId, enemyId key.TargetID) {
 	characterInfo, err := engine.CharacterInfo(characterId)
 
 	if err != nil {
