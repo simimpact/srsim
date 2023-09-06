@@ -41,12 +41,8 @@ func init() {
 	})
 	modifier.Register(boxing, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAfterAttack: func(mod *modifier.Instance, e event.AttackEnd) {
-				addAtkBuff(mod, mod.Owner())
-			},
-			OnAfterBeingHitAll: func(mod *modifier.Instance, e event.HitEnd) {
-				addAtkBuff(mod, mod.Owner())
-			},
+			OnAfterAttack:        addAtkBuff,
+			OnAfterBeingAttacked: addAtkBuff,
 		},
 	})
 	modifier.Register(atkBuff, modifier.Config{
@@ -56,10 +52,10 @@ func init() {
 	})
 }
 
-func addAtkBuff(mod *modifier.Instance, owner key.TargetID) {
-	mod.Engine().AddModifier(owner, info.Modifier{
+func addAtkBuff(mod *modifier.Instance, e event.AttackEnd) {
+	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 		Name:   atkBuff,
-		Source: owner,
+		Source: mod.Owner(),
 		Stats:  info.PropMap{prop.ATKPercent: 0.05},
 	})
 }
