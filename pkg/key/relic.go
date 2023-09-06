@@ -4,10 +4,11 @@ type Relic string
 
 // Cavern
 const (
-	MusketeerOfWildWheat     Relic = "musketeer_of_wild_wheat"
-	HunterOfGlacialForest    Relic = "hunter_of_glacial_forest"
-	PasserbyOfWanderingCloud Relic = "passerby_of_wandering_cloud"
-	KnightOfPurityPalace     Relic = "knight_of_purity_palace"
+	MusketeerOfWildWheat       Relic = "musketeer_of_wild_wheat"
+	HunterOfGlacialForest      Relic = "hunter_of_glacial_forest"
+	PasserbyOfWanderingCloud   Relic = "passerby_of_wandering_cloud"
+	KnightOfPurityPalace       Relic = "knight_of_purity_palace"
+	ChampionOfStreetwiseBoxing Relic = "champion_of_streetwise_boxing"
 )
 
 // Planar
