@@ -3,10 +3,12 @@ package championofstreetwiseboxing
 import (
 	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/equip/relic"
+	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
@@ -37,6 +39,23 @@ func init() {
 			},
 		},
 	})
-	modifier.Register(boxing, modifier.Config{})
-	modifier.Register(atkBuff, modifier.Config{})
+	modifier.Register(boxing, modifier.Config{
+		Listeners: modifier.Listeners{
+			OnAfterAttack: func(mod *modifier.Instance, e event.AttackEnd) {
+				addAtkBuff(mod, mod.Owner())
+			},
+			OnAfterBeingHitAll: func(mod *modifier.Instance, e event.HitEnd) {
+				addAtkBuff(mod, mod.Owner())
+			},
+		},
+	})
+	modifier.Register(atkBuff, modifier.Config{
+		StatusType:        model.StatusType_STATUS_BUFF,
+		MaxCount:          5,
+		CountAddWhenStack: 1,
+	})
+}
+
+func addAtkBuff(mod *modifier.Instance, owner key.TargetID) {
+
 }
