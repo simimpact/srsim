@@ -27,26 +27,28 @@ func init() {
 }
 
 func (c *char) initTalent() {
-	// listen to death events. If killer is seele,
-	// enter buffed state and set trigger for extra/resurgence turn.
+	// if seele kills in her turn, set extra turn trigger and add buffedState mod.
 	c.engine.Events().TargetDeath.Subscribe(func(e event.TargetDeath) {
-		if e.Killer == c.id {
-			c.hasKilled = true
+		if e.Killer == c.id && c.id == c.actionOwner {
+			c.shouldInsert = true
+			c.enterBuffedState()
 		}
 	})
 
-	// only runs on seele basic, skill, or ult. effectively excluding E6 pursued dmg etc.
-	c.engine.Events().ActionEnd.Subscribe(func(e event.ActionEnd) {
-		// if action is seele's and hasKilled is triggered, reset and enter buffed state.
-		// then if not on insert turn, insertAction. reset .hasKilled on all actionEnd.
-		if e.Owner == c.id && c.hasKilled {
-			c.hasKilled = false
-			c.enterBuffedState()
-			if !e.IsInsert {
-				c.engine.InsertAction(c.id)
-			}
+	// actionStart subs to enable adding buffedState mod effectively after-kill
+	c.engine.Events().ActionStart.Subscribe(func(e event.ActionStart) {
+		if !e.IsInsert {
+			c.actionOwner = e.Owner
 		}
-		c.hasKilled = false
+	})
+
+	// extra turn logic
+	c.engine.Events().ActionEnd.Subscribe(func(e event.ActionEnd) {
+		if c.shouldInsert {
+			c.shouldInsert = false
+			c.engine.InsertAction(c.id)
+		}
+		c.shouldInsert = false
 	})
 }
 
