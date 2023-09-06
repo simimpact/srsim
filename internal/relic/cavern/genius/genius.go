@@ -47,8 +47,8 @@ func init() {
 
 func addResPen(mod *modifier.Instance, e event.HitStart) {
 	defPenAmt := 0.1
-	targetInfo, _ := mod.Engine().EnemyInfo(e.Defender)
-	if targetInfo.Weakness.Has(model.DamageType_QUANTUM) {
+	// +10% def pen if target is weak to quantum
+	if e.Hit.Defender.IsWeakTo(model.DamageType_QUANTUM) {
 		defPenAmt = 0.2
 	}
 	// add def pen amount to hit target as def "debuff"
