@@ -57,5 +57,9 @@ func init() {
 }
 
 func addAtkBuff(mod *modifier.Instance, owner key.TargetID) {
-
+	mod.Engine().AddModifier(owner, info.Modifier{
+		Name:   atkBuff,
+		Source: owner,
+		Stats:  info.PropMap{prop.ATKPercent: 0.05},
+	})
 }
