@@ -42,6 +42,18 @@ func (c *char) Talent() {
 					EnergyGain:   10.0,
 					HitRatio:     hitRatio,
 				})
+
+				c.engine.EndAttack()
+
+				// Heal
+				c.engine.Heal(info.Heal{
+					Key:      Talent,
+					Targets:  []key.TargetID{c.id},
+					Source:   c.id,
+					BaseHeal: info.HealMap{model.HealFormula_BY_TARGET_MAX_HP: 0.25},
+				})
+
+				c.charge = 0
 			},
 			Key:        Talent,
 			Source:     c.id,
@@ -49,18 +61,6 @@ func (c *char) Talent() {
 			AbortFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL, model.BehaviorFlag_DISABLE_ACTION},
 		})
 	}
-
-	c.engine.EndAttack()
-
-	// Heal
-	c.engine.Heal(info.Heal{
-		Key:      Talent,
-		Targets:  []key.TargetID{c.id},
-		Source:   c.id,
-		BaseHeal: info.HealMap{model.HealFormula_BY_TARGET_MAX_HP: 0.25},
-	})
-
-	c.charge = 0
 }
 
 func (c *char) onBeforeBeingHitListener(e event.AttackStart) {
