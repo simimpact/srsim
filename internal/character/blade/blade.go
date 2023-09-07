@@ -83,22 +83,6 @@ func (c *char) hpLossListener(e event.HPChange) {
 		return
 	}
 
-	if c.engine.HasModifier(c.id, IsAttack) {
-		if !c.engine.HasModifier(c.id, GainedCharge) {
-			c.charge++
-			c.engine.AddModifier(c.id, info.Modifier{
-				Name:   GainedCharge,
-				Source: c.id,
-			})
-		}
-	} else {
-		c.charge++
-	}
-
-	if c.charge >= c.maxCharge {
-		c.Talent()
-	}
-
 	hpChange := e.NewHP - e.OldHP
 	c.hpLoss += hpChange
 
@@ -111,5 +95,28 @@ func (c *char) hpLossListener(e event.HPChange) {
 				Source: c.id,
 			})
 		}
+	}
+
+	// Talent Charge logic
+
+	if c.charge >= c.maxCharge {
+		return
+	}
+
+	if c.engine.HasModifier(c.id, GainedCharge) {
+		return
+	}
+
+	if c.engine.HasModifier(c.id, IsAttack) {
+		c.engine.AddModifier(c.id, info.Modifier{
+			Name:   GainedCharge,
+			Source: c.id,
+		})
+	}
+
+	c.charge++
+
+	if c.charge >= c.maxCharge {
+		c.Talent()
 	}
 }
