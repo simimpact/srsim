@@ -24,9 +24,10 @@ func (c *char) Talent() {
 	}
 
 	// Follow-up Attack
-	for i, hitRatio := range talentHits {
-		c.engine.InsertAbility(info.Insert{
-			Execute: func() {
+
+	c.engine.InsertAbility(info.Insert{
+		Execute: func() {
+			for i, hitRatio := range talentHits {
 				c.engine.Attack(info.Attack{
 					Key:        Talent,
 					HitIndex:   i,
@@ -42,25 +43,25 @@ func (c *char) Talent() {
 					EnergyGain:   10.0,
 					HitRatio:     hitRatio,
 				})
+			}
 
-				c.engine.EndAttack()
+			c.engine.EndAttack()
 
-				// Heal
-				c.engine.Heal(info.Heal{
-					Key:      Talent,
-					Targets:  []key.TargetID{c.id},
-					Source:   c.id,
-					BaseHeal: info.HealMap{model.HealFormula_BY_TARGET_MAX_HP: 0.25},
-				})
+			// Heal
+			c.engine.Heal(info.Heal{
+				Key:      Talent,
+				Targets:  []key.TargetID{c.id},
+				Source:   c.id,
+				BaseHeal: info.HealMap{model.HealFormula_BY_TARGET_MAX_HP: 0.25},
+			})
 
-				c.charge = 0
-			},
-			Key:        Talent,
-			Source:     c.id,
-			Priority:   info.CharInsertAttackSelf,
-			AbortFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL, model.BehaviorFlag_DISABLE_ACTION},
-		})
-	}
+			c.charge = 0
+		},
+		Key:        Talent,
+		Source:     c.id,
+		Priority:   info.CharInsertAttackSelf,
+		AbortFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL, model.BehaviorFlag_DISABLE_ACTION},
+	})
 }
 
 func (c *char) onBeforeBeingHitListener(e event.AttackStart) {
