@@ -38,7 +38,8 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnAfterBeingHitAll: healOnBeingHit,
 		},
-		Stacking: modifier.Replace,
+		Stacking:          modifier.Replace,
+		CanModifySnapshot: true,
 	})
 }
 

@@ -66,6 +66,7 @@ func (c *char) addHeal(key key.Heal, healPercent, healFlat float64, target []key
 		BaseHeal: info.HealMap{
 			model.HealFormula_BY_HEALER_MAX_HP: healPercent,
 		},
-		HealValue: healFlat,
+		HealValue:   healFlat,
+		UseSnapshot: true,
 	})
 }

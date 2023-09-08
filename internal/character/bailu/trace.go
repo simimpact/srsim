@@ -15,7 +15,8 @@ const (
 func init() {
 	// register here
 	modifier.Register(A2, modifier.Config{
-		Stacking: modifier.ReplaceBySource,
+		Stacking:          modifier.ReplaceBySource,
+		CanModifySnapshot: true,
 	})
 }
 
