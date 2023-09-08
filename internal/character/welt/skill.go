@@ -1,14 +1,16 @@
 package welt
 
 import (
+	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
-	Skill                  = "welt-skill"
+	Skill     key.Attack   = "welt-skill"
 	spdDebuff key.Modifier = "welt-spd-down"
 )
 
@@ -18,13 +20,28 @@ const (
 // to reduce the enemy's SPD by 10% for 2 turn(s).
 
 func init() {
-	modifier.Register(Skill, modifier.Config{})
-
-	modifier.Register(spdDebuff, modifier.Config{})
+	modifier.Register(spdDebuff, modifier.Config{
+		Stacking:   modifier.Replace,
+		StatusType: model.StatusType_STATUS_DEBUFF,
+		BehaviorFlags: []model.BehaviorFlag{
+			model.BehaviorFlag_STAT_SPEED_DOWN,
+		},
+	})
 }
 
-func initSkill() {
-
+func (c *char) initSkill() {
+	// onAfterHit event listener. add spdDown with chance.
+	c.engine.Events().HitEnd.Subscribe(func(e event.HitEnd) {
+		if e.Key == Skill {
+			c.engine.AddModifier(e.Defender, info.Modifier{
+				Name:     spdDebuff,
+				Source:   c.id,
+				Chance:   skillChance[c.info.SkillLevelIndex()],
+				Stats:    info.PropMap{prop.SPDPercent: 0.1},
+				Duration: 2,
+			})
+		}
+	})
 }
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
@@ -43,7 +60,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	})
 
 	// extra random attacks
-	// NOTE : confirm attackType etc.
+	// TODO : confirm attackType etc.
 	for i := 0; i < 2; i++ {
 		chosenTarget := c.engine.Retarget(info.Retarget{
 			Targets: c.engine.Enemies(),
@@ -53,7 +70,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 			Key:        Skill,
 			Source:     c.id,
 			Targets:    chosenTarget,
-			AttackType: model.AttackType_PURSUED,
+			AttackType: model.AttackType_SKILL,
 			DamageType: model.DamageType_IMAGINARY,
 			BaseDamage: info.DamageMap{
 				model.DamageFormula_BY_ATK: skillAtk[c.info.SkillLevelIndex()],

@@ -50,5 +50,7 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 		info:   charInfo,
 	}
 
+	c.initSkill()
+
 	return c
 }
