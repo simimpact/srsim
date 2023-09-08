@@ -3,7 +3,6 @@ package bailu
 import (
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
-	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
@@ -32,16 +31,4 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		})
 		c.addHeal(Skill, healPercent, healFlat, chosenTarget)
 	}
-}
-
-func (c *char) addHeal(key key.Heal, healPercent, healFlat float64, target []key.TargetID) {
-	c.engine.Heal(info.Heal{
-		Key:     key,
-		Source:  c.id,
-		Targets: target,
-		BaseHeal: info.HealMap{
-			model.HealFormula_BY_HEALER_MAX_HP: healPercent,
-		},
-		HealValue: healFlat,
-	})
 }

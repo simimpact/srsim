@@ -56,3 +56,16 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 
 	return c
 }
+
+// Add heal action with BaseHeal based on Bailu's HP.
+func (c *char) addHeal(key key.Heal, healPercent, healFlat float64, target []key.TargetID) {
+	c.engine.Heal(info.Heal{
+		Key:     key,
+		Source:  c.id,
+		Targets: target,
+		BaseHeal: info.HealMap{
+			model.HealFormula_BY_HEALER_MAX_HP: healPercent,
+		},
+		HealValue: healFlat,
+	})
+}
