@@ -10,20 +10,16 @@ import (
 )
 
 const (
-	E2 key.Modifier = "bailu-e2"
 	E4 key.Modifier = "bailu-e4"
 )
 
 func init() {
-	modifier.Register(E2, modifier.Config{
-		Stacking:   modifier.Replace,
-		StatusType: model.StatusType_STATUS_BUFF,
-	})
 	modifier.Register(E4, modifier.Config{
 		Stacking:          modifier.Replace,
 		MaxCount:          3,
 		CountAddWhenStack: 1,
 		StatusType:        model.StatusType_STATUS_BUFF,
+		CanModifySnapshot: true,
 	})
 }
 

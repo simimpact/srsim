@@ -2,13 +2,24 @@ package bailu
 
 import (
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
-	Ult key.Heal = "bailu-ult"
+	Ult key.Heal     = "bailu-ult"
+	E2  key.Modifier = "bailu-e2"
 )
+
+func init() {
+	modifier.Register(E2, modifier.Config{
+		Stacking:          modifier.Replace,
+		StatusType:        model.StatusType_STATUS_BUFF,
+		CanModifySnapshot: true,
+	})
+}
 
 // Heals all allies for 13.5% of Bailu's Max HP plus 360.
 // Bailu applies Invigoration to allies that are not already Invigorated.
