@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	Normal = "welt-normal"
+	Normal key.Attack = "welt-normal"
 )
 
 // Deals Imaginary DMG equal to 100% of Welt's ATK to a single enemy.
