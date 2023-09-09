@@ -38,7 +38,8 @@ func (c *char) addE2Shield(e event.BattleStart) {
 	lowestHpRatio := 1.0
 	var lowestHpTarget key.TargetID
 	for _, Target := range c.engine.Characters() {
-		if c.engine.HPRatio(Target) <= lowestHpRatio {
+		canidateHp := c.engine.HPRatio(Target)
+		if canidateHp <= lowestHpRatio && canidateHp > 0.0 {
 			lowestHpRatio = c.engine.HPRatio(Target)
 			lowestHpTarget = Target
 		}
