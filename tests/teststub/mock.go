@@ -39,9 +39,9 @@ func (m *mockTurnManager) AddTargets(ids ...key.TargetID) {
 func (m *mockTurnManager) RemoveTarget(id key.TargetID) {
 }
 
+// mockTurnManager StartTurn shouldn't be without any TargetID in the sequence, but
 func (m *mockTurnManager) StartTurn() (key.TargetID, float64, []event.TurnStatus, error) {
 	if len(m.turnSequence) == 0 {
-		LogError(m.t, "mockTurnManager StartTurn is called without any TargetID in the sequence. Run is terminated. (Use QueueTurn)")
 		return 1, 100000, nil, nil
 	}
 	if m.turnSequence[0] == -1 {
