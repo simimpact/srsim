@@ -87,6 +87,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/relic/cavern/wanderingcloud"
 	_ "github.com/simimpact/srsim/internal/relic/planar/belobog"
 	_ "github.com/simimpact/srsim/internal/relic/planar/pangalactic"
+	_ "github.com/simimpact/srsim/internal/relic/planar/rutilant"
 	_ "github.com/simimpact/srsim/internal/relic/planar/salsotto"
 	_ "github.com/simimpact/srsim/internal/relic/planar/space"
 	_ "github.com/simimpact/srsim/internal/relic/planar/talia"
