@@ -11,7 +11,6 @@ import (
 const (
 	Talent             = "march7th-talent"
 	TalentCount        = "march7th-talentcount"
-	MarchAllyMark      = "march7th-shield-counter"
 	MarchCounterMark   = "march7th-counter-mark"
 	MarchCounterAttack = "march7th-counter"
 )
@@ -19,20 +18,6 @@ const (
 type talentState struct {
 	maxCounters float64
 }
-
-/*
-Note:
-High level breakdown of how March's talent works, as far as I can tell from the DM:
-When March joins batttle, she is given a modifier that represents her actual talent.
-This modifier, when added, adds another modifier to all of March's teammates, which I called MarchAllyMark
-MarchAllyMark listens for whenever the person it is attached to is about to be attacked. If at least one of the targets in
-that attack is shielded, AND the attacker is an enenmy, add a modifier called MarchCounterMark to the attacker
-MarchCounterMark listens for when whoever it is attached to is done attacking.
-Afterwards, it tells March to counter attack. If successful, March will counter, and (?) remove
-one stack from the modifier that determines if march can counter or not
-MarchCounterMark will not be added to an enemy if March does not have enough counters left.
-March regenerates her counters on Phase2End.
-*/
 
 func init() {
 	modifier.Register(MarchCounterMark, modifier.Config{
@@ -67,7 +52,7 @@ func init() {
 func (c *char) initTalent() {
 	talentCount := 2.0
 	if c.info.Eidolon >= 4 {
-		talentCount += 1.0
+		talentCount += 1
 	}
 	c.engine.AddModifier(c.id, info.Modifier{
 		Name:   Talent,
@@ -126,7 +111,7 @@ func talentCounterAttack(mod *modifier.Instance, e event.AttackEnd) {
 				},
 			})
 			// Remove a count/stack from the talent counter
-			mod.Engine().ExtendModifierCount(mod.Source(), TalentCount, -1.0)
+			mod.Engine().ExtendModifierCount(mod.Source(), TalentCount, -1)
 			// Remove this modifier from the enemy it is attached to
 			mod.Engine().RemoveModifier(mod.Owner(), MarchCounterMark)
 		},
