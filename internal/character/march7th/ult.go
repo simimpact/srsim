@@ -33,6 +33,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		freezeChance += 0.15
 	}
 
+	frozenEnemiesCount := 0.0
 	for _, freezeTarget := range c.engine.Enemies() {
 		successfullyApplied, _ := c.engine.AddModifier(freezeTarget, info.Modifier{
 			Name:   common.Freeze,
@@ -47,20 +48,22 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 
 		if c.info.Eidolon >= 1 {
 			if successfullyApplied {
-				c.engine.ModifyEnergy(info.ModifyAttribute{
-					Key:    Ult,
-					Target: c.id,
-					Source: c.id,
-					Amount: 6,
-				})
+				frozenEnemiesCount++
 			}
 		}
 	}
+
+	c.engine.ModifyEnergy(info.ModifyAttribute{
+		Key:    Ult,
+		Target: c.id,
+		Source: c.id,
+		Amount: 6 * frozenEnemiesCount,
+	})
 }
 
 func (c *char) ultHit(hitIndex int, hitRatio float64) {
-	hitTargets := make(map[key.TargetID]bool)
-	for i := 0; i < 2; i++ {
+	hitTargets := make(map[key.TargetID]bool, len(c.engine.Enemies()))
+	for i := 0; i < 3; i++ {
 		targets := c.engine.Retarget(info.Retarget{
 			Targets: c.engine.Enemies(),
 			Filter: func(target key.TargetID) bool {
@@ -75,7 +78,7 @@ func (c *char) ultHit(hitIndex int, hitRatio float64) {
 			Source:       c.id,
 			Targets:      targets,
 			HitIndex:     hitIndex,
-			HitRatio:     hitRatio / 3,
+			HitRatio:     hitRatio,
 			StanceDamage: 60,
 			EnergyGain:   0,
 			DamageType:   model.DamageType_ICE,
