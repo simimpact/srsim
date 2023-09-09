@@ -11,8 +11,7 @@ func (c *char) Technique(target key.TargetID, state info.ActionState) {
 	freezeTarget := c.engine.Retarget(info.Retarget{
 		Targets: c.engine.Enemies(),
 		Filter: func(target key.TargetID) bool {
-			return c.engine.Stats(target).GetDebuffRES(model.BehaviorFlag_STAT_CTRL_FROZEN) <= 0.8 &&
-				c.engine.Stats(target).GetDebuffRES(model.BehaviorFlag_STAT_CTRL) <= 0.8
+			return c.engine.Stats(target).GetDebuffRES(model.BehaviorFlag_STAT_CTRL_FROZEN, model.BehaviorFlag_STAT_CTRL) <= 0.8
 		},
 		Max: 1,
 	})
