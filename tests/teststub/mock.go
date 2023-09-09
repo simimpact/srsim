@@ -39,7 +39,9 @@ func (m *mockTurnManager) AddTargets(ids ...key.TargetID) {
 func (m *mockTurnManager) RemoveTarget(id key.TargetID) {
 }
 
-// mockTurnManager StartTurn shouldn't be without any TargetID in the sequence, but
+// mockTurnManager StartTurn shouldn't be without any TargetID in the sequence, but the corresponding
+// error message is being temporarily removed due to this being an asynch thread that may be called
+// after test ends, causing improper logging panics
 func (m *mockTurnManager) StartTurn() (key.TargetID, float64, []event.TurnStatus, error) {
 	if len(m.turnSequence) == 0 {
 		return 1, 100000, nil, nil
