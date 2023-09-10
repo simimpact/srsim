@@ -19,6 +19,7 @@ const (
 	TaliaKingdomOfBanditry Relic = "talia_kingdom_of_banditry"
 	SprightlyVonwacq       Relic = "sprightly_vonwacq"
 	PanGalactic            Relic = "pan_galactic"
+	RutilantArena          Relic = "rutilant_arena"
 )
 
 func (r Relic) String() string {
