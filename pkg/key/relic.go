@@ -8,6 +8,7 @@ const (
 	HunterOfGlacialForest    Relic = "hunter_of_glacial_forest"
 	PasserbyOfWanderingCloud Relic = "passerby_of_wandering_cloud"
 	KnightOfPurityPalace     Relic = "knight_of_purity_palace"
+	GeniusOfBrilliantStars   Relic = "genius_of_brilliant_stars"
 )
 
 // Planar
