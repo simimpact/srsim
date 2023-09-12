@@ -107,6 +107,11 @@ func (mgr *manager) target(id key.TargetID) *target {
 	return nil
 }
 
+// getActiveTarget returns the active target of the TurnManager.
+func (mgr *manager) getActiveTarget() key.TargetID {
+	return mgr.activeTarget
+  }
+
 // av returns the current AV of the given target based on their current gauge and speed.
 // This call is "expensive", so avoid calling it multiple times in the same logic.
 // TODO: might want to change this into a util function that also takes in the speed?
@@ -196,7 +201,7 @@ func (mgr *manager) ResetTurn() error {
 	// It would be more efficient to loop through mgr.order ourselves to determine this single target's placement instead of resorting the whole array when no other elements are changing.
 	// Unless we are also checking for other SPD changes that happened during the turn, in which case sort.Stable() is better to use, but only after we move the element to the end
 	// so as to ensure that, in the case of a tie, it is properly at the tail end of the tied elements.
-	mgr.orderHandler.turnOrder = append(mgr.orderHandler.turnOrder[1:], mgr.orderHandler.turnOrder[0])
+	mgr.orderHandler.turnOrder = append(mgr.orderHandler.turnOrder, mgr.orderHandler.turnOrder[0])
 	sort.Stable(mgr.orderHandler)
 
 	mgr.event.TurnReset.Emit(event.TurnReset{
