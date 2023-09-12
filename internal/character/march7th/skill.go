@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	Skill  = "march7th-shield"
-	E6heal = "march7th-e6hot"
+	Skill = "march7th-shield"
+	E6    = "march7th-e6"
 )
 
 type shieldState struct {
@@ -35,7 +35,7 @@ func init() {
 					},
 					ShieldValue: mod.State().(shieldState).shieldFlat,
 				})
-				if mod.Engine().Stats(mod.Owner()).CurrentHPRatio() >= 30 {
+				if mod.Engine().Stats(mod.Owner()).CurrentHPRatio() >= 0.30 {
 					mod.AddProperty(prop.AggroPercent, 5)
 				}
 			},
@@ -44,7 +44,7 @@ func init() {
 			},
 			OnPhase1: func(mod *modifier.Instance) {
 				mod.Engine().Heal(info.Heal{
-					Key:     E6heal,
+					Key:     E6,
 					Targets: []key.TargetID{mod.Owner()},
 					Source:  mod.Source(),
 					BaseHeal: info.HealMap{
