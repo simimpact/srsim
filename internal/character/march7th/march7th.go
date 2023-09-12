@@ -50,8 +50,9 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 		info:   charInfo,
 	}
 	c.initTalent()
-
-	engine.Events().BattleStart.Subscribe(c.addE2Shield)
+	if c.info.Eidolon >= 2 {
+		engine.Events().BattleStart.Subscribe(c.addE2Shield)
+	}
 	engine.Events().AttackStart.Subscribe(c.applyCounterMark)
 
 	return c
