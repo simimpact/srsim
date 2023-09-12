@@ -3,21 +3,14 @@ package march7th
 import (
 	"github.com/simimpact/srsim/internal/global/common"
 	"github.com/simimpact/srsim/pkg/engine/info"
-	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
-	MarchUltFreeze = "march7th-ultfreeze"
-	Ult            = "march7th-ult"
+	Ult = "march7th-ult"
+	E1  = "march7th-e1"
 )
-
-func init() {
-	modifier.Register(MarchUltFreeze, modifier.Config{
-		Duration: 1,
-	})
-}
 
 var ultHits = []float64{0.25, 0.25, 0.25, 0.25}
 
@@ -46,19 +39,18 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			Duration: 1,
 		})
 
-		if c.info.Eidolon >= 1 {
-			if successfullyApplied {
-				frozenEnemiesCount++
-			}
+		if successfullyApplied {
+			frozenEnemiesCount++
 		}
 	}
-
-	c.engine.ModifyEnergy(info.ModifyAttribute{
-		Key:    Ult,
-		Target: c.id,
-		Source: c.id,
-		Amount: 6 * frozenEnemiesCount,
-	})
+	if c.info.Eidolon >= 1 {
+		c.engine.ModifyEnergy(info.ModifyAttribute{
+			Key:    E1,
+			Target: c.id,
+			Source: c.id,
+			Amount: 6 * frozenEnemiesCount,
+		})
+	}
 }
 
 func (c *char) ultHit(hitIndex int, hitRatio float64) {
@@ -97,6 +89,6 @@ func (c *char) ultHit(hitIndex int, hitRatio float64) {
 		Key:    Ult,
 		Target: c.id,
 		Source: c.id,
-		Amount: 5 * 0.25,
+		Amount: 5 * hitRatio,
 	})
 }
