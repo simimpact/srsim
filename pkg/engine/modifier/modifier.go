@@ -191,6 +191,11 @@ func (mi *Instance) Count() float64 {
 	return mi.count
 }
 
+// The maximum amount of stacks the associated modifier instance can have.
+func (mi *Instance) MaxCount() float64 {
+	return mi.maxCount
+}
+
 // What status type this modifier instance is (copied from the modifier config)
 func (mi *Instance) StatusType() model.StatusType {
 	return mi.statusType

@@ -41,7 +41,6 @@ type HitEnd struct {
 	AttackType          model.AttackType `json:"attack_type"`
 	DamageType          model.DamageType `json:"damage_type"`
 	BaseDamage          float64          `json:"base_damage"`
-	BonusDamage         float64          `json:"bonus_damage"`
 	DefenceMultiplier   float64          `json:"defence_multiplier"`
 	Resistance          float64          `json:"resistance"`
 	Vulnerability       float64          `json:"vulnerability"`

@@ -2,6 +2,7 @@ package simulation
 
 import (
 	_ "github.com/simimpact/srsim/internal/character/arlan"
+	_ "github.com/simimpact/srsim/internal/character/blade"
 	_ "github.com/simimpact/srsim/internal/character/bronya"
 	_ "github.com/simimpact/srsim/internal/character/clara"
 	_ "github.com/simimpact/srsim/internal/character/danheng"
@@ -82,12 +83,14 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/thisisme"
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/trendoftheuniversalmarket"
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/wearewildfire"
+	_ "github.com/simimpact/srsim/internal/relic/cavern/genius"
 	_ "github.com/simimpact/srsim/internal/relic/cavern/hunterofglacialforest"
 	_ "github.com/simimpact/srsim/internal/relic/cavern/musketeer"
 	_ "github.com/simimpact/srsim/internal/relic/cavern/puritypalace"
 	_ "github.com/simimpact/srsim/internal/relic/cavern/wanderingcloud"
 	_ "github.com/simimpact/srsim/internal/relic/planar/belobog"
 	_ "github.com/simimpact/srsim/internal/relic/planar/pangalactic"
+	_ "github.com/simimpact/srsim/internal/relic/planar/rutilant"
 	_ "github.com/simimpact/srsim/internal/relic/planar/salsotto"
 	_ "github.com/simimpact/srsim/internal/relic/planar/space"
 	_ "github.com/simimpact/srsim/internal/relic/planar/talia"
