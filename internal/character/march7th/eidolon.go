@@ -9,16 +9,14 @@ import (
 )
 
 const (
-	E1       = "march7th-e1"
-	E2       = "march7th-e2"
-	E2Shield = "march7th-e2-shield"
+	E2 = "march7th-e2"
 )
 
 func init() {
-	modifier.Register(E2Shield, modifier.Config{
+	modifier.Register(E2, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.Instance) {
-				mod.Engine().AddShield(E2Shield, info.Shield{
+				mod.Engine().AddShield(E2, info.Shield{
 					Source: mod.Source(),
 					Target: mod.Owner(),
 					BaseShield: info.ShieldMap{
@@ -28,7 +26,7 @@ func init() {
 				})
 			},
 			OnRemove: func(mod *modifier.Instance) {
-				mod.Engine().RemoveShield(E2Shield, mod.Owner())
+				mod.Engine().RemoveShield(E2, mod.Owner())
 			},
 		},
 	})
@@ -40,13 +38,13 @@ func (c *char) addE2Shield(e event.BattleStart) {
 	for _, Target := range c.engine.Characters() {
 		canidateHp := c.engine.HPRatio(Target)
 		if canidateHp <= lowestHpRatio && canidateHp > 0.0 {
-			lowestHpRatio = c.engine.HPRatio(Target)
+			lowestHpRatio = canidateHp
 			lowestHpTarget = Target
 		}
 	}
 
 	c.engine.AddModifier(lowestHpTarget, info.Modifier{
-		Name:     E2Shield,
+		Name:     E2,
 		Source:   c.id,
 		Duration: 3,
 	})
