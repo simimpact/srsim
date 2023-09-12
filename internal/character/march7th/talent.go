@@ -75,7 +75,7 @@ func (c *char) applyCounterMark(e event.AttackStart) {
 		hasShieldedTarget = hasShieldedTarget || c.engine.IsShielded(ally)
 	}
 
-	haveCounters := c.engine.HasModifier(c.id, TalentCount)
+	haveCounters := c.engine.ModifierStackCount(c.id, c.id, TalentCount) > 0
 
 	canCounter := hasShieldedTarget && c.engine.IsEnemy(e.Attacker) && haveCounters
 
@@ -112,12 +112,13 @@ func talentCounterAttack(mod *modifier.Instance, e event.AttackEnd) {
 			})
 			// Remove a count/stack from the talent counter
 			mod.Engine().ExtendModifierCount(mod.Source(), TalentCount, -1)
-			// Remove this modifier from the enemy it is attached to
-			mod.Engine().RemoveModifier(mod.Owner(), MarchCounterMark)
 		},
 		AbortFlags: []model.BehaviorFlag{
 			model.BehaviorFlag_DISABLE_ACTION,
 			model.BehaviorFlag_STAT_CTRL,
 		},
 	})
+
+	// Remove this modifier from the enemy it is attached to
+	mod.Engine().RemoveModifier(mod.Owner(), MarchCounterMark)
 }
