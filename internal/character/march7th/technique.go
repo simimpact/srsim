@@ -20,7 +20,7 @@ func (c *char) Technique(target key.TargetID, state info.ActionState) {
 		Name:   common.Freeze,
 		Source: c.id,
 		Chance: 1,
-		State: common.FreezeState{
+		State: &common.FreezeState{
 			DamagePercentage: 0.5,
 			DamageValue:      0,
 		},

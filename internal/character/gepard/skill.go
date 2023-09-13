@@ -43,7 +43,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	freezeSucessful, _ := c.engine.AddModifier(target, info.Modifier{
 		Name:   common.Freeze,
 		Source: c.id,
-		State: common.FreezeState{
+		State: &common.FreezeState{
 			DamagePercentage: skillFreezeDMG[c.info.SkillLevelIndex()],
 			DamageValue:      0,
 		},

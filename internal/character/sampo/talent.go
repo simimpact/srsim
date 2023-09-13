@@ -45,7 +45,7 @@ func AddWindShearTalent(char info.Character, engine engine.Engine, owner, target
 	engine.AddModifier(target, info.Modifier{
 		Name:   common.WindShear,
 		Source: owner,
-		State: common.WindShearState{
+		State: &common.WindShearState{
 			DamagePercentage: damagePercentage,
 		},
 		Chance:   chance,
