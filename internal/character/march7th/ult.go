@@ -31,7 +31,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		successfullyApplied, _ := c.engine.AddModifier(freezeTarget, info.Modifier{
 			Name:   common.Freeze,
 			Source: c.id,
-			State: common.FreezeState{
+			State: &common.FreezeState{
 				DamagePercentage: ultFreeze[c.info.UltLevelIndex()],
 				DamageValue:      0,
 			},
