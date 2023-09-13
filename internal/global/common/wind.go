@@ -50,7 +50,7 @@ func init() {
 }
 
 func windShearPhase1(mod *modifier.Instance) {
-	state, ok := mod.State().(WindShearState)
+	state, ok := mod.State().(*WindShearState)
 	if !ok {
 		panic("incorrect state used for wind shear modifier")
 	}

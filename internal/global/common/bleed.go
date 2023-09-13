@@ -56,7 +56,7 @@ func init() {
 }
 
 func bleedPhase1(mod *modifier.Instance) {
-	state, ok := mod.State().(BleedState)
+	state, ok := mod.State().(*BleedState)
 
 	if !ok {
 		panic("incorrect state used for bleed modifier")
@@ -78,7 +78,7 @@ func bleedPhase1(mod *modifier.Instance) {
 }
 
 func breakBleedPhase1(mod *modifier.Instance) {
-	state, ok := mod.State().(BreakBleedState)
+	state, ok := mod.State().(*BreakBleedState)
 
 	if !ok {
 		panic("incorrect state used for break bleed modifier")

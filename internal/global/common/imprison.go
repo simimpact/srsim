@@ -56,7 +56,7 @@ func init() {
 }
 
 func imprisonAdd(mod *modifier.Instance) {
-	state, ok := mod.State().(ImprisonState)
+	state, ok := mod.State().(*ImprisonState)
 
 	if !ok {
 		panic("incorrect state used for imprisonment modifier")
@@ -72,7 +72,7 @@ func imprisonAdd(mod *modifier.Instance) {
 }
 
 func breakImprisonAdd(mod *modifier.Instance) {
-	state, ok := mod.State().(BreakImprisonState)
+	state, ok := mod.State().(*BreakImprisonState)
 
 	if !ok {
 		panic("incorrect state used for break imprisonment modifier")

@@ -21,7 +21,6 @@ type EntanglementState struct {
 }
 
 type BreakEntanglementState struct {
-	DelayRatio                float64
 	HitsTakenCount            float64
 	TargetMaxStanceMultiplier float64
 }
@@ -67,7 +66,7 @@ func init() {
 }
 
 func entanglementAdd(mod *modifier.Instance) {
-	state, ok := mod.State().(EntanglementState)
+	state, ok := mod.State().(*EntanglementState)
 
 	if !ok {
 		panic("incorrect state used for entanglement modifier")
@@ -82,7 +81,7 @@ func entanglementAdd(mod *modifier.Instance) {
 }
 
 func entanglementAfterAttack(mod *modifier.Instance, e event.AttackEnd) {
-	state, ok := mod.State().(EntanglementState)
+	state, ok := mod.State().(*EntanglementState)
 
 	if !ok {
 		panic("incorrect state used for entanglement modifier")
@@ -96,7 +95,7 @@ func entanglementAfterAttack(mod *modifier.Instance, e event.AttackEnd) {
 }
 
 func entanglementPhase1(mod *modifier.Instance) {
-	state, ok := mod.State().(EntanglementState)
+	state, ok := mod.State().(*EntanglementState)
 
 	if !ok {
 		panic("incorrect state used for entanglement modifier")
@@ -118,22 +117,16 @@ func entanglementPhase1(mod *modifier.Instance) {
 }
 
 func breakEntanglementAdd(mod *modifier.Instance) {
-	state, ok := mod.State().(BreakEntanglementState)
-
-	if !ok {
-		panic("incorrect state used for entanglement modifier")
-	}
-
 	mod.Engine().ModifyGaugeNormalized(info.ModifyAttribute{
 		Key:    BreakEntanglement,
 		Target: mod.Owner(),
 		Source: mod.Source(),
-		Amount: state.DelayRatio,
+		Amount: 0.2 * (1 + mod.Engine().Stats(mod.Source()).BreakEffect()),
 	})
 }
 
 func breakEntanglementAfterAttack(mod *modifier.Instance, e event.AttackEnd) {
-	state, ok := mod.State().(BreakEntanglementState)
+	state, ok := mod.State().(*BreakEntanglementState)
 
 	if !ok {
 		panic("incorrect state used for entanglement modifier")
@@ -147,7 +140,7 @@ func breakEntanglementAfterAttack(mod *modifier.Instance, e event.AttackEnd) {
 }
 
 func breakEntanglementPhase1(mod *modifier.Instance) {
-	state, ok := mod.State().(BreakEntanglementState)
+	state, ok := mod.State().(*BreakEntanglementState)
 
 	if !ok {
 		panic("incorrect state used for entanglement modifier")
