@@ -17,10 +17,6 @@ type ImprisonState struct {
 	DelayRatio     float64
 }
 
-type BreakImprisonState struct {
-	DelayRatio float64
-}
-
 func init() {
 	// imprisonment
 	modifier.Register(Imprisonment, modifier.Config{
@@ -72,17 +68,11 @@ func imprisonAdd(mod *modifier.Instance) {
 }
 
 func breakImprisonAdd(mod *modifier.Instance) {
-	state, ok := mod.State().(*BreakImprisonState)
-
-	if !ok {
-		panic("incorrect state used for break imprisonment modifier")
-	}
-
 	mod.AddProperty(prop.SPDPercent, -0.1)
 	mod.Engine().ModifyGaugeNormalized(info.ModifyAttribute{
 		Key:    BreakImprisonment,
 		Target: mod.Owner(),
 		Source: mod.Source(),
-		Amount: state.DelayRatio,
+		Amount: 0.2 * (1 + mod.Engine().Stats(mod.Source()).BreakEffect()),
 	})
 }

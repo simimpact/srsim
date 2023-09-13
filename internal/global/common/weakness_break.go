@@ -158,11 +158,8 @@ func applyWeaknessBreakImaginary(breakInfoData *breakInfo) {
 	modifyGaugeAfterWeaknessBreak(breakInfoData.engine, WeaknessBreakImaginary, breakInfoData.charID, breakInfoData.enemyID)
 
 	breakInfoData.engine.AddModifier(breakInfoData.enemyID, info.Modifier{
-		Name:   BreakImprisonment,
-		Source: breakInfoData.charID,
-		State: &BreakImprisonState{
-			DelayRatio: 0.2 * (1 + breakInfoData.engine.Stats(breakInfoData.charID).BreakEffect()),
-		},
+		Name:     BreakImprisonment,
+		Source:   breakInfoData.charID,
 		Duration: 1,
 		Chance:   1.5,
 	})
