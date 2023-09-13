@@ -24,8 +24,7 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 
 	crit := crit(hit, mgr.rdm)
 
-	base := baseDamage(hit)*hit.HitRatio + hit.DamageValue
-	bonus := bonusDamage(hit)
+	base := baseDamage(hit)*hit.HitRatio*bonusDamage(hit) + hit.DamageValue
 	defMult := defMult(hit)
 	res := res(hit)
 	vul := vul(hit)
@@ -34,7 +33,7 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 	allDamageReduce := damageReduce(hit)
 	critDmg := critDmg(hit, crit)
 
-	total := base * bonus * defMult * res * vul * toughnessMultiplier * fatigue * allDamageReduce * critDmg
+	total := base * defMult * res * vul * toughnessMultiplier * fatigue * allDamageReduce * critDmg
 
 	hpUpdate := mgr.shld.AbsorbDamage(hit.Defender.ID(), total)
 
@@ -72,7 +71,6 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 		HPDamage:            hpUpdate,
 		HPRatioRemaining:    mgr.attr.HPRatio(hit.Defender.ID()),
 		BaseDamage:          base,
-		BonusDamage:         bonus,
 		DefenceMultiplier:   defMult,
 		Resistance:          res,
 		Vulnerability:       vul,
