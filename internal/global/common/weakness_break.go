@@ -18,36 +18,45 @@ const (
 	WeaknessBreakQuantum   = "weakness-break-quantum"
 )
 
-func dealWeaknessBreakDamage(engine engine.Engine, attackKey key.Attack, characterID, enemyID key.TargetID, damageType model.DamageType, maxStanceMultiplier, damageMultiplier float64) {
-	engine.Attack(info.Attack{
+type breakInfo struct {
+	engine              engine.Engine
+	charID              key.TargetID
+	charInfo            *info.Character
+	enemyID             key.TargetID
+	damageType          model.DamageType
+	maxStanceMultiplier float64
+}
+
+func dealWeaknessBreakDamage(breakInfoData *breakInfo, attackKey key.Attack, damageMultiplier float64) {
+	breakInfoData.engine.Attack(info.Attack{
 		Key:        attackKey,
-		Source:     characterID,
-		Targets:    []key.TargetID{enemyID},
+		Source:     breakInfoData.charID,
+		Targets:    []key.TargetID{breakInfoData.enemyID},
 		AttackType: model.AttackType_ELEMENT_DAMAGE,
-		DamageType: damageType,
+		DamageType: breakInfoData.damageType,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_BREAK_DAMAGE: damageMultiplier * maxStanceMultiplier,
+			model.DamageFormula_BY_BREAK_DAMAGE: damageMultiplier * breakInfoData.maxStanceMultiplier,
 		},
 		AsPureDamage: true,
 		UseSnapshot:  true,
 	})
 }
 
-func modifyGaugeAfterWeaknessBreak(engine engine.Engine, reasonKey string, characterID, enemyID key.TargetID) {
+func modifyGaugeAfterWeaknessBreak(engine engine.Engine, reasonKey string, charID, enemyID key.TargetID) {
 	engine.ModifyGaugeNormalized(info.ModifyAttribute{
 		Key:    key.Reason(reasonKey),
 		Target: enemyID,
-		Source: characterID,
+		Source: charID,
 		Amount: 0.25,
 	})
 }
 
-func applyWeaknessBreakPhysical(engine engine.Engine, characterID, enemyID key.TargetID, characterInfo info.Character, maxStanceMultiplier float64) {
-	dealWeaknessBreakDamage(engine, WeaknessBreakPhysical, characterID, enemyID, characterInfo.Element, maxStanceMultiplier, 2)
-	modifyGaugeAfterWeaknessBreak(engine, WeaknessBreakPhysical, characterID, enemyID)
+func applyWeaknessBreakPhysical(breakInfoData *breakInfo) {
+	dealWeaknessBreakDamage(breakInfoData, WeaknessBreakPhysical, 2)
+	modifyGaugeAfterWeaknessBreak(breakInfoData.engine, WeaknessBreakPhysical, breakInfoData.charID, breakInfoData.enemyID)
 
-	enemyMaxHP := engine.Stats(enemyID).MaxHP()
-	maxBleedBaseDmg := 2 * maxStanceMultiplier * combat.BreakBaseDamage[characterInfo.Level]
+	enemyMaxHP := breakInfoData.engine.Stats(breakInfoData.enemyID).MaxHP()
+	maxBleedBaseDmg := 2 * breakInfoData.maxStanceMultiplier * combat.BreakBaseDamage[breakInfoData.charInfo.Level]
 	var bleedBaseDmg float64
 
 	if /* enemyInfo.IsElite */ true {
@@ -60,9 +69,9 @@ func applyWeaknessBreakPhysical(engine engine.Engine, characterID, enemyID key.T
 		bleedBaseDmg = maxBleedBaseDmg
 	}
 
-	engine.AddModifier(enemyID, info.Modifier{
+	breakInfoData.engine.AddModifier(breakInfoData.enemyID, info.Modifier{
 		Name:   BreakBleed,
-		Source: characterID,
+		Source: breakInfoData.charID,
 		State: &BreakBleedState{
 			BaseDamageValue: bleedBaseDmg,
 		},
@@ -71,45 +80,45 @@ func applyWeaknessBreakPhysical(engine engine.Engine, characterID, enemyID key.T
 	})
 }
 
-func applyWeaknessBreakFire(engine engine.Engine, characterID, enemyID key.TargetID, characterInfo info.Character, maxStanceMultiplier float64) {
-	dealWeaknessBreakDamage(engine, WeaknessBreakFire, characterID, enemyID, characterInfo.Element, maxStanceMultiplier, 1)
-	modifyGaugeAfterWeaknessBreak(engine, WeaknessBreakFire, characterID, enemyID)
+func applyWeaknessBreakFire(breakInfoData *breakInfo) {
+	dealWeaknessBreakDamage(breakInfoData, WeaknessBreakFire, 1)
+	modifyGaugeAfterWeaknessBreak(breakInfoData.engine, WeaknessBreakFire, breakInfoData.charID, breakInfoData.enemyID)
 
-	engine.AddModifier(enemyID, info.Modifier{
+	breakInfoData.engine.AddModifier(breakInfoData.enemyID, info.Modifier{
 		Name:     BreakBurn,
-		Source:   characterID,
+		Source:   breakInfoData.charID,
 		Duration: 2,
 		Chance:   1.5,
 	})
 }
 
-func applyWeaknessBreakIce(engine engine.Engine, characterID, enemyID key.TargetID, characterInfo info.Character, maxStanceMultiplier float64) {
-	dealWeaknessBreakDamage(engine, WeaknessBreakIce, characterID, enemyID, characterInfo.Element, maxStanceMultiplier, 1)
-	modifyGaugeAfterWeaknessBreak(engine, WeaknessBreakIce, characterID, enemyID)
+func applyWeaknessBreakIce(breakInfoData *breakInfo) {
+	dealWeaknessBreakDamage(breakInfoData, WeaknessBreakIce, 1)
+	modifyGaugeAfterWeaknessBreak(breakInfoData.engine, WeaknessBreakIce, breakInfoData.charID, breakInfoData.enemyID)
 
-	engine.AddModifier(enemyID, info.Modifier{
+	breakInfoData.engine.AddModifier(breakInfoData.enemyID, info.Modifier{
 		Name:     BreakFreeze,
-		Source:   characterID,
+		Source:   breakInfoData.charID,
 		Duration: 1,
 		Chance:   1.5,
 	})
 }
 
-func applyWeaknessBreakThunder(engine engine.Engine, characterID, enemyID key.TargetID, characterInfo info.Character, maxStanceMultiplier float64) {
-	dealWeaknessBreakDamage(engine, WeaknessBreakThunder, characterID, enemyID, characterInfo.Element, maxStanceMultiplier, 1)
-	modifyGaugeAfterWeaknessBreak(engine, WeaknessBreakThunder, characterID, enemyID)
+func applyWeaknessBreakThunder(breakInfoData *breakInfo) {
+	dealWeaknessBreakDamage(breakInfoData, WeaknessBreakThunder, 1)
+	modifyGaugeAfterWeaknessBreak(breakInfoData.engine, WeaknessBreakThunder, breakInfoData.charID, breakInfoData.enemyID)
 
-	engine.AddModifier(enemyID, info.Modifier{
+	breakInfoData.engine.AddModifier(breakInfoData.enemyID, info.Modifier{
 		Name:     BreakShock,
-		Source:   characterID,
+		Source:   breakInfoData.charID,
 		Duration: 2,
 		Chance:   1.5,
 	})
 }
 
-func applyWeaknessBreakWind(engine engine.Engine, characterID, enemyID key.TargetID, characterInfo info.Character, maxStanceMultiplier float64) {
-	dealWeaknessBreakDamage(engine, WeaknessBreakWind, characterID, enemyID, characterInfo.Element, maxStanceMultiplier, 1.5)
-	modifyGaugeAfterWeaknessBreak(engine, WeaknessBreakWind, characterID, enemyID)
+func applyWeaknessBreakWind(breakInfoData *breakInfo) {
+	dealWeaknessBreakDamage(breakInfoData, WeaknessBreakWind, 1.5)
+	modifyGaugeAfterWeaknessBreak(breakInfoData.engine, WeaknessBreakWind, breakInfoData.charID, breakInfoData.enemyID)
 
 	var windShearStacksCount float64
 
@@ -119,48 +128,48 @@ func applyWeaknessBreakWind(engine engine.Engine, characterID, enemyID key.Targe
 		windShearStacksCount = 1
 	}
 
-	engine.AddModifier(enemyID, info.Modifier{
+	breakInfoData.engine.AddModifier(breakInfoData.enemyID, info.Modifier{
 		Name:     BreakWindShear,
-		Source:   characterID,
+		Source:   breakInfoData.charID,
 		Duration: 2,
 		Count:    windShearStacksCount,
 		Chance:   1.5,
 	})
 }
 
-func applyWeaknessBreakQuantum(engine engine.Engine, characterID, enemyID key.TargetID, characterInfo info.Character, maxStanceMultiplier float64) {
-	dealWeaknessBreakDamage(engine, WeaknessBreakQuantum, characterID, enemyID, characterInfo.Element, maxStanceMultiplier, 0.5)
-	modifyGaugeAfterWeaknessBreak(engine, WeaknessBreakQuantum, characterID, enemyID)
+func applyWeaknessBreakQuantum(breakInfoData *breakInfo) {
+	dealWeaknessBreakDamage(breakInfoData, WeaknessBreakQuantum, 0.5)
+	modifyGaugeAfterWeaknessBreak(breakInfoData.engine, WeaknessBreakQuantum, breakInfoData.charID, breakInfoData.enemyID)
 
-	engine.AddModifier(enemyID, info.Modifier{
+	breakInfoData.engine.AddModifier(breakInfoData.enemyID, info.Modifier{
 		Name:   BreakEntanglement,
-		Source: characterID,
+		Source: breakInfoData.charID,
 		State: &BreakEntanglementState{
 			HitsTakenCount:            0,
-			TargetMaxStanceMultiplier: maxStanceMultiplier,
+			TargetMaxStanceMultiplier: breakInfoData.maxStanceMultiplier,
 		},
 		Duration: 1,
 		Chance:   1.5,
 	})
 }
 
-func applyWeaknessBreakImaginary(engine engine.Engine, characterID, enemyID key.TargetID, characterInfo info.Character, maxStanceMultiplier float64) {
-	dealWeaknessBreakDamage(engine, WeaknessBreakImaginary, characterID, enemyID, characterInfo.Element, maxStanceMultiplier, 0.5)
-	modifyGaugeAfterWeaknessBreak(engine, WeaknessBreakImaginary, characterID, enemyID)
+func applyWeaknessBreakImaginary(breakInfoData *breakInfo) {
+	dealWeaknessBreakDamage(breakInfoData, WeaknessBreakImaginary, 0.5)
+	modifyGaugeAfterWeaknessBreak(breakInfoData.engine, WeaknessBreakImaginary, breakInfoData.charID, breakInfoData.enemyID)
 
-	engine.AddModifier(enemyID, info.Modifier{
+	breakInfoData.engine.AddModifier(breakInfoData.enemyID, info.Modifier{
 		Name:   BreakImprisonment,
-		Source: characterID,
+		Source: breakInfoData.charID,
 		State: &BreakImprisonState{
-			DelayRatio: 0.2 * (1 + engine.Stats(characterID).BreakEffect()),
+			DelayRatio: 0.2 * (1 + breakInfoData.engine.Stats(breakInfoData.charID).BreakEffect()),
 		},
 		Duration: 1,
 		Chance:   1.5,
 	})
 }
 
-func ApplyWeaknessBreakEffects(engine engine.Engine, characterID, enemyID key.TargetID) {
-	characterInfo, err := engine.CharacterInfo(characterID)
+func ApplyWeaknessBreakEffects(engine engine.Engine, charID, enemyID key.TargetID) {
+	charInfo, err := engine.CharacterInfo(charID)
 
 	if err != nil {
 		panic("incorrect target id for character")
@@ -172,23 +181,28 @@ func ApplyWeaknessBreakEffects(engine engine.Engine, characterID, enemyID key.Ta
 		panic("incorrect target id for enemy")
 	}
 
-	damageType := characterInfo.Element
-	maxStanceMultiplier := 0.5 + enemyInfo.MaxStance/120
+	breakInfoData := &breakInfo{
+		engine:              engine,
+		charID:              charID,
+		charInfo:            &charInfo,
+		enemyID:             enemyID,
+		maxStanceMultiplier: 0.5 + enemyInfo.MaxStance/120,
+	}
 
-	switch damageType {
+	switch charInfo.Element {
 	case model.DamageType_PHYSICAL:
-		applyWeaknessBreakPhysical(engine, characterID, enemyID, characterInfo, maxStanceMultiplier)
+		applyWeaknessBreakPhysical(breakInfoData)
 	case model.DamageType_FIRE:
-		applyWeaknessBreakFire(engine, characterID, enemyID, characterInfo, maxStanceMultiplier)
+		applyWeaknessBreakFire(breakInfoData)
 	case model.DamageType_ICE:
-		applyWeaknessBreakIce(engine, characterID, enemyID, characterInfo, maxStanceMultiplier)
+		applyWeaknessBreakIce(breakInfoData)
 	case model.DamageType_THUNDER:
-		applyWeaknessBreakThunder(engine, characterID, enemyID, characterInfo, maxStanceMultiplier)
+		applyWeaknessBreakThunder(breakInfoData)
 	case model.DamageType_WIND:
-		applyWeaknessBreakWind(engine, characterID, enemyID, characterInfo, maxStanceMultiplier)
+		applyWeaknessBreakWind(breakInfoData)
 	case model.DamageType_QUANTUM:
-		applyWeaknessBreakQuantum(engine, characterID, enemyID, characterInfo, maxStanceMultiplier)
+		applyWeaknessBreakQuantum(breakInfoData)
 	case model.DamageType_IMAGINARY:
-		applyWeaknessBreakImaginary(engine, characterID, enemyID, characterInfo, maxStanceMultiplier)
+		applyWeaknessBreakImaginary(breakInfoData)
 	}
 }
