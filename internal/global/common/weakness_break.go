@@ -183,6 +183,7 @@ func ApplyWeaknessBreakEffects(engine engine.Engine, charID, enemyID key.TargetI
 		charID:              charID,
 		charInfo:            &charInfo,
 		enemyID:             enemyID,
+		damageType:          charInfo.Element,
 		maxStanceMultiplier: 0.5 + enemyInfo.MaxStance/120,
 	}
 
