@@ -81,7 +81,7 @@ func applyWeaknessBreakPhysical(breakInfoData *breakInfo) {
 }
 
 func applyWeaknessBreakFire(breakInfoData *breakInfo) {
-	dealWeaknessBreakDamage(breakInfoData, WeaknessBreakFire, 1)
+	dealWeaknessBreakDamage(breakInfoData, WeaknessBreakFire, 2)
 	modifyGaugeAfterWeaknessBreak(breakInfoData.engine, WeaknessBreakFire, breakInfoData.charID, breakInfoData.enemyID)
 
 	breakInfoData.engine.AddModifier(breakInfoData.enemyID, info.Modifier{
