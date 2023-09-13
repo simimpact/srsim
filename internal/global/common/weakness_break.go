@@ -18,7 +18,7 @@ const (
 	WeaknessBreakQuantum   = "weakness-break-quantum"
 )
 
-func dealWeaknessBreakDamage(engine engine.Engine, attackKey key.Attack, characterID, enemyID key.TargetID, damageType model.DamageType, maxStanceMultiplier float64, damageMultiplier float64) {
+func dealWeaknessBreakDamage(engine engine.Engine, attackKey key.Attack, characterID, enemyID key.TargetID, damageType model.DamageType, maxStanceMultiplier, damageMultiplier float64) {
 	engine.Attack(info.Attack{
 		Key:        attackKey,
 		Source:     characterID,
@@ -33,16 +33,16 @@ func dealWeaknessBreakDamage(engine engine.Engine, attackKey key.Attack, charact
 	})
 }
 
-func modifyGaugeAfterWeaknessBreak(engine engine.Engine, attackKey key.Attack, characterID, enemyID key.TargetID) {
+func modifyGaugeAfterWeaknessBreak(engine engine.Engine, reasonKey string, characterID, enemyID key.TargetID) {
 	engine.ModifyGaugeNormalized(info.ModifyAttribute{
-		Key:    WeaknessBreakPhysical,
+		Key:    key.Reason(reasonKey),
 		Target: enemyID,
 		Source: characterID,
 		Amount: 0.25,
 	})
 }
 
-func applyWeaknessBreakPhysical(engine engine.Engine, characterID, enemyID key.TargetID, characterInfo info.Character, enemyInfo info.Enemy, maxStanceMultiplier float64) {
+func applyWeaknessBreakPhysical(engine engine.Engine, characterID, enemyID key.TargetID, characterInfo info.Character, maxStanceMultiplier float64) {
 	dealWeaknessBreakDamage(engine, WeaknessBreakPhysical, characterID, enemyID, characterInfo.Element, maxStanceMultiplier, 2)
 	modifyGaugeAfterWeaknessBreak(engine, WeaknessBreakPhysical, characterID, enemyID)
 
@@ -71,7 +71,7 @@ func applyWeaknessBreakPhysical(engine engine.Engine, characterID, enemyID key.T
 	})
 }
 
-func applyWeaknessBreakFire(engine engine.Engine, characterID, enemyID key.TargetID, characterInfo info.Character, enemyInfo info.Enemy, maxStanceMultiplier float64) {
+func applyWeaknessBreakFire(engine engine.Engine, characterID, enemyID key.TargetID, characterInfo info.Character, maxStanceMultiplier float64) {
 	dealWeaknessBreakDamage(engine, WeaknessBreakFire, characterID, enemyID, characterInfo.Element, maxStanceMultiplier, 1)
 	modifyGaugeAfterWeaknessBreak(engine, WeaknessBreakFire, characterID, enemyID)
 
@@ -83,7 +83,7 @@ func applyWeaknessBreakFire(engine engine.Engine, characterID, enemyID key.Targe
 	})
 }
 
-func applyWeaknessBreakIce(engine engine.Engine, characterID, enemyID key.TargetID, characterInfo info.Character, enemyInfo info.Enemy, maxStanceMultiplier float64) {
+func applyWeaknessBreakIce(engine engine.Engine, characterID, enemyID key.TargetID, characterInfo info.Character, maxStanceMultiplier float64) {
 	dealWeaknessBreakDamage(engine, WeaknessBreakIce, characterID, enemyID, characterInfo.Element, maxStanceMultiplier, 1)
 	modifyGaugeAfterWeaknessBreak(engine, WeaknessBreakIce, characterID, enemyID)
 
@@ -95,7 +95,7 @@ func applyWeaknessBreakIce(engine engine.Engine, characterID, enemyID key.Target
 	})
 }
 
-func applyWeaknessBreakThunder(engine engine.Engine, characterID, enemyID key.TargetID, characterInfo info.Character, enemyInfo info.Enemy, maxStanceMultiplier float64) {
+func applyWeaknessBreakThunder(engine engine.Engine, characterID, enemyID key.TargetID, characterInfo info.Character, maxStanceMultiplier float64) {
 	dealWeaknessBreakDamage(engine, WeaknessBreakThunder, characterID, enemyID, characterInfo.Element, maxStanceMultiplier, 1)
 	modifyGaugeAfterWeaknessBreak(engine, WeaknessBreakThunder, characterID, enemyID)
 
@@ -107,7 +107,7 @@ func applyWeaknessBreakThunder(engine engine.Engine, characterID, enemyID key.Ta
 	})
 }
 
-func applyWeaknessBreakWind(engine engine.Engine, characterID, enemyID key.TargetID, characterInfo info.Character, enemyInfo info.Enemy, maxStanceMultiplier float64) {
+func applyWeaknessBreakWind(engine engine.Engine, characterID, enemyID key.TargetID, characterInfo info.Character, maxStanceMultiplier float64) {
 	dealWeaknessBreakDamage(engine, WeaknessBreakWind, characterID, enemyID, characterInfo.Element, maxStanceMultiplier, 1.5)
 	modifyGaugeAfterWeaknessBreak(engine, WeaknessBreakWind, characterID, enemyID)
 
@@ -128,7 +128,7 @@ func applyWeaknessBreakWind(engine engine.Engine, characterID, enemyID key.Targe
 	})
 }
 
-func applyWeaknessBreakQuantum(engine engine.Engine, characterID, enemyID key.TargetID, characterInfo info.Character, enemyInfo info.Enemy, maxStanceMultiplier float64) {
+func applyWeaknessBreakQuantum(engine engine.Engine, characterID, enemyID key.TargetID, characterInfo info.Character, maxStanceMultiplier float64) {
 	dealWeaknessBreakDamage(engine, WeaknessBreakQuantum, characterID, enemyID, characterInfo.Element, maxStanceMultiplier, 0.5)
 	modifyGaugeAfterWeaknessBreak(engine, WeaknessBreakQuantum, characterID, enemyID)
 
@@ -144,7 +144,7 @@ func applyWeaknessBreakQuantum(engine engine.Engine, characterID, enemyID key.Ta
 	})
 }
 
-func applyWeaknessBreakImaginary(engine engine.Engine, characterID, enemyID key.TargetID, characterInfo info.Character, enemyInfo info.Enemy, maxStanceMultiplier float64) {
+func applyWeaknessBreakImaginary(engine engine.Engine, characterID, enemyID key.TargetID, characterInfo info.Character, maxStanceMultiplier float64) {
 	dealWeaknessBreakDamage(engine, WeaknessBreakImaginary, characterID, enemyID, characterInfo.Element, maxStanceMultiplier, 0.5)
 	modifyGaugeAfterWeaknessBreak(engine, WeaknessBreakImaginary, characterID, enemyID)
 
@@ -177,18 +177,18 @@ func ApplyWeaknessBreakEffects(engine engine.Engine, characterID, enemyID key.Ta
 
 	switch damageType {
 	case model.DamageType_PHYSICAL:
-		applyWeaknessBreakPhysical(engine, characterID, enemyID, characterInfo, enemyInfo, maxStanceMultiplier)
+		applyWeaknessBreakPhysical(engine, characterID, enemyID, characterInfo, maxStanceMultiplier)
 	case model.DamageType_FIRE:
-		applyWeaknessBreakFire(engine, characterID, enemyID, characterInfo, enemyInfo, maxStanceMultiplier)
+		applyWeaknessBreakFire(engine, characterID, enemyID, characterInfo, maxStanceMultiplier)
 	case model.DamageType_ICE:
-		applyWeaknessBreakIce(engine, characterID, enemyID, characterInfo, enemyInfo, maxStanceMultiplier)
+		applyWeaknessBreakIce(engine, characterID, enemyID, characterInfo, maxStanceMultiplier)
 	case model.DamageType_THUNDER:
-		applyWeaknessBreakThunder(engine, characterID, enemyID, characterInfo, enemyInfo, maxStanceMultiplier)
+		applyWeaknessBreakThunder(engine, characterID, enemyID, characterInfo, maxStanceMultiplier)
 	case model.DamageType_WIND:
-		applyWeaknessBreakWind(engine, characterID, enemyID, characterInfo, enemyInfo, maxStanceMultiplier)
+		applyWeaknessBreakWind(engine, characterID, enemyID, characterInfo, maxStanceMultiplier)
 	case model.DamageType_QUANTUM:
-		applyWeaknessBreakQuantum(engine, characterID, enemyID, characterInfo, enemyInfo, maxStanceMultiplier)
+		applyWeaknessBreakQuantum(engine, characterID, enemyID, characterInfo, maxStanceMultiplier)
 	case model.DamageType_IMAGINARY:
-		applyWeaknessBreakImaginary(engine, characterID, enemyID, characterInfo, enemyInfo, maxStanceMultiplier)
+		applyWeaknessBreakImaginary(engine, characterID, enemyID, characterInfo, maxStanceMultiplier)
 	}
 }
