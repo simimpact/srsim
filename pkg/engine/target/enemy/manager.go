@@ -1,5 +1,7 @@
 package enemy
 
+//go:generate go run generate.go
+
 import (
 	"fmt"
 

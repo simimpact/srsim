@@ -35,3 +35,6 @@ type ActionState interface {
 	// so it is important that it is correctly called at the right time.
 	EndAttack()
 }
+
+type EnemyInstance interface {
+}
