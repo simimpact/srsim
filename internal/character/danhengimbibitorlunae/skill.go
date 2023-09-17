@@ -18,26 +18,40 @@ type skillState struct {
 	CritDMGBoost float64
 }
 
-func init() {
+// enhance attack,has 3 type,use 1/2/3 skill point
+// it shouldn't trigger the action listener(like YuKong's trace), but I don't know how to do this
+
+func (c *char) initSkill() {
 	modifier.Register(EnhanceLevel, modifier.Config{
 		Stacking:          modifier.ReplaceBySource,
 		MaxCount:          3,
 		StatusType:        model.StatusType_UNKNOWN_STATUS,
 		CountAddWhenStack: 1,
 	})
-	modifier.Register(SkillEffect, modifier.Config{
-		StatusType: model.StatusType_STATUS_BUFF,
-		Stacking:   modifier.ReplaceBySource,
-		MaxCount:   4,
-		Listeners: modifier.Listeners{
-			OnAdd:    SkillOnAdd,
-			OnPhase2: SkillOnPhase2,
-		},
-		CountAddWhenStack: 1,
-	})
+	if c.info.Eidolon < 4 {
+		modifier.Register(SkillEffect, modifier.Config{
+			StatusType: model.StatusType_STATUS_BUFF,
+			Stacking:   modifier.ReplaceBySource,
+			MaxCount:   4,
+			Listeners: modifier.Listeners{
+				OnAdd:    SkillOnAdd,
+				OnPhase2: SkillOnPhase2,
+			},
+			CountAddWhenStack: 1,
+		})
+	} else {
+		modifier.Register(SkillEffect, modifier.Config{
+			StatusType: model.StatusType_STATUS_BUFF,
+			Stacking:   modifier.ReplaceBySource,
+			MaxCount:   4,
+			Duration:   2,
+			Listeners: modifier.Listeners{
+				OnAdd: SkillOnAdd,
+			},
+			CountAddWhenStack: 1,
+		})
+	}
 }
-
-// it shouldn't trigger the action listener(like YuKong's trace), but i don't know how to do this
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	if c.engine.HasModifier(c.id, Point) {

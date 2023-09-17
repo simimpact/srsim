@@ -2,6 +2,7 @@ package danhengimbibitorlunae
 
 import (
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -31,7 +32,16 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 			c.EnhancedAttack2(target, state)
 		}
 		if level == 3 {
+			if c.engine.HasModifier(c.id, E6Count) {
+				c.engine.AddModifier(c.id, info.Modifier{
+					Name:   E6Effect,
+					Source: c.id,
+					Stats:  info.PropMap{prop.ImaginaryPEN: 20 * c.engine.ModifierStackCount(c.id, c.id, E6Count)},
+				})
+			}
 			c.EnhancedAttack3(target, state)
+			c.engine.RemoveModifier(c.id, E6Effect)
+			c.engine.RemoveModifier(c.id, E6Count)
 		}
 	} else {
 		c.NormalAttack(target, state)

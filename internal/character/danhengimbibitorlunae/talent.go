@@ -15,7 +15,7 @@ type talentState struct {
 	damageBoost float64
 }
 
-func (c *char) init() {
+func (c *char) initTalent() {
 	maxcount := 6.0
 	countadd := 1.0
 	if c.info.Eidolon >= 1 {
