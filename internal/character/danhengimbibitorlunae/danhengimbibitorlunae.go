@@ -50,6 +50,8 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 		info:   charInfo,
 	}
 	engine.Events().ActionEnd.Subscribe(c.E6ActionEndListener)
+	c.initSkill()
+	c.initTalent()
 	c.initTraces()
 	return c
 }

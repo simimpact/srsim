@@ -66,7 +66,7 @@ func (c *char) NormalAttack(target key.TargetID, state info.ActionState) {
 			EnergyGain:   20,
 			HitRatio:     hitRatio,
 		})
-		if i > 3 {
+		if i >= 3 {
 			c.AddSkill()
 		}
 		c.AddTalent()
@@ -86,7 +86,7 @@ func (c *char) EnhancedAttack1(target key.TargetID, state info.ActionState) {
 			EnergyGain:   30,
 			HitRatio:     hitRatio,
 		})
-		if i > 3 {
+		if i >= 3 {
 			c.AddSkill()
 		}
 		c.AddTalent()
@@ -117,7 +117,7 @@ func (c *char) EnhancedAttack2(target key.TargetID, state info.ActionState) {
 			StanceDamage: 30,
 			HitRatio:     adjacentHitsEnhanced2[i],
 		})
-		if i > 3 {
+		if i >= 3 {
 			c.AddSkill()
 		}
 		c.AddTalent()
@@ -148,7 +148,7 @@ func (c *char) EnhancedAttack3(target key.TargetID, state info.ActionState) {
 			StanceDamage: 60,
 			HitRatio:     adjacentHitsEnhanced3[i],
 		})
-		if i >= 4 {
+		if i >= 3 {
 			c.AddSkill()
 		}
 		c.AddTalent()
