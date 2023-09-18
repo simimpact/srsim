@@ -9,9 +9,9 @@ import (
 )
 
 const (
-	Skill        key.Reason = "danhengimbibitorlunae-skill"
 	SkillEffect             = "danhengimbibitorlunae-skill-effect"
 	EnhanceLevel            = "danhengimbibitorlunae-enhancelevel"
+	Skill        key.Reason = "danhengimbibitorlunae-skill"
 )
 
 type skillState struct {

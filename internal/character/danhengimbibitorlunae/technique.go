@@ -6,7 +6,9 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-const Technique key.Attack = "danhengimbibitorlunae-technique"
+const (
+	Technique key.Attack = "danhengimbibitorlunae-technique"
+)
 
 func (c *char) Technique(target key.TargetID, state info.ActionState) {
 	c.engine.AddModifier(c.id, info.Modifier{

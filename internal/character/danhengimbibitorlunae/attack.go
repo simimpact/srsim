@@ -124,7 +124,7 @@ func (c *char) EnhancedAttack2(target key.TargetID, state info.ActionState) {
 	}
 }
 func (c *char) EnhancedAttack3(target key.TargetID, state info.ActionState) {
-	for i, hitRatio := range attackHitsEnhanced2 {
+	for i, hitRatio := range attackHitsEnhanced3 {
 		c.engine.Attack(info.Attack{
 			Key:          Attack3,
 			HitIndex:     i,
