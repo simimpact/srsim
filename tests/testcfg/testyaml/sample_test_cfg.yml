@@ -24,9 +24,8 @@ characters:
   start_energy: 50
 
 enemies:
-- level: 80
-  hp: 2000
-  toughness: 300
+- key: dummy
+  level: 8
 
 gcsl: |-
   set_default_action(danheng, attack(LowestHP));
