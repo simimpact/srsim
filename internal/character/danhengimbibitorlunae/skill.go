@@ -54,8 +54,6 @@ func (c *char) initSkill() {
 	}
 }
 
-// TODO this skill can be used when it has an effect and without skillpoint
-
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	if c.engine.HasModifier(c.id, Point) {
 		c.engine.ExtendModifierCount(c.id, Point, -1)

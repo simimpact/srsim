@@ -23,8 +23,12 @@ func init() {
 				TargetType: model.TargetType_ENEMIES,
 			},
 			Skill: character.Skill{
-				SPNeed:     1,
+				SPNeed:     0,
 				TargetType: model.TargetType_SELF,
+				CanUse: func(engine engine.Engine, instance info.CharInstance) bool {
+					c := instance.(*char)
+					return engine.HasModifier(c.id, Point)
+				},
 			},
 			Ult: character.Ult{
 				TargetType: model.TargetType_ENEMIES,
