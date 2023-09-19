@@ -57,10 +57,11 @@ func (c *char) initSkill() {
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	if c.engine.HasModifier(c.id, Point) {
 		c.engine.ExtendModifierCount(c.id, Point, -1)
+	} else {
 		c.engine.ModifySP(info.ModifySP{
 			Key:    Skill,
 			Source: c.id,
-			Amount: 1,
+			Amount: -1,
 		})
 	}
 	c.engine.InsertAction(c.id)
