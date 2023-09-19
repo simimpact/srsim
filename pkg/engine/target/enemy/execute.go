@@ -39,7 +39,7 @@ func chooseTarget(engine engine.Engine) key.TargetID {
 
 	choice := engine.Rand().Float64() * total
 	for i, aggro := range charAggro {
-		if aggro < choice {
+		if choice < aggro {
 			return charIDs[i]
 		}
 	}
