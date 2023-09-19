@@ -28,6 +28,7 @@ func (c *char) initSkill() {
 		StatusType:        model.StatusType_UNKNOWN_STATUS,
 		CountAddWhenStack: 1,
 	})
+	// if E4, the effect has 1 more turn and can be refreshed
 	if c.info.Eidolon < 4 {
 		modifier.Register(SkillEffect, modifier.Config{
 			StatusType: model.StatusType_STATUS_BUFF,
@@ -53,6 +54,8 @@ func (c *char) initSkill() {
 	}
 }
 
+// TODO this skill can be used when it has an effect and without skillpoint
+
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	if c.engine.HasModifier(c.id, Point) {
 		c.engine.ExtendModifierCount(c.id, Point, -1)
@@ -65,6 +68,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	c.engine.InsertAction(c.id)
 }
 
+// add skill effect stack when attack
 func (c *char) AddSkill() {
 	c.engine.AddModifier(c.id, info.Modifier{
 		Name:   SkillEffect,

@@ -18,17 +18,20 @@ const (
 // E6 20% imaginary pen for attack3 when ally use ult, max 3 stack
 
 func init() {
+	// ally ult count
 	modifier.Register(E6Count, modifier.Config{
 		StatusType:        model.StatusType_STATUS_BUFF,
 		Stacking:          modifier.ReplaceBySource,
 		MaxCount:          3,
 		CountAddWhenStack: 1,
 	})
+	// imaginary pen for attack3,change by ally ult count
 	modifier.Register(E6Effect, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
 	})
 }
 
+// count ally ult
 func (c *char) E6ActionEndListener(e event.ActionEnd) {
 	if e.AttackType == model.AttackType_ULT && e.Owner != c.id {
 		c.engine.AddModifier(c.id, info.Modifier{

@@ -23,33 +23,34 @@ var attackHitsEnhanced3 = []float64{0.142, 0.142, 0.142, 0.142, 0.142, 0.142, 0.
 var adjacentHitsEnhanced3 = []float64{0, 0, 0, 0.25, 0.25, 0.25, 0.25}
 
 func (c *char) Attack(target key.TargetID, state info.ActionState) {
-	if c.engine.HasModifier(c.id, EnhanceLevel) {
-		level := c.engine.ModifierStackCount(c.id, c.id, EnhanceLevel)
-		if level == 1 {
-			c.EnhancedAttack1(target, state)
-		}
-		if level == 2 {
-			c.EnhancedAttack2(target, state)
-		}
-		if level == 3 {
-			if c.engine.HasModifier(c.id, E6Count) {
-				c.engine.AddModifier(c.id, info.Modifier{
-					Name:   E6Effect,
-					Source: c.id,
-					Stats:  info.PropMap{prop.ImaginaryPEN: 20 * c.engine.ModifierStackCount(c.id, c.id, E6Count)},
-				})
-			}
-			c.EnhancedAttack3(target, state)
-			c.engine.RemoveModifier(c.id, E6Effect)
-			c.engine.RemoveModifier(c.id, E6Count)
-		}
-	} else {
+	if !c.engine.HasModifier(c.id, EnhanceLevel) {
 		c.NormalAttack(target, state)
 		c.engine.ModifySP(info.ModifySP{
 			Key:    AttackReason,
 			Source: c.id,
 			Amount: 1,
 		})
+	}
+	level := c.engine.ModifierStackCount(c.id, c.id, EnhanceLevel)
+	if level == 1 {
+		c.EnhancedAttack1(target, state)
+	}
+	if level == 2 {
+		c.EnhancedAttack2(target, state)
+	}
+	if level == 3 {
+		// add e6 buff
+		if c.engine.HasModifier(c.id, E6Count) {
+			c.engine.AddModifier(c.id, info.Modifier{
+				Name:   E6Effect,
+				Source: c.id,
+				Stats:  info.PropMap{prop.ImaginaryPEN: 20 * c.engine.ModifierStackCount(c.id, c.id, E6Count)},
+			})
+		}
+		c.EnhancedAttack3(target, state)
+		// reset count,remove e6
+		c.engine.RemoveModifier(c.id, E6Effect)
+		c.engine.RemoveModifier(c.id, E6Count)
 	}
 }
 func (c *char) NormalAttack(target key.TargetID, state info.ActionState) {

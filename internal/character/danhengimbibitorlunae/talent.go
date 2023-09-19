@@ -18,6 +18,7 @@ type talentState struct {
 func (c *char) initTalent() {
 	maxcount := 6.0
 	countadd := 1.0
+	// if E1,maxcount+4 and 1 more stack for each hit
 	if c.info.Eidolon >= 1 {
 		maxcount = 10.0
 		countadd = 2.0
