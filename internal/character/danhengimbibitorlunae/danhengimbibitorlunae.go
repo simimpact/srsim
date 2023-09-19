@@ -27,7 +27,7 @@ func init() {
 				TargetType: model.TargetType_SELF,
 				CanUse: func(engine engine.Engine, instance info.CharInstance) bool {
 					c := instance.(*char)
-					return engine.HasModifier(c.id, Point)
+					return engine.HasModifier(c.id, Point) || engine.SP() > 0
 				},
 			},
 			Ult: character.Ult{
