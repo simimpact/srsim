@@ -27,3 +27,15 @@ func NewEmptyStats(target key.TargetID) *info.Stats {
 	}
 	return info.NewStats(target, attr, mods)
 }
+
+func NewEmptyStatsWithAttr(target key.TargetID, attr *info.Attributes) *info.Stats {
+	mods := &info.ModifierState{
+		Props:     info.NewPropMap(),
+		DebuffRES: info.NewDebuffRESMap(),
+		Weakness:  info.NewWeaknessMap(),
+		Counts:    make(map[model.StatusType]int),
+		Flags:     nil,
+		Modifiers: nil,
+	}
+	return info.NewStats(target, attr, mods)
+}
