@@ -49,6 +49,7 @@ func init() {
 		StatusType:        model.StatusType_STATUS_BUFF,
 		MaxCount:          5,
 		CountAddWhenStack: 1,
+		Stacking:          modifier.Replace,
 	})
 }
 
