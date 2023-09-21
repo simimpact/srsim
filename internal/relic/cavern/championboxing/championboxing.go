@@ -54,6 +54,10 @@ func init() {
 }
 
 func addAtkBuff(mod *modifier.Instance, e event.AttackEnd) {
+	// return early if at max stack
+	if mod.Count() >= 5 {
+		return
+	}
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 		Name:   atkBuff,
 		Source: mod.Owner(),
