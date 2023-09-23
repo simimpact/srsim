@@ -87,6 +87,9 @@ type Attribute interface {
 	// Gets the current stance amount of the target.
 	Stance(target key.TargetID) float64
 
+	// Gets the max stance amount of the target
+	MaxStance(target key.TargetID) float64
+
 	// Gets the current energy amount of the target.
 	Energy(target key.TargetID) float64
 

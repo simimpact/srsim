@@ -15,6 +15,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/character/sampo"
 	_ "github.com/simimpact/srsim/internal/character/silverwolf"
 	_ "github.com/simimpact/srsim/internal/character/sushang"
+	_ "github.com/simimpact/srsim/internal/enemy/dummy"
 	_ "github.com/simimpact/srsim/internal/global"
 	_ "github.com/simimpact/srsim/internal/lightcone/abundance/cornucopia"
 	_ "github.com/simimpact/srsim/internal/lightcone/abundance/echoesofthecoffin"

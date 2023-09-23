@@ -23,6 +23,7 @@ type breakInfo struct {
 	charID              key.TargetID
 	charInfo            *info.Character
 	enemyID             key.TargetID
+	enemyRank           model.EnemyRank
 	damageType          model.DamageType
 	maxStanceMultiplier float64
 }
@@ -59,7 +60,7 @@ func applyWeaknessBreakPhysical(breakInfoData *breakInfo) {
 	maxBleedBaseDmg := 2 * breakInfoData.maxStanceMultiplier * combat.BreakBaseDamage[breakInfoData.charInfo.Level]
 	var bleedBaseDmg float64
 
-	if /* enemyInfo.IsElite */ true {
+	if breakInfoData.enemyRank.IsElite() {
 		bleedBaseDmg = 0.07 * enemyMaxHP
 	} else {
 		bleedBaseDmg = 0.16 * enemyMaxHP
@@ -122,7 +123,7 @@ func applyWeaknessBreakWind(breakInfoData *breakInfo) {
 
 	var windShearStacksCount float64
 
-	if /* enemyInfo.IsElite */ true {
+	if breakInfoData.enemyRank.IsElite() {
 		windShearStacksCount = 3
 	} else {
 		windShearStacksCount = 1
@@ -183,8 +184,9 @@ func ApplyWeaknessBreakEffects(engine engine.Engine, charID, enemyID key.TargetI
 		charID:              charID,
 		charInfo:            &charInfo,
 		enemyID:             enemyID,
+		enemyRank:           enemyInfo.Rank,
 		damageType:          charInfo.Element,
-		maxStanceMultiplier: 0.5 + enemyInfo.MaxStance/120,
+		maxStanceMultiplier: 0.5 + engine.MaxStance(enemyID)/120,
 	}
 
 	switch charInfo.Element {

@@ -7,11 +7,10 @@ import (
 )
 
 const (
-	NormalBasic                       = "qingque-normal-basic"
-	NormalEnhancedPrimary  key.Attack = "qingque-normal-enhanced-primary"
-	NormalEnchangeAdjacent key.Attack = "qingque-normal-enhanced-adjacent"
-	Insert                 key.Insert = "qingque-follow-up"
-	E6                     key.Reason = "qingque-e6"
+	NormalBasic    = "qingque-normal-basic"
+	NormalEnhanced = "qingque-normal-enhanced"
+	Insert         = "qingque-follow-up"
+	E6             = "qingque-e6"
 )
 
 func (c *char) Attack(target key.TargetID, state info.ActionState) {
@@ -67,14 +66,16 @@ func (c *char) getAttack() attackFunc {
 }
 func (c *char) basicAttack(target key.TargetID, isInsert bool) {
 	aType := model.AttackType_NORMAL
+	aKey := NormalBasic
 	energy := 20.0
 	if isInsert {
 		aType = model.AttackType_INSERT
+		aKey = Insert
 		energy = 0.0
 	}
 
 	c.engine.Attack(info.Attack{
-		Key:        NormalBasic,
+		Key:        key.Attack(aKey),
 		Source:     c.id,
 		Targets:    []key.TargetID{target},
 		DamageType: model.DamageType_QUANTUM,
@@ -89,14 +90,17 @@ func (c *char) basicAttack(target key.TargetID, isInsert bool) {
 
 func (c *char) enhancedAttack(target key.TargetID, isInsert bool) {
 	aType := model.AttackType_NORMAL
+	aKey := NormalEnhanced
 	energy := 20.0
 	if isInsert {
 		aType = model.AttackType_INSERT
+		aKey = Insert
 		energy = 0.0
 	}
 
 	c.engine.Attack(info.Attack{
-		Key:        NormalEnhancedPrimary,
+		Key:        key.Attack(aKey),
+		HitIndex:   0,
 		Source:     c.id,
 		Targets:    []key.TargetID{target},
 		DamageType: model.DamageType_QUANTUM,
@@ -109,7 +113,8 @@ func (c *char) enhancedAttack(target key.TargetID, isInsert bool) {
 	})
 
 	c.engine.Attack(info.Attack{
-		Key:        NormalEnchangeAdjacent,
+		Key:        key.Attack(aKey),
+		HitIndex:   1,
 		Source:     c.id,
 		Targets:    c.engine.AdjacentTo(target),
 		DamageType: model.DamageType_QUANTUM,

@@ -12,6 +12,7 @@ import (
 type Getter interface {
 	Stats(target key.TargetID) *info.Stats
 	Stance(target key.TargetID) float64
+	MaxStance(target key.TargetID) float64
 	Energy(target key.TargetID) float64
 	MaxEnergy(target key.TargetID) float64
 	EnergyRatio(target key.TargetID) float64
@@ -111,6 +112,13 @@ func (s *Service) EnergyRatio(target key.TargetID) float64 {
 func (s *Service) Stance(target key.TargetID) float64 {
 	if t, ok := s.targets[target]; ok {
 		return t.attributes.Stance
+	}
+	return 0.0
+}
+
+func (s *Service) MaxStance(target key.TargetID) float64 {
+	if t, ok := s.targets[target]; ok {
+		return t.attributes.MaxStance
 	}
 	return 0.0
 }

@@ -77,7 +77,7 @@ func executeLogging(opts *ExecutionOpts) error {
 	// TODO: need more elegant ways to capture errors and bubble up?
 	defer func() {
 		if err := recover(); err != nil {
-			fmt.Printf("panic occurred: %v\n", err)
+			fmt.Printf("Error: %+v\n", fmt.Errorf("%v", err))
 		}
 	}()
 
