@@ -45,7 +45,6 @@ func (c *char) initTalent() {
 	// extra turn logic
 	c.engine.Events().ActionEnd.Subscribe(func(e event.ActionEnd) {
 		if c.shouldInsert {
-			c.shouldInsert = false
 			c.engine.InsertAction(c.id)
 		}
 		c.shouldInsert = false
