@@ -4,7 +4,13 @@ import { ChevronsDownUp, ChevronsUpDown, ExternalLink } from "lucide-react";
 import { ReactNode } from "react";
 import { Badge } from "@/components/Primitives/Badge";
 import { Checkbox } from "@/components/Primitives/Checkbox";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/Primitives/Popover";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/Primitives/Sheet";
 import { Toggle } from "@/components/Primitives/Toggle";
 import { SimLog } from "@/utils/fetchLog";
 
@@ -12,18 +18,19 @@ const columnHelper = createColumnHelper<SimLog>();
 
 // https://ui.shadcn.com/docs/components/data-table
 // https://tanstack.com/table/v8/docs/guide/column-defs
-// TODO: add row selection, letting user mark which kind of events they want
-// highlighted
 // https://ui.shadcn.com/docs/components/data-table#row-selection
 export const columns = [
   columnHelper.display({
     id: "index",
-    cell: ({ row }) => row.index,
+    size: 40,
+    header: () => <div className="text-center">#</div>,
+    cell: ({ row }) => <div className="text-center">{String(row.index).padStart(2, "0")}</div>,
   }),
   columnHelper.display({
     id: "checkbox",
+    size: 30,
     header: ({ table }) => (
-      <div className="text-center">
+      <div className="flex items-center justify-center">
         <Checkbox
           checked={table.getIsAllPageRowsSelected()}
           onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
@@ -45,6 +52,7 @@ export const columns = [
   }),
   columnHelper.display({
     id: "expander",
+    size: 30,
     header: () => null,
     cell: ({ row }) =>
       row.getCanExpand() && (
@@ -54,23 +62,41 @@ export const columns = [
           onClick={row.getToggleExpandedHandler()}
         >
           {row.getIsExpanded() ? (
-            <ChevronsDownUp className="w-4 h-4" />
+            <ChevronsDownUp className="h-4 w-4" />
           ) : (
-            <ChevronsUpDown className="w-4 h-4" />
+            <ChevronsUpDown className="h-4 w-4" />
           )}
         </Toggle>
       ),
   }),
   columnHelper.accessor(data => data.name, {
     id: "name",
+    size: 200,
     filterFn: (row, _id, value: SimLog["name"][]) => {
       // NOTE: value is `any` by default, console log to double check type
       return value.includes(row.original.name);
     },
-    cell: ({ row }) => (
-      <Badge variant={row.getIsSelected() ? "destructive" : "default"}>
-        {row.getValue("name")}
-      </Badge>
+    header: () => <div className="text-right">Event Name</div>,
+    cell: ({ row, getValue }) => (
+      <Sheet>
+        <SheetTrigger className="flex w-full justify-end">
+          <Badge
+            variant={row.getIsSelected() ? "destructive" : "default"}
+            className="cursor-pointer"
+          >
+            {row.getValue("name")}
+          </Badge>
+        </SheetTrigger>
+        <SheetContent
+          side="left"
+          className="text-foreground w-96 overflow-y-auto whitespace-pre-wrap"
+        >
+          <SheetHeader>
+            <SheetTitle>{getValue()}</SheetTitle>
+          </SheetHeader>
+          <p>{JSON.stringify(row.original, null, 2)}</p>
+        </SheetContent>
+      </Sheet>
     ),
   }),
   columnHelper.accessor(data => data, {
@@ -95,22 +121,29 @@ export const columns = [
  * columns 2nd from the left, 1st column is the event name)
  * @returns Table cell
  */
-const summarizeBy = (data: SimLog, tableIndex: number): ReactNode => {
+function summarizeBy(data: SimLog, tableIndex: number): ReactNode {
   const { name, event } = data;
+
   function asDefault(index: number) {
     return (
-      <Popover>
-        <PopoverTrigger className="inline-flex items-center underline">
+      <Sheet>
+        <SheetTrigger className="inline-flex items-center underline">
           {Object.keys(event)[index] && (
             <>
               {Object.keys(event)[index]} <ExternalLink className="ml-2 h-4 w-4" />
             </>
           )}
-        </PopoverTrigger>
-        <PopoverContent className="w-96 whitespace-pre-wrap">
+        </SheetTrigger>
+        <SheetContent
+          className="text-muted-foreground w-96 overflow-y-auto whitespace-pre-wrap"
+          side="left"
+        >
+          <SheetHeader>
+            <SheetTitle>{Object.keys(event)[index]}</SheetTitle>
+          </SheetHeader>
           <p>{JSON.stringify(event[Object.keys(event)[index] as keyof typeof event], null, 4)}</p>
-        </PopoverContent>
-      </Popover>
+        </SheetContent>
+      </Sheet>
     );
   }
 
@@ -151,17 +184,23 @@ const summarizeBy = (data: SimLog, tableIndex: number): ReactNode => {
     default:
       return asDefault(tableIndex);
   }
-};
+}
 
 function summarizeInitialize(event: Event.Initialize, tableIndex: number): ReactNode {
   if (tableIndex == 0) {
     return (
-      <Popover>
-        <PopoverTrigger>Config Schema</PopoverTrigger>
-        <PopoverContent className="w-96 whitespace-pre-wrap">
+      <Sheet>
+        <SheetTrigger>Config Schema</SheetTrigger>
+        <SheetContent
+          className="text-muted-foreground w-96 overflow-y-auto whitespace-pre-wrap"
+          side="left"
+        >
+          <SheetHeader>
+            <SheetTitle>Config Schema</SheetTitle>
+          </SheetHeader>
           <p>{JSON.stringify(event.config, null, 4)}</p>
-        </PopoverContent>
-      </Popover>
+        </SheetContent>
+      </Sheet>
     );
   } else if (tableIndex == 1) {
     return <span>Seed: {event.seed}</span>;

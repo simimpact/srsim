@@ -81,7 +81,7 @@ func (sim *Simulation) ultCheck() error {
 func (sim *Simulation) executeQueue(phase info.BattlePhase, next stateFn) (stateFn, error) {
 	// always ult check when calling executeQueue
 	if err := sim.ultCheck(); err != nil {
-		return next, err
+		return nil, err
 	}
 
 	// if active is not a character, cannot prform any queue execution until after ActionEnd
@@ -111,7 +111,7 @@ func (sim *Simulation) executeQueue(phase info.BattlePhase, next stateFn) (state
 			return next, err
 		}
 		if err := sim.ultCheck(); err != nil {
-			return next, err
+			return nil, err
 		}
 	}
 	return next, nil

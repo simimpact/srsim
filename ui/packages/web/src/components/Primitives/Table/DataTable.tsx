@@ -20,26 +20,32 @@ declare module "react" {
 
 interface Props<TData> extends HTMLAttributes<HTMLDivElement> {
   table: TableType<TData>;
+  stickyHeader?: boolean;
   renderSubComponent: (props: { row: Row<TData> }) => React.ReactElement;
 }
 
 function DataTableInner<TData>(
-  { table, renderSubComponent, className, ...props }: Props<TData>,
+  { table, renderSubComponent, stickyHeader = false, className, ...props }: Props<TData>,
   ref: ForwardedRef<HTMLDivElement>
 ) {
   return (
-    <div
-      ref={ref}
-      className={cn("rounded-md border border-muted-foreground", className)}
-      {...props}
-    >
-      <Table>
-        <TableHeader className="[&_tr]:border-muted-foreground">
+    <div ref={ref} className={cn("border-border rounded-md border", className)} {...props}>
+      <Table className="border-separate border-spacing-0">
+        <TableHeader
+          className={cn(stickyHeader ? "[&_th]:bg-muted [&_th]:sticky [&_th]:top-0" : "")}
+        >
           {table.getHeaderGroups().map(headerGroup => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map(header => {
                 return (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    key={header.id}
+                    className="border-b-border border-b"
+                    style={{
+                      width:
+                        header.getSize() === Number.MAX_SAFE_INTEGER ? "auto" : header.getSize(),
+                    }}
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(header.column.columnDef.header, header.getContext())}
@@ -49,13 +55,24 @@ function DataTableInner<TData>(
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody>
+        <TableBody className="[&_td]:border-b-border [&_td]:border-b [&_tr:last-child_td]:border-0">
           {table.getRowModel().rows.length ? (
             table.getRowModel().rows.map(row => (
               <Fragment key={row.id}>
-                <TableRow data-state={row.getIsSelected() && "selected"}>
+                <TableRow
+                  data-state={row.getIsSelected() && "selected"}
+                  // className="[&_td]:border-b [&_td]:border-b-muted-foreground"
+                >
                   {row.getVisibleCells().map(cell => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      style={{
+                        width:
+                          cell.column.getSize() === Number.MAX_SAFE_INTEGER
+                            ? "auto"
+                            : cell.column.getSize(),
+                      }}
+                    >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
@@ -68,7 +85,7 @@ function DataTableInner<TData>(
               </Fragment>
             ))
           ) : (
-            <TableRow className="[&_tr]:border-muted-foreground">
+            <TableRow className="[&_tr]:border-border">
               <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center">
                 No results. Please run the simulation
               </TableCell>

@@ -3,21 +3,64 @@ package shield
 import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/model"
 )
 
 func (mgr *Manager) AddShield(id key.Shield, shield info.Shield) {
-	// TODO: LOGIC FOR ADDING A SHIELD
-	// 1. Check if the target already has this shield, if so remove old (mgr.RemoveShield)
-	// 2. Get the stats for the source and target
-	// 3. Compute shield HP/create ShieldInstance given the add paramsm
-	// 4. add shield to mgr.targets[shield.target]
-	// 5. emit ShieldAdded event
+	// Get the stats for the source and target
+	source := mgr.attr.Stats(shield.Source)
+	maxShield := mgr.MaxShield(shield.Source)
+	target := mgr.attr.Stats(shield.Target)
 
-	// emit to signify shield added
+	// Compute shield baseHP from ShieldMap property values
+	baseHP := 0.0
+
+	for k, v := range shield.BaseShield {
+		switch k {
+		case model.ShieldFormula_SHIELD_BY_SHIELDER_ATK:
+			baseHP += v * source.ATK()
+		case model.ShieldFormula_SHIELD_BY_SHIELDER_DEF:
+			baseHP += v * source.DEF()
+		case model.ShieldFormula_SHIELD_BY_SHIELDER_MAX_HP:
+			baseHP += v * source.HP()
+		case model.ShieldFormula_SHIELD_BY_TARGET_MAX_HP:
+			baseHP += v * target.HP()
+		case model.ShieldFormula_SHIELD_BY_SHIELDER_TOTAL_SHIELD:
+			baseHP += v * maxShield
+		}
+	}
+
+	// Compute final shieldHP using shield HP formula
+	shieldHP := baseHP * (1 + source.GetProperty(prop.ShieldBoost)) * (1 + target.GetProperty(prop.ShieldTaken))
+
+	// Create new instance to add to list of shields for target
+	newInstance := &Instance{name: id, hp: shieldHP}
+
+	switch isMatching, index := mgr.CheckMatching(id, shield); isMatching {
+	// Replace shield at matching index
+	case true:
+		mgr.targets[shield.Target][index] = newInstance
+	// Add new shield to targets list
+	case false:
+		mgr.targets[shield.Target] = append(mgr.targets[shield.Target], newInstance)
+	}
+
+	// Event emission
 	mgr.event.ShieldAdded.Emit(event.ShieldAdded{
 		ID:           id,
 		Info:         shield,
-		ShieldHealth: 0, // TODO: populate
+		ShieldHealth: baseHP,
 	})
+}
+
+// Check list of shields for a matching shield
+func (mgr *Manager) CheckMatching(id key.Shield, shieldInfo info.Shield) (bool, int) {
+	for i, shield := range mgr.targets[shieldInfo.Target] {
+		if shield.name == id {
+			return true, i
+		}
+	}
+	return false, -1
 }

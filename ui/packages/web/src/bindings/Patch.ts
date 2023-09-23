@@ -10,5 +10,4 @@ export interface Patch {
   dateStart: string;
   name: string;
   version: PatchVersion;
-  [k: string]: unknown;
 }

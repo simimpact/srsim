@@ -1,11 +1,15 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { event } from "@srsim/types";
+import { useMutation } from "@tanstack/react-query";
 import { ReactNode, createContext, useState } from "react";
-import { ENDPOINT } from "@/utils/constants";
 import { SimLog, SimResult, fetchLog, fetchResult } from "@/utils/fetchLog";
+import { SimConfig } from "./temporarySimControlTypes";
 
 interface SimControlContextPayload {
   runSimulation: () => void;
   simulationData: SimLog[];
+  simulationConfig: SimConfig | undefined;
+
+  getResult: () => void;
   simulationResult: SimResult | undefined;
   reset: () => void;
 }
@@ -18,25 +22,37 @@ interface SimControlContextPayload {
  */
 function useSimControl(): SimControlContextPayload {
   const [simulationData, setSimulationData] = useState<SimLog[]>([]);
+  const [simulationConfig, setSimulationConfig] = useState<SimConfig | undefined>(undefined);
 
-  const { mutate } = useMutation({
-    mutationKey: [ENDPOINT.logMock],
+  const logMutation = useMutation({
+    mutationKey: ["simulation"],
     mutationFn: async () => await fetchLog(),
-    onSuccess: onMutate,
+    onSuccess: onLogMutate,
   });
 
-  const { data: simulationResult } = useQuery({
-    queryKey: ["result"],
-    queryFn: async () => await fetchResult(),
+  const resultMutation = useMutation({
+    mutationKey: ["result"],
+    mutationFn: async () => await fetchResult(),
   });
 
-  function onMutate(data: SimLog[]) {
+  function onLogMutate(data: SimLog[]) {
     console.log(data);
     setSimulationData(data);
+
+    const config = data.find(e => e.name == "Initialize");
+    if (config) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const { event }: { event: { config: SimConfig } } = config as event.Initialize["config"];
+      setSimulationConfig(event.config);
+    }
   }
 
   function runSimulation() {
-    mutate();
+    logMutation.mutate();
+  }
+
+  function getResult() {
+    resultMutation.mutate();
   }
 
   function reset() {
@@ -46,7 +62,11 @@ function useSimControl(): SimControlContextPayload {
   return {
     runSimulation,
     simulationData,
-    simulationResult,
+    simulationConfig,
+
+    getResult,
+    simulationResult: resultMutation.data,
+
     reset,
   };
 }
@@ -54,7 +74,11 @@ function useSimControl(): SimControlContextPayload {
 export const defaultSimControl: SimControlContextPayload = {
   runSimulation: () => {},
   simulationData: [],
+  simulationConfig: undefined,
+
+  getResult: () => {},
   simulationResult: undefined,
+
   reset: () => {},
 };
 

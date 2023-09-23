@@ -43,6 +43,7 @@ func init() {
 				e.Hit.Attacker.AddProperty(E6, prop.AllDamagePercent, 0.2*float64(debuffCount))
 			},
 		},
+		CanModifySnapshot: true,
 	})
 }
 

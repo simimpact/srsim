@@ -1,18 +1,12 @@
 package turn
 
 import (
-	"fmt"
-
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 )
 
 func (mgr *manager) SetGauge(data info.ModifyAttribute) error {
-	if _, ok := mgr.targetIndex[data.Target]; !ok {
-		return fmt.Errorf("unknown target: %v", data.Target)
-	}
-
 	prev := mgr.target(data.Target).gauge
 	mgr.target(data.Target).gauge = data.Amount
 
@@ -21,10 +15,7 @@ func (mgr *manager) SetGauge(data info.ModifyAttribute) error {
 	}
 
 	// create map of TargetID -> AV so you only need to calc once within this call
-	targetAV := make(map[key.TargetID]float64, len(mgr.order))
-	for k := range mgr.targetIndex {
-		targetAV[k] = mgr.av(k)
-	}
+	targetAV := make(map[key.TargetID]float64, len(mgr.order.order))
 
 	// TODO:
 	// 1. update gauge of target
@@ -35,8 +26,8 @@ func (mgr *manager) SetGauge(data info.ModifyAttribute) error {
 	// 4. emit GaugeChangeEvent
 
 	// TODO: this is also needed for TurnStart emit & TurnReset emit, should be abstracted
-	status := make([]event.TurnStatus, len(mgr.order))
-	for i, t := range mgr.order {
+	status := make([]event.TurnStatus, len(mgr.order.order))
+	for i, t := range mgr.order.order {
 		status[i] = event.TurnStatus{
 			ID:    t.id,
 			Gauge: t.gauge,
@@ -57,19 +48,11 @@ func (mgr *manager) SetGauge(data info.ModifyAttribute) error {
 }
 
 func (mgr *manager) ModifyGaugeNormalized(data info.ModifyAttribute) error {
-	if _, ok := mgr.targetIndex[data.Target]; !ok {
-		return fmt.Errorf("unknown target: %v", data.Target)
-	}
-
 	data.Amount = mgr.target(data.Target).gauge + data.Amount*BaseGauge
 	return mgr.SetGauge(data)
 }
 
 func (mgr *manager) ModifyGaugeAV(data info.ModifyAttribute) error {
-	if _, ok := mgr.targetIndex[data.Target]; !ok {
-		return fmt.Errorf("unknown target: %v", data.Target)
-	}
-
 	added := mgr.attr.Stats(data.Target).SPD() * data.Amount // SPD * AV = gauge
 	data.Amount = mgr.target(data.Target).gauge + added
 

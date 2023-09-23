@@ -54,7 +54,7 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content ref={ref} className={cn(contentVariants({ className }))} {...props}>
       {children}
       <DialogPrimitive.Close className={closeVariants()}>
-        <X className="h-4 w-4" />
+        <X className="text-foreground h-4 w-4" />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>

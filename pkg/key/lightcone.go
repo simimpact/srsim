@@ -14,6 +14,7 @@ const (
 	CollapsingSky          LightCone = "collapsing_sky"
 	OntheFallofanAeon      LightCone = "on_the_fall_of_an_aeon"
 	WoofWalkTime           LightCone = "woof_walk_time"
+	TheUnreachableSide     LightCone = "the_unreachable_side"
 )
 
 // Hunt
@@ -33,13 +34,18 @@ const (
 
 // Nihility
 const (
-	Fermata                        LightCone = "fermata"
-	EyesofthePrey                  LightCone = "eyes_of_the_prey"
-	GoodNightandSleepWell          LightCone = "good_night_and_sleep_well"
-	IncessantRain                  LightCone = "incessant_rain"
-	BeforetheTutorialMissionStarts LightCone = "before_the_tutorial_mission_starts"
-	Loop                           LightCone = "loop"
-	HiddenShadow                   LightCone = "hidden_shadow"
+	Fermata                         LightCone = "fermata"
+	EyesofthePrey                   LightCone = "eyes_of_the_prey"
+	GoodNightandSleepWell           LightCone = "good_night_and_sleep_well"
+	IncessantRain                   LightCone = "incessant_rain"
+	BeforetheTutorialMissionStarts  LightCone = "before_the_tutorial_mission_starts"
+	Loop                            LightCone = "loop"
+	HiddenShadow                    LightCone = "hidden_shadow"
+	IntheNameoftheWorld             LightCone = "in_the_name_of_the_world"
+	ResolutionShinesAsPearlsofSweat LightCone = "resolution_shines_as_pearls_of_sweat"
+	WeWillMeetAgain                 LightCone = "we_will_meet_again"
+	Void                            LightCone = "void"
+	PatienceIsAllYouNeed            LightCone = "patience_is_all_you_need"
 )
 
 // Erudition
@@ -51,12 +57,17 @@ const (
 	TheSeriousnessofBreakfast LightCone = "the_seriousness_of_breakfast"
 	GeniusesRepose            LightCone = "geniuses_repose"
 	NightontheMilkyWay        LightCone = "night_on_the_milky_way"
+	TheBirthoftheSelf         LightCone = "the_birth_of_the_self"
 )
 
 // Harmony
 const (
-	Chorus      LightCone = "chorus"
-	MeshingCogs LightCone = "meshing_cogs"
+	Chorus                     LightCone = "chorus"
+	MeshingCogs                LightCone = "meshing_cogs"
+	CarvetheMoonWeavetheClouds LightCone = "carve_the_moon_weave_the_clouds"
+	MemoriesofthePast          LightCone = "memories_of_the_past"
+	DanceDanceDance            LightCone = "dance_dance_dance"
+	PlanetaryRendezvous        LightCone = "planetary_rendezvous"
 )
 
 // Preservation
@@ -84,6 +95,7 @@ const (
 	QuidProQuo               LightCone = "quid_pro_quo"
 	PerfectTiming            LightCone = "perfect_timing"
 	TimeWaitsforNoOne        LightCone = "time_waits_for_no_one"
+	EchoesoftheCoffin        LightCone = "echoes_of_the_coffin"
 )
 
 func (l LightCone) String() string {

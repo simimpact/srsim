@@ -18,10 +18,6 @@ type ShockState struct {
 	DamageValue      float64
 }
 
-type BreakShockState struct {
-	DamagePercentage float64
-}
-
 func init() {
 	// common shock
 	modifier.Register(Shock, modifier.Config{
@@ -78,11 +74,6 @@ func shockPhase1(mod *modifier.Instance) {
 }
 
 func breakShockPhase1(mod *modifier.Instance) {
-	state, ok := mod.State().(BreakShockState)
-	if !ok {
-		panic("incorrect state used for break shock modifier")
-	}
-
 	// perform break shock damage
 	mod.Engine().Attack(info.Attack{
 		Key:        BreakShock,
@@ -91,7 +82,7 @@ func breakShockPhase1(mod *modifier.Instance) {
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_THUNDER,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_BREAK_DAMAGE: state.DamagePercentage,
+			model.DamageFormula_BY_BREAK_DAMAGE: 2,
 		},
 		AsPureDamage: true,
 		UseSnapshot:  true,
