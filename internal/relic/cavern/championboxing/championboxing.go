@@ -24,10 +24,12 @@ func init() {
 	// register
 	relic.Register(key.ChampionOfStreetwiseBoxing, relic.Config{
 		Effects: []relic.SetEffect{
+			// trunk-ignore(golangci-lint/exhaustruct)
 			{
 				MinCount: 2,
 				Stats:    info.PropMap{prop.PhysicalDamagePercent: 0.1},
 			},
+			// trunk-ignore(golangci-lint/exhaustruct)
 			{
 				MinCount: 4,
 				CreateEffect: func(engine engine.Engine, owner key.TargetID) {
@@ -54,8 +56,8 @@ func init() {
 }
 
 func addAtkBuff(mod *modifier.Instance, e event.AttackEnd) {
-	// return early if at max stack
-	if mod.Count() >= 5 {
+	// return early if on max stack
+	if mod.Count() == mod.MaxCount() {
 		return
 	}
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
