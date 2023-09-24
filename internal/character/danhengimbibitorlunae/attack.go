@@ -31,7 +31,28 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 			Amount: 1,
 		})
 	}
-	level := c.engine.ModifierStackCount(c.id, c.id, EnhanceLevel)
+	level := int(c.engine.ModifierStackCount(c.id, c.id, EnhanceLevel))
+	pointUse := level
+	pointHas := 0
+	if c.engine.HasModifier(c.id, Point) {
+		pointHas = int(c.engine.ModifierStackCount(c.id, c.id, Point))
+	}
+	c.engine.RemoveModifier(c.id, Point)
+	if pointUse > pointHas {
+		pointUse -= pointHas
+	} else {
+		c.engine.AddModifier(c.id, info.Modifier{
+			Name:   Point,
+			Source: c.id,
+			Count:  float64(pointHas - pointUse),
+		})
+		pointUse = 0
+	}
+	c.engine.ModifySP(info.ModifySP{
+		Key:    AttackReason,
+		Source: c.id,
+		Amount: -pointUse,
+	})
 	if level == 1 {
 		c.EnhancedAttack1(target, state)
 	}

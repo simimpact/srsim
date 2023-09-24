@@ -27,7 +27,18 @@ func init() {
 				TargetType: model.TargetType_SELF,
 				CanUse: func(engine engine.Engine, instance info.CharInstance) bool {
 					c := instance.(*char)
-					return engine.HasModifier(c.id, Point) || engine.SP() > 0
+					total := c.engine.SP()
+					if c.engine.HasModifier(c.id, Point) {
+						total = total + int(c.engine.ModifierStackCount(c.id, c.id, Point))
+					}
+					if c.engine.HasModifier(c.id, EnhanceLevel) {
+						level := int(c.engine.ModifierStackCount(c.id, c.id, EnhanceLevel))
+						if level == 3 {
+							return false
+						}
+						total = total - level
+					}
+					return total > 0
 				},
 			},
 			Ult: character.Ult{

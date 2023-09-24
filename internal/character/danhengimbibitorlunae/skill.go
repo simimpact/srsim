@@ -9,9 +9,8 @@ import (
 )
 
 const (
-	SkillEffect             = "danhengimbibitorlunae-skill-effect"
-	EnhanceLevel            = "danhengimbibitorlunae-enhancelevel"
-	Skill        key.Reason = "danhengimbibitorlunae-skill"
+	SkillEffect  = "danhengimbibitorlunae-skill-effect"
+	EnhanceLevel = "danhengimbibitorlunae-enhancelevel"
 )
 
 type skillState struct {
@@ -54,18 +53,12 @@ func (c *char) initSkill() {
 }
 
 // FIXME: enhance and attack is in 1 action
-// FIXME: point use at attack,not skill
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
-	if c.engine.HasModifier(c.id, Point) {
-		c.engine.ExtendModifierCount(c.id, Point, -1)
-	} else {
-		c.engine.ModifySP(info.ModifySP{
-			Key:    Skill,
-			Source: c.id,
-			Amount: -1,
-		})
-	}
+	c.engine.AddModifier(c.id, info.Modifier{
+		Name:   EnhanceLevel,
+		Source: c.id,
+	})
 	c.engine.InsertAction(c.id)
 }
 
