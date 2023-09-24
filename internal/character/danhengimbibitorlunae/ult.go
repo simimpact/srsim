@@ -10,6 +10,7 @@ import (
 const (
 	Point            = "danhengimbibitorlunae-point"
 	Ult   key.Attack = "danhengimbibitorlunae-ult"
+	E2    key.Reason = "danhengimbibitorlunae-e2"
 )
 
 var ultHits = []float64{0.3, 0.3, 0.4}
@@ -44,7 +45,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			Targets:      c.engine.AdjacentTo(target),
 			DamageType:   model.DamageType_IMAGINARY,
 			AttackType:   model.AttackType_ULT,
-			BaseDamage:   info.DamageMap{model.DamageFormula_BY_ATK: ult[c.info.UltLevelIndex()*7/15]},
+			BaseDamage:   info.DamageMap{model.DamageFormula_BY_ATK: ult[c.info.UltLevelIndex()] * 7 / 15},
 			StanceDamage: 60,
 			HitRatio:     hitRatio,
 		})
@@ -60,10 +61,15 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	})
 	// if E2,advanced forward 100% and 1 more point after ult
 	if c.info.Eidolon >= 2 {
-		c.engine.InsertAction(c.id)
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:   Point,
 			Source: c.id,
+		})
+		c.engine.ModifyGaugeNormalized(info.ModifyAttribute{
+			Key:    E2,
+			Source: c.id,
+			Target: c.id,
+			Amount: -1,
 		})
 	}
 }

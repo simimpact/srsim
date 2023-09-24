@@ -19,7 +19,6 @@ type skillState struct {
 }
 
 // enhance attack,has 3 type,use 1/2/3 skill point
-// it shouldn't trigger the action listener(like YuKong's trace), but I don't know how to do this
 
 func (c *char) initSkill() {
 	modifier.Register(EnhanceLevel, modifier.Config{
@@ -53,6 +52,9 @@ func (c *char) initSkill() {
 		})
 	}
 }
+
+// FIXME: enhance and attack is in 1 action
+// FIXME: point use at attack,not skill
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	if c.engine.HasModifier(c.id, Point) {

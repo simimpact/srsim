@@ -114,7 +114,7 @@ func (c *char) EnhancedAttack2(target key.TargetID, state info.ActionState) {
 			Targets:      c.engine.AdjacentTo(target),
 			DamageType:   model.DamageType_IMAGINARY,
 			AttackType:   model.AttackType_NORMAL,
-			BaseDamage:   info.DamageMap{model.DamageFormula_BY_ATK: enhancedAtk2[c.info.AttackLevelIndex()*3/19]},
+			BaseDamage:   info.DamageMap{model.DamageFormula_BY_ATK: enhancedAtk2[c.info.AttackLevelIndex()] * 3 / 19},
 			StanceDamage: 30,
 			HitRatio:     adjacentHitsEnhanced2[i],
 		})
@@ -145,7 +145,7 @@ func (c *char) EnhancedAttack3(target key.TargetID, state info.ActionState) {
 			Targets:      c.engine.AdjacentTo(target),
 			DamageType:   model.DamageType_IMAGINARY,
 			AttackType:   model.AttackType_NORMAL,
-			BaseDamage:   info.DamageMap{model.DamageFormula_BY_ATK: enhancedAtk3[c.info.AttackLevelIndex()*9/25]},
+			BaseDamage:   info.DamageMap{model.DamageFormula_BY_ATK: enhancedAtk3[c.info.AttackLevelIndex()] * 9 / 25},
 			StanceDamage: 60,
 			HitRatio:     adjacentHitsEnhanced3[i],
 		})
