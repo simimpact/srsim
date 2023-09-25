@@ -17,21 +17,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		c.NormalSkill(target, state)
 	}
 
-	burnDur := 2
-	if c.info.Eidolon >= 2 {
-		burnDur += 1
-	}
-
-	c.engine.AddModifier(target, info.Modifier{
-		Name:   common.Burn,
-		Source: c.id,
-		State: &common.BurnState{
-			DamagePercentage: skillBurnDot[c.info.SkillLevelIndex()],
-			DamageValue:      0,
-		},
-		Chance:   1,
-		Duration: burnDur,
-	})
+	c.applySkillBurn([]key.TargetID{target})
 
 	c.engine.EndAttack()
 }
@@ -50,12 +36,11 @@ func (c *char) NormalSkill(target key.TargetID, state info.ActionState) {
 		StanceDamage: 60,
 	})
 
+	c.talentProc(target)
+
 }
 
 func (c *char) EnhancedSkill(target key.TargetID, state info.ActionState) {
-	if c.info.Eidolon >= 1 {
-		//c.engine.AddModifier()
-	}
 
 	//Main target
 	c.engine.Attack(info.Attack{
@@ -70,6 +55,8 @@ func (c *char) EnhancedSkill(target key.TargetID, state info.ActionState) {
 		EnergyGain:   30,
 		StanceDamage: 60,
 	})
+
+	c.talentProc(target)
 
 	//Adjacent targets
 	c.engine.Attack(info.Attack{
@@ -88,4 +75,28 @@ func (c *char) EnhancedSkill(target key.TargetID, state info.ActionState) {
 	//Remove the enhancement modifier
 	c.engine.RemoveModifier(c.id, SkillEnhancement)
 
+	//Remove the e1 modifier if it exists
+	c.engine.RemoveModifier(c.id, E1)
+
+}
+
+// Apply hook's skill burn to all given targets
+func (c *char) applySkillBurn(targets []key.TargetID) {
+	burnDur := 2
+	if c.info.Eidolon >= 2 {
+		burnDur += 1
+	}
+
+	for _, target := range targets {
+		c.engine.AddModifier(target, info.Modifier{
+			Name:   common.Burn,
+			Source: c.id,
+			State: &common.BurnState{
+				DamagePercentage: skillBurnDot[c.info.SkillLevelIndex()],
+				DamageValue:      0,
+			},
+			Chance:   1,
+			Duration: burnDur,
+		})
+	}
 }
