@@ -1,7 +1,10 @@
 package hook
 
 import (
+	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -11,7 +14,20 @@ const (
 	SkillEnhancement            = "SkillEnhancement"
 	Ult                         = "hook-ultimate"
 	A6               key.Reason = "hook-a4"
+	E1                          = "hook-e1"
 )
+
+func init() {
+	modifier.Register(E1, modifier.Config{
+		Listeners: modifier.Listeners{
+			OnBeforeHitAll: func(mod *modifier.Instance, e event.HitStart) {
+				if e.Hit.Key == EnhancedSkill {
+					mod.AddProperty(prop.AllDamagePercent, 0.2)
+				}
+			},
+		},
+	})
+}
 
 var hitSplitRatio = []float64{0.3, 0.7}
 
@@ -34,6 +50,8 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		})
 	}
 
+	c.talentProc(target)
+
 	//A6
 	if c.info.Traces["103"] {
 		c.engine.ModifyGaugeNormalized(info.ModifyAttribute{
@@ -51,10 +69,15 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		})
 	}
 
+	//Enhance the next skill usage
 	c.engine.AddModifier(c.id, info.Modifier{
 		Name:   SkillEnhancement,
 		Source: c.id,
 	})
+
+	if c.info.Eidolon >= 1 {
+		c.engine.AddModifier(c.id, info.Modifier{})
+	}
 
 	c.engine.EndAttack()
 }
