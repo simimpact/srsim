@@ -8,9 +8,10 @@ import (
 )
 
 const (
-	Point            = "danhengimbibitorlunae-point" // MAvatar_DanHengIL_00_BPCostChange
-	Ult   key.Attack = "danhengimbibitorlunae-ult"
-	E2    key.Reason = "danhengimbibitorlunae-e2"
+	Point                  = "danhengimbibitorlunae-point" // MAvatar_DanHengIL_00_BPCostChange
+	UltPrimary  key.Attack = "danhengimbibitorlunae-ult-primary"
+	UltAdjacent key.Attack = "danhengimbibitorlunae-ult-adjacent"
+	E2          key.Reason = "danhengimbibitorlunae-e2"
 )
 
 var ultHits = []float64{0.3, 0.3, 0.4}
@@ -27,7 +28,7 @@ func init() {
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	for i, hitRatio := range ultHits {
 		c.engine.Attack(info.Attack{
-			Key:          Ult,
+			Key:          UltPrimary,
 			HitIndex:     i,
 			Source:       c.id,
 			Targets:      []key.TargetID{target},
@@ -39,7 +40,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			HitRatio:     hitRatio,
 		})
 		c.engine.Attack(info.Attack{
-			Key:          Ult,
+			Key:          UltAdjacent,
 			HitIndex:     i,
 			Source:       c.id,
 			Targets:      c.engine.AdjacentTo(target),

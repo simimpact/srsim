@@ -8,11 +8,13 @@ import (
 )
 
 const (
-	Attack1      key.Attack = "danhengimbibitorlunae-enhancedattack-1"
-	Attack2      key.Attack = "danhengimbibitorlunae-enhancedattack-2"
-	Attack3      key.Attack = "danhengimbibitorlunae-enhancedattack-3"
-	Attack       key.Attack = "danhengimbibitorlunae-normalattack"
-	AttackReason key.Reason = "danhengimbibitorlunae-attack"
+	Attack1         key.Attack = "danhengimbibitorlunae-enhancedattack-1"
+	Attack2Primary  key.Attack = "danhengimbibitorlunae-enhancedattack-2-primary"
+	Attack2Adjacent key.Attack = "danhengimbibitorlunae-enhancedattack-2-adjacent"
+	Attack3Primary  key.Attack = "danhengimbibitorlunae-enhancedattack-3-primary"
+	Attack3Adjacent key.Attack = "danhengimbibitorlunae-enhancedattack-3-adjacent"
+	Attack          key.Attack = "danhengimbibitorlunae-normalattack"
+	AttackReason    key.Reason = "danhengimbibitorlunae-attack"
 )
 
 var attackHitsNormal = []float64{0.3, 0.7}
@@ -118,7 +120,7 @@ func (c *char) EnhancedAttack2(target key.TargetID, state info.ActionState) {
 			c.AddSkill()
 		}
 		c.engine.Attack(info.Attack{
-			Key:          Attack2,
+			Key:          Attack2Primary,
 			HitIndex:     i,
 			Source:       c.id,
 			Targets:      []key.TargetID{target},
@@ -130,7 +132,7 @@ func (c *char) EnhancedAttack2(target key.TargetID, state info.ActionState) {
 			HitRatio:     hitRatio,
 		})
 		c.engine.Attack(info.Attack{
-			Key:          Attack2,
+			Key:          Attack2Adjacent,
 			HitIndex:     i,
 			Source:       c.id,
 			Targets:      c.engine.AdjacentTo(target),
@@ -149,7 +151,7 @@ func (c *char) EnhancedAttack3(target key.TargetID, state info.ActionState) {
 			c.AddSkill()
 		}
 		c.engine.Attack(info.Attack{
-			Key:          Attack3,
+			Key:          Attack3Primary,
 			HitIndex:     i,
 			Source:       c.id,
 			Targets:      []key.TargetID{target},
@@ -161,7 +163,7 @@ func (c *char) EnhancedAttack3(target key.TargetID, state info.ActionState) {
 			HitRatio:     hitRatio,
 		})
 		c.engine.Attack(info.Attack{
-			Key:          Attack3,
+			Key:          Attack3Adjacent,
 			HitIndex:     i,
 			Source:       c.id,
 			Targets:      c.engine.AdjacentTo(target),
