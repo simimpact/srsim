@@ -88,9 +88,6 @@ func (c *char) NormalAttack(target key.TargetID, state info.ActionState) {
 			EnergyGain:   20,
 			HitRatio:     hitRatio,
 		})
-		if i >= 3 {
-			c.AddSkill()
-		}
 		c.AddTalent()
 	}
 }
@@ -108,9 +105,6 @@ func (c *char) EnhancedAttack1(target key.TargetID, state info.ActionState) {
 			EnergyGain:   30,
 			HitRatio:     hitRatio,
 		})
-		if i >= 3 {
-			c.AddSkill()
-		}
 		c.AddTalent()
 	}
 }
