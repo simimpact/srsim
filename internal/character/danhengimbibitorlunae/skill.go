@@ -1,6 +1,7 @@
 package danhengimbibitorlunae
 
 import (
+	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
@@ -26,7 +27,6 @@ func (c *char) initSkill() {
 		StatusType:        model.StatusType_UNKNOWN_STATUS,
 		CountAddWhenStack: 1,
 	})
-	// if E4, the effect has 1 more turn and can be refreshed
 	modifier.Register(SkillEffect, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
 		Stacking:   modifier.ReplaceBySource,
@@ -36,6 +36,22 @@ func (c *char) initSkill() {
 		},
 		CountAddWhenStack: 1,
 	})
+}
+
+func canUseSkill(engine engine.Engine, instance info.CharInstance) bool {
+	c := instance.(*char)
+	total := c.engine.SP()
+	if c.engine.HasModifier(c.id, Point) {
+		total = total + int(c.engine.ModifierStackCount(c.id, c.id, Point))
+	}
+	if c.engine.HasModifier(c.id, EnhanceLevel) {
+		level := int(c.engine.ModifierStackCount(c.id, c.id, EnhanceLevel))
+		if level == 3 {
+			return false
+		}
+		total = total - level
+	}
+	return total > 0
 }
 
 // FIXME: enhance and attack is in 1 action
@@ -51,6 +67,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 // add skill effect stack when attack
 func (c *char) AddSkill() {
 	outroarDuration := 1
+	// if E4, the effect has 1 more turn and can be refreshed
 	if c.info.Eidolon >= 4 {
 		outroarDuration = 2
 	}

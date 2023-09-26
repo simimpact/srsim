@@ -53,10 +53,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	}
 	c.engine.AddModifier(c.id, info.Modifier{
 		Name:   Point,
-		Source: c.id,
-	})
-	c.engine.AddModifier(c.id, info.Modifier{
-		Name:   Point,
+		Count:  2,
 		Source: c.id,
 	})
 	// if E2,advanced forward 100% and 1 more point after ult
