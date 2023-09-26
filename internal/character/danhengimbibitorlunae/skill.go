@@ -27,29 +27,15 @@ func (c *char) initSkill() {
 		CountAddWhenStack: 1,
 	})
 	// if E4, the effect has 1 more turn and can be refreshed
-	if c.info.Eidolon < 4 {
-		modifier.Register(SkillEffect, modifier.Config{
-			StatusType: model.StatusType_STATUS_BUFF,
-			Stacking:   modifier.ReplaceBySource,
-			MaxCount:   4,
-			Listeners: modifier.Listeners{
-				OnAdd:    SkillOnAdd,
-				OnPhase2: SkillOnPhase2,
-			},
-			CountAddWhenStack: 1,
-		})
-	} else {
-		modifier.Register(SkillEffect, modifier.Config{
-			StatusType: model.StatusType_STATUS_BUFF,
-			Stacking:   modifier.ReplaceBySource,
-			MaxCount:   4,
-			Duration:   2,
-			Listeners: modifier.Listeners{
-				OnAdd: SkillOnAdd,
-			},
-			CountAddWhenStack: 1,
-		})
-	}
+	modifier.Register(SkillEffect, modifier.Config{
+		StatusType: model.StatusType_STATUS_BUFF,
+		Stacking:   modifier.ReplaceBySource,
+		MaxCount:   4,
+		Listeners: modifier.Listeners{
+			OnAdd: SkillOnAdd,
+		},
+		CountAddWhenStack: 1,
+	})
 }
 
 // FIXME: enhance and attack is in 1 action
@@ -64,9 +50,15 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 
 // add skill effect stack when attack
 func (c *char) AddSkill() {
+	outroarDuration := 1
+	if c.info.Eidolon >= 4 {
+		outroarDuration = 2
+	}
 	c.engine.AddModifier(c.id, info.Modifier{
-		Name:   SkillEffect,
-		Source: c.id,
+		Name:            SkillEffect,
+		Source:          c.id,
+		TickImmediately: true,
+		Duration:        outroarDuration,
 		State: skillState{
 			CritDMGBoost: skill[c.info.SkillLevelIndex()],
 		},
@@ -76,7 +68,4 @@ func (c *char) AddSkill() {
 func SkillOnAdd(mod *modifier.Instance) {
 	state := mod.State().(skillState)
 	mod.SetProperty(prop.CritDMG, mod.Count()*(state.CritDMGBoost))
-}
-func SkillOnPhase2(mod *modifier.Instance) {
-	mod.RemoveSelf()
 }

@@ -11,20 +11,13 @@ import (
 
 const (
 	A4            = "danhengimbibitorlunae-a4"
-	A6            = "danhengimbibitorlunae-a6"
+	A6 key.Reason = "danhengimbibitorlunae-a6"
 	A2 key.Reason = "danhengimbibitorlunae-a4"
 )
 
 func init() {
 	modifier.Register(A4, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
-	})
-	modifier.Register(A6, modifier.Config{
-		StatusType: model.StatusType_STATUS_BUFF,
-		Listeners: modifier.Listeners{
-			OnBeforeHit: A6OnBeforeHit,
-			OnAfterHit:  A6OnAfterHit,
-		},
 	})
 }
 
@@ -45,17 +38,11 @@ func (c *char) initTraces() {
 		})
 	}
 	if c.info.Traces["103"] {
-		c.engine.AddModifier(c.id, info.Modifier{
-			Name:   A6,
-			Source: c.id,
-		})
+		c.engine.Events().HitStart.Subscribe(c.A6OnHit)
 	}
 }
-func A6OnBeforeHit(mod *modifier.Instance, e event.HitStart) {
-	if e.Hit.Defender.IsWeakTo(model.DamageType_IMAGINARY) {
-		mod.SetProperty(prop.CritDMG, 0.24)
+func (c *char) A6OnHit(e event.HitStart) {
+	if e.Hit.Attacker.ID() == c.id && e.Hit.Defender.IsWeakTo(model.DamageType_IMAGINARY) {
+		e.Hit.Attacker.AddProperty(A6, prop.CritDMG, 0.24)
 	}
-}
-func A6OnAfterHit(mod *modifier.Instance, e event.HitEnd) {
-	mod.SetProperty(prop.CritDMG, 0)
 }

@@ -28,8 +28,7 @@ func (c *char) initTalent() {
 		Stacking:   modifier.ReplaceBySource,
 		MaxCount:   maxcount,
 		Listeners: modifier.Listeners{
-			OnAdd:    talentOnAdd,
-			OnPhase2: talentOnPhase2,
+			OnAdd: talentOnAdd,
 		},
 		CountAddWhenStack: countadd,
 	})
@@ -37,8 +36,10 @@ func (c *char) initTalent() {
 
 func (c *char) AddTalent() {
 	c.engine.AddModifier(c.id, info.Modifier{
-		Name:   Talent,
-		Source: c.id,
+		Name:            Talent,
+		Source:          c.id,
+		TickImmediately: true,
+		Duration:        1,
 		State: talentState{
 			damageBoost: talent[c.info.TalentLevelIndex()],
 		},
@@ -48,7 +49,4 @@ func (c *char) AddTalent() {
 func talentOnAdd(mod *modifier.Instance) {
 	state := mod.State().(talentState)
 	mod.SetProperty(prop.AllDamagePercent, mod.Count()*(state.damageBoost))
-}
-func talentOnPhase2(mod *modifier.Instance) {
-	mod.RemoveSelf()
 }
