@@ -110,6 +110,9 @@ func (c *char) EnhancedAttack1(target key.TargetID, state info.ActionState) {
 }
 func (c *char) EnhancedAttack2(target key.TargetID, state info.ActionState) {
 	for i, hitRatio := range attackHitsEnhanced2 {
+		if i >= 3 {
+			c.AddSkill()
+		}
 		c.engine.Attack(info.Attack{
 			Key:          Attack2,
 			HitIndex:     i,
@@ -133,14 +136,14 @@ func (c *char) EnhancedAttack2(target key.TargetID, state info.ActionState) {
 			StanceDamage: 30,
 			HitRatio:     adjacentHitsEnhanced2[i],
 		})
-		if i >= 3 {
-			c.AddSkill()
-		}
 		c.AddTalent()
 	}
 }
 func (c *char) EnhancedAttack3(target key.TargetID, state info.ActionState) {
 	for i, hitRatio := range attackHitsEnhanced3 {
+		if i >= 3 {
+			c.AddSkill()
+		}
 		c.engine.Attack(info.Attack{
 			Key:          Attack3,
 			HitIndex:     i,
@@ -164,9 +167,6 @@ func (c *char) EnhancedAttack3(target key.TargetID, state info.ActionState) {
 			StanceDamage: 60,
 			HitRatio:     adjacentHitsEnhanced3[i],
 		})
-		if i >= 3 {
-			c.AddSkill()
-		}
 		c.AddTalent()
 	}
 }
