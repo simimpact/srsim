@@ -79,6 +79,7 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 		c.engine.RemoveModifier(c.id, E6Effect)
 		c.engine.RemoveModifier(c.id, E6Count)
 	}
+	state.EndAttack()
 }
 func (c *char) NormalAttack(target key.TargetID, state info.ActionState) {
 	for i, hitRatio := range attackHitsNormal {
