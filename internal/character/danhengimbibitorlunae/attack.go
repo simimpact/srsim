@@ -31,7 +31,10 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 			Amount: 1,
 		})
 	}
+
 	level := int(c.engine.ModifierStackCount(c.id, c.id, EnhanceLevel))
+	c.engine.RemoveModifier(c.id, EnhanceLevel)
+
 	pointUse := level
 	pointHas := 0
 	if c.engine.HasModifier(c.id, Point) {
@@ -53,6 +56,7 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 		Source: c.id,
 		Amount: -pointUse,
 	})
+
 	if level == 1 {
 		c.EnhancedAttack1(target, state)
 	}

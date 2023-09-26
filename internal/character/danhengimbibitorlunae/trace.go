@@ -3,23 +3,16 @@ package danhengimbibitorlunae
 import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
-	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
-	A4            = "danhengimbibitorlunae-a4"
+	A4 key.Reason = "danhengimbibitorlunae-a4"
 	A6 key.Reason = "danhengimbibitorlunae-a6"
 	A2 key.Reason = "danhengimbibitorlunae-a4"
 )
-
-func init() {
-	modifier.Register(A4, modifier.Config{
-		StatusType: model.StatusType_STATUS_BUFF,
-	})
-}
 
 func (c *char) initTraces() {
 	if c.info.Traces["101"] {
@@ -31,11 +24,7 @@ func (c *char) initTraces() {
 		})
 	}
 	if c.info.Traces["102"] {
-		c.engine.AddModifier(c.id, info.Modifier{
-			Name:   A4,
-			Source: c.id,
-			State:  info.PropMap{prop.EffectRES: 0.35},
-		})
+		c.engine.Stats(c.id).AddProperty(A4, prop.EffectRES, 0.35)
 	}
 	if c.info.Traces["103"] {
 		c.engine.Events().HitStart.Subscribe(c.A6OnHit)

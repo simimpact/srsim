@@ -16,6 +16,18 @@ type talentState struct {
 }
 
 func (c *char) initTalent() {
+	modifier.Register(Talent, modifier.Config{
+		StatusType: model.StatusType_STATUS_BUFF,
+		Stacking:   modifier.ReplaceBySource,
+		MaxCount:   6,
+		Listeners: modifier.Listeners{
+			OnAdd: talentOnAdd,
+		},
+		CountAddWhenStack: 1,
+	})
+}
+
+func (c *char) AddTalent() {
 	maxcount := 6.0
 	countadd := 1.0
 	// if E1,maxcount+4 and 1 more stack for each hit
@@ -23,23 +35,13 @@ func (c *char) initTalent() {
 		maxcount = 10.0
 		countadd = 2.0
 	}
-	modifier.Register(Talent, modifier.Config{
-		StatusType: model.StatusType_STATUS_BUFF,
-		Stacking:   modifier.ReplaceBySource,
-		MaxCount:   maxcount,
-		Listeners: modifier.Listeners{
-			OnAdd: talentOnAdd,
-		},
-		CountAddWhenStack: countadd,
-	})
-}
-
-func (c *char) AddTalent() {
 	c.engine.AddModifier(c.id, info.Modifier{
-		Name:            Talent,
-		Source:          c.id,
-		TickImmediately: true,
-		Duration:        1,
+		Name:              Talent,
+		Source:            c.id,
+		TickImmediately:   true,
+		Duration:          1,
+		MaxCount:          maxcount,
+		CountAddWhenStack: countadd,
 		State: talentState{
 			damageBoost: talent[c.info.TalentLevelIndex()],
 		},

@@ -20,7 +20,7 @@ const (
 func init() {
 	// ally ult count
 	modifier.Register(E6Count, modifier.Config{
-		StatusType:        model.StatusType_STATUS_BUFF,
+		StatusType:        model.StatusType_UNKNOWN_STATUS,
 		Stacking:          modifier.ReplaceBySource,
 		MaxCount:          3,
 		CountAddWhenStack: 1,

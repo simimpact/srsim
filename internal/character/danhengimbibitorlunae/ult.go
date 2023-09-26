@@ -17,7 +17,7 @@ var ultHits = []float64{0.3, 0.3, 0.4}
 
 func init() {
 	modifier.Register(Point, modifier.Config{
-		StatusType:        model.StatusType_STATUS_BUFF,
+		StatusType:        model.StatusType_UNKNOWN_STATUS,
 		Stacking:          modifier.ReplaceBySource,
 		MaxCount:          3,
 		CountAddWhenStack: 1,
