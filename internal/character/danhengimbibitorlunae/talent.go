@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	Talent = "danhengimbibitorlunae-talent"
+	Talent = "danhengimbibitorlunae-talent" // MAvatar_DanHengIL_00_AllDamageTypeAddedRatio
 )
 
 type talentState struct {

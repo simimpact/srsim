@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	SkillEffect  = "danhengimbibitorlunae-skill-effect"
+	SkillEffect  = "danhengimbibitorlunae-skill-effect" // MAvatar_DanHengIL_00_Skill02_CriticalDamage
 	EnhanceLevel = "danhengimbibitorlunae-enhancelevel"
 )
 

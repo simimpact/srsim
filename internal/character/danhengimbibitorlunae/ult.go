@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	Point            = "danhengimbibitorlunae-point"
+	Point            = "danhengimbibitorlunae-point" // MAvatar_DanHengIL_00_BPCostChange
 	Ult   key.Attack = "danhengimbibitorlunae-ult"
 	E2    key.Reason = "danhengimbibitorlunae-e2"
 )

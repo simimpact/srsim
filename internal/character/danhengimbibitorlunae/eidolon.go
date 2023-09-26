@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	E6Count  = "danhengimbibitorlunae-e6count"
-	E6Effect = "danhengimbibitorlunae-e6effect"
+	E6Count  = "danhengimbibitorlunae-e6count"  // MAvatar_DanHengIL_00_Rank06CD
+	E6Effect = "danhengimbibitorlunae-e6effect" // MAvatar_DanHengIL_00_Rank06_ImaginaryPenetrate
 )
 
 // E1 increase talent max stack by 4 and gain 1 extra stack when hit
