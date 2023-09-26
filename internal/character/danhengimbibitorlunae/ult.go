@@ -52,6 +52,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		})
 		c.AddTalent()
 	}
+	state.EndAttack()
 	c.engine.AddModifier(c.id, info.Modifier{
 		Name:   Point,
 		Count:  2,
