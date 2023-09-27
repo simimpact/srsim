@@ -25,7 +25,7 @@ var attackHitsEnhanced3 = []float64{0.142, 0.142, 0.142, 0.142, 0.142, 0.142, 0.
 var adjacentHitsEnhanced3 = []float64{0, 0, 0, 0.25, 0.25, 0.25, 0.25}
 
 func (c *char) Attack(target key.TargetID, state info.ActionState) {
-	if !c.engine.HasModifier(c.id, EnhanceLevel) {
+	if c.attackLevel == 0 {
 		c.NormalAttack(target, state)
 		c.engine.ModifySP(info.ModifySP{
 			Key:    AttackReason,
@@ -34,51 +34,42 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 		})
 	}
 
-	level := int(c.engine.ModifierStackCount(c.id, c.id, EnhanceLevel))
-	c.engine.RemoveModifier(c.id, EnhanceLevel)
-
-	pointUse := level
-	pointHas := 0
-	if c.engine.HasModifier(c.id, Point) {
-		pointHas = int(c.engine.ModifierStackCount(c.id, c.id, Point))
+	pointUse := c.attackLevel
+	pointHas := c.point
+	c.point = pointHas - pointUse
+	if c.point < 0 {
+		c.point = 0
 	}
-	c.engine.RemoveModifier(c.id, Point)
-	if pointUse > pointHas {
-		pointUse -= pointHas
-	} else {
-		c.engine.AddModifier(c.id, info.Modifier{
-			Name:   Point,
+	pointUse -= pointHas
+	if pointUse > 0 {
+		c.engine.ModifySP(info.ModifySP{
+			Key:    AttackReason,
 			Source: c.id,
-			Count:  float64(pointHas - pointUse),
+			Amount: -pointUse,
 		})
-		pointUse = 0
 	}
-	c.engine.ModifySP(info.ModifySP{
-		Key:    AttackReason,
-		Source: c.id,
-		Amount: -pointUse,
-	})
 
-	if level == 1 {
+	if c.attackLevel == 1 {
 		c.EnhancedAttack1(target, state)
 	}
-	if level == 2 {
+	if c.attackLevel == 2 {
 		c.EnhancedAttack2(target, state)
 	}
-	if level == 3 {
+	if c.attackLevel == 3 {
 		// add e6 buff
-		if c.engine.HasModifier(c.id, E6Count) {
+		if c.info.Eidolon >= 6 {
 			c.engine.AddModifier(c.id, info.Modifier{
 				Name:   E6Effect,
 				Source: c.id,
-				Stats:  info.PropMap{prop.ImaginaryPEN: 20 * c.engine.ModifierStackCount(c.id, c.id, E6Count)},
+				Stats:  info.PropMap{prop.ImaginaryPEN: float64(c.E6Count) * 20.0},
 			})
 		}
 		c.EnhancedAttack3(target, state)
 		// reset count,remove e6
 		c.engine.RemoveModifier(c.id, E6Effect)
-		c.engine.RemoveModifier(c.id, E6Count)
+		c.E6Count = 0
 	}
+	c.attackLevel = 0
 	state.EndAttack()
 }
 func (c *char) NormalAttack(target key.TargetID, state info.ActionState) {

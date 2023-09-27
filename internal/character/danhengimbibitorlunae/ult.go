@@ -2,13 +2,11 @@ package danhengimbibitorlunae
 
 import (
 	"github.com/simimpact/srsim/pkg/engine/info"
-	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
-	Point                  = "danhengimbibitorlunae-point" // MAvatar_DanHengIL_00_BPCostChange
 	UltPrimary  key.Attack = "danhengimbibitorlunae-ult-primary"
 	UltAdjacent key.Attack = "danhengimbibitorlunae-ult-adjacent"
 	E2          key.Reason = "danhengimbibitorlunae-e2"
@@ -17,12 +15,6 @@ const (
 var ultHits = []float64{0.3, 0.3, 0.4}
 
 func init() {
-	modifier.Register(Point, modifier.Config{
-		StatusType:        model.StatusType_UNKNOWN_STATUS,
-		Stacking:          modifier.ReplaceBySource,
-		MaxCount:          3,
-		CountAddWhenStack: 1,
-	})
 }
 
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
@@ -53,22 +45,18 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		c.AddTalent()
 	}
 	state.EndAttack()
-	c.engine.AddModifier(c.id, info.Modifier{
-		Name:   Point,
-		Count:  2,
-		Source: c.id,
-	})
+	c.point += 2
 	// if E2,advanced forward 100% and 1 more point after ult
 	if c.info.Eidolon >= 2 {
-		c.engine.AddModifier(c.id, info.Modifier{
-			Name:   Point,
-			Source: c.id,
-		})
+		c.point++
 		c.engine.ModifyGaugeNormalized(info.ModifyAttribute{
 			Key:    E2,
 			Source: c.id,
 			Target: c.id,
 			Amount: -1,
 		})
+	}
+	if c.point > 3 {
+		c.point = 3
 	}
 }

@@ -39,9 +39,12 @@ func init() {
 }
 
 type char struct {
-	engine engine.Engine
-	id     key.TargetID
-	info   info.Character
+	engine      engine.Engine
+	id          key.TargetID
+	info        info.Character
+	attackLevel int
+	E6Count     int
+	point       int
 }
 
 func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character) info.CharInstance {

@@ -11,10 +11,10 @@ const (
 )
 
 func (c *char) Technique(target key.TargetID, state info.ActionState) {
-	c.engine.AddModifier(c.id, info.Modifier{
-		Name:   Point,
-		Source: c.id,
-	})
+	c.point++
+	if c.point > 3 {
+		c.point = 3
+	}
 	c.engine.Attack(info.Attack{
 		Key:        Technique,
 		Source:     c.id,

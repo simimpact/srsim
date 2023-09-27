@@ -10,8 +10,7 @@ import (
 )
 
 const (
-	SkillEffect  = "danhengimbibitorlunae-skill-effect" // MAvatar_DanHengIL_00_Skill02_CriticalDamage
-	EnhanceLevel = "danhengimbibitorlunae-enhancelevel"
+	SkillEffect = "danhengimbibitorlunae-skill-effect" // MAvatar_DanHengIL_00_Skill02_CriticalDamage
 )
 
 type skillState struct {
@@ -21,12 +20,6 @@ type skillState struct {
 // enhance attack,has 3 type,use 1/2/3 skill point
 
 func (c *char) initSkill() {
-	modifier.Register(EnhanceLevel, modifier.Config{
-		Stacking:          modifier.ReplaceBySource,
-		MaxCount:          3,
-		StatusType:        model.StatusType_UNKNOWN_STATUS,
-		CountAddWhenStack: 1,
-	})
 	modifier.Register(SkillEffect, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
 		Stacking:   modifier.ReplaceBySource,
@@ -40,27 +33,19 @@ func (c *char) initSkill() {
 
 func canUseSkill(engine engine.Engine, instance info.CharInstance) bool {
 	c := instance.(*char)
+	if c.attackLevel == 3 {
+		return false
+	}
 	total := c.engine.SP()
-	if c.engine.HasModifier(c.id, Point) {
-		total += int(c.engine.ModifierStackCount(c.id, c.id, Point))
-	}
-	if c.engine.HasModifier(c.id, EnhanceLevel) {
-		level := int(c.engine.ModifierStackCount(c.id, c.id, EnhanceLevel))
-		if level == 3 {
-			return false
-		}
-		total -= level
-	}
+	total += c.point
+	total -= c.attackLevel
 	return total > 0
 }
 
-// FIXME: enhance and attack is in 1 action
+// FIXME: enhance and attack is in 1 action, and won't trigger skill listener
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
-	c.engine.AddModifier(c.id, info.Modifier{
-		Name:   EnhanceLevel,
-		Source: c.id,
-	})
+	c.attackLevel++
 	c.engine.InsertAction(c.id)
 }
 
