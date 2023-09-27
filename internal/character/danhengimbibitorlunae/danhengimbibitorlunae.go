@@ -49,9 +49,12 @@ type char struct {
 
 func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character) info.CharInstance {
 	c := &char{
-		engine: engine,
-		id:     id,
-		info:   charInfo,
+		engine:      engine,
+		id:          id,
+		info:        charInfo,
+		attackLevel: 0,
+		E6Count:     0,
+		point:       0,
 	}
 	engine.Events().ActionEnd.Subscribe(c.E6ActionEndListener)
 	c.initSkill()
