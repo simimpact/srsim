@@ -14,9 +14,6 @@ const (
 
 var ultHits = []float64{0.3, 0.3, 0.4}
 
-func init() {
-}
-
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	for i, hitRatio := range ultHits {
 		c.engine.Attack(info.Attack{
