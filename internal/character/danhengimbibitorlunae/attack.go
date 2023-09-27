@@ -54,20 +54,18 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 	case 2:
 		c.EnhancedAttack2(target, state)
 	case 3:
-		{
-			// add e6 buff
-			if c.info.Eidolon >= 6 {
-				c.engine.AddModifier(c.id, info.Modifier{
-					Name:   E6Effect,
-					Source: c.id,
-					Stats:  info.PropMap{prop.ImaginaryPEN: float64(c.E6Count) * 0.2},
-				})
-			}
-			c.EnhancedAttack3(target, state)
-			// reset count,remove e6
-			c.engine.RemoveModifier(c.id, E6Effect)
-			c.E6Count = 0
+		// add e6 buff
+		if c.info.Eidolon >= 6 {
+			c.engine.AddModifier(c.id, info.Modifier{
+				Name:   E6Effect,
+				Source: c.id,
+				Stats:  info.PropMap{prop.ImaginaryPEN: float64(c.E6Count) * 0.2},
+			})
 		}
+		c.EnhancedAttack3(target, state)
+		// reset count,remove e6
+		c.engine.RemoveModifier(c.id, E6Effect)
+		c.E6Count = 0
 	}
 	c.attackLevel = 0
 	state.EndAttack()
