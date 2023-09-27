@@ -28,7 +28,6 @@ func init() {
 		CountAddWhenStack: 1,
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: E6BeforeHit,
-			OnAfterAttack:  RemoveE6,
 		},
 		CanModifySnapshot: true,
 	})
@@ -38,12 +37,6 @@ func E6BeforeHit(mod *modifier.Instance, e event.HitStart) {
 	temp, _ := mod.Engine().CharacterInstance(mod.Source())
 	if temp.(*char).attackLevel == 3 {
 		e.Hit.Attacker.AddProperty(E6, prop.ImaginaryPEN, 0.2*mod.Count())
-	}
-}
-func RemoveE6(mod *modifier.Instance, e event.AttackEnd) {
-	temp, _ := mod.Engine().CharacterInstance(mod.Source())
-	if temp.(*char).attackLevel == 3 {
-		mod.RemoveSelf()
 	}
 }
 
