@@ -41,7 +41,10 @@ func E6BeforeHit(mod *modifier.Instance, e event.HitStart) {
 	}
 }
 func RemoveE6(mod *modifier.Instance, e event.AttackEnd) {
-	mod.RemoveSelf()
+	temp, _ := mod.Engine().CharacterInstance(mod.Source())
+	if temp.(*char).attackLevel == 3 {
+		mod.RemoveSelf()
+	}
 }
 
 // count ally ult
