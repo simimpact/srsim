@@ -61,7 +61,7 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 			c.engine.AddModifier(c.id, info.Modifier{
 				Name:   E6Effect,
 				Source: c.id,
-				Stats:  info.PropMap{prop.ImaginaryPEN: float64(c.E6Count) * 20.0},
+				Stats:  info.PropMap{prop.ImaginaryPEN: float64(c.E6Count) * 0.2},
 			})
 		}
 		c.EnhancedAttack3(target, state)
