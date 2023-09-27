@@ -42,6 +42,9 @@ func E6BeforeHit(mod *modifier.Instance, e event.HitStart) {
 // count ally ult
 func (c *char) E6ActionEndListener(e event.ActionEnd) {
 	if e.AttackType == model.AttackType_ULT && e.Owner != c.id && c.info.Eidolon >= 6 {
-		c.engine.AddModifier(c.id, info.Modifier{})
+		c.engine.AddModifier(c.id, info.Modifier{
+			Name:   E6Effect,
+			Source: c.id,
+		})
 	}
 }
