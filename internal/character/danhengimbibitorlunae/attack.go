@@ -48,26 +48,26 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 			Amount: -pointUse,
 		})
 	}
-
-	if c.attackLevel == 1 {
+	switch c.attackLevel {
+	case 1:
 		c.EnhancedAttack1(target, state)
-	}
-	if c.attackLevel == 2 {
+	case 2:
 		c.EnhancedAttack2(target, state)
-	}
-	if c.attackLevel == 3 {
-		// add e6 buff
-		if c.info.Eidolon >= 6 {
-			c.engine.AddModifier(c.id, info.Modifier{
-				Name:   E6Effect,
-				Source: c.id,
-				Stats:  info.PropMap{prop.ImaginaryPEN: float64(c.E6Count) * 0.2},
-			})
+	case 3:
+		{
+			// add e6 buff
+			if c.info.Eidolon >= 6 {
+				c.engine.AddModifier(c.id, info.Modifier{
+					Name:   E6Effect,
+					Source: c.id,
+					Stats:  info.PropMap{prop.ImaginaryPEN: float64(c.E6Count) * 0.2},
+				})
+			}
+			c.EnhancedAttack3(target, state)
+			// reset count,remove e6
+			c.engine.RemoveModifier(c.id, E6Effect)
+			c.E6Count = 0
 		}
-		c.EnhancedAttack3(target, state)
-		// reset count,remove e6
-		c.engine.RemoveModifier(c.id, E6Effect)
-		c.E6Count = 0
 	}
 	c.attackLevel = 0
 	state.EndAttack()
@@ -123,17 +123,19 @@ func (c *char) EnhancedAttack2(target key.TargetID, state info.ActionState) {
 			EnergyGain:   35,
 			HitRatio:     hitRatio,
 		})
-		c.engine.Attack(info.Attack{
-			Key:          Attack2Adjacent,
-			HitIndex:     i,
-			Source:       c.id,
-			Targets:      c.engine.AdjacentTo(target),
-			DamageType:   model.DamageType_IMAGINARY,
-			AttackType:   model.AttackType_NORMAL,
-			BaseDamage:   info.DamageMap{model.DamageFormula_BY_ATK: enhancedAtk2[c.info.AttackLevelIndex()] * 3 / 19},
-			StanceDamage: 30,
-			HitRatio:     adjacentHitsEnhanced2[i],
-		})
+		if adjacentHitsEnhanced2[i] > 0 {
+			c.engine.Attack(info.Attack{
+				Key:          Attack2Adjacent,
+				HitIndex:     i,
+				Source:       c.id,
+				Targets:      c.engine.AdjacentTo(target),
+				DamageType:   model.DamageType_IMAGINARY,
+				AttackType:   model.AttackType_NORMAL,
+				BaseDamage:   info.DamageMap{model.DamageFormula_BY_ATK: enhancedAtk2[c.info.AttackLevelIndex()] * 3 / 19},
+				StanceDamage: 30,
+				HitRatio:     adjacentHitsEnhanced2[i],
+			})
+		}
 		c.AddTalent()
 	}
 }
@@ -154,17 +156,19 @@ func (c *char) EnhancedAttack3(target key.TargetID, state info.ActionState) {
 			EnergyGain:   40,
 			HitRatio:     hitRatio,
 		})
-		c.engine.Attack(info.Attack{
-			Key:          Attack3Adjacent,
-			HitIndex:     i,
-			Source:       c.id,
-			Targets:      c.engine.AdjacentTo(target),
-			DamageType:   model.DamageType_IMAGINARY,
-			AttackType:   model.AttackType_NORMAL,
-			BaseDamage:   info.DamageMap{model.DamageFormula_BY_ATK: enhancedAtk3[c.info.AttackLevelIndex()] * 9 / 25},
-			StanceDamage: 60,
-			HitRatio:     adjacentHitsEnhanced3[i],
-		})
+		if adjacentHitsEnhanced3[i] > 0 {
+			c.engine.Attack(info.Attack{
+				Key:          Attack3Adjacent,
+				HitIndex:     i,
+				Source:       c.id,
+				Targets:      c.engine.AdjacentTo(target),
+				DamageType:   model.DamageType_IMAGINARY,
+				AttackType:   model.AttackType_NORMAL,
+				BaseDamage:   info.DamageMap{model.DamageFormula_BY_ATK: enhancedAtk3[c.info.AttackLevelIndex()] * 9 / 25},
+				StanceDamage: 60,
+				HitRatio:     adjacentHitsEnhanced3[i],
+			})
+		}
 		c.AddTalent()
 	}
 }
