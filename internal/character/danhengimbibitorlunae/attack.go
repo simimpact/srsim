@@ -53,11 +53,7 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 	case 2:
 		c.EnhancedAttack2(target, state)
 	case 3:
-		{
-			c.EnhancedAttack3(target, state)
-			// reset e6
-			c.engine.RemoveModifier(c.id, E6Effect)
-		}
+		c.EnhancedAttack3(target, state)
 	}
 	c.attackLevel = 0
 	state.EndAttack()

@@ -23,10 +23,12 @@ func init() {
 	// imaginary pen for attack3,change by ally ult count
 	modifier.Register(E6Effect, modifier.Config{
 		StatusType:        model.StatusType_STATUS_BUFF,
+		Stacking:          modifier.ReplaceBySource,
 		MaxCount:          3,
 		CountAddWhenStack: 1,
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: E6BeforeHit,
+			OnAfterAttack:  RemoveE6,
 		},
 		CanModifySnapshot: true,
 	})
@@ -37,6 +39,9 @@ func E6BeforeHit(mod *modifier.Instance, e event.HitStart) {
 	if temp.(*char).attackLevel == 3 {
 		e.Hit.Attacker.AddProperty(E6, prop.ImaginaryPEN, 0.2*mod.Count())
 	}
+}
+func RemoveE6(mod *modifier.Instance, e event.AttackEnd) {
+	mod.RemoveSelf()
 }
 
 // count ally ult
