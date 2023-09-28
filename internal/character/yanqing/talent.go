@@ -41,6 +41,9 @@ func (c *char) addTalent() {
 	if c.info.Traces["102"] {
 		temp.DebuffRES = info.DebuffRESMap{model.BehaviorFlag_STAT_CTRL: 0.2}
 	}
+	if c.info.Eidolon >= 2 {
+		temp.Stats.Set(prop.EnergyRegen, 0.1)
+	}
 	c.engine.AddModifier(c.id, temp)
 }
 

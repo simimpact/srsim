@@ -28,6 +28,10 @@ func (c *char) initTraces() {
 		Stacking:   modifier.Refresh,
 		Duration:   2,
 	})
+	c.engine.AddModifier(c.id, info.Modifier{
+		Name:   Traces,
+		Source: c.id,
+	})
 }
 func A2Listener(mod *modifier.Instance, e event.AttackEnd) {
 	if mod.Engine().Stats(e.Targets[0]).IsWeakTo(model.DamageType_ICE) {
