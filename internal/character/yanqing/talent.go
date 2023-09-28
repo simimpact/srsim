@@ -30,14 +30,18 @@ func init() {
 }
 
 func (c *char) addTalent() {
-	c.engine.AddModifier(c.id, info.Modifier{
+	temp := info.Modifier{
 		Name:   Soulsteel,
 		Source: c.id,
 		Stats: info.PropMap{
 			prop.CritChance: talentCritRate[c.info.TalentLevelIndex()],
 			prop.CritDMG:    talentCritDmg[c.info.TalentLevelIndex()],
 		},
-	})
+	}
+	if c.info.Traces["102"] {
+		temp.DebuffRES = info.DebuffRESMap{model.BehaviorFlag_STAT_CTRL: 0.2}
+	}
+	c.engine.AddModifier(c.id, temp)
 }
 
 func (c *char) tryFollow(target key.TargetID) {
