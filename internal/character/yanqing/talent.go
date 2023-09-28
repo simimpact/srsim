@@ -48,7 +48,7 @@ func (c *char) tryFollow(target key.TargetID) {
 					Source:       c.id,
 					Targets:      []key.TargetID{target},
 					DamageType:   model.DamageType_ICE,
-					AttackType:   model.AttackType_NORMAL,
+					AttackType:   model.AttackType_INSERT,
 					BaseDamage:   info.DamageMap{model.DamageFormula_BY_ATK: talentFollowRate[c.info.TalentLevelIndex()]},
 					StanceDamage: 30,
 					EnergyGain:   10,
