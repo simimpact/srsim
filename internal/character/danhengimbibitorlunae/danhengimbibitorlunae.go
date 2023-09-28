@@ -43,7 +43,6 @@ type char struct {
 	id          key.TargetID
 	info        info.Character
 	attackLevel int
-	E6Count     int
 	point       int
 }
 
@@ -53,7 +52,6 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 		id:          id,
 		info:        charInfo,
 		attackLevel: 0,
-		E6Count:     0,
 		point:       0,
 	}
 	engine.Events().ActionEnd.Subscribe(c.E6ActionEndListener)
