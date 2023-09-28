@@ -25,11 +25,15 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnHPChange:     talentOnHit,
 			OnBeforeAction: talentOnUlt,
+			OnTriggerDeath: E6Listener,
 		},
 	})
 }
 
 func (c *char) addTalent() {
+	if c.engine.HasModifier(c.id, Soulsteel) {
+		return
+	}
 	temp := info.Modifier{
 		Name:   Soulsteel,
 		Source: c.id,

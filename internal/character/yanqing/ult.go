@@ -16,16 +16,22 @@ const (
 func init() {
 	modifier.Register(UltEffect, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
+		Stacking:   modifier.Replace,
 		Duration:   1,
+		Listeners: modifier.Listeners{
+			OnTriggerDeath: E6Listener,
+		},
 	})
 }
 
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
-	c.engine.AddModifier(c.id, info.Modifier{
-		Name:   UltEffect,
-		Source: c.id,
-		Stats:  info.PropMap{prop.CritChance: 0.6},
-	})
+	if !c.engine.HasModifier(c.id, UltEffect) {
+		c.engine.AddModifier(c.id, info.Modifier{
+			Name:   UltEffect,
+			Source: c.id,
+			Stats:  info.PropMap{prop.CritChance: 0.6},
+		})
+	}
 	c.engine.Attack(info.Attack{
 		Key:          Ult,
 		Source:       c.id,

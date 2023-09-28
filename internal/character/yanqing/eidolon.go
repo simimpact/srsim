@@ -54,3 +54,9 @@ func E4Listener(mod *modifier.Instance, e event.HPChange) {
 		mod.Engine().RemoveModifier(mod.Owner(), E4)
 	}
 }
+func E6Listener(mod *modifier.Instance, target key.TargetID) {
+	cinfo, _ := mod.Engine().CharacterInfo(mod.Owner())
+	if cinfo.Eidolon >= 6 {
+		mod.Engine().AddModifier(mod.Owner(), mod.ToModel())
+	}
+}
