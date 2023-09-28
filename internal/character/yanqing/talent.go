@@ -20,10 +20,11 @@ const (
 func init() {
 	modifier.Register(Soulsteel, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
-		Stacking:   modifier.Refresh,
+		Stacking:   modifier.Replace,
 		Duration:   1,
 		Listeners: modifier.Listeners{
-			OnHPChange: talentOnHit,
+			OnHPChange:     talentOnHit,
+			OnBeforeAction: talentOnUlt,
 		},
 	})
 }
@@ -75,5 +76,12 @@ func (c *char) tryFollow(target key.TargetID) {
 func talentOnHit(mod *modifier.Instance, e event.HPChange) {
 	if e.IsHPChangeByDamage && e.NewHP < e.OldHP {
 		mod.RemoveSelf()
+	}
+}
+
+func talentOnUlt(mod *modifier.Instance, e event.ActionStart) {
+	cinfo, _ := mod.Engine().CharacterInfo(mod.Owner())
+	if e.AttackType == model.AttackType_ULT {
+		mod.AddProperty(prop.CritDMG, ultCritDmg[cinfo.UltLevelIndex()])
 	}
 }
