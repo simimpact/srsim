@@ -6,6 +6,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/character/bronya"
 	_ "github.com/simimpact/srsim/internal/character/clara"
 	_ "github.com/simimpact/srsim/internal/character/danheng"
+	_ "github.com/simimpact/srsim/internal/character/danhengimbibitorlunae"
 	_ "github.com/simimpact/srsim/internal/character/dummy"
 	_ "github.com/simimpact/srsim/internal/character/gepard"
 	_ "github.com/simimpact/srsim/internal/character/march7th"
