@@ -16,7 +16,7 @@ const BaseGauge float64 = 10000.0
 type Manager interface {
 	TotalAV() float64
 	AddTargets(ids ...key.TargetID)
-	RemoveTarget(id key.TargetID)
+	RemoveTarget(id key.TargetID) error
 	StartTurn() (key.TargetID, float64, []event.TurnStatus, error)
 	ResetTurn() error
 	TurnOrder() []key.TargetID
@@ -154,13 +154,14 @@ func (mgr *manager) AddTargets(ids ...key.TargetID) {
 }
 
 // RemoveTarget removes a target from the Manager's turnOrder.
-func (mgr *manager) RemoveTarget(id key.TargetID) {
+func (mgr *manager) RemoveTarget(id key.TargetID) error {
 	idx, err := mgr.orderHandler.FindTargetIndex(id)
 	if err != nil {
-		return
+		return err
 	}
 
 	mgr.orderHandler.turnOrder = append(mgr.orderHandler.turnOrder[:idx], mgr.orderHandler.turnOrder[idx+1:]...)
+	return nil
 }
 
 // StartTurn processes changes to target's gauges on the start of a new turn.

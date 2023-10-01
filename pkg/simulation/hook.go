@@ -22,6 +22,7 @@ func (sim *Simulation) onDeath(e event.TargetDeath) {
 	}
 
 	// remove this target from the turn order
+	// TODO: consider whether to handle any error output from RemoveTarget.
 	sim.Turn.RemoveTarget(e.Target)
 }
 
