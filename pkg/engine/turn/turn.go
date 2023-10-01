@@ -42,6 +42,21 @@ func (a *turnOrderHandler) Swap(i, j int) {
 	a.turnOrder[i], a.turnOrder[j] = a.turnOrder[j], a.turnOrder[i]
 }
 func (a *turnOrderHandler) Less(i, j int) bool { return a.av(i) < a.av(j) }
+func (a *turnOrderHandler) FindTargetIndex(id key.TargetID) (int, error) {
+	idx := -1
+	for i, t := range a.turnOrder {
+		if t.id == id {
+			idx = i
+			break
+		}
+	}
+	
+	if idx == -1 {
+		return idx, fmt.Errorf("cannot find index in turnOrder: %v", id)
+	} else {
+		return idx, nil
+	}
+}
 
 type manager struct {
 	event        *event.System
@@ -140,12 +155,9 @@ func (mgr *manager) AddTargets(ids ...key.TargetID) {
 
 // RemoveTarget removes a target from the Manager's turnOrder.
 func (mgr *manager) RemoveTarget(id key.TargetID) {
-	idx := 0
-	for i, t := range mgr.orderHandler.turnOrder {
-		if t.id == id {
-			idx = i
-			break
-		}
+	idx, err := mgr.orderHandler.FindTargetIndex(id)
+	if err != nil {
+		return
 	}
 
 	mgr.orderHandler.turnOrder = append(mgr.orderHandler.turnOrder[:idx], mgr.orderHandler.turnOrder[idx+1:]...)

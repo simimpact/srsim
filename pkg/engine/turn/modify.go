@@ -4,7 +4,6 @@ import (
 	"sort"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
-	"github.com/simimpact/srsim/pkg/key"
 )
 
 // SetGauge sets the gauge of the target as detailed in the input ModifyAttribute struct.
@@ -17,36 +16,30 @@ import (
 func (mgr *manager) SetGauge(data info.ModifyAttribute) error {
 
 	previousGauge := mgr.target(data.Target).gauge
-	mgr.target(data.Target).gauge = data.Amount
 
 	// if there's no change to Gauge, exit early
-	if mgr.target(data.Target).gauge == previousGauge {
+	if previousGauge == data.Amount {
 		return nil
 	}
 
+	mgr.target(data.Target).gauge = data.Amount
+
 	// find target index in mgr.orderHandler.turnOrder
-	targetIndex := 0
-	for i, v := range mgr.orderHandler.turnOrder {
-		if data.Target == v.id {
-			targetIndex = i
-			break
-		}
+	targetIndex, err := mgr.orderHandler.FindTargetIndex(data.Target)
+	if err != nil {
+		return err
 	}
 
 	// targetIndex == 0 indicates its already at the start of turnOrder, so no change needs to be made.
 	// if there is an activeTurn, set our target to index 1; otherwise set to index 0.
+
 	if targetIndex == 0 {
-	} else if !mgr.activeTurn {
-		if targetIndex + 1 < mgr.orderHandler.Len() {
-			mgr.orderHandler.turnOrder = append([]*target{mgr.target(data.Target)}, append(mgr.orderHandler.turnOrder[:targetIndex], mgr.orderHandler.turnOrder[targetIndex+1:]...)...)
-		} else {
-			mgr.orderHandler.turnOrder = append([]*target{mgr.target(data.Target)}, mgr.orderHandler.turnOrder[:targetIndex]...)
-		}
 	} else {
-		if targetIndex + 1 < mgr.orderHandler.Len() {
-			mgr.orderHandler.turnOrder = append([]*target{mgr.orderHandler.turnOrder[0]}, append([]*target{mgr.target(data.Target)}, append(mgr.orderHandler.turnOrder[1:targetIndex], mgr.orderHandler.turnOrder[targetIndex+1:]...)...)...)
-		} else {
-			mgr.orderHandler.turnOrder = append([]*target{mgr.orderHandler.turnOrder[0]}, append([]*target{mgr.target(data.Target)}, mgr.orderHandler.turnOrder[1:targetIndex]...)...)
+		mgr.orderHandler.turnOrder = append([]*target{mgr.target(data.Target)}, append(mgr.orderHandler.turnOrder[:targetIndex], mgr.orderHandler.turnOrder[targetIndex+1:]...)...)
+		if mgr.activeTarget != data.Target {
+			switchValue := mgr.orderHandler.turnOrder[0]
+			mgr.orderHandler.turnOrder[0] = mgr.orderHandler.turnOrder[1]
+			mgr.orderHandler.turnOrder[1] = switchValue
 		}
 	}
 
