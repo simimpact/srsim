@@ -62,7 +62,7 @@ func onAfterBeingAttacked(mod *modifier.Instance, e event.AttackEnd) {
 	mod.Engine().AddModifier(e.Attacker, info.Modifier{
 		Name:   common.Burn,
 		Source: mod.Owner(),
-		State: common.BurnState{
+		State: &common.BurnState{
 			DEFDamagePercentage: state.dotDmg,
 			DamagePercentage:    0,
 			DamageValue:         0,

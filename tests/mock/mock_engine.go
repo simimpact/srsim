@@ -478,6 +478,20 @@ func (mr *MockEngineMockRecorder) MaxEnergy(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MaxEnergy", reflect.TypeOf((*MockEngine)(nil).MaxEnergy), arg0)
 }
 
+// MaxStance mocks base method.
+func (m *MockEngine) MaxStance(arg0 key.TargetID) float64 {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MaxStance", arg0)
+	ret0, _ := ret[0].(float64)
+	return ret0
+}
+
+// MaxStance indicates an expected call of MaxStance.
+func (mr *MockEngineMockRecorder) MaxStance(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MaxStance", reflect.TypeOf((*MockEngine)(nil).MaxStance), arg0)
+}
+
 // ModifierStackCount mocks base method.
 func (m *MockEngine) ModifierStackCount(arg0, arg1 key.TargetID, arg2 key.Modifier) float64 {
 	m.ctrl.T.Helper()

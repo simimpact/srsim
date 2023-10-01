@@ -1,0 +1,42 @@
+syntax = "proto3";
+package model;
+option go_package = "github.com/simimpact/srsim/pkg/model";
+import "pb/model/enum.proto";
+
+message Character {
+  string key = 1;
+  uint32 level = 2;
+  uint32 max_level = 3;
+  uint32 eidols = 4;
+  repeated string traces = 5;
+  Abilities abilities = 6;
+  LightCone light_cone = 7;
+  repeated Relic relics = 8; // TODO: oneof for alternative options
+  double start_energy = 9;
+  double start_hp = 10;
+}
+
+message Abilities {
+  uint32 attack = 1;
+  uint32 skill = 2;
+  uint32 ult = 3;
+  uint32 talent = 4;
+}
+
+message LightCone {
+  string key = 1;
+  uint32 level = 2;
+  uint32 max_level = 3;
+  uint32 imposition = 4;
+}
+
+message Relic {
+  string key = 1;
+  RelicStat main_stat = 2;
+  repeated RelicStat sub_stats = 3;
+}
+
+message RelicStat {
+  Property stat = 1;
+  double amount = 2;
+}

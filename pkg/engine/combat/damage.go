@@ -20,7 +20,7 @@ func baseDamage(h *info.Hit) float64 {
 		case model.DamageFormula_BY_MAX_HP:
 			damage += v * h.Attacker.MaxHP()
 		case model.DamageFormula_BY_BREAK_DAMAGE:
-			damage += v * breakBaseDamage[h.Attacker.Level()]
+			damage += v * BreakBaseDamage[h.Attacker.Level()]
 		}
 	}
 	return damage
