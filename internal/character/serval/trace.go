@@ -30,7 +30,7 @@ func init() {
 	modifier.Register(A2, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeAction: beforeActionA2,
-			OnAfterAction:  removeEHRSkillA2,
+			OnAfterAction:  afterActionA2,
 		},
 		CanModifySnapshot: true,
 	})
@@ -71,7 +71,7 @@ func beforeActionA2(mod *modifier.Instance, e event.ActionStart) {
 		})
 	}
 }
-func removeEHRSkillA2(mod *modifier.Instance, e event.ActionEnd) {
+func afterActionA2(mod *modifier.Instance, e event.ActionEnd) {
 	mod.Engine().RemoveModifier(mod.Owner(), A2)
 }
 
