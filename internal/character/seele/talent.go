@@ -29,7 +29,7 @@ func init() {
 func (c *char) initTalent() {
 	// if seele kills in her turn, set extra turn trigger and add buffedState mod.
 	c.engine.Events().TargetDeath.Subscribe(func(e event.TargetDeath) {
-		if e.Killer == c.id && c.id == c.actionOwner {
+		if e.Killer == c.id && c.id == c.actionOwner && !c.isInsertTurn {
 			c.shouldInsert = true
 			c.enterBuffedState()
 		}
@@ -37,8 +37,13 @@ func (c *char) initTalent() {
 
 	// actionStart subs to enable adding buffedState mod effectively after-kill
 	c.engine.Events().ActionStart.Subscribe(func(e event.ActionStart) {
-		if !e.IsInsert {
-			c.actionOwner = e.Owner
+		if c.id == e.Owner {
+			if e.IsInsert {
+				c.isInsertTurn = true
+			} else {
+				c.actionOwner = e.Owner
+				c.isInsertTurn = false
+			}
 		}
 	})
 

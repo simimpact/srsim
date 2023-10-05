@@ -43,6 +43,7 @@ type char struct {
 	info         info.Character
 	shouldInsert bool
 	actionOwner  key.TargetID
+	isInsertTurn bool
 }
 
 func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character) info.CharInstance {
@@ -52,6 +53,7 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 		info:         charInfo,
 		shouldInsert: false,
 		actionOwner:  1,
+		isInsertTurn: false,
 	}
 
 	c.initTalent()
