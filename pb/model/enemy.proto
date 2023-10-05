@@ -1,0 +1,48 @@
+syntax = "proto3";
+package model;
+option go_package = "github.com/simimpact/srsim/pkg/model";
+
+import "google/protobuf/struct.proto";
+import "pb/model/enum.proto";
+
+message Enemy {
+  string key = 1;
+  uint32 level = 2;
+  repeated DamageType weaknesses = 3;
+  repeated DebuffRES debuff_res = 4;
+  repeated DamageRES damage_res = 5;
+  EnemyRank rank = 6;
+  BaseStats base_stats = 7;
+
+  google.protobuf.Struct parameters = 10;
+}
+
+message DebuffRES {
+  BehaviorFlag flag = 1;
+  double amount = 2;
+}
+
+message DamageRES {
+  DamageType type = 1;
+  double amount = 2;
+}
+
+message BaseStats {
+  double atk = 1;
+  double def = 2;
+  double hp = 3;
+  double spd = 4;
+  double stance = 5;
+  double crit_chance = 6;
+  double crit_dmg = 7;
+  double effect_res = 8;
+  double min_fatigue = 9;
+}
+
+enum EnemyRank {
+  RANK_INVALID = 0;
+  MINION = 1;
+  ELITE = 2;
+  LITTLE_BOSS = 3;
+  BIG_BOSS = 4;
+}
