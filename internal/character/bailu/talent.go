@@ -44,7 +44,7 @@ func init() {
 }
 
 func (c *char) initTalent() {
-	// team revive logic
+	// talent revive logics.
 	reviveCountLeft := 1
 	// E6 : Bailu can heal allies who received a killing blow 1 more time(s)
 	//      in a single battle.
@@ -55,13 +55,18 @@ func (c *char) initTalent() {
 	revFlat := reviveFlat[c.info.TalentLevelIndex()]
 
 	c.engine.Events().LimboWaitHeal.Subscribe(func(e event.LimboWaitHeal) bool {
-		// exit if limbo is cancelled or revive count is empty
-		if e.IsCancelled || reviveCountLeft <= 0 {
+		if e.IsCancelled || reviveCountLeft <= 0 || c.engine.IsEnemy(e.Target) {
 			return false
 		}
-		// heal up(revive) from limbo.
-		c.addHeal(revive, revPercent, revFlat, []key.TargetID{e.Target})
+		// dispel and heal logics :
 		reviveCountLeft--
+		// all debuffs dispel.
+		c.engine.DispelStatus(e.Target, info.Dispel{
+			Status: model.StatusType_STATUS_DEBUFF,
+			Order:  model.DispelOrder_FIRST_ADDED,
+		})
+		// "revive" heal
+		c.addHeal(revive, revPercent, revFlat, []key.TargetID{e.Target})
 		return true
 	}, 1)
 }
