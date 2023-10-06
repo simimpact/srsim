@@ -46,23 +46,28 @@ func init() {
 func (c *char) initTalent() {
 	// team revive logic
 	reviveCountLeft := 1
-	// E6 : Bailu can heal allies who received a killing blow 1 more time(s) in a single battle.
+	// E6 : Bailu can heal allies who received a killing blow 1 more time(s)
+	//      in a single battle.
 	if c.info.Eidolon >= 6 {
 		reviveCountLeft = 2
 	}
 	revPercent := revivePercent[c.info.TalentLevelIndex()]
 	revFlat := reviveFlat[c.info.TalentLevelIndex()]
+
 	c.engine.Events().LimboWaitHeal.Subscribe(func(e event.LimboWaitHeal) bool {
+		// exit if limbo is cancelled or revive count is empty
 		if e.IsCancelled || reviveCountLeft <= 0 {
 			return false
 		}
+		// heal up(revive) from limbo.
 		c.addHeal(revive, revPercent, revFlat, []key.TargetID{e.Target})
 		reviveCountLeft--
 		return true
 	}, 1)
 }
 
-// used to set dynamic local (per-character) value for invigoration heal trigger count.
+// used to set dynamic local (per-character) value for invigoration heal
+// trigger count.
 func addInvigLocal(mod *modifier.Instance) {
 	state := mod.State().(invigStruct)
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
@@ -87,13 +92,14 @@ func healOnBeingHit(mod *modifier.Instance, e event.HitEnd) {
 	state.healsLeft--
 }
 
-// E1 : If the target ally's current HP is equal to their Max HP when Invigoration ends,
-// regenerates 8 extra Energy for this target.
 func energyOnInvigExpire(mod *modifier.Instance) {
+	// E1 : If the target ally's current HP is equal to their Max HP when
+	// Invigoration ends, regenerates 8 extra Energy for this target.
 	charInfo, _ := mod.Engine().CharacterInfo(mod.Owner())
 	if charInfo.Eidolon < 1 {
 		return
 	}
+
 	if mod.Engine().HPRatio(mod.Owner()) == 1.0 {
 		mod.Engine().ModifyEnergy(info.ModifyAttribute{
 			Key:    invigoration,

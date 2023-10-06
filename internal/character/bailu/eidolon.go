@@ -24,8 +24,8 @@ func init() {
 }
 
 func (c *char) initEidolons() {
-	// E4 : Every healing provided by the Skill makes the recipient deal 10% more DMG for 2 turn(s).
-	// This effect can stack up to 3 time(s).
+	// E4 : Every healing provided by the Skill makes the recipient deal
+	// 10% more DMG for 2 turn(s). This effect can stack up to 3 time(s).
 	c.engine.Events().HealEnd.Subscribe(func(e event.HealEnd) {
 		if c.info.Eidolon < 4 {
 			return
