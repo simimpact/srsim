@@ -72,12 +72,15 @@
     "eslint-plugin-workspaces": "^0.8.0",
     "framer-motion": "^10.12.16",
     "husky": "^8.0.0",
+    "jotai": "^2.4.2",
+    "jotai-optics": "^0.3.1",
     "json-schema-to-typescript": "^13.0.2",
     "lerna": "^6.6.1",
     "lint-staged": "^13.2.2",
     "lucide-react": "^0.244.0",
     "madge": "^6.0.0",
     "npm-run-all": "^4.1.5",
+    "optics-ts": "^2.4.1",
     "postcss": "^8.4.23",
     "prettier": "^3.0.0",
     "prettier-plugin-tailwindcss": "^0.4.1",
@@ -95,5 +98,9 @@
     "*.+(ts|tsx)": [
       "yarn lint"
     ]
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "jotai-devtools": "^0.6.2"
   }
 }
