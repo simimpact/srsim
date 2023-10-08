@@ -24,6 +24,24 @@ func init() {
 }
 
 func (c *char) initEidolons() {
+	// E1 : If the target ally's current HP is equal to their Max HP when
+	// 			Invigoration ends, regenerates 8 extra Energy for this target.
+	c.engine.Events().ModifierRemoved.Subscribe(func(e event.ModifierRemoved) {
+		// negative checks
+		if e.Modifier.Name != invigoration ||
+			c.info.Eidolon < 1 ||
+			c.engine.HPRatio(e.Target) != 1.0 {
+			return
+		}
+		// add flat energy
+		c.engine.ModifyEnergy(info.ModifyAttribute{
+			Key:    invigoration,
+			Target: e.Target,
+			Source: c.id,
+			Amount: 8.0,
+		})
+	})
+
 	// E4 : Every healing provided by the Skill makes the recipient deal
 	// 10% more DMG for 2 turn(s). This effect can stack up to 3 time(s).
 	c.engine.Events().HealEnd.Subscribe(func(e event.HealEnd) {

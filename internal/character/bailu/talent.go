@@ -69,24 +69,6 @@ func (c *char) initTalent() {
 			}
 		}
 	}))
-
-	// E1 : If the target ally's current HP is equal to their Max HP when
-	// 			Invigoration ends, regenerates 8 extra Energy for this target.
-	c.engine.Events().ModifierRemoved.Subscribe(func(e event.ModifierRemoved) {
-		// negative checks
-		if e.Modifier.Name != invigoration ||
-			c.info.Eidolon < 1 ||
-			c.engine.HPRatio(e.Target) != 1.0 {
-			return
-		}
-		// add flat energy
-		c.engine.ModifyEnergy(info.ModifyAttribute{
-			Key:    invigoration,
-			Target: e.Target,
-			Source: c.id,
-			Amount: 8.0,
-		})
-	})
 }
 
 // heals on being hit w/ heal limit. attached to invigoration modifier
