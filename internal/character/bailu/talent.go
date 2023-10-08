@@ -66,16 +66,15 @@ func (c *char) initTalent() {
 		c.addHeal(revive, revPercent, revFlat, []key.TargetID{e.Target})
 		return true
 	}, 1)
-}
 
-// used to track per-character invigoration heals trigger count
-func addinvigoration(mod *modifier.Instance) {
-	state := mod.State().(invigStruct)
-	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-		Name:   invigoration,
-		Source: mod.Source(),
-		State:  &state,
-	})
+	// bailu death : remove all active invigoration modifiers
+	c.engine.Events().TargetDeath.Subscribe((func(e event.TargetDeath) {
+		if e.Target == c.id {
+			for _, char := range c.engine.Characters() {
+				c.engine.RemoveModifier(char, invigoration)
+			}
+		}
+	}))
 }
 
 func healOnBeingHit(mod *modifier.Instance, e event.HitEnd) {
@@ -93,6 +92,7 @@ func healOnBeingHit(mod *modifier.Instance, e event.HitEnd) {
 	state.healsLeft--
 }
 
+// TODO : change this logic to an event subscriber.
 func energyOnRemove(mod *modifier.Instance) {
 	// E1 : If the target ally's current HP is equal to their Max HP when
 	// Invigoration ends, regenerates 8 extra Energy for this target.
