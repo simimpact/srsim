@@ -11,7 +11,6 @@ import (
 
 const (
 	invigoration = "invigoration"
-	invigLocal   = "invigoration-local"
 	revive       = "bailu-revive"
 )
 
@@ -27,18 +26,16 @@ type invigStruct struct {
 // This effect can be triggered 1 time per battle
 
 func init() {
+	// TODO :
+	// replace old invigoration that's attached to bailu with event subscribers.
+	// 1. make sure all c.addInvigoration applies invig to all team members.
+	// 2. make sure to add onDeath subs to bailu to remove all active invigorations
+	//    on team members.
 	modifier.Register(invigoration, modifier.Config{
-		Stacking: modifier.Prolong,
-		Listeners: modifier.Listeners{
-			OnAdd:    addInvigLocal,
-			OnRemove: energyOnInvigExpire,
-		},
-	})
-	modifier.Register(invigLocal, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAfterBeingHitAll: healOnBeingHit,
 		},
-		Stacking:          modifier.Replace,
+		Stacking:          modifier.Prolong,
 		CanModifySnapshot: true,
 	})
 }
@@ -71,12 +68,11 @@ func (c *char) initTalent() {
 	}, 1)
 }
 
-// used to set dynamic local (per-character) value for invigoration heal
-// trigger count.
-func addInvigLocal(mod *modifier.Instance) {
+// used to track per-character invigoration heals trigger count
+func addinvigoration(mod *modifier.Instance) {
 	state := mod.State().(invigStruct)
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-		Name:   invigLocal,
+		Name:   invigoration,
 		Source: mod.Source(),
 		State:  &state,
 	})
@@ -97,7 +93,7 @@ func healOnBeingHit(mod *modifier.Instance, e event.HitEnd) {
 	state.healsLeft--
 }
 
-func energyOnInvigExpire(mod *modifier.Instance) {
+func energyOnRemove(mod *modifier.Instance) {
 	// E1 : If the target ally's current HP is equal to their Max HP when
 	// Invigoration ends, regenerates 8 extra Energy for this target.
 	charInfo, _ := mod.Engine().CharacterInfo(mod.Owner())
@@ -115,6 +111,7 @@ func energyOnInvigExpire(mod *modifier.Instance) {
 	}
 }
 
+// adds invigoration re-heal with independent heal counters to chars.
 func (c *char) addInvigoration(target key.TargetID, duration int) {
 	// A4 : Invigoration can trigger 1 more time(s).
 	healsLeft := 2
@@ -128,6 +125,7 @@ func (c *char) addInvigoration(target key.TargetID, duration int) {
 	}
 
 	c.engine.AddModifier(target, info.Modifier{
+		// added mod is the target version(not one that's attached to bailu)
 		Name:     invigoration,
 		Source:   c.id,
 		Duration: duration,

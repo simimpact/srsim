@@ -39,7 +39,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	for _, char := range c.engine.Characters() {
 		duration := 2
 		if c.engine.HasModifier(char, invigoration) {
-			duration = 1
+			duration = 1 // prolong duration
 		}
 		c.addInvigoration(char, duration)
 	}
