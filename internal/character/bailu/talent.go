@@ -45,12 +45,11 @@ func (c *char) initTalent() {
 	}
 	revPercent := revivePercent[c.info.TalentLevelIndex()]
 	revFlat := reviveFlat[c.info.TalentLevelIndex()]
-
+	// revive only if revive is available and dying target is a character.
 	c.engine.Events().LimboWaitHeal.Subscribe(func(e event.LimboWaitHeal) bool {
 		if e.IsCancelled || reviveCountLeft <= 0 || c.engine.IsEnemy(e.Target) {
 			return false
 		}
-		// dispel and heal logics :
 		reviveCountLeft--
 		// all debuffs dispel.
 		c.engine.DispelStatus(e.Target, info.Dispel{
@@ -72,7 +71,7 @@ func (c *char) initTalent() {
 	}))
 
 	// E1 : If the target ally's current HP is equal to their Max HP when
-	// Invigoration ends, regenerates 8 extra Energy for this target.
+	// 			Invigoration ends, regenerates 8 extra Energy for this target.
 	c.engine.Events().ModifierRemoved.Subscribe(func(e event.ModifierRemoved) {
 		// negative checks
 		if e.Modifier.Name != invigoration ||
@@ -90,8 +89,7 @@ func (c *char) initTalent() {
 	})
 }
 
-// TODO : find a replacement to invigStruct usage here as the
-// value setter is kinda gone now.
+// heals on being hit w/ heal limit. attached to invigoration modifier
 func healOnBeingHit(mod *modifier.Instance, e event.HitEnd) {
 	state := mod.State().(*invigStruct)
 	if state.healsLeft < 0 {
@@ -108,6 +106,7 @@ func healOnBeingHit(mod *modifier.Instance, e event.HitEnd) {
 }
 
 // adds invigoration re-heal with independent heal counters to chars.
+// attached to char struct for easier reuse in ult and technique.
 func (c *char) addInvigoration(target key.TargetID, duration int) {
 	// A4 : Invigoration can trigger 1 more time(s).
 	healsLeft := 2
@@ -121,7 +120,6 @@ func (c *char) addInvigoration(target key.TargetID, duration int) {
 	}
 
 	c.engine.AddModifier(target, info.Modifier{
-		// added mod is the target version(not one that's attached to bailu)
 		Name:     invigoration,
 		Source:   c.id,
 		Duration: duration,
