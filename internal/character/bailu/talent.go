@@ -26,11 +26,6 @@ type invigStruct struct {
 // This effect can be triggered 1 time per battle
 
 func init() {
-	// TODO :
-	// replace old invigoration that's attached to bailu with event subscribers.
-	// 1. make sure all c.addInvigoration applies invig to all team members.
-	// 2. make sure to add onDeath subs to bailu to remove all active invigorations
-	//    on team members.
 	modifier.Register(invigoration, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAfterBeingHitAll: healOnBeingHit,
@@ -95,6 +90,8 @@ func (c *char) initTalent() {
 	})
 }
 
+// TODO : find a replacement to invigStruct usage here as the
+// value setter is kinda gone now.
 func healOnBeingHit(mod *modifier.Instance, e event.HitEnd) {
 	state := mod.State().(*invigStruct)
 	if state.healsLeft < 0 {
