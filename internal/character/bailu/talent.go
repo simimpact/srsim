@@ -75,6 +75,24 @@ func (c *char) initTalent() {
 			}
 		}
 	}))
+
+	// E1 : If the target ally's current HP is equal to their Max HP when
+	// Invigoration ends, regenerates 8 extra Energy for this target.
+	c.engine.Events().ModifierRemoved.Subscribe(func(e event.ModifierRemoved) {
+		// negative checks
+		if e.Modifier.Name != invigoration ||
+			c.info.Eidolon < 1 ||
+			c.engine.HPRatio(e.Target) != 1.0 {
+			return
+		}
+		// add flat energy
+		c.engine.ModifyEnergy(info.ModifyAttribute{
+			Key:    invigoration,
+			Target: e.Target,
+			Source: c.id,
+			Amount: 8.0,
+		})
+	})
 }
 
 func healOnBeingHit(mod *modifier.Instance, e event.HitEnd) {
@@ -90,25 +108,6 @@ func healOnBeingHit(mod *modifier.Instance, e event.HitEnd) {
 		HealValue: state.healFlat,
 	})
 	state.healsLeft--
-}
-
-// TODO : change this logic to an event subscriber.
-func energyOnRemove(mod *modifier.Instance) {
-	// E1 : If the target ally's current HP is equal to their Max HP when
-	// Invigoration ends, regenerates 8 extra Energy for this target.
-	charInfo, _ := mod.Engine().CharacterInfo(mod.Owner())
-	if charInfo.Eidolon < 1 {
-		return
-	}
-
-	if mod.Engine().HPRatio(mod.Owner()) == 1.0 {
-		mod.Engine().ModifyEnergy(info.ModifyAttribute{
-			Key:    invigoration,
-			Target: mod.Owner(),
-			Source: mod.Source(),
-			Amount: 8.0,
-		})
-	}
 }
 
 // adds invigoration re-heal with independent heal counters to chars.
