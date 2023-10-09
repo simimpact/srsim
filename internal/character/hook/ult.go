@@ -52,6 +52,8 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 
 	c.talentProc(target)
 
+	c.engine.EndAttack()
+
 	//A6
 	if c.info.Traces["103"] {
 		c.engine.ModifyGaugeNormalized(info.ModifyAttribute{
@@ -79,5 +81,4 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		c.engine.AddModifier(c.id, info.Modifier{})
 	}
 
-	c.engine.EndAttack()
 }
