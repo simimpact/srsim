@@ -14,11 +14,7 @@ func init() {
 
 }
 
-func (c *char) initTalent() {
-
-}
-
-// TODO: Split into 2 functions? 1 for actual proc and one for damage across indiscriminate amount of units?
+// Main entry for proccing talent normally; Use if only targetting single enemy with attack
 func (c *char) talentProc(target key.TargetID) {
 	c.engine.ModifyEnergy(info.ModifyAttribute{
 		Key:    Talent,
@@ -27,7 +23,16 @@ func (c *char) talentProc(target key.TargetID) {
 		Amount: 5,
 	})
 
-	//Actual talent damage
+	c.talentPursuedDamage(target)
+
+	if c.info.Eidolon >= 4 {
+		c.applySkillBurn(c.engine.AdjacentTo(target))
+	}
+
+	c.talentHeal()
+}
+
+func (c *char) talentPursuedDamage(target key.TargetID) {
 	c.engine.Attack(info.Attack{
 		Key:        Talent,
 		Source:     c.id,
@@ -38,11 +43,9 @@ func (c *char) talentProc(target key.TargetID) {
 			model.DamageFormula_BY_ATK: talent[c.info.TalentLevelIndex()],
 		},
 	})
+}
 
-	if c.info.Eidolon >= 4 {
-		c.applySkillBurn(c.engine.AdjacentTo(target))
-	}
-
+func (c *char) talentHeal() {
 	if c.info.Traces["101"] {
 		c.engine.Heal(info.Heal{
 			Key:     Talent,
@@ -53,5 +56,4 @@ func (c *char) talentProc(target key.TargetID) {
 			},
 		})
 	}
-
 }
