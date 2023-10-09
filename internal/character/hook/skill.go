@@ -36,10 +36,13 @@ func (c *char) NormalSkill(target key.TargetID, state info.ActionState) {
 		StanceDamage: 60,
 	})
 
-	c.talentProc(target)
+	if c.engine.HasModifier(target, common.Burn) {
+		c.talentProc(target)
+	}
 
 }
 
+// Special checks to mimic dm/also to avoid multiple procs of the energy gain
 func (c *char) EnhancedSkill(target key.TargetID, state info.ActionState) {
 
 	//Main target
@@ -56,8 +59,6 @@ func (c *char) EnhancedSkill(target key.TargetID, state info.ActionState) {
 		StanceDamage: 60,
 	})
 
-	c.talentProc(target)
-
 	//Adjacent targets
 	c.engine.Attack(info.Attack{
 		Key:        EnhancedSkill,
@@ -66,11 +67,35 @@ func (c *char) EnhancedSkill(target key.TargetID, state info.ActionState) {
 		AttackType: model.AttackType_SKILL,
 		DamageType: model.DamageType_FIRE,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_ATK: skillEnhanceMain[c.info.SkillLevelIndex()],
+			model.DamageFormula_BY_ATK: skillEnhanceAdj[c.info.SkillLevelIndex()],
 		},
-		EnergyGain:   30,
-		StanceDamage: 60,
+		EnergyGain:   0,
+		StanceDamage: 30,
 	})
+
+	talentCanidates := c.engine.Retarget(info.Retarget{
+		Targets: []key.TargetID{target},
+		Filter: func(target key.TargetID) bool {
+			return c.engine.HasModifier(target, common.Burn)
+		},
+		IncludeLimbo: true,
+	})
+
+	// Cannot simply loop over every enemy from the retarget with talentProc
+	// since that would trigger hp restore and energy restore multiple times
+	if len(talentCanidates) > 0 {
+		c.engine.ModifyEnergy(info.ModifyAttribute{
+			Key:    Talent,
+			Target: c.id,
+			Source: c.id,
+			Amount: 5,
+		})
+		for _, t := range talentCanidates {
+			c.talentPursuedDamage(t)
+		}
+		c.applySkillBurn(c.engine.AdjacentTo(target))
+		c.talentHeal()
+	}
 
 	//Remove the enhancement modifier
 	c.engine.RemoveModifier(c.id, SkillEnhancement)
