@@ -30,8 +30,12 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	healPercent := ultPercent[c.info.UltLevelIndex()]
 	healFlat := ultFlat[c.info.UltLevelIndex()]
 
+	// use retarget to filter out characters on limbo
+	filteredTargets := c.engine.Retarget(info.Retarget{
+		Targets: c.engine.Characters(),
+	})
 	// main team heal
-	for _, char := range c.engine.Characters() {
+	for _, char := range filteredTargets {
 		c.addHeal(Ult, healPercent, healFlat, []key.TargetID{char})
 	}
 
