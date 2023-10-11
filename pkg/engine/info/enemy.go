@@ -1,8 +1,14 @@
 package info
 
+import (
+	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/model"
+	"google.golang.org/protobuf/types/known/structpb"
+)
+
 type Enemy struct {
-	Level     int          `json:"level"`
-	MaxStance float64      `json:"max_stance"`
-	Weakness  WeaknessMap  `json:"weakness"`
-	DebuffRES DebuffRESMap `json:"debuff_res"`
+	Key        key.Enemy                  `json:"key"`
+	Level      int                        `json:"level"`
+	Rank       model.EnemyRank            `json:"rank"`
+	Parameters map[string]*structpb.Value `json:"parameters"`
 }

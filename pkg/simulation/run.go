@@ -29,9 +29,6 @@ func (sim *Simulation) Run() (*model.IterationResult, error) {
 
 // initialize the sim and create characters from the config to prep for execution
 func initialize(sim *Simulation) (stateFn, error) {
-	// subscribe any internal hooks for core loop
-	sim.subscribe()
-
 	// enable all registered startup hooks
 	for k, hook := range hook.StartupHooks() {
 		if err := hook(sim); err != nil {
@@ -180,18 +177,12 @@ func phase1(sim *Simulation) (stateFn, error) {
 
 	// reset the stance if this is start of enemy turn and their stance is 0
 	if sim.IsEnemy(sim.Active) && sim.Attr.Stance(sim.Active) <= 0 {
-		i, err := sim.Enemy.Info(sim.Active)
-		if err != nil {
-			return nil, fmt.Errorf("error when getting enemy info in phase1 %w", err)
-		}
-
-		err = sim.Attr.SetStance(info.ModifyAttribute{
+		if err := sim.Attr.SetStance(info.ModifyAttribute{
 			Key:    "turn-stance-reset",
 			Target: sim.Active,
 			Source: sim.Active,
-			Amount: i.MaxStance,
-		})
-		if err != nil {
+			Amount: sim.Attr.MaxStance(sim.Active),
+		}); err != nil {
 			return nil, fmt.Errorf("error when reseting target stance %w", err)
 		}
 	}

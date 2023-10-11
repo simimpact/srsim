@@ -93,7 +93,6 @@ export interface HitEnd {
   attack_type: string;
   damage_type: string;
   base_damage: number /* float64 */;
-  bonus_damage: number /* float64 */;
   defence_multiplier: number /* float64 */;
   resistance: number /* float64 */;
   vulnerability: number /* float64 */;
@@ -183,10 +182,12 @@ export interface ShieldRemoved {
 }
 export type ShieldChangeEventHandler = Handler<ShieldChange>;
 export interface ShieldChange {
-  id: string;
   target: string;
-  old_hp: number /* float64 */;
+  id: string;
   new_hp: number /* float64 */;
+  old_hp: number /* float64 */;
+  damage_in: number /* float64 */;
+  damage_out: number /* float64 */;
 }
 
 //////////

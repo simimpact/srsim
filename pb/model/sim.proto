@@ -1,13 +1,16 @@
 syntax = "proto3";
 package model;
 option go_package = "github.com/simimpact/srsim/pkg/model";
-import "pb/model/enum.proto";
+
+import "pb/model/enemy.proto";
+import "pb/model/character.proto";
 
 message SimConfig {
   SimulatorSettings settings = 1;
 
   repeated Character characters = 2;
   repeated Enemy enemies = 3; // TODO: waves
+  
   reserved 4, 5; // TODO: blessings, curious
 
   Engage engage = 6;
@@ -21,61 +24,10 @@ message SimulatorSettings {
   uint32 cycle_limit = 1;
 }
 
-message Character {
-  string key = 1;
-  uint32 level = 2;
-  uint32 max_level = 3;
-  uint32 eidols = 4;
-  repeated string traces = 5;
-  Abilities abilities = 6;
-  LightCone light_cone = 7;
-  repeated Relic relics = 8;
-  double start_energy = 9;
-  double start_hp = 10;
-}
-
 message Wave {
   repeated Enemy enemies = 1;
 }
 
-message Enemy {
-  uint32 level = 2;
-  double hp = 3;
-  double toughness = 4;
-  repeated DamageType weaknesses = 5;
-  repeated DebuffRES debuff_res = 6;
-}
-
 message Engage {
   bool ambush = 1;
-}
-
-message Abilities {
-  uint32 attack = 1;
-  uint32 skill = 2;
-  uint32 ult = 3;
-  uint32 talent = 4;
-}
-
-message Relic {
-  string key = 1;
-  RelicStat main_stat = 2;
-  repeated RelicStat sub_stats = 3;
-}
-
-message RelicStat {
-  Property stat = 1;
-  double amount = 2;
-}
-
-message LightCone {
-  string key = 1;
-  uint32 level = 2;
-  uint32 max_level = 3;
-  uint32 imposition = 4;
-}
-
-message DebuffRES {
-  BehaviorFlag flag = 1;
-  double amount = 2;
 }

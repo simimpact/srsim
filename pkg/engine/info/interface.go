@@ -27,11 +27,11 @@ type ActionState interface {
 	// 	- QQ skill reuse
 	IsInsert() bool
 
-	// Returns info/metadata on the character, such as eidolon level, set of enabled traces, current
-	// level, max level, level of each skill, etc
-	CharacterInfo() Character
-
 	// Will end the current active attack. When this happens is different for each skill implementation
 	// so it is important that it is correctly called at the right time.
 	EndAttack()
+}
+
+type EnemyInstance interface {
+	Action(target key.TargetID, state ActionState)
 }

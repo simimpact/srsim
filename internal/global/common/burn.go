@@ -35,7 +35,21 @@ func init() {
 		},
 	})
 
-	// TODO: break burn
+	// break burn
+	modifier.Register(BreakBurn, modifier.Config{
+		Stacking:          modifier.ReplaceBySource,
+		TickMoment:        modifier.ModifierPhase1End,
+		MaxCount:          1,
+		CountAddWhenStack: 1,
+		StatusType:        model.StatusType_STATUS_DEBUFF,
+		BehaviorFlags: []model.BehaviorFlag{
+			model.BehaviorFlag_STAT_DOT,
+			model.BehaviorFlag_STAT_DOT_BURN,
+		},
+		Listeners: modifier.Listeners{
+			OnPhase1: breakBurnPhase1,
+		},
+	})
 }
 
 func burnPhase1(mod *modifier.Instance) {
@@ -57,5 +71,21 @@ func burnPhase1(mod *modifier.Instance) {
 		},
 		DamageValue: state.DamageValue,
 		UseSnapshot: true,
+	})
+}
+
+func breakBurnPhase1(mod *modifier.Instance) {
+	// perform break burn damage
+	mod.Engine().Attack(info.Attack{
+		Key:        BreakBurn,
+		Source:     mod.Source(),
+		Targets:    []key.TargetID{mod.Owner()},
+		AttackType: model.AttackType_DOT,
+		DamageType: model.DamageType_FIRE,
+		BaseDamage: info.DamageMap{
+			model.DamageFormula_BY_BREAK_DAMAGE: 1,
+		},
+		AsPureDamage: true,
+		UseSnapshot:  true,
 	})
 }

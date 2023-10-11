@@ -19,7 +19,7 @@ var globalFlags = []cli.Flag{
 		Usage:   "output path for generated results",
 		Value:   "result/",
 	},
-	&cli.Int64Flag{
+	&cli.Uint64Flag{
 		Name:        "seed",
 		Usage:       "optional seed for deterministic executions",
 		DefaultText: "random",
@@ -186,5 +186,5 @@ func seed(ctx *cli.Context) (int64, error) {
 	if !ctx.IsSet("seed") {
 		return simulation.RandSeed()
 	}
-	return ctx.Int64("seed"), nil
+	return int64(ctx.Uint64("seed")), nil
 }
