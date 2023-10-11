@@ -77,10 +77,6 @@ func (c *char) initTalent() {
 // heals on being hit w/ heal limit. attached to invigoration modifier
 func healOnBeingHit(mod *modifier.Instance, e event.HitEnd) {
 	state := mod.State().(*invigStruct)
-	if state.healsLeft < 0 {
-		mod.RemoveSelf()
-	}
-
 	mod.Engine().Heal(info.Heal{
 		Key:       invigoration,
 		Source:    mod.Source(),
@@ -89,6 +85,11 @@ func healOnBeingHit(mod *modifier.Instance, e event.HitEnd) {
 		HealValue: state.healFlat,
 	})
 	state.healsLeft--
+
+	// remove invigoration once the heals are used up.
+	if state.healsLeft <= 0 {
+		mod.RemoveSelf()
+	}
 }
 
 // adds invigoration re-heal with independent heal counters to chars.
