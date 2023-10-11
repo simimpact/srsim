@@ -14,6 +14,7 @@ const (
 	revive       = "bailu-revive"
 )
 
+// mostly used to track amount of heals left for each chars with invigoration
 type invigStruct struct {
 	healPercent, healFlat float64
 	healsLeft             int
@@ -37,25 +38,27 @@ func init() {
 
 func (c *char) initTalent() {
 	// talent revive logics.
-	reviveCountLeft := 1
 	// E6 : Bailu can heal allies who received a killing blow 1 more time(s)
 	//      in a single battle.
 	if c.info.Eidolon >= 6 {
-		reviveCountLeft = 2
+		c.reviveLeft = 2
 	}
 	revPercent := revivePercent[c.info.TalentLevelIndex()]
 	revFlat := reviveFlat[c.info.TalentLevelIndex()]
-	// revive only if revive is available and dying target is a character.
+
+	// revive only if available and dying target is a character.
 	c.engine.Events().LimboWaitHeal.Subscribe(func(e event.LimboWaitHeal) bool {
-		if e.IsCancelled || reviveCountLeft <= 0 || c.engine.IsEnemy(e.Target) {
+		if e.IsCancelled || c.reviveLeft <= 0 || !c.engine.IsCharacter(e.Target) {
 			return false
 		}
-		reviveCountLeft--
+		c.reviveLeft--
+
 		// all debuffs dispel.
 		c.engine.DispelStatus(e.Target, info.Dispel{
 			Status: model.StatusType_STATUS_DEBUFF,
 			Order:  model.DispelOrder_FIRST_ADDED,
 		})
+
 		// "revive" heal
 		c.addHeal(revive, revPercent, revFlat, []key.TargetID{e.Target})
 		return true
@@ -77,6 +80,7 @@ func healOnBeingHit(mod *modifier.Instance, e event.HitEnd) {
 	if state.healsLeft < 0 {
 		mod.RemoveSelf()
 	}
+
 	mod.Engine().Heal(info.Heal{
 		Key:       invigoration,
 		Source:    mod.Source(),
