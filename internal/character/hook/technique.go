@@ -36,8 +36,9 @@ func (c *char) Technique(target key.TargetID, state info.ActionState) {
 			Name:   common.Burn,
 			Source: c.id,
 			State: &common.BurnState{
-				DamagePercentage: 0.5,
-				DamageValue:      0,
+				DamagePercentage:    0.5,
+				DamageValue:         0,
+				DEFDamagePercentage: 0,
 			},
 			Chance:   1,
 			Duration: 3,
