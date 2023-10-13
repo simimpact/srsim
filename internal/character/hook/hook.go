@@ -49,6 +49,7 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 		id:     id,
 		info:   charInfo,
 	}
-
+	c.initEidolons()
+	c.initTraces()
 	return c
 }

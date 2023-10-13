@@ -39,13 +39,11 @@ func (c *char) NormalSkill(target key.TargetID, state info.ActionState) {
 	if c.engine.HasModifier(target, common.Burn) {
 		c.talentProc(target)
 	}
-
 }
 
 // Special checks to mimic dm/also to avoid multiple procs of the energy gain
 func (c *char) EnhancedSkill(target key.TargetID, state info.ActionState) {
-
-	//Main target
+	// Main target
 	c.engine.Attack(info.Attack{
 		Key:        EnhancedSkill,
 		Targets:    []key.TargetID{target},
@@ -59,7 +57,7 @@ func (c *char) EnhancedSkill(target key.TargetID, state info.ActionState) {
 		StanceDamage: 60,
 	})
 
-	//Adjacent targets
+	// Adjacent targets
 	c.engine.Attack(info.Attack{
 		Key:        EnhancedSkill,
 		Targets:    c.engine.AdjacentTo(target),
@@ -97,12 +95,11 @@ func (c *char) EnhancedSkill(target key.TargetID, state info.ActionState) {
 		c.talentHeal()
 	}
 
-	//Remove the enhancement modifier
+	// Remove the enhancement modifier
 	c.engine.RemoveModifier(c.id, SkillEnhancement)
 
-	//Remove the e1 modifier if it exists
+	// Remove the e1 modifier if it exists
 	c.engine.RemoveModifier(c.id, E1)
-
 }
 
 // Apply hook's skill burn to all given targets
@@ -117,8 +114,9 @@ func (c *char) applySkillBurn(targets []key.TargetID) {
 			Name:   common.Burn,
 			Source: c.id,
 			State: &common.BurnState{
-				DamagePercentage: skillBurnDot[c.info.SkillLevelIndex()],
-				DamageValue:      0,
+				DamagePercentage:    skillBurnDot[c.info.SkillLevelIndex()],
+				DamageValue:         0,
+				DEFDamagePercentage: 0,
 			},
 			Chance:   1,
 			Duration: burnDur,

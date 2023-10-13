@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	//no in-game name for this, so idk what to call this
+	// no in-game name for this, so idk what to call this
 	SkillEnhancement            = "SkillEnhancement"
 	Ult                         = "hook-ultimate"
 	A6               key.Reason = "hook-a4"
@@ -32,7 +32,6 @@ func init() {
 var hitSplitRatio = []float64{0.3, 0.7}
 
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
-
 	for hitIndex, hitRatio := range hitSplitRatio {
 		c.engine.Attack(info.Attack{
 			Key:        Ult,
@@ -54,7 +53,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 
 	c.engine.EndAttack()
 
-	//A6
+	// A6
 	if c.info.Traces["103"] {
 		c.engine.ModifyGaugeNormalized(info.ModifyAttribute{
 			Key:    A6,
@@ -71,14 +70,16 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		})
 	}
 
-	//Enhance the next skill usage
+	// Enhance the next skill usage
 	c.engine.AddModifier(c.id, info.Modifier{
 		Name:   SkillEnhancement,
 		Source: c.id,
 	})
 
 	if c.info.Eidolon >= 1 {
-		c.engine.AddModifier(c.id, info.Modifier{})
+		c.engine.AddModifier(c.id, info.Modifier{
+			Name:   E1,
+			Source: c.id,
+		})
 	}
-
 }

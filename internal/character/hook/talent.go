@@ -43,6 +43,8 @@ func (c *char) talentPursuedDamage(target key.TargetID) {
 			model.DamageFormula_BY_ATK: talent[c.info.TalentLevelIndex()],
 		},
 	})
+
+	c.engine.EndAttack()
 }
 
 func (c *char) talentHeal() {

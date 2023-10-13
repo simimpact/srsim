@@ -31,5 +31,4 @@ func (c *char) initEidolons() {
 			Source: c.id,
 		})
 	}
-
 }
