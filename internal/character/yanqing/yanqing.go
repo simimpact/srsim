@@ -49,7 +49,9 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 		id:     id,
 		info:   charInfo,
 	}
-	c.initEidolon()
-	c.initTraces()
+	engine.Events().AttackEnd.Subscribe(c.E1Listener)
+	engine.Events().HPChange.Subscribe(c.E4Listener)
+	engine.Events().AttackEnd.Subscribe(c.A2Listener)
+	engine.Events().HitEnd.Subscribe(c.A6Listener)
 	return c
 }

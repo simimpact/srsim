@@ -11,31 +11,19 @@ import (
 )
 
 const (
-	Eidolon            = "yanqing-eidolon"
-	E4                 = "yanqing-e4"
-	E1      key.Attack = "yanqing-e1"
+	E4            = "yanqing-e4"
+	E1 key.Attack = "yanqing-e1"
 )
 
-func (c *char) initEidolon() {
-	modifier.Register(Eidolon, modifier.Config{
-		StatusType: model.StatusType_UNKNOWN_STATUS,
-		Listeners: modifier.Listeners{
-			OnAfterAttack: E1Listener,
-			OnHPChange:    E4Listener,
-		},
-	})
+func init() {
 	modifier.Register(E4, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
 	})
-	c.engine.AddModifier(c.id, info.Modifier{
-		Name:   Eidolon,
-		Source: c.id,
-	})
 }
-func E1Listener(mod *modifier.Instance, e event.AttackEnd) {
-	cinfo, _ := mod.Engine().CharacterInfo(mod.Owner())
-	if cinfo.Eidolon >= 1 && mod.Engine().HasModifier(e.Targets[0], common.Freeze) {
-		mod.Engine().Attack(info.Attack{
+
+func (c *char) E1Listener(e event.AttackEnd) {
+	if c.info.Eidolon >= 1 && c.engine.HasModifier(e.Targets[0], common.Freeze) {
+		c.engine.Attack(info.Attack{
 			Key:        E1,
 			Source:     e.Attacker,
 			Targets:    e.Targets,
@@ -45,17 +33,18 @@ func E1Listener(mod *modifier.Instance, e event.AttackEnd) {
 		})
 	}
 }
-func E4Listener(mod *modifier.Instance, e event.HPChange) {
-	cinfo, _ := mod.Engine().CharacterInfo(mod.Owner())
-	if cinfo.Eidolon >= 4 && e.NewHPRatio >= 0.8 {
-		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
+
+func (c *char) E4Listener(e event.HPChange) {
+	if c.info.Eidolon >= 4 && e.NewHPRatio >= 0.8 {
+		c.engine.AddModifier(c.id, info.Modifier{
 			Name:  E4,
 			Stats: info.PropMap{prop.IcePEN: 0.12},
 		})
 	} else {
-		mod.Engine().RemoveModifier(mod.Owner(), E4)
+		c.engine.RemoveModifier(c.id, E4)
 	}
 }
+
 func E6Listener(mod *modifier.Instance, target key.TargetID) {
 	cinfo, _ := mod.Engine().CharacterInfo(mod.Owner())
 	if cinfo.Eidolon >= 6 {

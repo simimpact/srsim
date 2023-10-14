@@ -10,33 +10,21 @@ import (
 )
 
 const (
-	A6                = "yanqing-a6"
-	Traces            = "yanqing-traces"
-	A2     key.Attack = "yanqing-a2"
+	A6            = "yanqing-a6"
+	A2 key.Attack = "yanqing-a2"
 )
 
-func (c *char) initTraces() {
-	modifier.Register(Traces, modifier.Config{
-		StatusType: model.StatusType_UNKNOWN_STATUS,
-		Listeners: modifier.Listeners{
-			OnAfterAttack: A2Listener,
-			OnAfterHitAll: A6Listener,
-		},
-	})
+func init() {
 	modifier.Register(A6, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
 		Stacking:   modifier.Refresh,
 		Duration:   2,
 	})
-	c.engine.AddModifier(c.id, info.Modifier{
-		Name:   Traces,
-		Source: c.id,
-	})
 }
-func A2Listener(mod *modifier.Instance, e event.AttackEnd) {
-	cinfo, _ := mod.Engine().CharacterInfo(mod.Owner())
-	if cinfo.Traces["101"] && mod.Engine().Stats(e.Targets[0]).IsWeakTo(model.DamageType_ICE) {
-		mod.Engine().Attack(info.Attack{
+
+func (c *char) A2Listener(e event.AttackEnd) {
+	if c.info.Traces["101"] && c.engine.Stats(e.Targets[0]).IsWeakTo(model.DamageType_ICE) {
+		c.engine.Attack(info.Attack{
 			Key:        A2,
 			Source:     e.Attacker,
 			Targets:    e.Targets,
@@ -46,10 +34,10 @@ func A2Listener(mod *modifier.Instance, e event.AttackEnd) {
 		})
 	}
 }
-func A6Listener(mod *modifier.Instance, e event.HitEnd) {
-	cinfo, _ := mod.Engine().CharacterInfo(mod.Owner())
-	if cinfo.Traces["103"] && e.IsCrit {
-		mod.Engine().AddModifier(e.Attacker, info.Modifier{
+
+func (c *char) A6Listener(e event.HitEnd) {
+	if c.info.Traces["103"] && e.IsCrit {
+		c.engine.AddModifier(e.Attacker, info.Modifier{
 			Name:  A6,
 			Stats: info.PropMap{prop.SPDPercent: 0.1},
 		})
