@@ -38,8 +38,9 @@ func (c *char) A2Listener(e event.AttackEnd) {
 func (c *char) A6Listener(e event.HitEnd) {
 	if c.info.Traces["103"] && e.IsCrit {
 		c.engine.AddModifier(e.Attacker, info.Modifier{
-			Name:  A6,
-			Stats: info.PropMap{prop.SPDPercent: 0.1},
+			Name:   A6,
+			Stats:  info.PropMap{prop.SPDPercent: 0.1},
+			Source: c.id,
 		})
 	}
 }

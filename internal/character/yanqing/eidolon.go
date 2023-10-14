@@ -37,8 +37,9 @@ func (c *char) E1Listener(e event.AttackEnd) {
 func (c *char) E4Listener(e event.HPChange) {
 	if c.info.Eidolon >= 4 && e.NewHPRatio >= 0.8 {
 		c.engine.AddModifier(c.id, info.Modifier{
-			Name:  E4,
-			Stats: info.PropMap{prop.IcePEN: 0.12},
+			Name:   E4,
+			Stats:  info.PropMap{prop.IcePEN: 0.12},
+			Source: c.id,
 		})
 	} else {
 		c.engine.RemoveModifier(c.id, E4)

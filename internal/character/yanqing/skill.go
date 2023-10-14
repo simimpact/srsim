@@ -13,7 +13,7 @@ const (
 var skillHits = []float64{0.25, 0.25, 0.25, 0.25}
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
-	for i, hitRatio := range attackHits {
+	for i, hitRatio := range skillHits {
 		c.engine.Attack(info.Attack{
 			Key:          Skill,
 			HitIndex:     i,
