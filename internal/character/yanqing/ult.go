@@ -9,8 +9,9 @@ import (
 )
 
 const (
-	UltEffect            = "yanqing-ult-effect"
-	Ult       key.Attack = "yanqing-ult"
+	SoulsteelUlt            = "yanqing-soulsteelsync-ult"
+	UltEffect               = "yanqing-ult-effect"
+	Ult          key.Attack = "yanqing-ult"
 )
 
 func init() {
@@ -22,6 +23,15 @@ func init() {
 			OnTriggerDeath: E6Listener,
 		},
 	})
+	modifier.Register(SoulsteelUlt, modifier.Config{
+		StatusType: model.StatusType_STATUS_BUFF,
+		Stacking:   modifier.Replace,
+		Duration:   1,
+		Listeners: modifier.Listeners{
+			OnHPChange:     OnHitRemove,
+			OnTriggerDeath: E6Listener,
+		},
+	})
 }
 
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
@@ -30,6 +40,13 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			Name:   UltEffect,
 			Source: c.id,
 			Stats:  info.PropMap{prop.CritChance: 0.6},
+		})
+	}
+	if c.engine.HasModifier(c.id, Soulsteel) {
+		c.engine.AddModifier(c.id, info.Modifier{
+			Name:   SoulsteelUlt,
+			Source: c.id,
+			Stats:  info.PropMap{prop.CritDMG: ultCritDmg[c.info.UltLevelIndex()]},
 		})
 	}
 	c.engine.Attack(info.Attack{

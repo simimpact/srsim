@@ -34,7 +34,8 @@ func (c *char) initTraces() {
 	})
 }
 func A2Listener(mod *modifier.Instance, e event.AttackEnd) {
-	if mod.Engine().Stats(e.Targets[0]).IsWeakTo(model.DamageType_ICE) {
+	cinfo, _ := mod.Engine().CharacterInfo(mod.Owner())
+	if cinfo.Traces["101"] && mod.Engine().Stats(e.Targets[0]).IsWeakTo(model.DamageType_ICE) {
 		mod.Engine().Attack(info.Attack{
 			Key:        A2,
 			Source:     e.Attacker,
@@ -46,7 +47,8 @@ func A2Listener(mod *modifier.Instance, e event.AttackEnd) {
 	}
 }
 func A6Listener(mod *modifier.Instance, e event.HitEnd) {
-	if e.IsCrit {
+	cinfo, _ := mod.Engine().CharacterInfo(mod.Owner())
+	if cinfo.Traces["103"] && e.IsCrit {
 		mod.Engine().AddModifier(e.Attacker, info.Modifier{
 			Name:  A6,
 			Stats: info.PropMap{prop.SPDPercent: 0.1},

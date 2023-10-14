@@ -23,17 +23,13 @@ func init() {
 		Stacking:   modifier.Replace,
 		Duration:   1,
 		Listeners: modifier.Listeners{
-			OnHPChange:     talentOnHit,
-			OnBeforeAction: talentOnUlt,
+			OnHPChange:     OnHitRemove,
 			OnTriggerDeath: E6Listener,
 		},
 	})
 }
 
 func (c *char) addTalent() {
-	if c.engine.HasModifier(c.id, Soulsteel) {
-		return
-	}
 	temp := info.Modifier{
 		Name:   Soulsteel,
 		Source: c.id,
@@ -84,15 +80,8 @@ func (c *char) tryFollow(target key.TargetID) {
 	}
 }
 
-func talentOnHit(mod *modifier.Instance, e event.HPChange) {
-	if e.IsHPChangeByDamage && e.NewHP < e.OldHP {
+func OnHitRemove(mod *modifier.Instance, e event.HPChange) {
+	if e.IsHPChangeByDamage {
 		mod.RemoveSelf()
-	}
-}
-
-func talentOnUlt(mod *modifier.Instance, e event.ActionStart) {
-	cinfo, _ := mod.Engine().CharacterInfo(mod.Owner())
-	if e.AttackType == model.AttackType_ULT {
-		mod.AddProperty(prop.CritDMG, ultCritDmg[cinfo.UltLevelIndex()])
 	}
 }

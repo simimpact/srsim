@@ -33,7 +33,8 @@ func (c *char) initEidolon() {
 	})
 }
 func E1Listener(mod *modifier.Instance, e event.AttackEnd) {
-	if mod.Engine().HasModifier(e.Targets[0], common.Freeze) {
+	cinfo, _ := mod.Engine().CharacterInfo(mod.Owner())
+	if cinfo.Eidolon >= 1 && mod.Engine().HasModifier(e.Targets[0], common.Freeze) {
 		mod.Engine().Attack(info.Attack{
 			Key:        E1,
 			Source:     e.Attacker,
@@ -45,7 +46,8 @@ func E1Listener(mod *modifier.Instance, e event.AttackEnd) {
 	}
 }
 func E4Listener(mod *modifier.Instance, e event.HPChange) {
-	if e.NewHPRatio >= 0.8 {
+	cinfo, _ := mod.Engine().CharacterInfo(mod.Owner())
+	if cinfo.Eidolon >= 4 && e.NewHPRatio >= 0.8 {
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 			Name:  E4,
 			Stats: info.PropMap{prop.IcePEN: 0.12},
