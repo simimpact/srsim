@@ -12,17 +12,17 @@ const EnhancedSkill key.Attack = "hook-enhanced-skill"
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	if c.engine.HasModifier(c.id, SkillEnhancement) {
-		c.EnhancedSkill(target, state)
+		c.EnhancedSkill(target)
 	} else {
-		c.NormalSkill(target, state)
+		c.NormalSkill(target)
 	}
 
-	c.applySkillBurn([]key.TargetID{target})
-
 	c.engine.EndAttack()
+
+	c.applySkillBurn([]key.TargetID{target})
 }
 
-func (c *char) NormalSkill(target key.TargetID, state info.ActionState) {
+func (c *char) NormalSkill(target key.TargetID) {
 	c.engine.Attack(info.Attack{
 		Key:        Skill,
 		Targets:    []key.TargetID{target},
@@ -36,13 +36,13 @@ func (c *char) NormalSkill(target key.TargetID, state info.ActionState) {
 		StanceDamage: 60,
 	})
 
-	if c.engine.HasModifier(target, common.Burn) {
+	if c.engine.HasBehaviorFlag(target, model.BehaviorFlag_STAT_DOT_BURN) {
 		c.talentProc(target)
 	}
 }
 
 // Special checks to mimic dm/also to avoid multiple procs of the energy gain
-func (c *char) EnhancedSkill(target key.TargetID, state info.ActionState) {
+func (c *char) EnhancedSkill(target key.TargetID) {
 	// Main target
 	c.engine.Attack(info.Attack{
 		Key:        EnhancedSkill,
@@ -72,9 +72,9 @@ func (c *char) EnhancedSkill(target key.TargetID, state info.ActionState) {
 	})
 
 	talentCanidates := c.engine.Retarget(info.Retarget{
-		Targets: []key.TargetID{target},
+		Targets: append(c.engine.AdjacentTo(target), target),
 		Filter: func(target key.TargetID) bool {
-			return c.engine.HasModifier(target, common.Burn)
+			return c.engine.HasBehaviorFlag(target, model.BehaviorFlag_STAT_DOT_BURN)
 		},
 		IncludeLimbo: true,
 	})
