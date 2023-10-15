@@ -1,7 +1,6 @@
 package hook
 
 import (
-	"github.com/simimpact/srsim/internal/global/common"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
@@ -23,7 +22,7 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 		StanceDamage: 30,
 	})
 
-	if c.engine.HasModifier(target, common.Burn) {
+	if c.engine.HasBehaviorFlag(target, model.BehaviorFlag_STAT_DOT_BURN) {
 		c.talentProc(target)
 	}
 
