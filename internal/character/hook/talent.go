@@ -8,6 +8,7 @@ import (
 
 const (
 	Talent = "hook-talent"
+	A2     = "hook-a2"
 )
 
 func init() {
@@ -50,7 +51,7 @@ func (c *char) talentPursuedDamage(target key.TargetID) {
 func (c *char) talentHeal() {
 	if c.info.Traces["101"] {
 		c.engine.Heal(info.Heal{
-			Key:     Talent,
+			Key:     A2,
 			Targets: []key.TargetID{c.id},
 			Source:  c.id,
 			BaseHeal: info.HealMap{
