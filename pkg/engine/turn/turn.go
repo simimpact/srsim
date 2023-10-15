@@ -50,12 +50,11 @@ func (a *turnOrderHandler) FindTargetIndex(id key.TargetID) (int, error) {
 			break
 		}
 	}
-	
+
 	if idx == -1 {
 		return idx, fmt.Errorf("cannot find index in turnOrder: %v", id)
-	} else {
-		return idx, nil
 	}
+	return idx, nil
 }
 
 type manager struct {
@@ -121,11 +120,6 @@ func (mgr *manager) target(id key.TargetID) *target {
 	}
 	return nil
 }
-
-// getActiveTarget returns the active target of the TurnManager.
-func (mgr *manager) getActiveTarget() key.TargetID {
-	return mgr.activeTarget
-  }
 
 // av returns the current AV of the given target based on their current gauge and speed.
 // This call is "expensive", so avoid calling it multiple times in the same logic.
