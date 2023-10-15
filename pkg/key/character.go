@@ -18,6 +18,7 @@ const (
 	Sushang               Character = "sushang"
 	Natasha               Character = "natasha"
 	March7th              Character = "march7th"
+	Seele                 Character = "seele"
 )
 
 func (c Character) String() string {
