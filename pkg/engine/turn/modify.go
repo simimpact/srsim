@@ -1,9 +1,10 @@
 package turn
 
 import (
+	"sort"
+
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
-	"sort"
 )
 
 // SetGauge sets the gauge of the target as detailed in the input ModifyAttribute struct.
@@ -29,17 +30,17 @@ func (mgr *manager) SetGauge(data info.ModifyAttribute) error {
 		return err
 	}
 
-	// targetIndex == 0 indicates its already at the start of turnOrder, so no change needs to be made.
-	// if there is an activeTurn, set our target to index 1; otherwise set to index 0.
+	// set start index to 1 only if there is an active turn and it is not this target. Do not want to
+	// make this target the active target if not their turn.
 
-	if targetIndex == 0 {
-	} else {
-		mgr.orderHandler.turnOrder = append([]*target{mgr.target(data.Target)}, append(mgr.orderHandler.turnOrder[:targetIndex], mgr.orderHandler.turnOrder[targetIndex+1:]...)...)
-		if mgr.activeTarget != data.Target {
-			switchValue := mgr.orderHandler.turnOrder[0]
-			mgr.orderHandler.turnOrder[0] = mgr.orderHandler.turnOrder[1]
-			mgr.orderHandler.turnOrder[1] = switchValue
-		}
+	startIndex := 0
+	if mgr.activeTurn && targetIndex != 0 {
+		startIndex = 1
+	}
+
+	prev := mgr.orderHandler.turnOrder[targetIndex]
+	for i := startIndex; i <= targetIndex; i++ {
+		mgr.orderHandler.turnOrder[i], prev = prev, mgr.orderHandler.turnOrder[i]
 	}
 
 	sort.Stable(mgr.orderHandler)
