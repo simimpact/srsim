@@ -1,20 +1,19 @@
 package turn
 
 import (
-	"sort"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"sort"
 )
 
 // SetGauge sets the gauge of the target as detailed in the input ModifyAttribute struct.
-// 1. Update gauge of target
-// 2. Move target to top of order
-// 3. Sort target down based on AV. In the event of tie, this target should be at top of order.
-//		If there is an active turn and it is not this target, this target should go below the active
-//		turn (so index 1 instead of 0 when 0 gauge/AV)
-// 4. Emit GaugeChangeEvent
+//  1. Update gauge of target
+//  2. Move target to top of order
+//  3. Sort target down based on AV. In the event of tie, this target should be at top of order.
+//     If there is an active turn and it is not this target, this target should go below the active
+//     turn (so index 1 instead of 0 when 0 gauge/AV)
+//  4. Emit GaugeChangeEvent
 func (mgr *manager) SetGauge(data info.ModifyAttribute) error {
-
 	previousGauge := mgr.target(data.Target).gauge
 
 	// if there's no change to Gauge, exit early
