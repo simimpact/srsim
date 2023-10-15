@@ -22,7 +22,7 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: func(mod *modifier.Instance, e event.HitStart) {
 				if e.Hit.Key == EnhancedSkill {
-					mod.AddProperty(prop.AllDamagePercent, 0.2)
+					e.Hit.Attacker.AddProperty(E1, prop.AllDamagePercent, 0.2)
 				}
 			},
 		},
@@ -49,7 +49,9 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		})
 	}
 
-	c.talentProc(target)
+	if c.engine.HasBehaviorFlag(target, model.BehaviorFlag_STAT_DOT_BURN) {
+		c.talentProc(target)
+	}
 
 	c.engine.EndAttack()
 
