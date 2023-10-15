@@ -13,9 +13,8 @@ const (
 
 func (c *char) Technique(target key.TargetID, state info.ActionState) {
 	techniqueTarget := c.engine.Retarget(info.Retarget{
-		Max:          1,
-		IncludeLimbo: false,
-		Targets:      c.engine.Enemies(),
+		Max:     1,
+		Targets: c.engine.Enemies(),
 	})
 
 	c.engine.Attack(info.Attack{
