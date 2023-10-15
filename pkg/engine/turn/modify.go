@@ -1,48 +1,57 @@
 package turn
 
 import (
+	"sort"
+
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
-	"github.com/simimpact/srsim/pkg/key"
 )
 
+// SetGauge sets the gauge of the target as detailed in the input ModifyAttribute struct.
+//  1. Update gauge of target
+//  2. Move target to top of order
+//  3. Sort target down based on AV. In the event of tie, this target should be at top of order.
+//     If there is an active turn and it is not this target, this target should go below the active
+//     turn (so index 1 instead of 0 when 0 gauge/AV)
+//  4. Emit GaugeChangeEvent
 func (mgr *manager) SetGauge(data info.ModifyAttribute) error {
-	prev := mgr.target(data.Target).gauge
-	mgr.target(data.Target).gauge = data.Amount
+	previousGauge := mgr.target(data.Target).gauge
 
-	if mgr.target(data.Target).gauge == prev {
+	// if there's no change to Gauge, exit early
+	if previousGauge == data.Amount {
 		return nil
 	}
 
-	// create map of TargetID -> AV so you only need to calc once within this call
-	targetAV := make(map[key.TargetID]float64, len(mgr.order.order))
+	mgr.target(data.Target).gauge = data.Amount
 
-	// TODO:
-	// 1. update gauge of target
-	// 2. move target to top of order
-	// 3. sort target down based on AV. In the event of tie, this target should be at top of order.
-	//		If there is an active turn and it is not this target, this target should go below the active
-	//		turn (so index 1 instead of 0 when 0 gauge/AV)
-	// 4. emit GaugeChangeEvent
-
-	// TODO: this is also needed for TurnStart emit & TurnReset emit, should be abstracted
-	status := make([]event.TurnStatus, len(mgr.order.order))
-	for i, t := range mgr.order.order {
-		status[i] = event.TurnStatus{
-			ID:    t.id,
-			Gauge: t.gauge,
-			AV:    targetAV[t.id],
-			// TODO: should we also add speed to this?
-		}
+	// find target index in mgr.orderHandler.turnOrder
+	targetIndex, err := mgr.orderHandler.FindTargetIndex(data.Target)
+	if err != nil {
+		return err
 	}
+
+	// set start index to 1 only if there is an active turn and it is not this target. Do not want to
+	// make this target the active target if not their turn.
+
+	startIndex := 0
+	if mgr.activeTurn && targetIndex != 0 {
+		startIndex = 1
+	}
+
+	prev := mgr.orderHandler.turnOrder[targetIndex]
+	for i := startIndex; i <= targetIndex; i++ {
+		mgr.orderHandler.turnOrder[i], prev = prev, mgr.orderHandler.turnOrder[i]
+	}
+
+	sort.Stable(mgr.orderHandler)
 
 	mgr.event.GaugeChange.Emit(event.GaugeChange{
 		Key:       data.Key,
 		Target:    data.Target,
 		Source:    data.Source,
-		OldGauge:  prev,
+		OldGauge:  previousGauge,
 		NewGauge:  mgr.target(data.Target).gauge,
-		TurnOrder: status,
+		TurnOrder: mgr.EventTurnStatus(),
 	})
 	return nil
 }
