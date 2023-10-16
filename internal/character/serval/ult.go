@@ -1,13 +1,13 @@
 package serval
 
 import (
+	"github.com/simimpact/srsim/internal/global/common"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 const Ult key.Attack = "serval-ult"
-const shock key.Modifier = "common-shock"
 
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	c.engine.Attack(info.Attack{
@@ -24,7 +24,6 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	})
 
 	for _, trg := range c.engine.Enemies() {
-		// todo investigate shock lol
-		c.engine.ExtendModifierDuration(trg, shock, 2)
+		c.engine.ExtendModifierDuration(trg, common.Shock, 2)
 	}
 }

@@ -1,10 +1,48 @@
 package serval
 
 import (
+	"github.com/simimpact/srsim/internal/global/common"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/model"
 )
 
+const (
+	TechniqueAtk   key.Attack   = "serval-technique"
+	TechniqueShock key.Modifier = "serval-technique-shock"
+)
+
+func init() {
+	modifier.Register(TechniqueShock, modifier.Config{
+		TickMoment:    modifier.ModifierPhase1End,
+		Stacking:      modifier.ReplaceBySource,
+		StatusType:    model.StatusType_STATUS_DEBUFF,
+		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_DOT_ELECTRIC},
+	})
+}
+
 func (c *char) Technique(target key.TargetID, state info.ActionState) {
-	
+	targets := c.engine.Enemies()
+	c.engine.Attack(info.Attack{
+		Key:        TechniqueAtk,
+		Source:     c.id,
+		Targets:    []key.TargetID{targets[c.engine.Rand().Intn(len(targets))]},
+		DamageType: model.DamageType_THUNDER,
+		AttackType: model.AttackType_MAZE,
+		BaseDamage: info.DamageMap{
+			model.DamageFormula_BY_ATK: 0.5,
+		},
+		StanceDamage: 60.0,
+		EnergyGain:   0.0,
+	})
+
+	for _, trg := range targets {
+		c.engine.AddModifier(trg, info.Modifier{
+			Name:     common.Shock,
+			Source:   c.id,
+			Chance:   1,
+			Duration: 2,
+		})
+	}
 }
