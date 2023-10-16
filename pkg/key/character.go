@@ -17,6 +17,7 @@ const (
 	Pela                  Character = "pela"
 	Qingque               Character = "qingque"
 	Sampo                 Character = "sampo"
+	Seele                 Character = "seele"
 	SilverWolf            Character = "silverwolf"
 	Sushang               Character = "sushang"
 )

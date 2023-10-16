@@ -302,11 +302,7 @@ export interface Enemy {
   key: any /* key.Enemy */;
   level: number /* int */;
   rank: any /* model.EnemyRank */;
-  parameters: { [key: string]: any};
-  /**
-   * should these be in info (they are Stats things?)
-   */
-  max_stance: number /* float64 */;
+  parameters: { [key: string]: any /* structpb.Value */ | undefined};
 }
 
 //////////
