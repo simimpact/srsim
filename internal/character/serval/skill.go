@@ -39,6 +39,14 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		EnergyGain:   0.0,
 	})
 
+	shockChance := 0.8
+	// A2:
+	//
+	//	Skill has a 20% increased base chance to Shock enemies.
+	if c.info.Traces["101"] {
+		shockChance += 0.2
+	}
+
 	for _, trg := range c.engine.Enemies() {
 		c.engine.AddModifier(trg, info.Modifier{
 			Name: common.Shock,
@@ -46,7 +54,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 				DamagePercentage: skillDot[c.info.SkillLevelIndex()],
 			},
 			Source:   c.id,
-			Chance:   0.8,
+			Chance:   shockChance,
 			Duration: 2,
 		})
 	}

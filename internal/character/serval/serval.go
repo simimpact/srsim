@@ -50,5 +50,6 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 		info:   charInfo,
 	}
 
+	initTraces(c)
 	return c
 }
