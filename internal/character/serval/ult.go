@@ -22,7 +22,19 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		StanceDamage: 60.0,
 		EnergyGain:   5,
 	})
-
+	if c.info.Eidolon >= 4 {
+		for _, trg := range c.engine.Enemies() {
+			c.engine.AddModifier(trg, info.Modifier{
+				Name: common.Shock,
+				State: &common.ShockState{
+					DamagePercentage: skillDot[c.info.SkillLevelIndex()],
+				},
+				Source:   c.id,
+				Chance:   1,
+				Duration: 2,
+			})
+		}
+	}
 	for _, trg := range c.engine.Enemies() {
 		c.engine.ExtendModifierDuration(trg, common.Shock, 2)
 	}
