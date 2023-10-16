@@ -26,4 +26,5 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	for _, trg := range c.engine.Enemies() {
 		c.engine.ExtendModifierDuration(trg, common.Shock, 2)
 	}
+	state.EndAttack()
 }
