@@ -13,7 +13,7 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 		Key:        Normal,
 		Source:     c.id,
 		Targets:    []key.TargetID{target},
-		DamageType: model.DamageType_PHYSICAL,
+		DamageType: model.DamageType_THUNDER,
 		AttackType: model.AttackType_NORMAL,
 		BaseDamage: info.DamageMap{
 			model.DamageFormula_BY_ATK: atk[c.info.AttackLevelIndex()],
