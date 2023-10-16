@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	Skill key.Heal = "bailu-skill"
+	Skill = "bailu-skill"
 )
 
 // Heals a single ally for 11.7% of Bailu's Max HP plus 312.
@@ -31,4 +31,12 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		})
 		c.addHeal(Skill, healPercent, healFlat, chosenTarget)
 	}
+
+	// energy gained after skill usage
+	c.engine.ModifyEnergy(info.ModifyAttribute{
+		Key:    Skill,
+		Source: c.id,
+		Target: c.id,
+		Amount: 30.0,
+	})
 }
