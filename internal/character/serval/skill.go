@@ -52,6 +52,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 			Name: common.Shock,
 			State: &common.ShockState{
 				DamagePercentage: skillDot[c.info.SkillLevelIndex()],
+				DamageValue:      0,
 			},
 			Source:   c.id,
 			Chance:   shockChance,
