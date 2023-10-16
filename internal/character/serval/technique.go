@@ -3,7 +3,6 @@ package serval
 import (
 	"github.com/simimpact/srsim/internal/global/common"
 	"github.com/simimpact/srsim/pkg/engine/info"
-	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -12,15 +11,6 @@ const (
 	TechniqueAtk   key.Attack   = "serval-technique"
 	TechniqueShock key.Modifier = "serval-technique-shock"
 )
-
-func init() {
-	modifier.Register(TechniqueShock, modifier.Config{
-		TickMoment:    modifier.ModifierPhase1End,
-		Stacking:      modifier.ReplaceBySource,
-		StatusType:    model.StatusType_STATUS_DEBUFF,
-		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_DOT_ELECTRIC},
-	})
-}
 
 func (c *char) Technique(target key.TargetID, state info.ActionState) {
 	targets := c.engine.Enemies()
@@ -39,7 +29,10 @@ func (c *char) Technique(target key.TargetID, state info.ActionState) {
 
 	for _, trg := range targets {
 		c.engine.AddModifier(trg, info.Modifier{
-			Name:     common.Shock,
+			Name: common.Shock,
+			State: &common.ShockState{
+				DamagePercentage: 0.5,
+			},
 			Source:   c.id,
 			Chance:   1,
 			Duration: 2,
