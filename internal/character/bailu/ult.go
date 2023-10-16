@@ -41,11 +41,12 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 
 	// add team invigoration, already invigorated get extended duration by 1.
 	for _, char := range c.engine.Characters() {
-		duration := 2
 		if c.engine.HasModifier(char, invigoration) {
-			duration = 1 // prolong duration
+			// if target char already has invigoration, extend duration.
+			c.engine.ExtendModifierDuration(char, invigoration, 1)
+		} else {
+			c.addInvigoration(char, 2)
 		}
-		c.addInvigoration(char, duration)
 	}
 
 	// E2 : After using her Ultimate, Bailu's Outgoing Healing increases
