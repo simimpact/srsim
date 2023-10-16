@@ -46,5 +46,4 @@ func onAfterHit(mod *modifier.Instance, e event.HitEnd) {
 			})
 		}
 	}
-
 }

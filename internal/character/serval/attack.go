@@ -23,11 +23,11 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 	})
 	if c.info.Eidolon >= 1 {
 		targets := c.engine.AdjacentTo(target)
-		random_index := c.engine.Rand().Intn(len(targets))
+		randomIndex := c.engine.Rand().Intn(len(targets))
 		c.engine.Attack(info.Attack{
 			Key:        SkillAdjacent,
 			Source:     c.id,
-			Targets:    []key.TargetID{targets[random_index]},
+			Targets:    []key.TargetID{targets[randomIndex]},
 			DamageType: model.DamageType_THUNDER,
 			AttackType: model.AttackType_PURSUED,
 			BaseDamage: info.DamageMap{
