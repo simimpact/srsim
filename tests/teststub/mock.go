@@ -36,7 +36,8 @@ func (m *mockTurnManager) TotalAV() float64 {
 func (m *mockTurnManager) AddTargets(ids ...key.TargetID) {
 }
 
-func (m *mockTurnManager) RemoveTarget(id key.TargetID) {
+func (m *mockTurnManager) RemoveTarget(id key.TargetID) error {
+	return nil
 }
 
 // mockTurnManager StartTurn shouldn't be without any TargetID in the sequence, but the corresponding
