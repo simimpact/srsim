@@ -10,18 +10,6 @@ import (
 const Ult key.Attack = "serval-ult"
 
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
-	c.engine.Attack(info.Attack{
-		Key:        Ult,
-		Source:     c.id,
-		Targets:    c.engine.Enemies(),
-		DamageType: model.DamageType_THUNDER,
-		AttackType: model.AttackType_ULT,
-		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_ATK: ult[c.info.UltLevelIndex()],
-		},
-		StanceDamage: 60.0,
-		EnergyGain:   5,
-	})
 	if c.info.Eidolon >= 4 {
 		for _, trg := range c.engine.Enemies() {
 			c.engine.AddModifier(trg, info.Modifier{
@@ -35,6 +23,18 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			})
 		}
 	}
+	c.engine.Attack(info.Attack{
+		Key:        Ult,
+		Source:     c.id,
+		Targets:    c.engine.Enemies(),
+		DamageType: model.DamageType_THUNDER,
+		AttackType: model.AttackType_ULT,
+		BaseDamage: info.DamageMap{
+			model.DamageFormula_BY_ATK: ult[c.info.UltLevelIndex()],
+		},
+		StanceDamage: 60.0,
+		EnergyGain:   5,
+	})
 	for _, trg := range c.engine.Enemies() {
 		c.engine.ExtendModifierDuration(trg, common.Shock, 2)
 	}

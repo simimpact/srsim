@@ -23,7 +23,6 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 	})
 	if c.info.Eidolon >= 1 {
 		targets := c.engine.AdjacentTo(target)
-		// coinflip one of the targets that are adjacent to target
 		random_index := c.engine.Rand().Intn(len(targets))
 		c.engine.Attack(info.Attack{
 			Key:        SkillAdjacent,
