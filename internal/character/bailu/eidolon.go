@@ -34,7 +34,7 @@ func (c *char) initEidolons() {
 			return
 		}
 		// add flat energy
-		c.engine.ModifyEnergy(info.ModifyAttribute{
+		c.engine.ModifyEnergyFixed(info.ModifyAttribute{
 			Key:    invigoration,
 			Target: e.Target,
 			Source: c.id,
