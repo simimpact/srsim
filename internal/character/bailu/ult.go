@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	Ult key.Heal     = "bailu-ult"
+	Ult              = "bailu-ult"
 	E2  key.Modifier = "bailu-e2"
 )
 
@@ -59,4 +59,12 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			Duration: 2,
 		})
 	}
+
+	// minor energy gain after ult cast
+	c.engine.ModifyEnergy(info.ModifyAttribute{
+		Key:    Ult,
+		Source: c.id,
+		Target: c.id,
+		Amount: 5.0,
+	})
 }
