@@ -82,11 +82,12 @@ func healOnBeingHit(mod *modifier.Instance, e event.HitEnd) {
 		return
 	}
 	mod.Engine().Heal(info.Heal{
-		Key:       invigoration,
-		Source:    mod.Source(),
-		Targets:   []key.TargetID{mod.Owner()},
-		BaseHeal:  info.HealMap{model.HealFormula_BY_HEALER_MAX_HP: state.healPercent},
-		HealValue: state.healFlat,
+		Key:         invigoration,
+		Source:      mod.Source(),
+		Targets:     []key.TargetID{mod.Owner()},
+		BaseHeal:    info.HealMap{model.HealFormula_BY_HEALER_MAX_HP: state.healPercent},
+		HealValue:   state.healFlat,
+		UseSnapshot: true,
 	})
 	state.healsLeft--
 }
