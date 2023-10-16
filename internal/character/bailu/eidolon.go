@@ -45,16 +45,15 @@ func (c *char) initEidolons() {
 	// E4 : Every healing provided by the Skill makes the recipient deal
 	// 10% more DMG for 2 turn(s). This effect can stack up to 3 time(s).
 	c.engine.Events().HealEnd.Subscribe(func(e event.HealEnd) {
-		if c.info.Eidolon < 4 {
+		// only add heal buff at E4+, healer is bailu, and it came from her skill casts.
+		if c.info.Eidolon < 4 || e.Healer != c.id || e.Key != Skill {
 			return
 		}
-		if e.Healer == c.id && e.Key == Skill {
-			c.engine.AddModifier(e.Target, info.Modifier{
-				Name:     E4,
-				Source:   c.id,
-				Stats:    info.PropMap{prop.AllDamagePercent: 0.1},
-				Duration: 2,
-			})
-		}
+		c.engine.AddModifier(e.Target, info.Modifier{
+			Name:     E4,
+			Source:   c.id,
+			Stats:    info.PropMap{prop.AllDamagePercent: 0.1},
+			Duration: 2,
+		})
 	})
 }
