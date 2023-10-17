@@ -32,15 +32,16 @@ func init() {
 func (c *char) initSkill() {
 	// onAfterHit event listener. add spdDown with chance.
 	c.engine.Events().HitEnd.Subscribe(func(e event.HitEnd) {
-		if e.Key == Skill {
-			c.engine.AddModifier(e.Defender, info.Modifier{
-				Name:     spdDebuff,
-				Source:   c.id,
-				Chance:   skillChance[c.info.SkillLevelIndex()],
-				Stats:    info.PropMap{prop.SPDPercent: 0.1},
-				Duration: 2,
-			})
+		if e.Key != Skill || e.Attacker != c.id {
+			return
 		}
+		c.engine.AddModifier(e.Defender, info.Modifier{
+			Name:     spdDebuff,
+			Source:   c.id,
+			Chance:   skillChance[c.info.SkillLevelIndex()],
+			Stats:    info.PropMap{prop.SPDPercent: 0.1},
+			Duration: 2,
+		})
 	})
 }
 
