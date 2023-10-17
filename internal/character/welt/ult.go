@@ -44,7 +44,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			Source: c.id,
 			State: common.ImprisonState{
 				SpeedDownRatio: 0.1,
-				DelayRatio:     0.4,
+				DelayRatio:     ultDelay[c.info.UltLevelIndex()],
 			},
 			Chance:   1,
 			Duration: 1,
