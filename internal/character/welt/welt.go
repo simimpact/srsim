@@ -51,6 +51,7 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 	}
 
 	c.initSkill()
+	c.initTalent()
 
 	return c
 }

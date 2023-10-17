@@ -85,7 +85,7 @@ var (
 		0.44,
 	}
 
-	talent = []float64{
+	talentAtk = []float64{
 		0.3,
 		0.33,
 		0.36,
