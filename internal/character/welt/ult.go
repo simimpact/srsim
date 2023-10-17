@@ -37,6 +37,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 				EnergyGain:   5,
 			})
 		}
+		state.EndAttack()
 
 		// imprison logic : DM uses common.Confine
 		c.engine.AddModifier(target, info.Modifier{
