@@ -61,7 +61,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	})
 
 	// extra random attacks
-	// TODO : confirm attackType etc.
+	// TODO : confirm : DM uses IncludeLimbo but exclude targets w/ HP <= 0
 	for i := 0; i < 2; i++ {
 		chosenTarget := c.engine.Retarget(info.Retarget{
 			Targets: c.engine.Enemies(),
