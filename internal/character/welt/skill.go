@@ -35,10 +35,17 @@ func (c *char) initSkill() {
 		if e.Attacker != c.id || e.Key != Skill {
 			return
 		}
+
+		// E4 : Base chance for Skill to inflict SPD Reduction increases by 35%.
+		debuffChance := skillChance[c.info.SkillLevelIndex()]
+		if c.info.Eidolon >= 4 {
+			debuffChance += 0.35
+		}
+
 		c.engine.AddModifier(e.Defender, info.Modifier{
 			Name:     spdDebuff,
 			Source:   c.id,
-			Chance:   skillChance[c.info.SkillLevelIndex()],
+			Chance:   debuffChance,
 			Stats:    info.PropMap{prop.SPDPercent: 0.1},
 			Duration: 2,
 		})
