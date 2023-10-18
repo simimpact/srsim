@@ -47,7 +47,6 @@ func (c *char) initTraces() {
 
 	// A4 : Using Ultimate additionally regenerates 10 Energy.
 	c.engine.Events().ActionEnd.Subscribe(func(e event.ActionEnd) {
-		// negative condition for early return
 		if e.Owner != c.id ||
 			!c.info.Traces["102"] ||
 			e.AttackType != model.AttackType_ULT {
@@ -63,9 +62,7 @@ func (c *char) initTraces() {
 	})
 
 	// A6 : Deals 20% more DMG to enemies inflicted with Weakness Break.
-	// TODO : confirm if OnBeforeHitAll == HitStart subs
 	c.engine.Events().HitStart.Subscribe(func(e event.HitStart) {
-		// early exit conditions
 		// TODO : DM uses modifier check for StanceBreakState
 		if e.Attacker != c.id ||
 			!c.info.Traces["103"] ||

@@ -53,7 +53,8 @@ func (c *char) initSkill() {
 }
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
-	// attack
+	// targeted attack
+	// TODO : take below attack logic and turn it into func.
 	c.engine.Attack(info.Attack{
 		Key:        Skill,
 		Source:     c.id,
@@ -71,10 +72,12 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	// extra random attacks
 	// TODO : confirm : DM uses IncludeLimbo but exclude targets w/ HP <= 0
 	randomSkillCount := 2
+
 	// E6 : When using Skill, deals DMG for 1 extra time to a random enemy.
 	if c.info.Eidolon >= 6 {
 		randomSkillCount += 1
 	}
+
 	for i := 0; i < randomSkillCount; i++ {
 		chosenTarget := c.engine.Retarget(info.Retarget{
 			Targets: c.engine.Enemies(),
