@@ -31,7 +31,12 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
-
+	atkAmt := 0.18 + 0.06*float64(lc.Imposition)
+	engine.AddModifier(owner, info.Modifier{
+		Name:   sagacity,
+		Source: owner,
+		State:  atkAmt,
+	})
 }
 
 func buffAtkOnUlt(mod *modifier.Instance, e event.ActionStart) {
