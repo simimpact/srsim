@@ -16,7 +16,6 @@ const (
 // The next 2 time(s) he uses his Basic ATK or Skill,
 // deals Additional DMG to the target equal to 50% of his Basic ATK's
 // DMG multiplier or 80% of his Skill's DMG multiplier respectively.
-// E6 : When using Skill, deals DMG for 1 extra time to a random enemy.
 
 func (c *char) initEidolons() {
 	// E1 : refresh counter on each ult cast
