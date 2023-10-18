@@ -6,6 +6,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -32,6 +33,7 @@ func init() {
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
+	// battlestart energy
 	engine.Events().BattleStart.Subscribe(func(e event.BattleStart) {
 		engine.ModifyEnergy(info.ModifyAttribute{
 			Key:    clamor,
@@ -40,8 +42,20 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 			Amount: 20,
 		})
 	})
+
+	// ult dmg buff
+	dmgAmt := 0.24 + 0.08*float64(lc.Imposition)
+	engine.AddModifier(owner, info.Modifier{
+		Name:   clamor,
+		Source: owner,
+		State:  dmgAmt,
+	})
 }
 
 func buffUltDamage(mod *modifier.Instance, e event.HitStart) {
-
+	if e.Hit.AttackType != model.AttackType_ULT {
+		return
+	}
+	dmgAmt := mod.State().(float64)
+	e.Hit.Attacker.AddProperty(clamor, prop.AllDamagePercent, dmgAmt)
 }
