@@ -6,11 +6,13 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
+	checker  key.Modifier = "sagacity-check"
 	sagacity key.Modifier = "sagacity"
 )
 
@@ -23,22 +25,34 @@ func init() {
 		Path:          model.Path_ERUDITION,
 		Promotions:    promotions,
 	})
-	modifier.Register(sagacity, modifier.Config{
+	modifier.Register(checker, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeAction: buffAtkOnUlt,
 		},
+	})
+	modifier.Register(sagacity, modifier.Config{
+		Stacking: modifier.ReplaceBySource,
 	})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	atkAmt := 0.18 + 0.06*float64(lc.Imposition)
 	engine.AddModifier(owner, info.Modifier{
-		Name:   sagacity,
+		Name:   checker,
 		Source: owner,
 		State:  atkAmt,
 	})
 }
 
 func buffAtkOnUlt(mod *modifier.Instance, e event.ActionStart) {
-
+	if e.AttackType != model.AttackType_ULT {
+		return
+	}
+	atkAmt := mod.State().(float64)
+	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
+		Name:     sagacity,
+		Source:   mod.Owner(),
+		Stats:    info.PropMap{prop.ATKPercent: atkAmt},
+		Duration: 2,
+	})
 }
