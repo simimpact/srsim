@@ -34,12 +34,13 @@ func init() {
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	// battlestart energy
+	energyAmt := 17 + 3*float64(lc.Imposition)
 	engine.Events().BattleStart.Subscribe(func(e event.BattleStart) {
 		engine.ModifyEnergy(info.ModifyAttribute{
 			Key:    clamor,
 			Target: owner,
 			Source: owner,
-			Amount: 20,
+			Amount: energyAmt,
 		})
 	})
 
