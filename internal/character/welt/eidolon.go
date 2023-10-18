@@ -9,7 +9,6 @@ import (
 
 const (
 	E1 key.Attack = "welt-e1"
-	E2 key.Reason = "welt-e2"
 	E6 key.Attack = "welt-e6"
 )
 
@@ -17,7 +16,6 @@ const (
 // The next 2 time(s) he uses his Basic ATK or Skill,
 // deals Additional DMG to the target equal to 50% of his Basic ATK's
 // DMG multiplier or 80% of his Skill's DMG multiplier respectively.
-// E2 : When his Talent is triggered, Welt regenerates 3 Energy.
 // E4 : Base chance for Skill to inflict SPD Reduction increases by 35%.
 // E6 : When using Skill, deals DMG for 1 extra time to a random enemy.
 

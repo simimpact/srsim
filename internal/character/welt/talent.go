@@ -9,6 +9,7 @@ import (
 
 const (
 	Talent key.Attack = "welt-talent"
+	E2     key.Reason = "welt-e2"
 )
 
 // When hitting an enemy that is already Slowed,
@@ -35,6 +36,14 @@ func (c *char) initTalent() {
 			BaseDamage: info.DamageMap{
 				model.DamageFormula_BY_ATK: talentAtk[c.info.TalentLevelIndex()],
 			},
+		})
+
+		// E2 : When his Talent is triggered, Welt regenerates 3 Energy.
+		c.engine.ModifyEnergy(info.ModifyAttribute{
+			Key:    E2,
+			Target: c.id,
+			Source: c.id,
+			Amount: 3,
 		})
 	})
 }
