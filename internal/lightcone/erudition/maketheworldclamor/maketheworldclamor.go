@@ -5,6 +5,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/equip/lightcone"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -23,6 +24,11 @@ func init() {
 		Path:          model.Path_ERUDITION,
 		Promotions:    promotions,
 	})
+	modifier.Register(clamor, modifier.Config{
+		Listeners: modifier.Listeners{
+			OnBeforeHit: buffUltDamage,
+		},
+	})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
@@ -34,4 +40,8 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 			Amount: 20,
 		})
 	})
+}
+
+func buffUltDamage(mod *modifier.Instance, e event.HitStart) {
+
 }
