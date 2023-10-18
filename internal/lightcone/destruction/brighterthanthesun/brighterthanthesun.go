@@ -61,5 +61,17 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 func dragonsCallOnBasic(mod *modifier.Instance, e event.ActionStart) {
-
+	if e.AttackType != model.AttackType_NORMAL {
+		return
+	}
+	state := mod.State().(*state)
+	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
+		Name:   dragonsCall,
+		Source: mod.Owner(),
+		Stats: info.PropMap{
+			prop.ATKPercent:  state.atkAmt,
+			prop.EnergyRegen: state.errAmt,
+		},
+		Duration: 2,
+	})
 }
