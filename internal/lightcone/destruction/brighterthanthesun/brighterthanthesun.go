@@ -6,6 +6,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -14,6 +15,11 @@ const (
 	brighter    key.Modifier = "brighter-than-the-sun"
 	dragonsCall key.Modifier = "dragons-call"
 )
+
+type state struct {
+	atkAmt float64
+	errAmt float64
+}
 
 // Increases the wearer's CRIT Rate by 18%. When the wearer uses their Basic ATK,
 // they will gain 1 stack of Dragon's Call, lasting for 2 turns.
@@ -41,10 +47,16 @@ func init() {
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	// add flat crit rate at stats.
+	critRateAmt := 0.15 + 0.03*float64(lc.Imposition)
+	modState := state{
+		atkAmt: critRateAmt, // same as crit rate
+		errAmt: 0.05 + 0.01*float64(lc.Imposition),
+	}
 	engine.AddModifier(owner, info.Modifier{
 		Name:   brighter,
 		Source: owner,
-		// TODO : create state struct for atk and err buff.
+		Stats:  info.PropMap{prop.CritChance: critRateAmt},
+		State:  &modState,
 	})
 }
 
