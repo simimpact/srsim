@@ -2,7 +2,7 @@
 
 package combat
 
-var breakBaseDamage = []float64{
+var BreakBaseDamage = []float64{
 	0,
 	54,
 	58,

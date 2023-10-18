@@ -47,6 +47,10 @@ func (sim *Simulation) Stance(target key.TargetID) float64 {
 	return sim.Attr.Stance(target)
 }
 
+func (sim *Simulation) MaxStance(target key.TargetID) float64 {
+	return sim.Attr.MaxStance(target)
+}
+
 func (sim *Simulation) Energy(target key.TargetID) float64 {
 	return sim.Attr.Energy(target)
 }

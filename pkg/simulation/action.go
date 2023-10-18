@@ -133,7 +133,7 @@ func (sim *Simulation) executeAction(id key.TargetID, isInsert bool) error {
 			return fmt.Errorf("error building char executable action %w", err)
 		}
 	case info.ClassEnemy:
-		executable, err = sim.Enemy.ExecuteAction(id)
+		executable, err = sim.Enemy.ExecuteAction(id, isInsert)
 		if err != nil {
 			return fmt.Errorf("error building enemy executable action %w", err)
 		}

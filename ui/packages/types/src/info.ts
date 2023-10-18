@@ -299,10 +299,10 @@ export interface Heal {
 // source: enemy.go
 
 export interface Enemy {
+  key: any /* key.Enemy */;
   level: number /* int */;
-  max_stance: number /* float64 */;
-  weakness: WeaknessMap;
-  debuff_res: DebuffRESMap;
+  rank: any /* model.EnemyRank */;
+  parameters: { [key: string]: any /* structpb.Value */ | undefined};
 }
 
 //////////

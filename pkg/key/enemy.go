@@ -3,5 +3,9 @@ package key
 type Enemy string
 
 const (
-	DummyEnemy Enemy = "dummy_enemy"
+	DummyEnemy Enemy = "dummy"
 )
+
+func (e Enemy) String() string {
+	return string(e)
+}

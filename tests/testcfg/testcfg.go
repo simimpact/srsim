@@ -1,6 +1,7 @@
 package testcfg
 
 import (
+	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
@@ -16,10 +17,7 @@ func TestConfigTwoElites() *model.SimConfig {
 
 func StandardEnemy() *model.Enemy {
 	return &model.Enemy{
-		Level:      90,
-		Hp:         200000,
-		Toughness:  420,
-		Weaknesses: nil,
-		DebuffRes:  nil,
+		Key:   key.DummyEnemy.String(),
+		Level: 10,
 	}
 }
