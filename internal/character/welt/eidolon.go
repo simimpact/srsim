@@ -21,7 +21,9 @@ const (
 func (c *char) initEidolons() {
 	// E1 : refresh counter on each ult cast
 	c.engine.Events().ActionEnd.Subscribe(func(e event.ActionEnd) {
-		if e.Owner == c.id && e.AttackType == model.AttackType_ULT {
+		if e.Owner == c.id &&
+			c.info.Eidolon >= 1 &&
+			e.AttackType == model.AttackType_ULT {
 			c.enhancedCount = 2
 		}
 	})
@@ -29,7 +31,7 @@ func (c *char) initEidolons() {
 
 // E1 : add pursued attack on basic/skill if has enhanced mod.
 func (c *char) applyE1Pursued(target key.TargetID, multiplier float64) {
-	if c.enhancedCount <= 0 {
+	if c.enhancedCount <= 0 || c.info.Eidolon < 1 {
 		return
 	}
 	c.engine.Attack(info.Attack{

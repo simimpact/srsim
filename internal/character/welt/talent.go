@@ -22,7 +22,8 @@ var triggerFlags = []model.BehaviorFlag{
 func (c *char) initTalent() {
 	c.engine.Events().HitEnd.Subscribe(func(e event.HitEnd) {
 		// negative check for early return
-		if e.Attacker != c.id || !c.engine.HasBehaviorFlag(e.Defender, triggerFlags...) {
+		if e.Attacker != c.id ||
+			!c.engine.HasBehaviorFlag(e.Defender, triggerFlags...) {
 			return
 		}
 
@@ -39,6 +40,9 @@ func (c *char) initTalent() {
 		})
 
 		// E2 : When his Talent is triggered, Welt regenerates 3 Energy.
+		if c.info.Eidolon < 2 {
+			return
+		}
 		c.engine.ModifyEnergy(info.ModifyAttribute{
 			Key:    E2,
 			Target: c.id,
