@@ -59,6 +59,7 @@ const (
 	NightontheMilkyWay        LightCone = "night_on_the_milky_way"
 	TheBirthoftheSelf         LightCone = "the_birth_of_the_self"
 	MaketheWorldClamor        LightCone = "make_the_world_clamor"
+	Sagacity                  LightCone = "sagacity"
 )
 
 // Harmony
