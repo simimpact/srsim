@@ -28,7 +28,9 @@ func (c *char) initTraces() {
 	// TODO : consider moving this logic to Ult.go
 	c.engine.Events().AttackStart.Subscribe(func(e event.AttackStart) {
 		// negative condition for early return
-		if e.Attacker != c.id || e.AttackType != model.AttackType_ULT {
+		if e.Attacker != c.id ||
+			!c.info.Traces["101"] ||
+			e.AttackType != model.AttackType_ULT {
 			return
 		}
 		// inflict allDmgTaken debuff to all targets
@@ -46,7 +48,9 @@ func (c *char) initTraces() {
 	// A4 : Using Ultimate additionally regenerates 10 Energy.
 	c.engine.Events().ActionEnd.Subscribe(func(e event.ActionEnd) {
 		// negative condition for early return
-		if e.Owner != c.id || e.AttackType != model.AttackType_ULT {
+		if e.Owner != c.id ||
+			!c.info.Traces["102"] ||
+			e.AttackType != model.AttackType_ULT {
 			return
 		}
 		// add flat energy
@@ -63,7 +67,9 @@ func (c *char) initTraces() {
 	c.engine.Events().HitStart.Subscribe(func(e event.HitStart) {
 		// early exit conditions
 		// TODO : DM uses modifier check for StanceBreakState
-		if e.Attacker != c.id || c.engine.Stance(e.Defender) != 0 {
+		if e.Attacker != c.id ||
+			!c.info.Traces["103"] ||
+			c.engine.Stance(e.Defender) != 0 {
 			return
 		}
 		e.Hit.Attacker.AddProperty(A6, prop.AllDamagePercent, 0.2)
