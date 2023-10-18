@@ -12,6 +12,7 @@ import (
 const (
 	Skill     key.Attack   = "welt-skill"
 	spdDebuff key.Modifier = "welt-spd-down"
+	E6        key.Attack   = "welt-e6"
 )
 
 // Deals Imaginary DMG equal to 72% of Welt's ATK to a single enemy
@@ -54,11 +55,33 @@ func (c *char) initSkill() {
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	// targeted attack
-	// TODO : take below attack logic and turn it into func.
+	c.applySkillAtk(Skill, []key.TargetID{target})
+
+	c.applyE1Pursued(target, 0.8*skillAtk[c.info.SkillLevelIndex()])
+	// extra random attacks
+	// TODO : confirm : DM uses IncludeLimbo but exclude targets w/ HP <= 0
+
+	// E6 : When using Skill, deals DMG for 1 extra time to a random enemy.
+	if c.info.Eidolon >= 6 {
+		c.applySkillAtk(E6, []key.TargetID{target})
+	}
+
+	for i := 0; i < 2; i++ {
+		chosenTarget := c.engine.Retarget(info.Retarget{
+			Targets: c.engine.Enemies(),
+			Max:     1,
+		})
+		c.applySkillAtk(Skill, chosenTarget)
+	}
+
+	state.EndAttack()
+}
+
+func (c *char) applySkillAtk(atkKey key.Attack, targets []key.TargetID) {
 	c.engine.Attack(info.Attack{
-		Key:        Skill,
+		Key:        atkKey,
 		Source:     c.id,
-		Targets:    []key.TargetID{target},
+		Targets:    targets,
 		AttackType: model.AttackType_SKILL,
 		DamageType: model.DamageType_IMAGINARY,
 		BaseDamage: info.DamageMap{
@@ -67,35 +90,4 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		StanceDamage: 30,
 		EnergyGain:   10,
 	})
-
-	c.applyE1Pursued(target, 0.8*skillAtk[c.info.SkillLevelIndex()])
-	// extra random attacks
-	// TODO : confirm : DM uses IncludeLimbo but exclude targets w/ HP <= 0
-	randomSkillCount := 2
-
-	// E6 : When using Skill, deals DMG for 1 extra time to a random enemy.
-	if c.info.Eidolon >= 6 {
-		randomSkillCount += 1
-	}
-
-	for i := 0; i < randomSkillCount; i++ {
-		chosenTarget := c.engine.Retarget(info.Retarget{
-			Targets: c.engine.Enemies(),
-			Max:     1,
-		})
-		c.engine.Attack(info.Attack{
-			Key:        Skill,
-			Source:     c.id,
-			Targets:    chosenTarget,
-			AttackType: model.AttackType_SKILL,
-			DamageType: model.DamageType_IMAGINARY,
-			BaseDamage: info.DamageMap{
-				model.DamageFormula_BY_ATK: skillAtk[c.info.SkillLevelIndex()],
-			},
-			StanceDamage: 30,
-			EnergyGain:   10,
-		})
-	}
-
-	state.EndAttack()
 }

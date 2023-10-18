@@ -9,7 +9,6 @@ import (
 
 const (
 	E1 key.Attack = "welt-e1"
-	E6 key.Attack = "welt-e6"
 )
 
 // E1 : After Welt uses his Ultimate, his abilities are enhanced.
