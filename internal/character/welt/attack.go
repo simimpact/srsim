@@ -12,6 +12,8 @@ const (
 
 // Deals Imaginary DMG equal to 100% of Welt's ATK to a single enemy.
 func (c *char) Attack(target key.TargetID, state info.ActionState) {
+	c.applyE1Pursued(target, 0.5*atk[c.info.AttackLevelIndex()])
+
 	c.engine.Attack(info.Attack{
 		Key:        Normal,
 		Source:     c.id,

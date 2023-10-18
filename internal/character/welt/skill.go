@@ -60,6 +60,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		EnergyGain:   10,
 	})
 
+	c.applyE1Pursued(target, 0.8*skillAtk[c.info.SkillLevelIndex()])
 	// extra random attacks
 	// TODO : confirm : DM uses IncludeLimbo but exclude targets w/ HP <= 0
 	for i := 0; i < 2; i++ {
