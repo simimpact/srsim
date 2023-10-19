@@ -40,6 +40,7 @@ func init() {
 	})
 	modifier.Register(dragonsCall, modifier.Config{
 		Stacking:          modifier.ReplaceBySource,
+		StatusType:        model.StatusType_STATUS_BUFF,
 		MaxCount:          2,
 		CountAddWhenStack: 1,
 	})
