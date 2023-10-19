@@ -25,6 +25,9 @@ func init() {
 			Skill: character.Skill{
 				SPNeed:     1,
 				TargetType: model.TargetType_ENEMIES,
+				CanUse: func(engine engine.Engine, instance info.CharInstance) bool {
+					return engine.SP() > 0
+				},
 			},
 			Ult: character.Ult{
 				TargetType: model.TargetType_ENEMIES,
@@ -38,17 +41,21 @@ func init() {
 }
 
 type char struct {
-	engine engine.Engine
-	id     key.TargetID
-	info   info.Character
+	engine     engine.Engine
+	id         key.TargetID
+	info       info.Character
+	Syzygy     int
+	isEnhanced bool
 }
 
 func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character) info.CharInstance {
 	c := &char{
-		engine: engine,
-		id:     id,
-		info:   charInfo,
+		engine:     engine,
+		id:         id,
+		info:       charInfo,
+		Syzygy:     0,
+		isEnhanced: false,
 	}
-
+	engine.Events().TurnEnd.Subscribe(c.checkSyzygy)
 	return c
 }
