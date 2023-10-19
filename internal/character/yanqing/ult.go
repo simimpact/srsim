@@ -28,8 +28,8 @@ func init() {
 		Stacking:   modifier.Replace,
 		Duration:   1,
 		Listeners: modifier.Listeners{
-			OnHPChange:     OnHitRemove,
-			OnTriggerDeath: E6Listener,
+			OnAfterBeingHitAll: OnHitRemove,
+			OnTriggerDeath:     E6Listener,
 		},
 	})
 }

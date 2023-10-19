@@ -23,8 +23,8 @@ func init() {
 		Stacking:   modifier.Replace,
 		Duration:   1,
 		Listeners: modifier.Listeners{
-			OnHPChange:     OnHitRemove,
-			OnTriggerDeath: E6Listener,
+			OnAfterBeingHitAll: OnHitRemove,
+			OnTriggerDeath:     E6Listener,
 		},
 	})
 }
@@ -80,8 +80,8 @@ func (c *char) tryFollow(target key.TargetID) {
 	}
 }
 
-func OnHitRemove(mod *modifier.Instance, e event.HPChange) {
-	if e.IsHPChangeByDamage {
+func OnHitRemove(mod *modifier.Instance, e event.HitEnd) {
+	if e.HPDamage > 0 {
 		mod.RemoveSelf()
 	}
 }
