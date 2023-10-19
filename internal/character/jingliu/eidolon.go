@@ -38,7 +38,7 @@ func (c *char) E1Listener(e event.ActionStart) {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:            E1,
 			Source:          c.id,
-			Stats:           info.PropMap{prop.AllDamagePercent: 0.24},
+			Stats:           info.PropMap{prop.CritDMG: 0.24},
 			TickImmediately: true,
 		})
 	}
@@ -47,7 +47,7 @@ func (c *char) E1Listener(e event.ActionStart) {
 func E2Listener(mod *modifier.Instance, e event.ActionStart) {
 	tmp, _ := mod.Engine().CharacterInstance(mod.Owner())
 	c := tmp.(*char)
-	if c.isEnhanced {
+	if c.isEnhanced && e.AttackType == model.AttackType_SKILL {
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 			Name:   E2Buff,
 			Source: mod.Owner(),

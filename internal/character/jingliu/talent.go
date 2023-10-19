@@ -73,10 +73,6 @@ func (c *char) gainSyzygy() {
 }
 
 func (c *char) addTalentBuff() {
-	if !c.isEnhanced {
-		return
-	}
-
 	// calc hp pool
 	hpCount := 0.0
 	for _, ally := range c.engine.Characters() {
@@ -84,7 +80,7 @@ func (c *char) addTalentBuff() {
 			continue
 		}
 		if c.engine.HPRatio(ally) < 0.04 {
-			hpCount += c.engine.Stats(ally).CurrentHP() + 1
+			hpCount += c.engine.Stats(ally).CurrentHP() - 1
 		} else {
 			hpCount += c.engine.Stats(ally).MaxHP() * 0.04
 		}
