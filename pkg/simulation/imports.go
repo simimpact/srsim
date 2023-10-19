@@ -9,6 +9,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/character/danhengimbibitorlunae"
 	_ "github.com/simimpact/srsim/internal/character/dummy"
 	_ "github.com/simimpact/srsim/internal/character/gepard"
+	_ "github.com/simimpact/srsim/internal/character/jingliu"
 	_ "github.com/simimpact/srsim/internal/character/march7th"
 	_ "github.com/simimpact/srsim/internal/character/natasha"
 	_ "github.com/simimpact/srsim/internal/character/pela"
