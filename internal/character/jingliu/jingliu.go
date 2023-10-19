@@ -23,10 +23,14 @@ func init() {
 				TargetType: model.TargetType_ENEMIES,
 			},
 			Skill: character.Skill{
-				SPNeed:     1,
+				SPNeed:     0,
 				TargetType: model.TargetType_ENEMIES,
 				CanUse: func(engine engine.Engine, instance info.CharInstance) bool {
-					return engine.SP() > 0
+					c := instance.(*char)
+					if c.isEnhanced {
+						return true
+					}
+					return engine.SP() >= 1
 				},
 			},
 			Ult: character.Ult{

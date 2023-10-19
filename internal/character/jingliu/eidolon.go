@@ -10,7 +10,7 @@ import (
 
 const (
 	E1     = "jingliu-e1"
-	E2     = "jingliu-e2"
+	E2     = "jingliu-e2-listener"
 	E2Buff = "jingliu-e2"
 )
 

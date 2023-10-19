@@ -11,11 +11,9 @@ const (
 	EnhancedSkillPrimary  key.Attack = "jingliu-skill-ehnance-primary"
 	EnhancedSkillAdjacent key.Attack = "jingliu-skill-ehnance-adjacent"
 	A4                    key.Reason = "jingliu-a4"
+	Skill                 key.Reason = "jingliu-skill"
 )
 
-// 3*3616+7232+18080
-// E1 3*(19106+6947)+(38213+13895)+(95332+34739)
-// main 191060 E1 69740 2.75:1
 var EnhancedSkillRatio = []float64{0.1, 0.1, 0.1, 0.2, 0.5}
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
@@ -31,6 +29,12 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 }
 
 func (c *char) NormalSkill(target key.TargetID, state info.ActionState) {
+	c.engine.ModifySP(info.ModifySP{
+		Key:    Skill,
+		Source: c.id,
+		Amount: -1,
+	})
+
 	c.engine.Attack(info.Attack{
 		Key:          NormalSkill,
 		Source:       c.id,

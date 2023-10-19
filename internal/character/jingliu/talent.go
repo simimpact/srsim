@@ -47,7 +47,7 @@ func (c *char) gainSyzygy() {
 	if c.Syzygy < 2 {
 		return
 	}
-	//c.Syzygy >= 2 && !c.isEnhanced enter EnhanceMode
+	// c.Syzygy >= 2 && !c.isEnhanced enter EnhanceMode
 	c.isEnhanced = true
 	c.Syzygy = c.getMaxStack() - 1
 	c.engine.ModifyGaugeNormalized(info.ModifyAttribute{
@@ -69,7 +69,6 @@ func (c *char) gainSyzygy() {
 		mod.DebuffRES = info.DebuffRESMap{model.BehaviorFlag_STAT_CTRL: 0.35}
 	}
 	c.engine.AddModifier(c.id, mod)
-	return
 }
 
 func (c *char) addTalentBuff() {
