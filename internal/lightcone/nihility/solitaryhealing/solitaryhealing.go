@@ -71,5 +71,13 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 func buffDotOnUlt(mod *modifier.Instance, e event.ActionStart) {
-
+	if e.AttackType != model.AttackType_ULT {
+		return
+	}
+	dotBuffAmt := mod.State().(float64)
+	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
+		Name:   solitary,
+		Source: mod.Owner(),
+		Stats:  info.PropMap{prop.DOTDamagePercent: dotBuffAmt},
+	})
 }
