@@ -31,7 +31,8 @@ func init() {
 		},
 	})
 	modifier.Register(sagacity, modifier.Config{
-		Stacking: modifier.ReplaceBySource,
+		Stacking:   modifier.ReplaceBySource,
+		StatusType: model.StatusType_STATUS_BUFF,
 	})
 }
 
