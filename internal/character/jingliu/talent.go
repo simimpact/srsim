@@ -19,6 +19,9 @@ const (
 func init() {
 	modifier.Register(EnhanceModeBuff, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
+		Listeners: modifier.Listeners{
+			OnBeforeAction: A6Listener,
+		},
 	})
 	modifier.Register(TalentBuff, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
