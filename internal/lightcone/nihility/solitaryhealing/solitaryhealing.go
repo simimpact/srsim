@@ -75,9 +75,11 @@ func buffDotOnUlt(mod *modifier.Instance, e event.ActionStart) {
 		return
 	}
 	dotBuffAmt := mod.State().(float64)
+	// buff DOTs for 2 turns
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-		Name:   solitary,
-		Source: mod.Owner(),
-		Stats:  info.PropMap{prop.DOTDamagePercent: dotBuffAmt},
+		Name:     solitary,
+		Source:   mod.Owner(),
+		Stats:    info.PropMap{prop.DOTDamagePercent: dotBuffAmt},
+		Duration: 2,
 	})
 }
