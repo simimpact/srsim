@@ -52,6 +52,22 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 
 	// energy from killed enemy suffering owner's DOT
+	// TODO : DM uses OnListenCharacterDie. confirm is equivalent to .onDeath subs.
+	engine.Events().TargetDeath.Subscribe(func(e event.TargetDeath) {
+		if !engine.HasBehaviorFlag(e.Target, model.BehaviorFlag_STAT_DOT) ||
+			!engine.IsEnemy(e.Target) ||
+			!engine.IsCharacter(e.Killer) {
+			return
+		}
+		// add flat energy to owner
+		energyAmt := 3.5 + 0.5*float64(lc.Imposition)
+		engine.ModifyEnergy(info.ModifyAttribute{
+			Key:    solitary,
+			Source: owner,
+			Target: owner,
+			Amount: energyAmt,
+		})
+	})
 }
 
 func buffDotOnUlt(mod *modifier.Instance, e event.ActionStart) {
