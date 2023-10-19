@@ -62,7 +62,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 func dragonsCallOnBasic(mod *modifier.Instance, e event.ActionStart) {
-	if e.AttackType != model.AttackType_NORMAL {
+	if e.AttackType != model.AttackType_NORMAL || mod.Count() >= mod.MaxCount() {
 		return
 	}
 	state := mod.State().(*state)
