@@ -3,9 +3,16 @@ package solitaryhealing
 import (
 	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/equip/lightcone"
+	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
+)
+
+const (
+	check    = "solitary-healing-check"
+	solitary = "solitary-healing"
 )
 
 // Increases the wearer's Break Effect by 20%. When the wearer uses their Ultimate,
@@ -20,8 +27,21 @@ func init() {
 		Path:          model.Path_NIHILITY,
 		Promotions:    promotions,
 	})
+	modifier.Register(check, modifier.Config{
+		Listeners: modifier.Listeners{
+			OnBeforeAction: buffDotOnUlt,
+		},
+	})
+	modifier.Register(solitary, modifier.Config{
+		Stacking:   modifier.ReplaceBySource,
+		StatusType: model.StatusType_STATUS_BUFF,
+	})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
+
+}
+
+func buffDotOnUlt(mod *modifier.Instance, e event.ActionStart) {
 
 }
