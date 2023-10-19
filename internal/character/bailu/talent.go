@@ -46,9 +46,19 @@ func (c *char) initTalent() {
 	revPercent := revivePercent[c.info.TalentLevelIndex()]
 	revFlat := reviveFlat[c.info.TalentLevelIndex()]
 
+	cancelFlags := []model.BehaviorFlag{
+		model.BehaviorFlag_STAT_CTRL,
+		model.BehaviorFlag_DISABLE_ACTION,
+	}
+
 	// revive only if available and dying target is a character.
 	c.engine.Events().LimboWaitHeal.Subscribe(func(e event.LimboWaitHeal) bool {
-		if e.IsCancelled || c.reviveLeft <= 0 || !c.engine.IsCharacter(e.Target) {
+		if e.IsCancelled ||
+			c.reviveLeft <= 0 ||
+			!c.engine.IsCharacter(e.Target) ||
+			// cannot revive if under CC
+			c.engine.HasBehaviorFlag(c.id, cancelFlags...) {
+			// TODO : confirm what return should be when conditions aren't met
 			return false
 		}
 		c.reviveLeft--
