@@ -1,11 +1,11 @@
 package hook
 
 import (
-	"github.com/simimpact/srsim/internal/global/common"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
+	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
@@ -16,7 +16,7 @@ func init() {
 	modifier.Register(E6, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: func(mod *modifier.Instance, e event.HitStart) {
-				if mod.Engine().HasModifier(e.Defender, common.Burn) {
+				if mod.Engine().HasBehaviorFlag(e.Defender, model.BehaviorFlag_STAT_DOT_BURN) {
 					e.Hit.Attacker.AddProperty(E6, prop.AllDamagePercent, 0.2)
 				}
 			},
