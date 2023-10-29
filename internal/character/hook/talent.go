@@ -11,10 +11,6 @@ const (
 	A2     = "hook-a2"
 )
 
-func init() {
-
-}
-
 // Main entry for proccing talent normally; Use if only targetting single enemy with attack
 func (c *char) talentProc(target key.TargetID) {
 	c.engine.ModifyEnergy(info.ModifyAttribute{
