@@ -71,7 +71,7 @@ func (c *char) EnhancedSkill(target key.TargetID) {
 		StanceDamage: 30,
 	})
 
-	talentCanidates := c.engine.Retarget(info.Retarget{
+	talentCandidates := c.engine.Retarget(info.Retarget{
 		Targets: append(c.engine.AdjacentTo(target), target),
 		Filter: func(target key.TargetID) bool {
 			return c.engine.HasBehaviorFlag(target, model.BehaviorFlag_STAT_DOT_BURN)
@@ -81,14 +81,14 @@ func (c *char) EnhancedSkill(target key.TargetID) {
 
 	// Cannot simply loop over every enemy from the retarget with talentProc
 	// since that would trigger hp restore and energy restore multiple times
-	if len(talentCanidates) > 0 {
+	if len(talentCandidates) > 0 {
 		c.engine.ModifyEnergy(info.ModifyAttribute{
 			Key:    Talent,
 			Target: c.id,
 			Source: c.id,
 			Amount: 5,
 		})
-		for _, t := range talentCanidates {
+		for _, t := range talentCandidates {
 			c.talentPursuedDamage(t)
 		}
 		c.applySkillBurn(c.engine.AdjacentTo(target))
