@@ -17,8 +17,6 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		c.NormalSkill(target)
 	}
 
-	c.engine.EndAttack()
-
 	c.applySkillBurn([]key.TargetID{target})
 }
 
@@ -38,6 +36,8 @@ func (c *char) NormalSkill(target key.TargetID) {
 
 	if c.engine.HasBehaviorFlag(target, model.BehaviorFlag_STAT_DOT_BURN) {
 		c.talentProc(target)
+	} else {
+		c.engine.EndAttack()
 	}
 }
 
@@ -93,6 +93,8 @@ func (c *char) EnhancedSkill(target key.TargetID) {
 		}
 		c.applySkillBurn(c.engine.AdjacentTo(target))
 		c.talentHeal()
+	} else {
+		c.engine.EndAttack()
 	}
 
 	// Remove the enhancement modifier
