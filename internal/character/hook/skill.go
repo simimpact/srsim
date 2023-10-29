@@ -88,10 +88,15 @@ func (c *char) EnhancedSkill(target key.TargetID) {
 			Source: c.id,
 			Amount: 5,
 		})
+
 		for _, t := range talentCandidates {
 			c.talentPursuedDamage(t)
 		}
-		c.applySkillBurn(c.engine.AdjacentTo(target))
+
+		if c.info.Eidolon >= 4 {
+			c.applySkillBurn(c.engine.AdjacentTo(target))
+		}
+
 		c.talentHeal()
 	} else {
 		c.engine.EndAttack()
