@@ -35,6 +35,7 @@ func (sim *Simulation) deathCheck(killLimbo bool) {
 	// TODO: RemoveTarget -> RemoveTargets for better efficiency
 	for _, target := range toKill {
 		// remove this target from the turn order
+		// TODO: consider whether/how to handle any errors that RemoveTarget may produce
 		sim.Turn.RemoveTarget(target)
 		sim.deathEvent(target)
 	}
