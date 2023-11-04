@@ -11,6 +11,7 @@ import (
 
 const (
 	TalentBuff                 = "jingliu-talent-buff"
+	TalentPull                 = "jingliu-talent-pull"
 	EnhanceModeBuff            = "jingliu-enhance-mode-buff"
 	TalentHPChange             = "jingliu-talent-hp-change"
 	Talent          key.Reason = "jingliu-talent"
@@ -40,35 +41,45 @@ func (c *char) getMaxStack() int {
 
 func (c *char) gainSyzygy() {
 	c.Syzygy += 1
-	if c.isEnhanced && c.Syzygy > c.getMaxStack() {
-		c.Syzygy = c.getMaxStack()
+	if c.isEnhanced {
+		if c.Syzygy > c.getMaxStack() {
+			c.Syzygy = c.getMaxStack()
+		}
 		return
 	}
 	if c.Syzygy < 2 {
 		return
 	}
 	// c.Syzygy >= 2 && !c.isEnhanced enter EnhanceMode
-	c.isEnhanced = true
-	c.Syzygy = c.getMaxStack() - 1
-	c.engine.ModifyGaugeNormalized(info.ModifyAttribute{
-		Key:    Talent,
-		Target: c.id,
-		Source: c.id,
-		Amount: -1,
-	})
+	c.engine.InsertAbility(info.Insert{
+		Key:      TalentPull,
+		Source:   c.id,
+		Priority: info.CharInsertAction,
+		Execute: func() {
+			c.isEnhanced = true
+			c.Syzygy = c.getMaxStack() - 1
+			c.engine.ModifyGaugeNormalized(info.ModifyAttribute{
+				Key:    Talent,
+				Target: c.id,
+				Source: c.id,
+				Amount: -1,
+			})
 
-	mod := info.Modifier{
-		Name:   EnhanceModeBuff,
-		Source: c.id,
-		Stats:  info.PropMap{prop.CritChance: talentCritRate[c.info.TalentLevelIndex()]},
-	}
-	if c.info.Eidolon >= 6 {
-		mod.Stats.Set(prop.CritDMG, 0.5)
-	}
-	if c.info.Traces["101"] {
-		mod.DebuffRES = info.DebuffRESMap{model.BehaviorFlag_STAT_CTRL: 0.35}
-	}
-	c.engine.AddModifier(c.id, mod)
+			mod := info.Modifier{
+				Name:   EnhanceModeBuff,
+				Source: c.id,
+				Stats:  info.PropMap{prop.CritChance: talentCritRate[c.info.TalentLevelIndex()]},
+			}
+			if c.info.Eidolon >= 6 {
+				mod.Stats.Set(prop.CritDMG, 0.5)
+			}
+			if c.info.Traces["101"] {
+				mod.DebuffRES = info.DebuffRESMap{model.BehaviorFlag_STAT_CTRL: 0.35}
+			}
+			c.engine.AddModifier(c.id, mod)
+		},
+		AbortFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL, model.BehaviorFlag_DISABLE_ACTION},
+	})
 }
 
 func (c *char) addTalentBuff() {
