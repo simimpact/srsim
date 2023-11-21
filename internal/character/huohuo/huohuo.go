@@ -38,17 +38,21 @@ func init() {
 }
 
 type char struct {
-	engine engine.Engine
-	id     key.TargetID
-	info   info.Character
+	engine      engine.Engine
+	id          key.TargetID
+	info        info.Character
+	DispelCount int
+	TalentRound int
 }
 
 func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character) info.CharInstance {
 	c := &char{
-		engine: engine,
-		id:     id,
-		info:   charInfo,
+		engine:      engine,
+		id:          id,
+		info:        charInfo,
+		DispelCount: 0,
+		TalentRound: 0,
 	}
-
+	engine.Events().ActionStart.Subscribe(c.TalentActionStartListener)
 	return c
 }
