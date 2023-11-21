@@ -2,12 +2,14 @@ package huohuo
 
 import (
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
-	Skill key.Heal = "huohuo-skill"
+	Skill       key.Heal   = "huohuo-skill"
+	SkillReason key.Reason = "huohuo-skill"
 )
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
@@ -34,11 +36,27 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		Order:  model.DispelOrder_LAST_ADDED,
 		Count:  1,
 	})
+	c.engine.ModifyEnergy(info.ModifyAttribute{
+		Target: c.id,
+		Source: c.id,
+		Amount: 30,
+		Key:    SkillReason,
+	})
 
 	c.TalentRound = 2
+	if c.info.Eidolon >= 1 {
+		c.TalentRound = 3
+	}
 	c.DispelCount = 6
-	targets := c.engine.Characters()
-	for _, target := range targets {
+	for _, target := range c.engine.Characters() {
+		if c.info.Eidolon >= 1 {
+			c.engine.AddModifier(target, info.Modifier{
+				Name:   TalentBuff,
+				Source: c.id,
+				Stats:  info.PropMap{prop.SPDPercent: 0.12},
+			})
+			continue
+		}
 		c.engine.AddModifier(target, info.Modifier{
 			Name:   TalentBuff,
 			Source: c.id,

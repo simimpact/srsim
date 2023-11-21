@@ -22,8 +22,7 @@ func init() {
 }
 
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
-	targets := c.engine.Characters()
-	for _, target := range targets {
+	for _, target := range c.engine.Characters() {
 		if c.id == target {
 			continue
 		}
@@ -40,5 +39,10 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			Stats:           info.PropMap{prop.ATKPercent: ultAttack[c.info.UltLevelIndex()]},
 		})
 	}
-
+	c.engine.ModifyEnergy(info.ModifyAttribute{
+		Target: c.id,
+		Source: c.id,
+		Amount: 5,
+		Key:    Ult,
+	})
 }

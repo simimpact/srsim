@@ -43,6 +43,7 @@ type char struct {
 	info        info.Character
 	DispelCount int
 	TalentRound int
+	E2Count     int
 }
 
 func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character) info.CharInstance {
@@ -52,7 +53,10 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 		info:        charInfo,
 		DispelCount: 0,
 		TalentRound: 0,
+		E2Count:     0,
 	}
-	engine.Events().ActionStart.Subscribe(c.TalentActionStartListener)
+	c.TalentInit()
+	c.engine.Events().HealStart.Subscribe(c.E4OnHeal, 0)
+	c.engine.Events().HealStart.Subscribe(c.E6OnHeal, 1)
 	return c
 }

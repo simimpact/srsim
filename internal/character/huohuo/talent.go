@@ -11,9 +11,11 @@ import (
 const (
 	TalentBuff key.Modifier = "huohuo-divineprovision"
 	TalentHeal key.Heal     = "huohuo-divineprovision-heal"
+	A4         key.Modifier = "huohuo-a4"
+	A6         key.Reason   = "huohuo-a6"
 )
 
-func init() {
+func (c *char) TalentInit() {
 	modifier.Register(TalentBuff, modifier.Config{
 		Stacking:   modifier.Replace,
 		StatusType: model.StatusType_STATUS_BUFF,
@@ -24,11 +26,37 @@ func init() {
 					RunTalent(mod)
 				}
 			},
+			OnLimboWaitHeal: E2OnKill,
 		},
+	})
+	if c.info.Traces["101"] {
+		c.DispelCount = 6
+		c.TalentRound = 1
+	}
+	if c.info.Traces["102"] {
+		c.engine.AddModifier(c.id, info.Modifier{
+			Name:      A4,
+			Source:    c.id,
+			DebuffRES: info.DebuffRESMap{model.BehaviorFlag_STAT_CTRL: 0.35},
+		})
+	}
+	c.engine.Events().ActionStart.Subscribe(c.TalentActionStartListener)
+	c.engine.Events().TargetDeath.Subscribe(func(e event.TargetDeath) {
+		if c.id == e.Target {
+			c.RemoveBuff()
+		}
 	})
 }
 
 func (c *char) TalentHeal(target key.TargetID) {
+	if c.info.Traces["103"] {
+		c.engine.ModifyEnergyFixed(info.ModifyAttribute{
+			Target: c.id,
+			Source: c.id,
+			Amount: 1,
+			Key:    A6,
+		})
+	}
 	c.engine.Heal(info.Heal{
 		Key:     TalentHeal,
 		Targets: []key.TargetID{target},
@@ -63,15 +91,18 @@ func RunTalent(mod *modifier.Instance) {
 	}
 }
 
+func (c *char) RemoveBuff() {
+	for _, target := range c.engine.Characters() {
+		c.engine.RemoveModifier(target, TalentBuff)
+	}
+}
+
 func (c *char) TalentActionStartListener(e event.ActionStart) {
 	if c.TalentRound == 0 {
 		return
 	}
 	c.TalentRound--
 	if c.TalentRound == 0 {
-		targets := c.engine.Characters()
-		for _, target := range targets {
-			c.engine.RemoveModifier(target, TalentBuff)
-		}
+		c.RemoveBuff()
 	}
 }
