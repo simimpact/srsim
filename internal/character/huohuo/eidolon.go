@@ -59,7 +59,8 @@ func (c *char) E6OnHeal(e *event.HealStart) {
 		return
 	}
 	c.engine.AddModifier(e.Target.ID(), info.Modifier{
-		Name:  E6,
-		Stats: info.PropMap{prop.AllDamagePercent: 0.5},
+		Source: c.id,
+		Name:   E6,
+		Stats:  info.PropMap{prop.AllDamagePercent: 0.5},
 	})
 }
