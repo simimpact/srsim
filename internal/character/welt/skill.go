@@ -56,16 +56,15 @@ func (c *char) initSkill() {
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	// targeted attack
 	c.applySkillAtk(Skill, []key.TargetID{target})
-
+	// extra attack from E1 ult activation
 	c.applyE1Pursued(target, 0.8*skillAtk[c.info.SkillLevelIndex()])
-	// extra random attacks
-	// TODO : confirm : DM uses IncludeLimbo but exclude targets w/ HP <= 0
 
 	// E6 : When using Skill, deals DMG for 1 extra time to a random enemy.
 	if c.info.Eidolon >= 6 {
 		c.applySkillAtk(E6, []key.TargetID{target})
 	}
 
+	// extra random attacks
 	for i := 0; i < 2; i++ {
 		chosenTarget := c.engine.Retarget(info.Retarget{
 			Targets: c.engine.Enemies(),
