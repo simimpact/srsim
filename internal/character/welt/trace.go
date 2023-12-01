@@ -3,18 +3,25 @@ package welt
 import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
-	A4 key.Reason = "welt-a4"
-	A6 key.Reason = "welt-a6"
+	A4      key.Reason   = "welt-a4"
+	A6      key.Reason   = "welt-a6"
+	A6Check key.Modifier = "welt-a6-check"
 )
 
 func init() {
-
+	modifier.Register(A6Check, modifier.Config{
+		CanModifySnapshot: true,
+		Listeners: modifier.Listeners{
+			OnBeforeHitAll: buffDmgOnWeaknessBroken,
+		},
+	})
 }
 
 func (c *char) initTraces() {
@@ -34,14 +41,18 @@ func (c *char) initTraces() {
 		})
 	})
 
-	// A6 : Deals 20% more DMG to enemies inflicted with Weakness Break.
-	c.engine.Events().HitStart.Subscribe(func(e event.HitStart) {
-		// TODO : DM uses modifier check for StanceBreakState
-		if e.Attacker != c.id ||
-			!c.info.Traces["103"] ||
-			c.engine.Stance(e.Defender) != 0 {
-			return
-		}
-		e.Hit.Attacker.AddProperty(A6, prop.AllDamagePercent, 0.2)
+	// A6 : add checker mod.
+	c.engine.AddModifier(c.id, info.Modifier{
+		Name:   A6Check,
+		Source: c.id,
 	})
+}
+
+// A6 : Deals 20% more DMG to enemies inflicted with Weakness Break.
+func buffDmgOnWeaknessBroken(mod *modifier.Instance, e event.HitStart) {
+	if mod.Engine().Stance(e.Defender) >= 0 {
+		// TODO : DM uses modifier check for StanceBreakState
+		// TODO : [TEMP] : check all possible break effect on defender(?)
+		e.Hit.Attacker.AddProperty(A6, prop.AllDamagePercent, 0.2)
+	}
 }
