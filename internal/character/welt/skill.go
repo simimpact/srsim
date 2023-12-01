@@ -75,9 +75,12 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	state.EndAttack()
 }
 
-// TODO : alter amount of energy gained on attacks based on
-// if E6 exists or not.
 func (c *char) applySkillAtk(atkKey key.Attack, targets []key.TargetID) {
+	// E6 check for energy distribution.
+	energyAmt := 10.0
+	if c.info.Eidolon >= 6 {
+		energyAmt = 7.5
+	}
 	c.engine.Attack(info.Attack{
 		Key:        atkKey,
 		Source:     c.id,
@@ -88,6 +91,6 @@ func (c *char) applySkillAtk(atkKey key.Attack, targets []key.TargetID) {
 			model.DamageFormula_BY_ATK: skillAtk[c.info.SkillLevelIndex()],
 		},
 		StanceDamage: 30,
-		EnergyGain:   10,
+		EnergyGain:   energyAmt,
 	})
 }
