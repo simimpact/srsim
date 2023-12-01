@@ -11,6 +11,7 @@ const (
 	DanHengImbibitorLunae Character = "danhengimbibitorlunae"
 	DummyCharacter        Character = "dummy_character"
 	Gepard                Character = "gepard"
+	Hook                  Character = "hook"
 	March7th              Character = "march7th"
 	Natasha               Character = "natasha"
 	Pela                  Character = "pela"
