@@ -50,9 +50,8 @@ func (c *char) initTraces() {
 
 // A6 : Deals 20% more DMG to enemies inflicted with Weakness Break.
 func buffDmgOnWeaknessBroken(mod *modifier.Instance, e event.HitStart) {
-	if mod.Engine().Stance(e.Defender) >= 0 {
-		// TODO : DM uses modifier check for StanceBreakState
-		// TODO : [TEMP] : check all possible break effect on defender(?)
+	// NOTE : DM uses modifier check for StanceBreakState
+	if mod.Engine().Stance(e.Defender) <= 0 {
 		e.Hit.Attacker.AddProperty(A6, prop.AllDamagePercent, 0.2)
 	}
 }
