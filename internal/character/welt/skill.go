@@ -59,11 +59,6 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	// extra attack from E1 ult activation
 	c.applyE1Pursued(target, 0.8*skillAtk[c.info.SkillLevelIndex()])
 
-	// E6 : When using Skill, deals DMG for 1 extra time to a random enemy.
-	if c.info.Eidolon >= 6 {
-		c.applySkillAtk(E6, []key.TargetID{target})
-	}
-
 	// extra random attacks
 	for i := 0; i < 2; i++ {
 		chosenTarget := c.engine.Retarget(info.Retarget{
@@ -72,10 +67,16 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		})
 		c.applySkillAtk(Skill, chosenTarget)
 	}
+	// E6 : When using Skill, deals DMG for 1 extra time to a random enemy.
+	if c.info.Eidolon >= 6 {
+		c.applySkillAtk(E6, []key.TargetID{target})
+	}
 
 	state.EndAttack()
 }
 
+// TODO : alter amount of energy gained on attacks based on
+// if E6 exists or not.
 func (c *char) applySkillAtk(atkKey key.Attack, targets []key.TargetID) {
 	c.engine.Attack(info.Attack{
 		Key:        atkKey,
