@@ -6,7 +6,7 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-func (sim *Simulation) initStatCollection() error {
+func (sim *Simulation) initStatCollection() {
 	sim.res = &model.IterationResult{
 		TotalDamageDealt: 0,
 		TotalDamageTaken: 0,
@@ -27,6 +27,4 @@ func (sim *Simulation) initStatCollection() error {
 			sim.res.TotalDamageDealt += event.TotalDamage
 		}
 	})
-
-	return nil
 }

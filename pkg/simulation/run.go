@@ -36,10 +36,7 @@ func initialize(sim *Simulation) (stateFn, error) {
 		}
 	}
 
-	err := sim.initStatCollection()
-	if err != nil {
-		return nil, err
-	}
+	sim.initStatCollection()
 
 	// want to emit after all hooks in the event that they subscribe to these
 	sim.Event.Initialize.Emit(event.Initialize{
