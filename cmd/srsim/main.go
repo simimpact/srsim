@@ -157,6 +157,10 @@ func run(ctx *cli.Context) error {
 		return cli.Exit(err, 1)
 	}
 
+	if ctx.Int("iterations") > 0 {
+		config.Settings.Iterations = uint32(ctx.Int("iterations"))
+	}
+
 	opts := &ExecutionOpts{
 		config:     config,
 		list:       list,

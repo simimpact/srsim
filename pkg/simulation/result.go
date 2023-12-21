@@ -71,6 +71,7 @@ func CreateResult(cfg *model.SimConfig, seed int64) *model.SimResult {
 		Modified:      &modified,
 		Config:        cfg,
 		DebugSeed:     strconv.FormatUint(uint64(seed), 10),
+		Statistics:    new(model.Statistics),
 	}
 
 	return result
