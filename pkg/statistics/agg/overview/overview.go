@@ -28,10 +28,25 @@ func newSample(itr uint32) *calc.Sample {
 
 func NewAgg(cfg *model.SimConfig) (agg.Aggregator, error) {
 	out := buffer{
-		dpc:              newSample(cfg.Settings.Iterations),
-		totalDamageTaken: calc.StreamStats{},
-		totalDamageDealt: calc.StreamStats{},
-		totalAV:          calc.StreamStats{},
+		dpc: newSample(cfg.Settings.Iterations),
+		totalDamageTaken: calc.StreamStats{
+			Count: 0,
+			Total: 0,
+			Min:   0,
+			Max:   0,
+		},
+		totalDamageDealt: calc.StreamStats{
+			Count: 0,
+			Total: 0,
+			Min:   0,
+			Max:   0,
+		},
+		totalAV: calc.StreamStats{
+			Count: 0,
+			Total: 0,
+			Min:   0,
+			Max:   0,
+		},
 	}
 	return &out, nil
 }
