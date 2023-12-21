@@ -31,6 +31,7 @@ type RunOpts struct {
 type Simulation struct {
 	cfg  *model.SimConfig
 	eval logic.Eval
+	res  *model.IterationResult
 	seed int64
 
 	// services

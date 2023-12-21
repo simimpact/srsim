@@ -23,8 +23,8 @@ func (sim *Simulation) Run() (*model.IterationResult, error) {
 			return nil, err
 		}
 	}
-	// TODO: create IterationResult
-	return nil, nil
+	sim.res.TotalAv = sim.Turn.TotalAV()
+	return sim.res, nil
 }
 
 // initialize the sim and create characters from the config to prep for execution
@@ -36,7 +36,10 @@ func initialize(sim *Simulation) (stateFn, error) {
 		}
 	}
 
-	// TODO: stats collectors should enable here?
+	err := sim.initStatCollection()
+	if err != nil {
+		return nil, err
+	}
 
 	// want to emit after all hooks in the event that they subscribe to these
 	sim.Event.Initialize.Emit(event.Initialize{

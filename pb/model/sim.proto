@@ -22,6 +22,7 @@ message SimConfig {
 
 message SimulatorSettings {
   uint32 cycle_limit = 1;
+  uint32 iterations = 2;
 }
 
 message Wave {
