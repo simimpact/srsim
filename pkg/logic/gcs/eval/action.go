@@ -31,7 +31,7 @@ func (e *Eval) NextAction(target key.TargetID) (logic.Action, error) {
 func (e *Eval) UltCheck() ([]logic.Action, error) {
 	result := make([]logic.Action, 0)
 	for _, t := range e.ultNodes {
-		act, err := e.evalTargetNode(t, logic.ActionUlt)
+		act, err := e.evalTargetNode(t, logic.ActionUlt, logic.ActionUltAttack, logic.ActionUltSkill)
 		if err != nil {
 			return nil, err
 		}
