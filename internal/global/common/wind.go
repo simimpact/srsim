@@ -70,6 +70,11 @@ func windShearPhase1(mod *modifier.Instance) {
 }
 
 func breakWindShearPhase1(mod *modifier.Instance) {
+	state, ok := mod.State().(*WindShearState)
+	if !ok {
+		panic("incorrect state used for wind shear modifier")
+	}
+
 	// perform break wind shear damage
 	mod.Engine().Attack(info.Attack{
 		Key:        BreakWindShear,
@@ -78,7 +83,7 @@ func breakWindShearPhase1(mod *modifier.Instance) {
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_WIND,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_BREAK_DAMAGE: mod.Count(),
+			model.DamageFormula_BY_BREAK_DAMAGE: state.DamagePercentage * mod.Count(),
 		},
 		AsPureDamage: true,
 		UseSnapshot:  true,

@@ -144,6 +144,9 @@ func applyWeaknessBreakWind(breakInfoData *breakInfo) {
 		Duration: 2,
 		Count:    windShearStacksCount,
 		Chance:   1.5,
+		State: &WindShearState{
+			DamagePercentage: 1,
+		},
 	})
 }
 
