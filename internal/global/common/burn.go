@@ -53,7 +53,7 @@ func init() {
 }
 
 func burnPhase1(mod *modifier.Instance) {
-	state, ok := mod.State().(BurnState)
+	state, ok := mod.State().(*BurnState)
 	if !ok {
 		panic("incorrect state used for burn modifier")
 	}

@@ -53,7 +53,7 @@ func init() {
 }
 
 func shockPhase1(mod *modifier.Instance) {
-	state, ok := mod.State().(ShockState)
+	state, ok := mod.State().(*ShockState)
 	if !ok {
 		panic("incorrect state used for shock modifier")
 	}
