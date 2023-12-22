@@ -68,8 +68,6 @@ var debugFlags = []cli.Flag{
 var version string
 
 func init() {
-	// TODO: get version from tag & gh workflow (https://www.forkingbytes.com/blog/dynamic-versioning-your-go-application/)
-	// default version commit hash?
 	cli.VersionPrinter = func(ctx *cli.Context) {
 		fmt.Fprintf(ctx.App.Writer, "srsim version %s (%s)\n", ctx.App.Version, "")
 	}
@@ -110,6 +108,11 @@ func main() {
 				},
 			},
 		},
+	}
+
+	// try self updating, if error move on
+	if err := update(version); err != nil {
+		log.Printf("self updating failed: %v", err)
 	}
 
 	if err := app.Run(os.Args); err != nil {

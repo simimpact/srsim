@@ -23,4 +23,7 @@ jobs:
         with:
           files: |
             LICENSE
-            srsim.exe
+            srsim_windows_amd64.exe
+            srsim_darwin_arm64
+            srsim_darwin_amd64
+            srsim_linux_amd64
