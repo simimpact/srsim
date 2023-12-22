@@ -68,8 +68,6 @@ var debugFlags = []cli.Flag{
 var version string
 
 func init() {
-	// TODO: get version from tag & gh workflow (https://www.forkingbytes.com/blog/dynamic-versioning-your-go-application/)
-	// default version commit hash?
 	cli.VersionPrinter = func(ctx *cli.Context) {
 		fmt.Fprintf(ctx.App.Writer, "srsim version %s (%s)\n", ctx.App.Version, "")
 	}
