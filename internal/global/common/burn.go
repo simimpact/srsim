@@ -94,3 +94,21 @@ func breakBurnPhase1(mod *modifier.Instance) {
 		UseSnapshot:  true,
 	})
 }
+
+func (B BurnState) TriggerDot(mod *modifier.Instance, ratio float64) {
+
+	// perform burn damage
+	mod.Engine().Attack(info.Attack{
+		Key:        Burn,
+		Source:     mod.Source(),
+		Targets:    []key.TargetID{mod.Owner()},
+		AttackType: model.AttackType_DOT,
+		DamageType: model.DamageType_FIRE,
+		BaseDamage: info.DamageMap{
+			model.DamageFormula_BY_ATK: B.DamagePercentage * ratio,
+			model.DamageFormula_BY_DEF: B.DEFDamagePercentage * ratio,
+		},
+		DamageValue: B.DamageValue * ratio,
+		UseSnapshot: true,
+	})
+}
