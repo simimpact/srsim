@@ -119,6 +119,10 @@ func applyWeaknessBreakThunder(breakInfoData *breakInfo) {
 		Source:   breakInfoData.charID,
 		Duration: 2,
 		Chance:   1.5,
+		State: &ShockState{
+			DamagePercentage: 2,
+			DamageValue:      0,
+		},
 	})
 }
 

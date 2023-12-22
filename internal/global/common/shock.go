@@ -74,6 +74,11 @@ func shockPhase1(mod *modifier.Instance) {
 }
 
 func breakShockPhase1(mod *modifier.Instance) {
+	state, ok := mod.State().(*ShockState)
+	if !ok {
+		panic("incorrect state used for shock modifier")
+	}
+
 	// perform break shock damage
 	mod.Engine().Attack(info.Attack{
 		Key:        BreakShock,
@@ -82,7 +87,7 @@ func breakShockPhase1(mod *modifier.Instance) {
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_THUNDER,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_BREAK_DAMAGE: 2,
+			model.DamageFormula_BY_BREAK_DAMAGE: state.DamagePercentage,
 		},
 		AsPureDamage: true,
 		UseSnapshot:  true,
