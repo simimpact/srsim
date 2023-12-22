@@ -99,3 +99,13 @@ func breakBleedPhase1(mod *modifier.Instance) {
 		UseSnapshot:  true,
 	})
 }
+
+// Custom event trigger for bleed dots
+func (B BleedState) TriggerEvent(mod *modifier.Instance) {
+	bleedPhase1(mod)
+}
+
+// Ditto, but for break dots
+func (B BreakBleedState) TriggerEvent(mod *modifier.Instance) {
+	breakBleedPhase1(mod)
+}
