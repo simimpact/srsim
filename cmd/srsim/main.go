@@ -99,6 +99,15 @@ func main() {
 				Action:                 run,
 			},
 			{
+				Name:      "update",
+				Usage:     "update srsim to latest version",
+				UsageText: "srsim update",
+				HideHelp:  true,
+				Action: func(ctx *cli.Context) error {
+					return update(version)
+				},
+			},
+			{
 				Name:     "version",
 				Usage:    "print the version",
 				HideHelp: true,
@@ -108,11 +117,6 @@ func main() {
 				},
 			},
 		},
-	}
-
-	// try self updating, if error move on
-	if err := update(version); err != nil {
-		log.Printf("self updating failed: %v", err)
 	}
 
 	if err := app.Run(os.Args); err != nil {
