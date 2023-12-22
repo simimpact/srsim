@@ -112,6 +112,11 @@ func main() {
 		},
 	}
 
+	// try self updating, if error move on
+	if err := update(version); err != nil {
+		log.Printf("self updating failed: %v", err)
+	}
+
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
 	}
