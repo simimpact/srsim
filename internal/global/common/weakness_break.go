@@ -90,6 +90,11 @@ func applyWeaknessBreakFire(breakInfoData *breakInfo) {
 		Source:   breakInfoData.charID,
 		Duration: 2,
 		Chance:   1.5,
+		State: &BurnState{
+			DamagePercentage:    1,
+			DamageValue:         0,
+			DEFDamagePercentage: 0,
+		},
 	})
 }
 
