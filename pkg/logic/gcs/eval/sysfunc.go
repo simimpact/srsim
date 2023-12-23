@@ -64,6 +64,10 @@ func (e *Eval) print(c *ast.CallExpr, env *Env) (Obj, error) {
 
 // rand()
 func (e *Eval) rand(c *ast.CallExpr, env *Env) (Obj, error) {
+	if _, err := e.validateArguments(c.Args, env); err != nil {
+		return nil, err
+	}
+
 	x := e.engine.Rand().Float64()
 	return &number{
 		fval:    x,
@@ -73,6 +77,10 @@ func (e *Eval) rand(c *ast.CallExpr, env *Env) (Obj, error) {
 
 // randnorm()
 func (e *Eval) randnorm(c *ast.CallExpr, env *Env) (Obj, error) {
+	if _, err := e.validateArguments(c.Args, env); err != nil {
+		return nil, err
+	}
+
 	x := e.engine.Rand().NormFloat64()
 	return &number{
 		fval:    x,
