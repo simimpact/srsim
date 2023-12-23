@@ -131,6 +131,7 @@ let z = f(2);
 print(z);
 
 print("hi");
+print([1, 2, hello="world", 3]);
 `
 
 func TestFnCall(t *testing.T) {

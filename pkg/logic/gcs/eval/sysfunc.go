@@ -2,6 +2,7 @@ package eval
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/simimpact/srsim/pkg/engine/target/evaltarget"
@@ -12,10 +13,17 @@ import (
 
 func (e *Eval) initSysFuncs(env *Env) {
 	funcs := map[string]func(*ast.CallExpr, *Env) (Obj, error){
-		"rand":               e.rand,
-		"randnorm":           e.randnorm,
-		"print":              e.print,
-		"type":               e.typeval,
+		// basic
+		"print": e.print,
+		"type":  e.typeval,
+		// math
+		"rand":     e.rand,
+		"randnorm": e.randnorm,
+		// map
+		"sort":  e.sort,
+		"first": e.first,
+		"any":   e.any,
+		// action
 		"register_skill_cb":  e.registerSkillCB,
 		"register_ult_cb":    e.registerUltCB,
 		"set_default_action": e.setDefaultAction,
@@ -186,4 +194,89 @@ func (e *Eval) addAction(at logic.ActionType, env *Env) {
 	}
 
 	env.setBuiltinFunc(string(at), f)
+}
+
+// sort(map, callback)
+func (e *Eval) sort(c *ast.CallExpr, env *Env) (Obj, error) {
+	objs, err := e.validateArguments(c.Args, env, typMap, typFun)
+	if err != nil {
+		return nil, err
+	}
+	m := objs[0].(*mapval)
+	callback := objs[1].(*funcval)
+
+	if len(callback.Args) != 2 {
+		return nil, fmt.Errorf("invalid number of params for callback, expected 2 got %v", len(callback.Args))
+	}
+
+	local := NewEnv(env)
+	sort.SliceStable(m.array, func(i, j int) bool {
+		// cancel sorting if an error occurs
+		if err != nil {
+			return false
+		}
+
+		var result Obj
+		local.varMap[callback.Args[0].Value] = &m.array[i]
+		local.varMap[callback.Args[1].Value] = &m.array[j]
+		result, err = e.evalNode(callback.Body, local)
+		if err != nil {
+			return false
+		}
+
+		if result.Typ() != typRet {
+			err = fmt.Errorf("the callback must return a value")
+			return false
+		}
+		return otob(result.(*retval).res)
+	})
+	if err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+// first(map)
+func (e *Eval) first(c *ast.CallExpr, env *Env) (Obj, error) {
+	objs, err := e.validateArguments(c.Args, env, typMap)
+	if err != nil {
+		return nil, err
+	}
+	m := objs[0].(*mapval)
+	if len(m.array) == 0 {
+		return &null{}, nil
+	}
+	return m.array[0], nil
+}
+
+// any(map, callback)
+func (e *Eval) any(c *ast.CallExpr, env *Env) (Obj, error) {
+	objs, err := e.validateArguments(c.Args, env, typMap, typFun)
+	if err != nil {
+		return nil, err
+	}
+	m := objs[0].(*mapval)
+	callback := objs[1].(*funcval)
+
+	if len(callback.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for callback, expected 1 got %v", len(callback.Args))
+	}
+
+	local := NewEnv(env)
+	for _, value := range m.array {
+		local.varMap[callback.Args[0].Value] = &value
+		result, err := e.evalNode(callback.Body, local)
+		if err != nil {
+			return nil, err
+		}
+
+		if result.Typ() != typRet {
+			err = fmt.Errorf("the callback must return a value")
+			return nil, err
+		}
+		if otob(result.(*retval).res) {
+			return bton(true), nil
+		}
+	}
+	return bton(false), nil
 }

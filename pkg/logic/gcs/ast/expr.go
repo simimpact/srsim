@@ -71,6 +71,7 @@ type (
 
 	MapExpr struct {
 		Pos
+		Array  []Expr
 		Fields map[string]Expr
 	}
 )
@@ -385,7 +386,11 @@ func (m *MapExpr) CopyExpr() Expr {
 	}
 	n := &MapExpr{
 		Pos:    m.Pos,
+		Array:  make([]Expr, 0),
 		Fields: make(map[string]Expr),
+	}
+	for k, v := range m.Array {
+		n.Array[k] = v.CopyExpr()
 	}
 	for k, v := range m.Fields {
 		n.Fields[k] = v.CopyExpr()
@@ -406,6 +411,13 @@ func (m *MapExpr) String() string {
 func (m *MapExpr) writeTo(sb *strings.Builder) {
 	sb.WriteString("[")
 	done := false
+	for _, v := range m.Array {
+		if done {
+			sb.WriteString(", ")
+		}
+		done = true
+		sb.WriteString(v.String())
+	}
 	for k, v := range m.Fields {
 		if done {
 			sb.WriteString(", ")

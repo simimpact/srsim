@@ -71,6 +71,7 @@ type (
 	}
 
 	mapval struct {
+		array  []Obj
 		fields map[string]Obj
 	}
 
@@ -139,6 +140,14 @@ func (a *actionval) Typ() ObjTyp { return typAct }
 func (m *mapval) Inspect() string {
 	str := "["
 	done := false
+	for _, v := range m.array {
+		if done {
+			str += ", "
+		}
+		done = true
+
+		str += v.Inspect()
+	}
 	for k, v := range m.fields {
 		if done {
 			str += ", "

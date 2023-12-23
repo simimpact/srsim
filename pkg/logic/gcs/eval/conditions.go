@@ -15,11 +15,13 @@ func (e *Eval) initConditionalFuncs(env *Env) {
 		"has_modifier":   e.hasModifier,
 		"modifier_count": e.modifierCount,
 		// attribute
-		"ult_ready":    e.ultReady,
-		"skill_points": e.skillPoints,
-		"energy":       e.energy,
-		"max_energy":   e.maxEnergy,
-		"hp_ratio":     e.hpRatio,
+		"ult_ready":       e.ultReady,
+		"skill_points":    e.skillPoints,
+		"energy":          e.energy,
+		"max_energy":      e.maxEnergy,
+		"hp_ratio":        e.hpRatio,
+		"weakness_broken": e.weaknessBroken,
+		"has_weakness":    e.hasWeakness,
 		// shield
 		"has_shield":  e.hasShield,
 		"is_shielded": e.isShielded,
@@ -27,10 +29,13 @@ func (e *Eval) initConditionalFuncs(env *Env) {
 		// TODO: whos_next()?
 		// info
 		"skill_ready": e.skillReady,
+		"element":     e.element,
 		// target
 		"is_valid":     e.isValid,
 		"is_character": e.isCharacter,
 		"is_enemy":     e.isEnemy,
+		"enemies":      e.enemies,
+		"characters":   e.characters,
 	}
 	for name, fn := range funcs {
 		env.setBuiltinFunc(name, fn)
@@ -246,4 +251,86 @@ func (e *Eval) isEnemy(c *ast.CallExpr, env *Env) (Obj, error) {
 	target := key.TargetID(objs[0].(*number).ival)
 
 	return bton(e.engine.IsEnemy(target)), nil
+}
+
+// enemies()
+func (e *Eval) enemies(c *ast.CallExpr, env *Env) (Obj, error) {
+	if _, err := e.validateArguments(c.Args, env); err != nil {
+		return nil, err
+	}
+
+	enemies := e.engine.Enemies()
+	if len(enemies) == 0 {
+		return &mapval{}, nil
+	}
+	result := &mapval{array: make([]Obj, 0, len(enemies))}
+	for _, enemy := range enemies {
+		result.array = append(result.array, &number{ival: int64(enemy)})
+	}
+	return result, nil
+}
+
+// weakness_broken(target)
+func (e *Eval) weaknessBroken(c *ast.CallExpr, env *Env) (Obj, error) {
+	objs, err := e.validateArguments(c.Args, env, typNum)
+	if err != nil {
+		return nil, err
+	}
+	target := key.TargetID(objs[0].(*number).ival)
+
+	if !e.engine.IsEnemy(target) {
+		return nil, fmt.Errorf("target %d is not an enemy", target)
+	}
+	return bton(e.engine.Stance(target) == 0), nil
+}
+
+// has_weakness(target, element)
+func (e *Eval) hasWeakness(c *ast.CallExpr, env *Env) (Obj, error) {
+	objs, err := e.validateArguments(c.Args, env, typNum, typNum)
+	if err != nil {
+		return nil, err
+	}
+	target := key.TargetID(objs[0].(*number).ival)
+	element := model.DamageType(objs[1].(*number).ival)
+
+	if !e.engine.IsEnemy(target) {
+		return nil, fmt.Errorf("target %d is not an enemy", target)
+	}
+	stats := e.engine.Stats(target)
+	return bton(stats.IsWeakTo(element)), nil
+}
+
+// element(char)
+func (e *Eval) element(c *ast.CallExpr, env *Env) (Obj, error) {
+	objs, err := e.validateArguments(c.Args, env, typNum)
+	if err != nil {
+		return nil, err
+	}
+	target := key.TargetID(objs[0].(*number).ival)
+
+	if !e.engine.IsCharacter(target) {
+		return nil, fmt.Errorf("target %d is not a character", target)
+	}
+	charInfo, err := e.engine.CharacterInfo(target)
+	if err != nil {
+		return nil, err
+	}
+	return &number{ival: int64(charInfo.Element)}, nil
+}
+
+// characters()
+func (e *Eval) characters(c *ast.CallExpr, env *Env) (Obj, error) {
+	if _, err := e.validateArguments(c.Args, env); err != nil {
+		return nil, err
+	}
+
+	characters := e.engine.Characters()
+	if len(characters) == 0 {
+		return &mapval{}, nil
+	}
+	result := &mapval{array: make([]Obj, 0, len(characters))}
+	for _, enemy := range characters {
+		result.array = append(result.array, &number{ival: int64(enemy)})
+	}
+	return result, nil
 }
