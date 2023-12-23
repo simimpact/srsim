@@ -101,8 +101,7 @@ func breakBleedPhase1(mod *modifier.Instance) {
 }
 
 // Custom event trigger for bleed dots
-func (B BleedState) TriggerDot(mod *modifier.Instance, ratio float64) {
-
+func (b BleedState) TriggerDot(mod *modifier.Instance, ratio float64) {
 	// perform bleed damage
 	mod.Engine().Attack(info.Attack{
 		Key:        Bleed,
@@ -111,16 +110,15 @@ func (B BleedState) TriggerDot(mod *modifier.Instance, ratio float64) {
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_PHYSICAL,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_ATK: B.DamagePercentage,
+			model.DamageFormula_BY_ATK: b.DamagePercentage,
 		},
-		DamageValue: B.DamageValue,
+		DamageValue: b.DamageValue,
 		UseSnapshot: true,
 	})
 }
 
 // Ditto, but for break dots
-func (B BreakBleedState) TriggerDot(mod *modifier.Instance, ratio float64) {
-
+func (b BreakBleedState) TriggerDot(mod *modifier.Instance, ratio float64) {
 	// perform break bleed damage
 	mod.Engine().Attack(info.Attack{
 		Key:        BreakBleed,
@@ -131,7 +129,7 @@ func (B BreakBleedState) TriggerDot(mod *modifier.Instance, ratio float64) {
 		BaseDamage: info.DamageMap{
 			model.DamageFormula_BY_BREAK_DAMAGE: 0,
 		},
-		DamageValue:  B.BaseDamageValue * ratio,
+		DamageValue:  b.BaseDamageValue * ratio,
 		AsPureDamage: true,
 		UseSnapshot:  true,
 	})

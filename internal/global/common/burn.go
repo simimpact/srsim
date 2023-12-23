@@ -99,35 +99,33 @@ func breakBurnPhase1(mod *modifier.Instance) {
 	})
 }
 
-func (B BurnState) TriggerDot(mod *modifier.Instance, ratio float64) {
-
+func (b BurnState) TriggerDot(mod *modifier.Instance, ratio float64) {
 	// perform burn damage
 	mod.Engine().Attack(info.Attack{
-		Key:        key.Attack(mod.Name()),
+		Key:        Burn,
 		Source:     mod.Source(),
 		Targets:    []key.TargetID{mod.Owner()},
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_FIRE,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_ATK: B.DamagePercentage * ratio,
-			model.DamageFormula_BY_DEF: B.DEFDamagePercentage * ratio,
+			model.DamageFormula_BY_ATK: b.DamagePercentage * ratio,
+			model.DamageFormula_BY_DEF: b.DEFDamagePercentage * ratio,
 		},
-		DamageValue: B.DamageValue * ratio,
+		DamageValue: b.DamageValue * ratio,
 		UseSnapshot: true,
 	})
 }
 
-func (B BreakBurnState) TriggerDot(mod *modifier.Instance, ratio float64) {
-
+func (b BreakBurnState) TriggerDot(mod *modifier.Instance, ratio float64) {
 	// perform burn damage
 	mod.Engine().Attack(info.Attack{
-		Key:        key.Attack(mod.Name()),
+		Key:        BreakBurn,
 		Source:     mod.Source(),
 		Targets:    []key.TargetID{mod.Owner()},
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_FIRE,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_BREAK_DAMAGE: B.BreakBaseMulti,
+			model.DamageFormula_BY_BREAK_DAMAGE: b.BreakBaseMulti,
 		},
 		UseSnapshot: true,
 	})

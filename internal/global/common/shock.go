@@ -98,7 +98,7 @@ func breakShockPhase1(mod *modifier.Instance) {
 	})
 }
 
-func (S ShockState) TriggerDot(mod *modifier.Instance, ratio float64) {
+func (s ShockState) TriggerDot(mod *modifier.Instance, ratio float64) {
 	mod.Engine().Attack(info.Attack{
 		Key:        Shock,
 		Source:     mod.Source(),
@@ -106,14 +106,14 @@ func (S ShockState) TriggerDot(mod *modifier.Instance, ratio float64) {
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_THUNDER,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_ATK: S.DamagePercentage * ratio,
+			model.DamageFormula_BY_ATK: s.DamagePercentage * ratio,
 		},
 		AsPureDamage: true,
 		UseSnapshot:  true,
 	})
 }
 
-func (S BreakShockState) TriggerDot(mod *modifier.Instance, ratio float64) {
+func (s BreakShockState) TriggerDot(mod *modifier.Instance, ratio float64) {
 	mod.Engine().Attack(info.Attack{
 		Key:        BreakShock,
 		Source:     mod.Source(),
@@ -121,7 +121,7 @@ func (S BreakShockState) TriggerDot(mod *modifier.Instance, ratio float64) {
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_THUNDER,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_BREAK_DAMAGE: S.BreakBaseMulti * ratio,
+			model.DamageFormula_BY_BREAK_DAMAGE: s.BreakBaseMulti * ratio,
 		},
 		AsPureDamage: true,
 		UseSnapshot:  true,
