@@ -264,6 +264,7 @@ func (e *Eval) any(c *ast.CallExpr, env *Env) (Obj, error) {
 
 	local := NewEnv(env)
 	for _, value := range m.array {
+		value := value // copying
 		local.varMap[callback.Args[0].Value] = &value
 		result, err := e.evalNode(callback.Body, local)
 		if err != nil {
