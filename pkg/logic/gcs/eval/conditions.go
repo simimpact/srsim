@@ -35,7 +35,6 @@ func (e *Eval) initConditionalFuncs(env *Env) {
 	for name, fn := range funcs {
 		env.setBuiltinFunc(name, fn)
 	}
-
 }
 
 func (e *Eval) initEnums(env *Env) {
