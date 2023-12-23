@@ -156,7 +156,7 @@ func run(ctx *cli.Context) error {
 		return cli.Exit(err, 1)
 	}
 
-	if err := os.MkdirAll(ctx.String("outpath"), os.ModeDir); err != nil {
+	if err := os.MkdirAll(ctx.String("outpath"), os.ModePerm); err != nil {
 		return cli.Exit(err, 1)
 	}
 
