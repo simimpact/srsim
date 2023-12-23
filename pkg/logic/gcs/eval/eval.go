@@ -79,9 +79,11 @@ func (e *Eval) Init(eng engine.Engine) error {
 	e.initActions(e.global)
 
 	// conditionals for hsr
-	e.initConditionalFuncs(e.global)
-	e.initEnums(e.global)
-	e.initCharNames(e.global)
+	if e.engine != nil {
+		e.initConditionalFuncs(e.global)
+		e.initEnums(e.global)
+		e.initCharNames(e.global)
+	}
 
 	_, err := e.evalNode(e.AST, e.global)
 	if err != nil {
