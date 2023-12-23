@@ -40,9 +40,6 @@ func (s *Service) emitHPChangeEvents(
 
 func (s *Service) emitStanceChange(
 	key key.Reason, target, source key.TargetID, prevS, newS float64) error {
-	if prevS == newS {
-		return nil
-	}
 
 	s.event.StanceChange.Emit(event.StanceChange{
 		Key:       key,

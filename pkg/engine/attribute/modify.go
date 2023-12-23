@@ -2,7 +2,7 @@ package attribute
 
 import (
 	"fmt"
-	
+
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/prop"
@@ -98,6 +98,10 @@ func (s *Service) SetStance(data info.ModifyAttribute) error {
 		return fmt.Errorf("unknown target: %v", data.Target)
 	}
 	attr := t.attributes
+
+	if data.Amount == attr.Stance {
+		return nil
+	}
 
 	if data.Amount == 0 {
 		s.event.StanceBreak.Emit(event.StanceBreak{
