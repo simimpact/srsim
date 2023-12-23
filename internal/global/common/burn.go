@@ -18,6 +18,10 @@ type BurnState struct {
 	DEFDamagePercentage float64
 }
 
+type BreakBurnState struct {
+	BreakBaseMulti float64
+}
+
 func init() {
 	// common burn
 	modifier.Register(Burn, modifier.Config{
@@ -75,7 +79,7 @@ func burnPhase1(mod *modifier.Instance) {
 }
 
 func breakBurnPhase1(mod *modifier.Instance) {
-	state, ok := mod.State().(*BurnState)
+	state, ok := mod.State().(*BreakBurnState)
 	if !ok {
 		panic("incorrect state used for burn modifier")
 	}
@@ -88,7 +92,7 @@ func breakBurnPhase1(mod *modifier.Instance) {
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_FIRE,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_BREAK_DAMAGE: state.DamagePercentage,
+			model.DamageFormula_BY_BREAK_DAMAGE: state.BreakBaseMulti,
 		},
 		AsPureDamage: true,
 		UseSnapshot:  true,
@@ -99,7 +103,7 @@ func (B BurnState) TriggerDot(mod *modifier.Instance, ratio float64) {
 
 	// perform burn damage
 	mod.Engine().Attack(info.Attack{
-		Key:        Burn,
+		Key:        key.Attack(mod.Name()),
 		Source:     mod.Source(),
 		Targets:    []key.TargetID{mod.Owner()},
 		AttackType: model.AttackType_DOT,
@@ -109,6 +113,22 @@ func (B BurnState) TriggerDot(mod *modifier.Instance, ratio float64) {
 			model.DamageFormula_BY_DEF: B.DEFDamagePercentage * ratio,
 		},
 		DamageValue: B.DamageValue * ratio,
+		UseSnapshot: true,
+	})
+}
+
+func (B BreakBurnState) TriggerDot(mod *modifier.Instance, ratio float64) {
+
+	// perform burn damage
+	mod.Engine().Attack(info.Attack{
+		Key:        key.Attack(mod.Name()),
+		Source:     mod.Source(),
+		Targets:    []key.TargetID{mod.Owner()},
+		AttackType: model.AttackType_DOT,
+		DamageType: model.DamageType_FIRE,
+		BaseDamage: info.DamageMap{
+			model.DamageFormula_BY_BREAK_DAMAGE: B.BreakBaseMulti,
+		},
 		UseSnapshot: true,
 	})
 }

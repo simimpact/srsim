@@ -1,7 +1,7 @@
 {
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit"
   },
 
   "[javascript]": {
@@ -15,10 +15,7 @@
   },
 
   "go.lintTool": "golangci-lint",
-  "go.lintFlags": [
-    "--fast",
-    "--fix"
-  ],
+  "go.lintFlags": ["--fast", "--fix"],
   "go.lintOnSave": "package",
 
   "search.exclude": {
@@ -37,4 +34,3 @@
     "https://json.schemastore.org/github-workflow.json": "file:///root/srsim/srsim/.github/workflows/deploy.yml"
   }
 }
-

@@ -90,10 +90,8 @@ func applyWeaknessBreakFire(breakInfoData *breakInfo) {
 		Source:   breakInfoData.charID,
 		Duration: 2,
 		Chance:   1.5,
-		State: &BurnState{
-			DamagePercentage:    1,
-			DamageValue:         0,
-			DEFDamagePercentage: 0,
+		State: &BreakBurnState{
+			BreakBaseMulti: 1,
 		},
 	})
 }
@@ -119,9 +117,8 @@ func applyWeaknessBreakThunder(breakInfoData *breakInfo) {
 		Source:   breakInfoData.charID,
 		Duration: 2,
 		Chance:   1.5,
-		State: &ShockState{
-			DamagePercentage: 2,
-			DamageValue:      0,
+		State: &BreakShockState{
+			BreakBaseMulti: 2,
 		},
 	})
 }
@@ -144,8 +141,8 @@ func applyWeaknessBreakWind(breakInfoData *breakInfo) {
 		Duration: 2,
 		Count:    windShearStacksCount,
 		Chance:   1.5,
-		State: &WindShearState{
-			DamagePercentage: 1,
+		State: &BreakWindShearState{
+			BreakBaseMulti: 1,
 		},
 	})
 }

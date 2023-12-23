@@ -18,6 +18,10 @@ type ShockState struct {
 	DamageValue      float64
 }
 
+type BreakShockState struct {
+	BreakBaseMulti float64
+}
+
 func init() {
 	// common shock
 	modifier.Register(Shock, modifier.Config{
@@ -88,6 +92,36 @@ func breakShockPhase1(mod *modifier.Instance) {
 		DamageType: model.DamageType_THUNDER,
 		BaseDamage: info.DamageMap{
 			model.DamageFormula_BY_BREAK_DAMAGE: state.DamagePercentage,
+		},
+		AsPureDamage: true,
+		UseSnapshot:  true,
+	})
+}
+
+func (S ShockState) TriggerDot(mod *modifier.Instance, ratio float64) {
+	mod.Engine().Attack(info.Attack{
+		Key:        Shock,
+		Source:     mod.Source(),
+		Targets:    []key.TargetID{mod.Owner()},
+		AttackType: model.AttackType_DOT,
+		DamageType: model.DamageType_THUNDER,
+		BaseDamage: info.DamageMap{
+			model.DamageFormula_BY_ATK: S.DamagePercentage * ratio,
+		},
+		AsPureDamage: true,
+		UseSnapshot:  true,
+	})
+}
+
+func (S BreakShockState) TriggerDot(mod *modifier.Instance, ratio float64) {
+	mod.Engine().Attack(info.Attack{
+		Key:        BreakShock,
+		Source:     mod.Source(),
+		Targets:    []key.TargetID{mod.Owner()},
+		AttackType: model.AttackType_DOT,
+		DamageType: model.DamageType_THUNDER,
+		BaseDamage: info.DamageMap{
+			model.DamageFormula_BY_BREAK_DAMAGE: S.BreakBaseMulti * ratio,
 		},
 		AsPureDamage: true,
 		UseSnapshot:  true,

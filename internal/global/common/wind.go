@@ -16,6 +16,10 @@ type WindShearState struct {
 	DamagePercentage float64
 }
 
+type BreakWindShearState struct {
+	BreakBaseMulti float64
+}
+
 func init() {
 	modifier.Register(WindShear, modifier.Config{
 		Stacking:          modifier.ReplaceBySource,
@@ -70,7 +74,7 @@ func windShearPhase1(mod *modifier.Instance) {
 }
 
 func breakWindShearPhase1(mod *modifier.Instance) {
-	state, ok := mod.State().(*WindShearState)
+	state, ok := mod.State().(*BreakWindShearState)
 	if !ok {
 		panic("incorrect state used for wind shear modifier")
 	}
@@ -83,7 +87,36 @@ func breakWindShearPhase1(mod *modifier.Instance) {
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_WIND,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_BREAK_DAMAGE: state.DamagePercentage * mod.Count(),
+			model.DamageFormula_BY_BREAK_DAMAGE: state.BreakBaseMulti * mod.Count(),
+		},
+		AsPureDamage: true,
+		UseSnapshot:  true,
+	})
+}
+
+func (W WindShearState) TriggerDot(mod *modifier.Instance, ratio float64) {
+	mod.Engine().Attack(info.Attack{
+		Key:        WindShear,
+		Source:     mod.Source(),
+		Targets:    []key.TargetID{mod.Owner()},
+		AttackType: model.AttackType_DOT,
+		DamageType: model.DamageType_WIND,
+		BaseDamage: info.DamageMap{
+			model.DamageFormula_BY_ATK: W.DamagePercentage * mod.Count(),
+		},
+		UseSnapshot: true,
+	})
+}
+
+func (W BreakWindShearState) TriggerDot(mod *modifier.Instance, ratio float64) {
+	mod.Engine().Attack(info.Attack{
+		Key:        BreakWindShear,
+		Source:     mod.Source(),
+		Targets:    []key.TargetID{mod.Owner()},
+		AttackType: model.AttackType_DOT,
+		DamageType: model.DamageType_WIND,
+		BaseDamage: info.DamageMap{
+			model.DamageFormula_BY_BREAK_DAMAGE: W.BreakBaseMulti * mod.Count(),
 		},
 		AsPureDamage: true,
 		UseSnapshot:  true,
