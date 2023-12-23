@@ -125,7 +125,7 @@ func (b BreakBurnState) TriggerDot(mod *modifier.Instance, ratio float64) {
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_FIRE,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_BREAK_DAMAGE: b.BreakBaseMulti,
+			model.DamageFormula_BY_BREAK_DAMAGE: b.BreakBaseMulti * ratio,
 		},
 		UseSnapshot: true,
 	})

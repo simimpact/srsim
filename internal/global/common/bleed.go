@@ -110,7 +110,7 @@ func (b BleedState) TriggerDot(mod *modifier.Instance, ratio float64) {
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_PHYSICAL,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_ATK: b.DamagePercentage,
+			model.DamageFormula_BY_ATK: b.DamagePercentage * ratio,
 		},
 		DamageValue: b.DamageValue,
 		UseSnapshot: true,

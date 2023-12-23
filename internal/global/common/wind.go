@@ -102,7 +102,7 @@ func (w WindShearState) TriggerDot(mod *modifier.Instance, ratio float64) {
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_WIND,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_ATK: w.DamagePercentage * mod.Count(),
+			model.DamageFormula_BY_ATK: w.DamagePercentage * mod.Count() * ratio,
 		},
 		UseSnapshot: true,
 	})
@@ -116,7 +116,7 @@ func (w BreakWindShearState) TriggerDot(mod *modifier.Instance, ratio float64) {
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_WIND,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_BREAK_DAMAGE: w.BreakBaseMulti * mod.Count(),
+			model.DamageFormula_BY_BREAK_DAMAGE: w.BreakBaseMulti * mod.Count() * ratio,
 		},
 		AsPureDamage: true,
 		UseSnapshot:  true,
