@@ -98,30 +98,29 @@ func (s *Service) SetStance(data info.ModifyAttribute) error {
 		return fmt.Errorf("unknown target: %v", data.Target)
 	}
 	attr := t.attributes
-
-	if data.Amount == attr.Stance {
-		return nil
-	}
-
-	if data.Amount == 0 {
-		s.event.StanceBreak.Emit(event.StanceBreak{
-			Key:    data.Key,
-			Target: data.Target,
-			Source: data.Source,
-		})
-	} else if attr.Stance == 0 {
-		s.event.StanceReset.Emit(event.StanceReset{
-			Key:    data.Key,
-			Target: data.Target,
-		})
-	}
-
 	prev := attr.Stance
 	attr.Stance = data.Amount
 	if attr.Stance > attr.MaxStance {
 		attr.Stance = attr.MaxStance
 	} else if attr.Stance < 0 {
 		attr.Stance = 0
+	}
+
+	if prev == attr.Stance {
+		return nil
+	}
+
+	if attr.Stance == 0 {
+		s.event.StanceBreak.Emit(event.StanceBreak{
+			Key:    data.Key,
+			Target: data.Target,
+			Source: data.Source,
+		})
+	} else if prev == 0 {
+		s.event.StanceReset.Emit(event.StanceReset{
+			Key:    data.Key,
+			Target: data.Target,
+		})
 	}
 
 	return s.emitStanceChange(data.Key, data.Target, data.Source, prev, attr.Stance)
