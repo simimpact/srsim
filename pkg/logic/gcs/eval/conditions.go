@@ -139,7 +139,10 @@ func (e *Eval) energy(c *ast.CallExpr, env *Env) (Obj, error) {
 	if !e.engine.IsValid(target) {
 		return nil, fmt.Errorf("target %d is invalid", target)
 	}
-	return &number{ival: int64(e.engine.Energy(target))}, nil
+	return &number{
+		fval:    e.engine.Energy(target),
+		isFloat: true,
+	}, nil
 }
 
 // max_energy(target)
@@ -153,7 +156,10 @@ func (e *Eval) maxEnergy(c *ast.CallExpr, env *Env) (Obj, error) {
 	if !e.engine.IsValid(target) {
 		return nil, fmt.Errorf("target %d is invalid", target)
 	}
-	return &number{ival: int64(e.engine.MaxEnergy(target))}, nil
+	return &number{
+		fval:    e.engine.MaxEnergy(target),
+		isFloat: true,
+	}, nil
 }
 
 // hp_ratio(target)
@@ -371,7 +377,10 @@ func (e *Eval) stance(c *ast.CallExpr, env *Env) (Obj, error) {
 	if !e.engine.IsEnemy(target) {
 		return nil, fmt.Errorf("target %d is not an enemy", target)
 	}
-	return &number{ival: int64(e.engine.Stance(target))}, nil
+	return &number{
+		fval:    e.engine.Stance(target),
+		isFloat: true,
+	}, nil
 }
 
 // max_stance(target)
@@ -385,5 +394,8 @@ func (e *Eval) maxStance(c *ast.CallExpr, env *Env) (Obj, error) {
 	if !e.engine.IsEnemy(target) {
 		return nil, fmt.Errorf("target %d is not an enemy", target)
 	}
-	return &number{ival: int64(e.engine.MaxStance(target))}, nil
+	return &number{
+		fval:    e.engine.MaxStance(target),
+		isFloat: true,
+	}, nil
 }
