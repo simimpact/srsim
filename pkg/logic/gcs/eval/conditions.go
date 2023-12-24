@@ -71,7 +71,7 @@ func (e *Eval) initCharNames(env *Env) {
 
 // modifier
 
-// has_modifier(char, mod)
+// has_modifier(target, mod)
 func (e *Eval) hasModifier(c *ast.CallExpr, env *Env) (Obj, error) {
 	objs, err := e.validateArguments(c.Args, env, typNum, typStr)
 	if err != nil {
@@ -86,7 +86,7 @@ func (e *Eval) hasModifier(c *ast.CallExpr, env *Env) (Obj, error) {
 	return bton(e.engine.HasModifier(target, modifier)), nil
 }
 
-// modifier_count(char, type)
+// modifier_count(target, type)
 func (e *Eval) modifierCount(c *ast.CallExpr, env *Env) (Obj, error) {
 	objs, err := e.validateArguments(c.Args, env, typNum, typNum)
 	if err != nil {
@@ -126,7 +126,7 @@ func (e *Eval) skillPoints(c *ast.CallExpr, env *Env) (Obj, error) {
 	return &number{ival: int64(e.engine.SP())}, nil
 }
 
-// energy(char)
+// energy(target)
 func (e *Eval) energy(c *ast.CallExpr, env *Env) (Obj, error) {
 	objs, err := e.validateArguments(c.Args, env, typNum)
 	if err != nil {
@@ -140,7 +140,7 @@ func (e *Eval) energy(c *ast.CallExpr, env *Env) (Obj, error) {
 	return &number{ival: int64(e.engine.Energy(target))}, nil
 }
 
-// max_energy(char)
+// max_energy(target)
 func (e *Eval) maxEnergy(c *ast.CallExpr, env *Env) (Obj, error) {
 	objs, err := e.validateArguments(c.Args, env, typNum)
 	if err != nil {
@@ -154,7 +154,7 @@ func (e *Eval) maxEnergy(c *ast.CallExpr, env *Env) (Obj, error) {
 	return &number{ival: int64(e.engine.MaxEnergy(target))}, nil
 }
 
-// hp_ratio(char)
+// hp_ratio(target)
 func (e *Eval) hpRatio(c *ast.CallExpr, env *Env) (Obj, error) {
 	objs, err := e.validateArguments(c.Args, env, typNum)
 	if err != nil {
@@ -173,7 +173,7 @@ func (e *Eval) hpRatio(c *ast.CallExpr, env *Env) (Obj, error) {
 
 // shield
 
-// has_shield(char, key)
+// has_shield(target, key)
 func (e *Eval) hasShield(c *ast.CallExpr, env *Env) (Obj, error) {
 	objs, err := e.validateArguments(c.Args, env, typNum, typStr)
 	if err != nil {
@@ -188,7 +188,7 @@ func (e *Eval) hasShield(c *ast.CallExpr, env *Env) (Obj, error) {
 	return bton(e.engine.HasShield(target, key)), nil
 }
 
-// is_shielded(char)
+// is_shielded(target)
 func (e *Eval) isShielded(c *ast.CallExpr, env *Env) (Obj, error) {
 	objs, err := e.validateArguments(c.Args, env, typNum)
 	if err != nil {
@@ -221,7 +221,7 @@ func (e *Eval) skillReady(c *ast.CallExpr, env *Env) (Obj, error) {
 
 // target
 
-// is_valid(char)
+// is_valid(targer)
 func (e *Eval) isValid(c *ast.CallExpr, env *Env) (Obj, error) {
 	objs, err := e.validateArguments(c.Args, env, typNum)
 	if err != nil {
@@ -243,7 +243,7 @@ func (e *Eval) isCharacter(c *ast.CallExpr, env *Env) (Obj, error) {
 	return bton(e.engine.IsCharacter(target)), nil
 }
 
-// is_enemy(char)
+// is_enemy(target)
 func (e *Eval) isEnemy(c *ast.CallExpr, env *Env) (Obj, error) {
 	objs, err := e.validateArguments(c.Args, env, typNum)
 	if err != nil {
