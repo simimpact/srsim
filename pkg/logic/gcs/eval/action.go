@@ -72,7 +72,7 @@ func (e *Eval) evalTargetNode(t TargetNode, checkType ...logic.ActionType) (logi
 		}
 
 		if !found {
-			return logic.Action{}, fmt.Errorf("wrong action type, got %v", obj.Typ())
+			return logic.Action{}, fmt.Errorf("wrong action type, got %v", act.Type)
 		}
 	}
 
