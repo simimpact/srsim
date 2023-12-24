@@ -36,6 +36,7 @@ func (e *Eval) initConditionalFuncs(env *Env) {
 		"is_enemy":     e.isEnemy,
 		"enemies":      e.enemies,
 		"characters":   e.characters,
+		"adjacent_to":  e.adjacentTo,
 	}
 	for name, fn := range funcs {
 		env.setBuiltinFunc(name, fn)
@@ -330,6 +331,28 @@ func (e *Eval) characters(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 	result := &mapval{array: make([]Obj, 0, len(characters))}
 	for _, enemy := range characters {
+		result.array = append(result.array, &number{ival: int64(enemy)})
+	}
+	return result, nil
+}
+
+// adjacent_to(target)
+func (e *Eval) adjacentTo(c *ast.CallExpr, env *Env) (Obj, error) {
+	objs, err := e.validateArguments(c.Args, env, typNum)
+	if err != nil {
+		return nil, err
+	}
+	target := key.TargetID(objs[0].(*number).ival)
+
+	if !e.engine.IsValid(target) {
+		return nil, fmt.Errorf("target %d is invalid", target)
+	}
+	targets := e.engine.AdjacentTo(target)
+	if len(targets) == 0 {
+		return &mapval{}, nil
+	}
+	result := &mapval{array: make([]Obj, 0, len(targets))}
+	for _, enemy := range targets {
 		result.array = append(result.array, &number{ival: int64(enemy)})
 	}
 	return result, nil
