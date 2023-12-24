@@ -23,6 +23,7 @@ func (e *Eval) initConditionalFuncs(env *Env) {
 		"weakness_broken": e.weaknessBroken,
 		"has_weakness":    e.hasWeakness,
 		"stance":          e.stance,
+		"max_stance":      e.maxStance,
 		// shield
 		"has_shield":  e.hasShield,
 		"is_shielded": e.isShielded,
@@ -371,4 +372,18 @@ func (e *Eval) stance(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("target %d is not an enemy", target)
 	}
 	return &number{ival: int64(e.engine.Stance(target))}, nil
+}
+
+// max_stance(target)
+func (e *Eval) maxStance(c *ast.CallExpr, env *Env) (Obj, error) {
+	objs, err := e.validateArguments(c.Args, env, typNum)
+	if err != nil {
+		return nil, err
+	}
+	target := key.TargetID(objs[0].(*number).ival)
+
+	if !e.engine.IsEnemy(target) {
+		return nil, fmt.Errorf("target %d is not an enemy", target)
+	}
+	return &number{ival: int64(e.engine.MaxStance(target))}, nil
 }
