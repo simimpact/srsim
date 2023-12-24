@@ -22,6 +22,7 @@ func (e *Eval) initConditionalFuncs(env *Env) {
 		"hp_ratio":        e.hpRatio,
 		"weakness_broken": e.weaknessBroken,
 		"has_weakness":    e.hasWeakness,
+		"stance":          e.stance,
 		// shield
 		"has_shield":  e.hasShield,
 		"is_shielded": e.isShielded,
@@ -356,4 +357,18 @@ func (e *Eval) adjacentTo(c *ast.CallExpr, env *Env) (Obj, error) {
 		result.array = append(result.array, &number{ival: int64(enemy)})
 	}
 	return result, nil
+}
+
+// stance(target)
+func (e *Eval) stance(c *ast.CallExpr, env *Env) (Obj, error) {
+	objs, err := e.validateArguments(c.Args, env, typNum)
+	if err != nil {
+		return nil, err
+	}
+	target := key.TargetID(objs[0].(*number).ival)
+
+	if !e.engine.IsEnemy(target) {
+		return nil, fmt.Errorf("target %d is not an enemy", target)
+	}
+	return &number{ival: int64(e.engine.Stance(target))}, nil
 }
