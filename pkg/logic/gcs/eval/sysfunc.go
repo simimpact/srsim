@@ -23,6 +23,7 @@ func (e *Eval) initSysFuncs(env *Env) {
 		"sort":  e.sort,
 		"first": e.first,
 		"any":   e.any,
+		"len":   e.len,
 		// action
 		"register_skill_cb":  e.registerSkillCB,
 		"register_ult_cb":    e.registerUltCB,
@@ -280,4 +281,15 @@ func (e *Eval) any(c *ast.CallExpr, env *Env) (Obj, error) {
 		}
 	}
 	return bton(false), nil
+}
+
+// len(map)
+func (e *Eval) len(c *ast.CallExpr, env *Env) (Obj, error) {
+	objs, err := e.validateArguments(c.Args, env, typMap)
+	if err != nil {
+		return nil, err
+	}
+	m := objs[0].(*mapval)
+
+	return &number{ival: int64(len(m.array))}, nil
 }
