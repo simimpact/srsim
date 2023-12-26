@@ -24,7 +24,6 @@ func (e *Eval) initConditionalFuncs(env *Env) {
 		"has_weakness":    e.hasWeakness,
 		"stance":          e.stance,
 		"max_stance":      e.maxStance,
-		"is_alive":        e.isAlive,
 		// shield
 		"has_shield":  e.hasShield,
 		"is_shielded": e.isShielded,
@@ -35,6 +34,7 @@ func (e *Eval) initConditionalFuncs(env *Env) {
 		"element":     e.element,
 		// target
 		"is_valid":     e.isValid,
+		"is_alive":     e.isAlive,
 		"is_character": e.isCharacter,
 		"is_enemy":     e.isEnemy,
 		"enemies":      e.enemies,
