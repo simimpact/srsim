@@ -34,9 +34,21 @@ func (mgr *Manager) ExecuteAction(id key.TargetID, isInsert bool) (target.Execut
 		return target.ExecutableAction{}, err
 	}
 
-	check := skillInfo.Skill.CanUse
 	useSkill := act.Type == logic.ActionSkill
-	if useSkill && mgr.engine.SP() >= skillInfo.Skill.SPNeed && (check == nil || check(mgr.engine, char)) {
+	canUseSkill, err := mgr.engine.CanUseSkill(id)
+	if err != nil {
+		return target.ExecutableAction{}, err
+	}
+
+	if useSkill && !canUseSkill {
+		useSkill = false
+		act, err = mgr.eval.DefaultAction(id)
+		if err != nil {
+			return target.ExecutableAction{}, err
+		}
+	}
+
+	if useSkill {
 		primaryTarget, err := evaltarget.Evaluate(mgr.engine, evaltarget.Info{
 			Source:      id,
 			Evaluator:   act.TargetEvaluator,

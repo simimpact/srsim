@@ -408,6 +408,20 @@ func (mr *MockEngineMockRecorder) InsertAction(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertAction", reflect.TypeOf((*MockEngine)(nil).InsertAction), arg0)
 }
 
+// IsAlive mocks base method.
+func (m *MockEngine) IsAlive(arg0 key.TargetID) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsAlive", arg0)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// IsAlive indicates an expected call of IsAlive.
+func (mr *MockEngineMockRecorder) IsAlive(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsAlive", reflect.TypeOf((*MockEngine)(nil).IsAlive), arg0)
+}
+
 // IsCharacter mocks base method.
 func (m *MockEngine) IsCharacter(arg0 key.TargetID) bool {
 	m.ctrl.T.Helper()

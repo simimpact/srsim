@@ -34,6 +34,7 @@ func (e *Eval) initConditionalFuncs(env *Env) {
 		"element":     e.element,
 		// target
 		"is_valid":     e.isValid,
+		"is_alive":     e.isAlive,
 		"is_character": e.isCharacter,
 		"is_enemy":     e.isEnemy,
 		"enemies":      e.enemies,
@@ -398,4 +399,18 @@ func (e *Eval) maxStance(c *ast.CallExpr, env *Env) (Obj, error) {
 		fval:    e.engine.MaxStance(target),
 		isFloat: true,
 	}, nil
+}
+
+// is_alive(target)
+func (e *Eval) isAlive(c *ast.CallExpr, env *Env) (Obj, error) {
+	objs, err := e.validateArguments(c.Args, env, typNum)
+	if err != nil {
+		return nil, err
+	}
+	target := key.TargetID(objs[0].(*number).ival)
+
+	if !e.engine.IsValid(target) {
+		return nil, fmt.Errorf("target %d is invalid", target)
+	}
+	return bton(e.engine.IsAlive(target)), nil
 }

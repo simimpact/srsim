@@ -18,13 +18,18 @@ func (e *Eval) NextAction(target key.TargetID) (logic.Action, error) {
 		return logic.Action{}, err
 	}
 	if act.Type == logic.InvalidAction {
-		act, ok = e.defaultActions[target]
-		if !ok {
-			return logic.Action{}, errors.New("not found default action")
-		}
+		return e.DefaultAction(target)
 	}
 
 	act.Target = target
+	return act, nil
+}
+
+func (e *Eval) DefaultAction(target key.TargetID) (logic.Action, error) {
+	act, ok := e.defaultActions[target]
+	if !ok {
+		return logic.Action{}, errors.New("not found default action")
+	}
 	return act, nil
 }
 
