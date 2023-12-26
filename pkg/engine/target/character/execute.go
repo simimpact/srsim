@@ -34,9 +34,25 @@ func (mgr *Manager) ExecuteAction(id key.TargetID, isInsert bool) (target.Execut
 		return target.ExecutableAction{}, err
 	}
 
-	check := skillInfo.Skill.CanUse
 	useSkill := act.Type == logic.ActionSkill
-	if useSkill && mgr.engine.SP() >= skillInfo.Skill.SPNeed && (check == nil || check(mgr.engine, char)) {
+	canUseSkill, err := mgr.engine.CanUseSkill(id)
+	if err != nil {
+		return target.ExecutableAction{}, err
+	}
+
+	// checking target alive in advance is needed to avoid a program crash
+	// IsValid is required to exclude key.TargetEvaluator (First/LowestHP/etc)
+	isTargetDead := mgr.engine.IsValid(key.TargetID(act.TargetEvaluator)) && !mgr.attr.IsAlive(key.TargetID(act.TargetEvaluator))
+
+	if useSkill && !canUseSkill || isTargetDead {
+		useSkill = false
+		act, err = mgr.eval.DefaultAction(id)
+		if err != nil {
+			return target.ExecutableAction{}, err
+		}
+	}
+
+	if useSkill {
 		primaryTarget, err := evaltarget.Evaluate(mgr.engine, evaltarget.Info{
 			Source:      id,
 			Evaluator:   act.TargetEvaluator,
