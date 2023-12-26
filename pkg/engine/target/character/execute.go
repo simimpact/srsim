@@ -40,11 +40,7 @@ func (mgr *Manager) ExecuteAction(id key.TargetID, isInsert bool) (target.Execut
 		return target.ExecutableAction{}, err
 	}
 
-	// checking target alive in advance is needed to avoid a program crash
-	// IsValid is required to exclude key.TargetEvaluator (First/LowestHP/etc)
-	isTargetDead := mgr.engine.IsValid(key.TargetID(act.TargetEvaluator)) && !mgr.attr.IsAlive(key.TargetID(act.TargetEvaluator))
-
-	if useSkill && !canUseSkill || isTargetDead {
+	if useSkill && !canUseSkill {
 		useSkill = false
 		act, err = mgr.eval.DefaultAction(id)
 		if err != nil {
