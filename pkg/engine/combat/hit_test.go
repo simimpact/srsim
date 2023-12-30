@@ -26,7 +26,6 @@ func TestPerformHitWithShield(t *testing.T) {
 
 	// POPULATE STATS
 	hit.Attacker.AddProperty("tst", prop.ATKBase, 200)
-	hit.Defender.
 
 	pht.AssertPerformHit(hit, &ExpectHit{
 		TotalDamage:         100.0,
