@@ -16,7 +16,7 @@ func TestPerformHitWithShield(t *testing.T) {
 		Key:          "tst",
 		HitIndex:     0,
 		Attacker:     mock.NewEmptyStats(1),
-		Defender:     mock.NewEmptyStats(2),
+		Defender:     mock.NewEmptyStatsWithWeakness(2),
 		BaseDamage:   info.DamageMap{model.DamageFormula_BY_ATK: 0.5},
 		AttackType:   model.AttackType_NORMAL,
 		DamageType:   model.DamageType_ICE,
@@ -26,6 +26,7 @@ func TestPerformHitWithShield(t *testing.T) {
 
 	// POPULATE STATS
 	hit.Attacker.AddProperty("tst", prop.ATKBase, 200)
+	hit.Defender.
 
 	pht.AssertPerformHit(hit, &ExpectHit{
 		TotalDamage:         100.0,
@@ -51,7 +52,7 @@ func TestDamageValueNotModifiedByBonus(t *testing.T) {
 		Key:          "tst",
 		HitIndex:     0,
 		Attacker:     mock.NewEmptyStats(1),
-		Defender:     mock.NewEmptyStats(2),
+		Defender:     mock.NewEmptyStatsWithWeakness(2),
 		BaseDamage:   info.DamageMap{model.DamageFormula_BY_ATK: 0},
 		DamageValue:  50,
 		AttackType:   model.AttackType_NORMAL,
@@ -88,7 +89,7 @@ func TestDamageBaseModifiedByBonus(t *testing.T) {
 		Key:          "tst",
 		HitIndex:     0,
 		Attacker:     mock.NewEmptyStats(1),
-		Defender:     mock.NewEmptyStats(2),
+		Defender:     mock.NewEmptyStatsWithWeakness(2),
 		BaseDamage:   info.DamageMap{model.DamageFormula_BY_DEF: 0.5},
 		AttackType:   model.AttackType_NORMAL,
 		DamageType:   model.DamageType_ICE,
@@ -134,7 +135,7 @@ func TestDamageBreakWithEffect(t *testing.T) {
 			Stance:        0,
 			MaxStance:     0,
 		}),
-		Defender:     mock.NewEmptyStats(2),
+		Defender:     mock.NewEmptyStatsWithWeakness(2),
 		BaseDamage:   info.DamageMap{model.DamageFormula_BY_BREAK_DAMAGE: 1},
 		AttackType:   model.AttackType_NORMAL,
 		DamageType:   model.DamageType_ICE,

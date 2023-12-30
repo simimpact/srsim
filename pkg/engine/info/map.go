@@ -21,6 +21,14 @@ func NewWeaknessMap() WeaknessMap {
 	return make(map[model.DamageType]bool)
 }
 
+func NewWeaknessMapFull() WeaknessMap {
+	weaknessMap := make(map[model.DamageType]bool)
+	for k, v := weaknessMap {
+		weaknessMap[k] = true
+	}
+	return weaknessMap
+}
+
 // adds a property to the PropMap using the correct equation (additive, multiplicative, or special)
 func (m PropMap) Modify(p prop.Property, amt float64) {
 	if p == prop.AllDamageReduce || p == prop.Fatigue {
