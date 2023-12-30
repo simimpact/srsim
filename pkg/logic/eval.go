@@ -8,6 +8,7 @@ import (
 type Eval interface {
 	Init(engine.Engine) error
 	NextAction(key.TargetID) (Action, error)
+	DefaultAction(key.TargetID) (Action, error)
 	UltCheck() ([]Action, error)
 }
 
