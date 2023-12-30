@@ -23,7 +23,7 @@ func NewWeaknessMap() WeaknessMap {
 
 func NewWeaknessMapFull() WeaknessMap {
 	weaknessMap := make(map[model.DamageType]bool)
-	for k, v := weaknessMap {
+	for k, _ := range weaknessMap {
 		weaknessMap[k] = true
 	}
 	return weaknessMap
