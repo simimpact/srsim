@@ -129,9 +129,10 @@ func (pht *PerformHitTester) AssertPerformHit(hit *info.Hit, expect *ExpectHit) 
 	modify.Amount = -expect.HPDamage
 	pht.Attribute.EXPECT().ModifyHPByAmount(modify, true)
 
-	modify.Amount = -hit.StanceDamage * ratio
-	pht.Attribute.EXPECT().ModifyStance(modify)
-
+	if hit.Defender.IsWeakTo(hit.DamageType) {
+		modify.Amount = -hit.StanceDamage * ratio
+		pht.Attribute.EXPECT().ModifyStance(modify)
+	}
 	if expect.IsAttackerChar {
 		modify.Target = hit.Attacker.ID()
 	}
