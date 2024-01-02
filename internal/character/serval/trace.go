@@ -19,7 +19,7 @@ const (
 	A6 = "serval-a6"
 )
 
-func initTraces(c *char) {
+func (c *char) initTraces() {
 	if c.info.Traces["102"] {
 		c.engine.ModifyEnergyFixed(info.ModifyAttribute{
 			Key:    A4,
