@@ -12,16 +12,18 @@ const Ult key.Attack = "serval-ult"
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	if c.info.Eidolon >= 4 {
 		for _, trg := range c.engine.Enemies() {
-			c.engine.AddModifier(trg, info.Modifier{
-				Name: common.Shock,
-				State: &common.ShockState{
-					DamagePercentage: skillDot[c.info.SkillLevelIndex()],
-					DamageValue:      0,
-				},
-				Source:   c.id,
-				Chance:   1,
-				Duration: 2,
-			})
+			if !c.engine.HasModifier(trg, common.Shock) {
+				c.engine.AddModifier(trg, info.Modifier{
+					Name: common.Shock,
+					State: &common.ShockState{
+						DamagePercentage: skillDot[c.info.SkillLevelIndex()],
+						DamageValue:      0,
+					},
+					Source:   c.id,
+					Chance:   1,
+					Duration: 2,
+				})
+			}
 		}
 	}
 	c.engine.Attack(info.Attack{
@@ -37,7 +39,9 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		EnergyGain:   5,
 	})
 	for _, trg := range c.engine.Enemies() {
-		c.engine.ExtendModifierDuration(trg, common.Shock, 2)
+		if c.engine.HasModifier(trg, common.Shock) {
+			c.engine.ExtendModifierDuration(trg, common.Shock, 2)
+		}
 	}
 	state.EndAttack()
 }
