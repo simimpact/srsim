@@ -42,6 +42,10 @@ func (e *evaluator) NextAction(id key.TargetID) (logic.Action, error) {
 	return logic.Action{Type: logic.InvalidAction}, fmt.Errorf("unknown target id: %v", id)
 }
 
+func (e *evaluator) DefaultAction(id key.TargetID) (logic.Action, error) {
+	return logic.Action{Type: logic.InvalidAction}, fmt.Errorf("not found default action for target %v", id)
+}
+
 func (e *evaluator) UltCheck() ([]logic.Action, error) {
 	return e.ult(e.engine), nil
 }
