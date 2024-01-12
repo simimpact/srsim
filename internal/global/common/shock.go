@@ -1,6 +1,7 @@
 package common
 
 import (
+	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/key"
@@ -98,11 +99,11 @@ func breakShockPhase1(mod *modifier.Instance) {
 	})
 }
 
-func (s ShockState) TriggerDot(mod *modifier.Instance, ratio float64) {
-	mod.Engine().Attack(info.Attack{
+func (s ShockState) TriggerDot(mod info.Modifier, ratio float64, engine engine.Engine, target key.TargetID) {
+	engine.Attack(info.Attack{
 		Key:        Shock,
-		Source:     mod.Source(),
-		Targets:    []key.TargetID{mod.Owner()},
+		Source:     mod.Source,
+		Targets:    []key.TargetID{target},
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_THUNDER,
 		BaseDamage: info.DamageMap{
@@ -113,11 +114,11 @@ func (s ShockState) TriggerDot(mod *modifier.Instance, ratio float64) {
 	})
 }
 
-func (s BreakShockState) TriggerDot(mod *modifier.Instance, ratio float64) {
-	mod.Engine().Attack(info.Attack{
+func (s BreakShockState) TriggerDot(mod info.Modifier, ratio float64, engine engine.Engine, target key.TargetID) {
+	engine.Attack(info.Attack{
 		Key:        BreakShock,
-		Source:     mod.Source(),
-		Targets:    []key.TargetID{mod.Owner()},
+		Source:     mod.Source,
+		Targets:    []key.TargetID{target},
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_THUNDER,
 		BaseDamage: info.DamageMap{

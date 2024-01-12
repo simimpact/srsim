@@ -1,6 +1,7 @@
 package common
 
 import (
+	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/key"
@@ -101,12 +102,12 @@ func breakBleedPhase1(mod *modifier.Instance) {
 }
 
 // Custom event trigger for bleed dots
-func (b BleedState) TriggerDot(mod *modifier.Instance, ratio float64) {
+func (b BleedState) TriggerDot(mod info.Modifier, ratio float64, engine engine.Engine, target key.TargetID) {
 	// perform bleed damage
-	mod.Engine().Attack(info.Attack{
+	engine.Attack(info.Attack{
 		Key:        Bleed,
-		Source:     mod.Source(),
-		Targets:    []key.TargetID{mod.Owner()},
+		Source:     mod.Source,
+		Targets:    []key.TargetID{target},
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_PHYSICAL,
 		BaseDamage: info.DamageMap{
@@ -118,12 +119,12 @@ func (b BleedState) TriggerDot(mod *modifier.Instance, ratio float64) {
 }
 
 // Ditto, but for break dots
-func (b BreakBleedState) TriggerDot(mod *modifier.Instance, ratio float64) {
+func (b BreakBleedState) TriggerDot(mod info.Modifier, ratio float64, engine engine.Engine, target key.TargetID) {
 	// perform break bleed damage
-	mod.Engine().Attack(info.Attack{
+	engine.Attack(info.Attack{
 		Key:        BreakBleed,
-		Source:     mod.Source(),
-		Targets:    []key.TargetID{mod.Owner()},
+		Source:     mod.Source,
+		Targets:    []key.TargetID{target},
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_PHYSICAL,
 		BaseDamage: info.DamageMap{

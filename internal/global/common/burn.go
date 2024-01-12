@@ -1,6 +1,7 @@
 package common
 
 import (
+	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/key"
@@ -99,12 +100,12 @@ func breakBurnPhase1(mod *modifier.Instance) {
 	})
 }
 
-func (b BurnState) TriggerDot(mod *modifier.Instance, ratio float64) {
+func (b BurnState) TriggerDot(mod info.Modifier, ratio float64, engine engine.Engine, target key.TargetID) {
 	// perform burn damage
-	mod.Engine().Attack(info.Attack{
+	engine.Attack(info.Attack{
 		Key:        Burn,
-		Source:     mod.Source(),
-		Targets:    []key.TargetID{mod.Owner()},
+		Source:     mod.Source,
+		Targets:    []key.TargetID{target},
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_FIRE,
 		BaseDamage: info.DamageMap{
@@ -116,12 +117,12 @@ func (b BurnState) TriggerDot(mod *modifier.Instance, ratio float64) {
 	})
 }
 
-func (b BreakBurnState) TriggerDot(mod *modifier.Instance, ratio float64) {
+func (b BreakBurnState) TriggerDot(mod info.Modifier, ratio float64, engine engine.Engine, target key.TargetID) {
 	// perform burn damage
-	mod.Engine().Attack(info.Attack{
+	engine.Attack(info.Attack{
 		Key:        BreakBurn,
-		Source:     mod.Source(),
-		Targets:    []key.TargetID{mod.Owner()},
+		Source:     mod.Source,
+		Targets:    []key.TargetID{target},
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_FIRE,
 		BaseDamage: info.DamageMap{

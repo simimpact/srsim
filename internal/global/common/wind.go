@@ -1,6 +1,7 @@
 package common
 
 import (
+	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/key"
@@ -94,29 +95,29 @@ func breakWindShearPhase1(mod *modifier.Instance) {
 	})
 }
 
-func (w WindShearState) TriggerDot(mod *modifier.Instance, ratio float64) {
-	mod.Engine().Attack(info.Attack{
+func (w WindShearState) TriggerDot(mod info.Modifier, ratio float64, engine engine.Engine, target key.TargetID) {
+	engine.Attack(info.Attack{
 		Key:        WindShear,
-		Source:     mod.Source(),
-		Targets:    []key.TargetID{mod.Owner()},
+		Source:     mod.Source,
+		Targets:    []key.TargetID{target},
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_WIND,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_ATK: w.DamagePercentage * mod.Count() * ratio,
+			model.DamageFormula_BY_ATK: w.DamagePercentage * mod.Count * ratio,
 		},
 		UseSnapshot: true,
 	})
 }
 
-func (w BreakWindShearState) TriggerDot(mod *modifier.Instance, ratio float64) {
-	mod.Engine().Attack(info.Attack{
+func (w BreakWindShearState) TriggerDot(mod info.Modifier, ratio float64, engine engine.Engine, target key.TargetID) {
+	engine.Attack(info.Attack{
 		Key:        BreakWindShear,
-		Source:     mod.Source(),
-		Targets:    []key.TargetID{mod.Owner()},
+		Source:     mod.Source,
+		Targets:    []key.TargetID{target},
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_WIND,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_BREAK_DAMAGE: w.BreakBaseMulti * mod.Count() * ratio,
+			model.DamageFormula_BY_BREAK_DAMAGE: w.BreakBaseMulti * mod.Count * ratio,
 		},
 		AsPureDamage: true,
 		UseSnapshot:  true,
