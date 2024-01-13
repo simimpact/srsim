@@ -165,3 +165,38 @@ func TestDamageBreakWithEffect(t *testing.T) {
 		IsCrit:              false,
 	})
 }
+
+func TestPerformHitWithWeakness(t *testing.T) {
+	pht := NewPerformHitTester(t)
+
+	hit := &info.Hit{
+		Key:          "tst",
+		HitIndex:     0,
+		Attacker:     mock.NewEmptyStats(1),
+		Defender:     mock.NewEmptyStatsWithWeakness(2),
+		BaseDamage:   info.DamageMap{model.DamageFormula_BY_ATK: 0.5},
+		AttackType:   model.AttackType_NORMAL,
+		DamageType:   model.DamageType_ICE,
+		StanceDamage: 25,
+		HitRatio:     1.0,
+	}
+
+	// POPULATE STATS
+	hit.Attacker.AddProperty("tst", prop.ATKBase, 200)
+
+	pht.AssertPerformHit(hit, &ExpectHit{
+		TotalDamage:         100.0,
+		BaseDamage:          100.0,
+		ShieldAbsorb:        10.0,
+		HPDamage:            90.0,
+		IsAttackerChar:      true,
+		DefenceMultiplier:   1.0,
+		Resistance:          1.0,
+		Vulnerability:       1.0,
+		ToughnessMultiplier: 1.0,
+		Fatigue:             1.0,
+		AllDamageReduce:     1.0,
+		CritDamage:          1.0,
+		IsCrit:              false,
+	})
+}

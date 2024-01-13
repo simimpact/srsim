@@ -23,6 +23,10 @@ func (sim *Simulation) IsValid(target key.TargetID) bool {
 	return false
 }
 
+func (sim *Simulation) IsAlive(target key.TargetID) bool {
+	return sim.Attr.IsAlive(target)
+}
+
 func (sim *Simulation) IsCharacter(target key.TargetID) bool {
 	if targetType, ok := sim.Targets[target]; ok {
 		return targetType == info.ClassCharacter

@@ -1,5 +1,4 @@
-// package dummy implements a dummy character for testing purposes
-package dummy
+package serval
 
 import (
 	"github.com/simimpact/srsim/pkg/engine"
@@ -10,12 +9,12 @@ import (
 )
 
 func init() {
-	character.Register(key.DummyCharacter, character.Config{
+	character.Register(key.Serval, character.Config{
 		Create:     NewInstance,
 		Rarity:     4,
-		Element:    model.DamageType_QUANTUM,
-		Path:       model.Path_ABUNDANCE,
-		MaxEnergy:  120,
+		Element:    model.DamageType_THUNDER,
+		Path:       model.Path_ERUDITION,
+		MaxEnergy:  100,
 		Promotions: promotions,
 		Traces:     traces,
 		SkillInfo: character.SkillInfo{
@@ -25,13 +24,13 @@ func init() {
 			},
 			Skill: character.Skill{
 				SPNeed:     1,
-				TargetType: model.TargetType_ALLIES,
+				TargetType: model.TargetType_ENEMIES,
 			},
 			Ult: character.Ult{
-				TargetType: model.TargetType_SELF,
+				TargetType: model.TargetType_ENEMIES,
 			},
 			Technique: character.Technique{
-				TargetType: model.TargetType_ALLIES,
+				TargetType: model.TargetType_ENEMIES,
 				IsAttack:   true,
 			},
 		},
@@ -51,25 +50,6 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 		info:   charInfo,
 	}
 
-	c.a2()
-	c.a4()
-	c.a6()
-
+	c.initTraces()
 	return c
-}
-
-func (c *char) Attack(target key.TargetID, state info.ActionState) {
-
-}
-
-func (c *char) Skill(target key.TargetID, state info.ActionState) {
-
-}
-
-func (c *char) Ult(target key.TargetID, state info.ActionState) {
-
-}
-
-func (c *char) Technique(target key.TargetID, state info.ActionState) {
-
 }
