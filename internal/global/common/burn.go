@@ -1,6 +1,7 @@
 package common
 
 import (
+	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/key"
@@ -16,6 +17,10 @@ type BurnState struct {
 	DamagePercentage    float64
 	DamageValue         float64
 	DEFDamagePercentage float64
+}
+
+type BreakBurnState struct {
+	BreakBaseMulti float64
 }
 
 func init() {
@@ -53,7 +58,7 @@ func init() {
 }
 
 func burnPhase1(mod *modifier.Instance) {
-	state, ok := mod.State().(BurnState)
+	state, ok := mod.State().(*BurnState)
 	if !ok {
 		panic("incorrect state used for burn modifier")
 	}
@@ -75,6 +80,11 @@ func burnPhase1(mod *modifier.Instance) {
 }
 
 func breakBurnPhase1(mod *modifier.Instance) {
+	state, ok := mod.State().(*BreakBurnState)
+	if !ok {
+		panic("incorrect state used for burn modifier")
+	}
+
 	// perform break burn damage
 	mod.Engine().Attack(info.Attack{
 		Key:        BreakBurn,
@@ -83,9 +93,41 @@ func breakBurnPhase1(mod *modifier.Instance) {
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_FIRE,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_BREAK_DAMAGE: 1,
+			model.DamageFormula_BY_BREAK_DAMAGE: state.BreakBaseMulti,
 		},
 		AsPureDamage: true,
 		UseSnapshot:  true,
+	})
+}
+
+func (b BurnState) TriggerDot(mod info.Modifier, ratio float64, engine engine.Engine, target key.TargetID) {
+	// perform burn damage
+	engine.Attack(info.Attack{
+		Key:        Burn,
+		Source:     mod.Source,
+		Targets:    []key.TargetID{target},
+		AttackType: model.AttackType_DOT,
+		DamageType: model.DamageType_FIRE,
+		BaseDamage: info.DamageMap{
+			model.DamageFormula_BY_ATK: b.DamagePercentage * ratio,
+			model.DamageFormula_BY_DEF: b.DEFDamagePercentage * ratio,
+		},
+		DamageValue: b.DamageValue * ratio,
+		UseSnapshot: true,
+	})
+}
+
+func (b BreakBurnState) TriggerDot(mod info.Modifier, ratio float64, engine engine.Engine, target key.TargetID) {
+	// perform burn damage
+	engine.Attack(info.Attack{
+		Key:        BreakBurn,
+		Source:     mod.Source,
+		Targets:    []key.TargetID{target},
+		AttackType: model.AttackType_DOT,
+		DamageType: model.DamageType_FIRE,
+		BaseDamage: info.DamageMap{
+			model.DamageFormula_BY_BREAK_DAMAGE: b.BreakBaseMulti * ratio,
+		},
+		UseSnapshot: true,
 	})
 }
