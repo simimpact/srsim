@@ -1,6 +1,7 @@
 package sampo
 
 import (
+	"github.com/simimpact/srsim/internal/global/common"
 	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
@@ -25,9 +26,17 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 }
 
 func (c *char) OnProjectileHit(target key.TargetID, stanceDamage float64, i int) {
-	// if c.info.Eidolon >= 4 && c.engine.HasBehaviorFlag(target, model.BehaviorFlag_STAT_DOT_POISON) {
-	// 	//TODO: implement sampo E4
-	// }
+	if c.info.Eidolon >= 4 && c.engine.HasBehaviorFlag(target, model.BehaviorFlag_STAT_DOT_POISON) {
+		// Wind dot (kit dots)
+		for _, dot := range c.engine.GetModifiers(target, common.WindShear) {
+			dot.State.(common.WindShearState).TriggerDot(dot, 0.06, c.engine, target)
+		}
+
+		// Break wind dots
+		for _, dot := range c.engine.GetModifiers(target, common.BreakWindShear) {
+			dot.State.(common.BreakWindShearState).TriggerDot(dot, 0.06, c.engine, target)
+		}
+	}
 
 	targets := []key.TargetID{target}
 	if i > 0 {
