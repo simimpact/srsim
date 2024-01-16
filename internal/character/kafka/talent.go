@@ -11,10 +11,8 @@ import (
 const (
 	kafkaTalent = "kafka-talent"
 	followup    = "kafka-followup"
-	canAttack   = "kafka-talent-can-attack"
 )
 
-// I don't like this but couldn't get it working as just a variable in the char struct so
 func init() {
 	modifier.Register(kafkaTalent, modifier.Config{
 		Listeners: modifier.Listeners{
@@ -25,12 +23,9 @@ func init() {
 }
 
 func restoreTalent(mod *modifier.Instance) {
-	if !mod.Engine().HasModifier(mod.Owner(), canAttack) {
-		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-			Name:   canAttack,
-			Source: mod.Owner(),
-		})
-	}
+	kafka, _ := mod.Engine().CharacterInstance(mod.Owner())
+	c := kafka.(*char)
+	c.canUseTalent = true
 }
 
 func (c *char) initTalent() {
@@ -49,7 +44,7 @@ func (c *char) talentTrigger(e event.AttackEnd) {
 	isAlly := c.engine.IsCharacter(e.Attacker)
 	isBasicAtk := e.AttackType == model.AttackType_NORMAL
 	isNotKafka := e.Attacker != c.id
-	if isAlly && isBasicAtk && isNotKafka && c.engine.HasModifier(c.id, canAttack) {
+	if isAlly && isBasicAtk && isNotKafka && c.canUseTalent {
 		talentTargs = e.Targets
 	}
 }
@@ -69,7 +64,7 @@ func (c *char) talentAttack(e event.ActionEnd) {
 		})
 	}
 
-	if isBasicAtk && c.engine.HasModifier(c.id, canAttack) && c.engine.HPRatio(target) <= 0 && isNotKafka && isAlly {
+	if isBasicAtk && c.canUseTalent && c.engine.HPRatio(target) <= 0 && isNotKafka && isAlly {
 		c.engine.InsertAbility(info.Insert{
 			Key: followup,
 			Execute: func() {
@@ -98,6 +93,6 @@ func (c *char) talentAttack(e event.ActionEnd) {
 
 	c.applyShock([]key.TargetID{target})
 
-	c.engine.RemoveModifier(c.id, canAttack)
+	c.canUseTalent = false
 
 }
