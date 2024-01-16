@@ -24,6 +24,6 @@ func (c *char) Technique(target key.TargetID, state info.ActionState) {
 
 	c.engine.EndAttack()
 
-	c.applyUltShock(c.engine.Enemies())
+	c.applyShock(c.engine.Enemies())
 
 }

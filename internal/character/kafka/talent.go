@@ -46,17 +46,18 @@ var talentHitSplit = []float64{0.15, 0.15, 0.15, 0.15, 0.15, 0.25}
 var talentTargs = []key.TargetID{}
 
 func (c *char) talentTrigger(e event.AttackEnd) {
-	isFriendly := c.engine.IsCharacter(e.Attacker)
+	isAlly := c.engine.IsCharacter(e.Attacker)
 	isBasicAtk := e.AttackType == model.AttackType_NORMAL
 	isNotKafka := e.Attacker != c.id
-	canAttack := isFriendly && isBasicAtk && isNotKafka && c.engine.HasModifier(c.id, canAttack)
-	if canAttack {
+	if isAlly && isBasicAtk && isNotKafka && c.engine.HasModifier(c.id, canAttack) {
 		talentTargs = e.Targets
 	}
 }
 
 func (c *char) talentAttack(e event.ActionEnd) {
+	isAlly := c.engine.IsCharacter(e.Owner)
 	isBasicAtk := e.AttackType == model.AttackType_NORMAL
+	isNotKafka := e.Owner != c.id
 	target := talentTargs[0]
 
 	if c.info.Eidolon >= 1 {
@@ -68,7 +69,7 @@ func (c *char) talentAttack(e event.ActionEnd) {
 		})
 	}
 
-	if isBasicAtk && c.engine.HasModifier(c.id, canAttack) && c.engine.HPRatio(target) <= 0 {
+	if isBasicAtk && c.engine.HasModifier(c.id, canAttack) && c.engine.HPRatio(target) <= 0 && isNotKafka && isAlly {
 		c.engine.InsertAbility(info.Insert{
 			Key: followup,
 			Execute: func() {
@@ -95,7 +96,7 @@ func (c *char) talentAttack(e event.ActionEnd) {
 		})
 	}
 
-	c.applyUltShock([]key.TargetID{target})
+	c.applyShock([]key.TargetID{target})
 
 	c.engine.RemoveModifier(c.id, canAttack)
 

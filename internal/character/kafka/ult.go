@@ -23,7 +23,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		StanceDamage: 60,
 	})
 
-	c.applyUltShock(c.engine.Enemies())
+	c.applyShock(c.engine.Enemies())
 
 	dots := []key.Modifier{common.Shock, common.BreakShock}
 	if c.info.Traces["101"] {
@@ -42,7 +42,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	c.engine.EndAttack()
 }
 
-func (c *char) applyUltShock(targets []key.TargetID) {
+func (c *char) applyShock(targets []key.TargetID) {
 	shockDur := 2
 	e6AdditionalMultiplier := 0.0
 	if c.info.Eidolon >= 6 {
