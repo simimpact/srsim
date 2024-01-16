@@ -39,6 +39,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		}
 	}
 
+	c.engine.EndAttack()
 }
 
 func (c *char) applyUltShock(targets []key.TargetID) {
