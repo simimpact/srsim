@@ -16,7 +16,7 @@ var allTriggerableDots = []key.Modifier{common.Burn, common.BreakBurn, common.Bl
 const Skill = "kafka-skill"
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
-	//Main target
+	// Main target
 	for i, hitRatio := range hitSplitSkill {
 		c.engine.Attack(info.Attack{
 			Key:        Skill,
@@ -34,7 +34,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		})
 	}
 
-	//Adjacent targets
+	// Adjacent targets
 	c.engine.Attack(info.Attack{
 		Key:        Skill,
 		HitIndex:   1,
@@ -49,9 +49,9 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		HitRatio:     1,
 	})
 
-	//Detonate dots on main target
+	// Detonate dots on main target
 	if c.engine.HasBehaviorFlag(target, model.BehaviorFlag_STAT_DOT) {
-		//Trigger all dots on target with ratio according to kafka skill level
+		// Trigger all dots on target with ratio according to kafka skill level
 		for _, triggerable := range allTriggerableDots {
 			for _, dot := range c.engine.GetModifiers(target, triggerable) {
 				dot.State.(common.TriggerableDot).TriggerDot(dot, skillDotDetonate[c.info.SkillLevelIndex()], c.engine, target)
