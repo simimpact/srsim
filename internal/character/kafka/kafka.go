@@ -52,5 +52,9 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 		canUseTalent: true,
 	}
 
+	c.initEidolons()
+	c.initTalent()
+	c.initTraces()
+
 	return c
 }
