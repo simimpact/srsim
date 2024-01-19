@@ -48,7 +48,6 @@ func (c *char) initEidolons() {
 func E1Listener(mod *modifier.Instance, e event.HitStart) {
 	if e.Hit.AttackType == model.AttackType_DOT {
 		e.Hit.Attacker.AddProperty(E1, prop.AllDamageTaken, 0.30)
-
 	}
 }
 

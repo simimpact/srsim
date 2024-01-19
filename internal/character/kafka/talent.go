@@ -19,7 +19,6 @@ func init() {
 			OnPhase2: restoreTalent,
 		},
 	})
-
 }
 
 func restoreTalent(mod *modifier.Instance) {
@@ -94,5 +93,4 @@ func (c *char) talentAttack(e event.ActionEnd) {
 	c.applyShock([]key.TargetID{target})
 
 	c.canUseTalent = false
-
 }
