@@ -50,7 +50,6 @@ const (
 
 // Erudition
 const (
-	AnInstantBeforeAGaze      LightCone = "an_instant_before_a_gaze"
 	Passkey                   LightCone = "passkey"
 	DataBank                  LightCone = "data_bank"
 	BeforeDawn                LightCone = "before_dawn"
@@ -61,6 +60,7 @@ const (
 	TheBirthoftheSelf         LightCone = "the_birth_of_the_self"
 	MaketheWorldClamor        LightCone = "make_the_world_clamor"
 	Sagacity                  LightCone = "sagacity"
+	AnInstantBeforeAGaze      LightCone = "an_instant_before_a_gaze"
 )
 
 // Harmony
