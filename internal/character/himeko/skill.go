@@ -10,7 +10,8 @@ import (
 )
 
 const (
-	a4 = "himeko-a4"
+	a4    = "himeko-a4"
+	skill = "himeko-skill"
 )
 
 func init() {
@@ -35,12 +36,12 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	// Main target
 	for index, ratio := range skillSplitMain {
 		c.engine.Attack(info.Attack{
-			Key:          Normal,
+			Key:          skill,
 			HitIndex:     index,
 			HitRatio:     ratio,
 			Targets:      []key.TargetID{target},
 			Source:       c.id,
-			AttackType:   model.AttackType_NORMAL,
+			AttackType:   model.AttackType_SKILL,
 			DamageType:   model.DamageType_FIRE,
 			EnergyGain:   20,
 			StanceDamage: 30,
@@ -53,12 +54,12 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	// Adjacent targets
 	for index, ratio := range skillSplitAdj {
 		c.engine.Attack(info.Attack{
-			Key:          Normal,
+			Key:          skill,
 			HitIndex:     index,
 			HitRatio:     ratio,
 			Targets:      c.engine.AdjacentTo(target),
 			Source:       c.id,
-			AttackType:   model.AttackType_NORMAL,
+			AttackType:   model.AttackType_SKILL,
 			DamageType:   model.DamageType_FIRE,
 			EnergyGain:   20,
 			StanceDamage: 30,
@@ -69,6 +70,8 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	}
 
 	c.engine.RemoveModifier(c.id, a4)
+
+	c.engine.EndAttack()
 
 }
 
