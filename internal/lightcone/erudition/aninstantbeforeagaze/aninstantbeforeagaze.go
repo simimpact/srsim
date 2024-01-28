@@ -53,6 +53,6 @@ func onBeforeHit(mod *modifier.Instance, e event.HitStart) {
 		maxenergy = 180
 	}
 
-	dmgAmt := 0.36 * 0.06 * mod.State().(float64)
+	dmgAmt := 0.30 * 0.06 * mod.State().(float64)
 	e.Hit.Attacker.AddProperty(AnInstantBeforeAGaze, prop.AllDamagePercent, dmgAmt*maxenergy)
 }
