@@ -15,6 +15,9 @@ const (
 	AnInstantBeforeAGaze = "an-instant-before-a-gaze"
 )
 
+// Increases the wearer's CRIT DMG by 36%.
+// When the wearer uses Ultimate, increases the wearer's Ultimate DMG based on their Max Energy.
+// Each point of Energy increases the Ultimate DMG by 0.36%, up to 180 points of Energy.
 func init() {
 	lightcone.Register(key.AnInstantBeforeAGaze, lightcone.Config{
 		CreatePassive: Create,
