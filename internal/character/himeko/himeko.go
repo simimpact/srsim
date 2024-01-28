@@ -42,13 +42,16 @@ type char struct {
 	id           key.TargetID
 	info         info.Character
 	talentStacks int
+	canAttack    bool
 }
 
 func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character) info.CharInstance {
 	c := &char{
-		engine: engine,
-		id:     id,
-		info:   charInfo,
+		engine:       engine,
+		id:           id,
+		info:         charInfo,
+		talentStacks: 1,
+		canAttack:    true,
 	}
 
 	return c
