@@ -46,8 +46,8 @@ func onBeforeHit(mod *modifier.Instance, e event.HitStart) {
 	}
 
 	maxenergy := e.Hit.Attacker.MaxEnergy()
-	if maxenergy > 160 {
-		maxenergy = 160
+	if maxenergy > 180 {
+		maxenergy = 180
 	}
 
 	dmgAmt := 0.36 * 0.06 * mod.State().(float64)
