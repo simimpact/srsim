@@ -60,6 +60,7 @@ const (
 	TheBirthoftheSelf         LightCone = "the_birth_of_the_self"
 	MaketheWorldClamor        LightCone = "make_the_world_clamor"
 	Sagacity                  LightCone = "sagacity"
+	AnInstantBeforeAGaze      LightCone = "an_instant_before_a_gaze"
 )
 
 // Harmony
