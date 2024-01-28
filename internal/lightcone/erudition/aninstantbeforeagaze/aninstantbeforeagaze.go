@@ -26,14 +26,17 @@ func init() {
 		Path:          model.Path_ERUDITION,
 		Promotions:    promotions,
 	})
-
 	modifier.Register(AnInstantBeforeAGaze, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeAction: addUltBuff,
 			OnAfterAction:  removeUltBuff,
 		},
 	})
-	modifier.Register(ultBuff, modifier.Config{})
+	modifier.Register(ultBuff, modifier.Config{
+		Listeners: modifier.Listeners{
+			OnBeforeHit: onBeforeHit,
+		},
+	})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
@@ -51,15 +54,18 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 func addUltBuff(mod *modifier.Instance, e event.ActionStart) {
-	state := mod.State().(float64)
 	if e.AttackType == model.AttackType_ULT {
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 			Name:   ultBuff,
 			Source: mod.Owner(),
-			Stats: info.PropMap{
-				prop.AllDamagePercent: state,
-			},
 		})
+	}
+}
+
+func onBeforeHit(mod *modifier.Instance, e event.HitStart) {
+	if e.Hit.AttackType == model.AttackType_ULT {
+		state := mod.State().(float64)
+		e.Hit.Attacker.AddProperty(AnInstantBeforeAGaze, prop.AllDamagePercent, state)
 	}
 }
 
