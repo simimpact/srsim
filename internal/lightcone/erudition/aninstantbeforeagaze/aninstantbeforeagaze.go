@@ -12,7 +12,8 @@ import (
 )
 
 const (
-	AnInstantBeforeAGaze = "an-instant-before-a-gaze"
+	AnInstantBeforeAGaze              = "an-instant-before-a-gaze"
+	ultBuff              key.Modifier = "an-instant-before-a-gaze-ult-buff"
 )
 
 // Increases the wearer's CRIT DMG by 36%.
@@ -28,31 +29,40 @@ func init() {
 
 	modifier.Register(AnInstantBeforeAGaze, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHit: onBeforeHit,
+			OnBeforeAction: addUltBuff,
+			OnAfterAction:  removeUltBuff,
 		},
 	})
+	modifier.Register(ultBuff, modifier.Config{})
 }
 
 func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
+	maxenergy := engine.MaxEnergy(owner)
+	if maxenergy > 180 {
+		maxenergy = 180
+	}
 	amt := 0.30 + 0.06*float64(lc.Imposition)
 	engine.AddModifier(owner, info.Modifier{
 		Name:   AnInstantBeforeAGaze,
 		Source: owner,
 		Stats:  info.PropMap{prop.CritDMG: amt},
-		State:  float64(lc.Imposition),
+		State:  maxenergy * amt / 100,
 	})
 }
 
-func onBeforeHit(mod *modifier.Instance, e event.HitStart) {
-	if e.Hit.AttackType != model.AttackType_ULT {
-		return
+func addUltBuff(mod *modifier.Instance, e event.ActionStart) {
+	state := mod.State().(float64)
+	if e.AttackType == model.AttackType_ULT {
+		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
+			Name:   ultBuff,
+			Source: mod.Owner(),
+			Stats: info.PropMap{
+				prop.AllDamagePercent: state,
+			},
+		})
 	}
+}
 
-	maxenergy := e.Hit.Attacker.MaxEnergy()
-	if maxenergy > 180 {
-		maxenergy = 180
-	}
-
-	dmgAmt := 0.30 + 0.06*mod.State().(float64)
-	e.Hit.Attacker.AddProperty(AnInstantBeforeAGaze, prop.AllDamagePercent, dmgAmt*maxenergy)
+func removeUltBuff(mod *modifier.Instance, e event.ActionEnd) {
+	mod.Engine().RemoveModifier(mod.Owner(), ultBuff)
 }
