@@ -20,13 +20,16 @@ func init() {
 }
 
 func (c *char) initTalent() {
-	c.engine.Events().StanceBreak.Subscribe(c.breakListener)
-	c.engine.Events().AttackEnd.Subscribe(c.attackListener)
-	//c.engine.Events().ModifierRemoved.Subscribe()
+
+	c.engine.Events().StanceBreak.Subscribe(c.talentBreakListener)
+	c.engine.Events().AttackEnd.Subscribe(c.talentAttackListener)
+	c.engine.Events().BattleStart.Subscribe(c.talentBattleStartListener)
+	c.engine.Events().ModifierRemoved.Subscribe(c.talentModifierRemoveListener)
+	c.engine.Events().EnemiesAdded.Subscribe(c.talentNewEnemies)
 
 }
 
-func (c *char) breakListener(e event.StanceBreak) {
+func (c *char) talentBreakListener(e event.StanceBreak) {
 	targ, _ := c.engine.EnemyInfo(e.Target)
 
 	// Himeko talent immediately maxes out if an elite/boss is broken
@@ -38,16 +41,32 @@ func (c *char) breakListener(e event.StanceBreak) {
 		c.talentStacks++
 	}
 
-	if c.talentStacks >= 3 {
+}
 
+func (c *char) talentAttackListener(e event.AttackEnd) {
+	if c.engine.IsCharacter(e.Attacker) && c.canAttack {
+		// If we still have alive enemies
+		if len(c.engine.Enemies()) > 0 {
+			c.insertTalentAttack(e.Targets)
+		}
 	}
 }
 
-func (c *char) attackListener(e event.AttackEnd) {
-	if c.engine.IsCharacter(e.Attacker) && c.canAttack {
-		if len(c.engine.Enemies()) != 0 {
-			c.insertTalentAttack(e.Targets)
+func (c *char) talentBattleStartListener(e event.BattleStart) {
+	if c.canAttack {
+		if c.talentStacks >= 3 && len(c.engine.Enemies()) > 0 {
+			c.insertTalentAttack(c.engine.Enemies())
 		}
+	}
+}
+
+func (c *char) talentModifierRemoveListener(e event.ModifierRemoved) {
+
+}
+
+func (c *char) talentNewEnemies(e event.EnemiesAdded) {
+	if c.canAttack && c.talentStacks >= 3 {
+		c.insertTalentAttack(c.engine.Enemies())
 	}
 }
 
@@ -68,6 +87,14 @@ func (c *char) insertTalentAttack(targets []key.TargetID) {
 	})
 }
 
+/*
+*
+
+	Execute the actual attack part of the talent;
+	Seperated for readability
+
+*
+*/
 func (c *char) executeTalentAttack(targets []key.TargetID) {
 	if c.info.Eidolon >= 1 {
 		c.engine.AddModifier(c.id, info.Modifier{
