@@ -24,12 +24,19 @@ func (c *char) talentBreakListener(e event.StanceBreak) {
 	targ, _ := c.engine.EnemyInfo(e.Target)
 
 	// Himeko talent immediately maxes out if an elite/boss is broken
-	if targ.Rank == model.EnemyRank_BIG_BOSS || targ.Rank == model.EnemyRank_ELITE || targ.Rank == model.EnemyRank_LITTLE_BOSS {
+	switch targ.Rank {
+	case model.EnemyRank_BIG_BOSS:
+		fallthrough
+	case model.EnemyRank_ELITE:
+		fallthrough
+	case model.EnemyRank_LITTLE_BOSS:
 		c.talentStacks += 3
-	} else if c.info.Eidolon >= 4 && e.Source == c.id && e.Key == skill { // slightly hacky check for the skill
-		c.talentStacks += 2
-	} else {
-		c.talentStacks++
+	default:
+		if e.Source == c.id && e.Key == skill {
+			c.talentStacks += 2
+		} else {
+			c.talentStacks++
+		}
 	}
 }
 
