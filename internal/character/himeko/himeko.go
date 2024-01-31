@@ -54,5 +54,9 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 		canAttack:    true,
 	}
 
+	c.initTalent()
+	c.initTraces()
+	c.initEidolons()
+
 	return c
 }
