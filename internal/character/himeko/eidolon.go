@@ -2,6 +2,7 @@ package himeko
 
 import (
 	"github.com/simimpact/srsim/pkg/engine/event"
+	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/model"
@@ -23,6 +24,15 @@ func init() {
 			OnBeforeHitAll: e2Listener,
 		},
 	})
+}
+
+func (c *char) initEidolons() {
+	if c.info.Eidolon >= 2 {
+		c.engine.AddModifier(c.id, info.Modifier{
+			Name:   e2,
+			Source: c.id,
+		})
+	}
 }
 
 func e2Listener(mod *modifier.Instance, e event.HitStart) {
