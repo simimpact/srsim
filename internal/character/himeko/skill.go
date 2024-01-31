@@ -72,7 +72,6 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	c.engine.RemoveModifier(c.id, a4)
 
 	c.engine.EndAttack()
-
 }
 
 func a4listener(mod *modifier.Instance, e event.HitStart) {
