@@ -3,30 +3,21 @@ package himeko
 import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
-	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
-	himeko_talent = "himeko-talent"
+	himekoTalent = "himeko-talent"
 )
 
-func init() {
-	modifier.Register(himeko_talent, modifier.Config{
-		Listeners: modifier.Listeners{},
-	})
-}
-
 func (c *char) initTalent() {
-
 	c.engine.Events().StanceBreak.Subscribe(c.talentBreakListener)
 	c.engine.Events().AttackEnd.Subscribe(c.talentAttackListener)
 	c.engine.Events().BattleStart.Subscribe(c.talentBattleStartListener)
 	c.engine.Events().ModifierRemoved.Subscribe(c.talentModifierRemoveListener)
-	c.engine.Events().EnemiesAdded.Subscribe(c.talentNewEnemies)
-
+	c.engine.Events().EnemiesAdded.Subscribe(c.talentNewEnemiesListener)
 }
 
 func (c *char) talentBreakListener(e event.StanceBreak) {
@@ -40,7 +31,6 @@ func (c *char) talentBreakListener(e event.StanceBreak) {
 	} else {
 		c.talentStacks++
 	}
-
 }
 
 func (c *char) talentAttackListener(e event.AttackEnd) {
@@ -61,20 +51,22 @@ func (c *char) talentBattleStartListener(e event.BattleStart) {
 }
 
 func (c *char) talentModifierRemoveListener(e event.ModifierRemoved) {
-
+	if c.engine.IsCharacter(e.Target) && c.canAttack {
+		if c.talentStacks >= 3 && len(c.engine.Enemies()) != 0 {
+			c.insertTalentAttack(c.engine.Enemies())
+		}
+	}
 }
 
-func (c *char) talentNewEnemies(e event.EnemiesAdded) {
+func (c *char) talentNewEnemiesListener(e event.EnemiesAdded) {
 	if c.canAttack && c.talentStacks >= 3 {
 		c.insertTalentAttack(c.engine.Enemies())
 	}
 }
 
-var talentHitSplit = []float64{0.2, 0.2, 0.2, 0.4}
-
 func (c *char) insertTalentAttack(targets []key.TargetID) {
 	c.engine.InsertAbility(info.Insert{
-		Key: himeko_talent,
+		Key: himekoTalent,
 		Execute: func() {
 			c.executeTalentAttack(targets)
 		},
@@ -86,6 +78,8 @@ func (c *char) insertTalentAttack(targets []key.TargetID) {
 		Priority: info.CharInsertAttackSelf,
 	})
 }
+
+var talentHitSplit = []float64{0.2, 0.2, 0.2, 0.4}
 
 /*
 *
@@ -109,7 +103,7 @@ func (c *char) executeTalentAttack(targets []key.TargetID) {
 
 	for index, ratio := range talentHitSplit {
 		c.engine.Attack(info.Attack{
-			Key:        himeko_talent,
+			Key:        himekoTalent,
 			HitIndex:   index,
 			HitRatio:   ratio,
 			Targets:    targets,
