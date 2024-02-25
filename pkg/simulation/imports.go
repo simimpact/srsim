@@ -2,6 +2,7 @@ package simulation
 
 import (
 	_ "github.com/simimpact/srsim/internal/character/arlan"
+	_ "github.com/simimpact/srsim/internal/character/asta"
 	_ "github.com/simimpact/srsim/internal/character/blade"
 	_ "github.com/simimpact/srsim/internal/character/bronya"
 	_ "github.com/simimpact/srsim/internal/character/clara"
