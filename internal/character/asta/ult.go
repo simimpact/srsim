@@ -10,7 +10,6 @@ import (
 
 const (
 	ult = "asta-ult"
-	e2  = "asta-e2"
 )
 
 func init() {
@@ -41,7 +40,11 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	})
 
 	if c.info.Eidolon >= 2 {
-		c.e2Flag = true
+		c.engine.AddModifier(c.id, info.Modifier{
+			Name:     e2,
+			Source:   c.id,
+			Duration: 1,
+		})
 	}
 
 }
