@@ -13,7 +13,8 @@ const (
 )
 
 func (c *char) Attack(target key.TargetID, state info.ActionState) {
-	if c.info.Traces["102"] {
+	// A2
+	if c.info.Traces["101"] {
 		c.engine.AddModifier(target, info.Modifier{
 			Name:   common.Burn,
 			Source: c.id,
