@@ -16,7 +16,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		AttackType: model.AttackType_SKILL,
 		DamageType: model.DamageType_FIRE,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_ATK: basic[c.info.SkillLevelIndex()],
+			model.DamageFormula_BY_ATK: skill[c.info.SkillLevelIndex()],
 		},
 		Targets:      []key.TargetID{target},
 		Source:       c.id,
@@ -42,7 +42,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 			AttackType: model.AttackType_SKILL,
 			DamageType: model.DamageType_FIRE,
 			BaseDamage: info.DamageMap{
-				model.DamageFormula_BY_ATK: basic[c.info.SkillLevelIndex()],
+				model.DamageFormula_BY_ATK: skill[c.info.SkillLevelIndex()],
 			},
 			Targets:      []key.TargetID{target},
 			Source:       c.id,
