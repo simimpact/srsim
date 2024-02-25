@@ -9,6 +9,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/character/danhengimbibitorlunae"
 	_ "github.com/simimpact/srsim/internal/character/dummy"
 	_ "github.com/simimpact/srsim/internal/character/gepard"
+	_ "github.com/simimpact/srsim/internal/character/herta"
 	_ "github.com/simimpact/srsim/internal/character/himeko"
 	_ "github.com/simimpact/srsim/internal/character/hook"
 	_ "github.com/simimpact/srsim/internal/character/kafka"
