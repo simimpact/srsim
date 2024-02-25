@@ -10,20 +10,21 @@ import (
 )
 
 const (
-	asta_talent            = "asta-talent"
-	asta_charging_stacks   = "asta-charging-stacks"
-	asta_teammate_charging = "asta-charging-teammate"
+	astaTalent           = "asta-talent"
+	astaChargingStacks   = "asta-charging-stacks"
+	astaTeammateCharging = "asta-charging-teammate"
 )
 
+// Scuffed
 func init() {
-	modifier.Register(asta_talent, modifier.Config{
+	modifier.Register(astaTalent, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnPhase1:      phase1TalentListener,
 			OnAfterAttack: talentAttackListener,
 		},
 	})
 
-	modifier.Register(asta_charging_stacks, modifier.Config{
+	modifier.Register(astaChargingStacks, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
 		MaxCount:   5,
 		TickMoment: modifier.ModifierPhase1End,
@@ -33,17 +34,16 @@ func init() {
 		},
 	})
 
-	modifier.Register(asta_teammate_charging, modifier.Config{
+	modifier.Register(astaTeammateCharging, modifier.Config{
 		Stacking: modifier.ReplaceBySource,
 	})
 }
 
 func (c *char) initTalent() {
 	c.engine.AddModifier(c.id, info.Modifier{
-		Name:   asta_talent,
+		Name:   astaTalent,
 		Source: c.id,
 	})
-
 }
 
 func phase1TalentListener(mod *modifier.Instance) {
@@ -54,7 +54,7 @@ func phase1TalentListener(mod *modifier.Instance) {
 	}
 
 	if !mod.Engine().HasModifier(mod.Owner(), e2) {
-		newStackCount := mod.Engine().ModifierStackCount(mod.Owner(), mod.Owner(), asta_charging_stacks) - float64(stacksToRemove)
+		newStackCount := mod.Engine().ModifierStackCount(mod.Owner(), mod.Owner(), astaChargingStacks) - float64(stacksToRemove)
 		if newStackCount < 0 {
 			newStackCount = 0
 		}
@@ -62,12 +62,11 @@ func phase1TalentListener(mod *modifier.Instance) {
 			mod.Engine().RemoveModifier(mod.Owner(), e4)
 		}
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-			Name:   asta_charging_stacks,
+			Name:   astaChargingStacks,
 			Source: mod.Owner(),
 			Count:  newStackCount,
 		},
 		)
-
 	}
 }
 
@@ -88,22 +87,21 @@ func talentAttackListener(mod *modifier.Instance, e event.AttackEnd) {
 		}
 	}
 
-	newStackCount := mod.Engine().ModifierStackCount(mod.Owner(), mod.Source(), asta_charging_stacks) + float64(stacksToAdd)
+	newStackCount := mod.Engine().ModifierStackCount(mod.Owner(), mod.Source(), astaChargingStacks) + float64(stacksToAdd)
 	if newStackCount > 5 {
 		newStackCount = 5
 	}
 
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-		Name:   asta_charging_stacks,
+		Name:   astaChargingStacks,
 		Source: mod.Source(),
 		Count:  newStackCount,
 	})
-
 }
 
 func talentRemoveOnDeath(mod *modifier.Instance) {
 	for _, ally := range mod.Engine().Characters() {
-		mod.Engine().RemoveModifier(ally, asta_teammate_charging)
+		mod.Engine().RemoveModifier(ally, astaTeammateCharging)
 	}
 	asta, _ := mod.Engine().CharacterInfo(mod.Owner())
 	if asta.Eidolon >= 4 {
@@ -123,7 +121,7 @@ func addedStacksListener(mod *modifier.Instance) {
 
 	for _, ally := range mod.Engine().Characters() {
 		mod.Engine().AddModifier(ally, info.Modifier{
-			Name:   asta_teammate_charging,
+			Name:   astaTeammateCharging,
 			Source: mod.Owner(),
 			Stats: info.PropMap{
 				prop.ATKPercent: talent[asta.TalentLevelIndex()] * mod.Count(),

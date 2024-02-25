@@ -17,7 +17,6 @@ func init() {
 		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_UP},
 		Duration:      2,
 	})
-
 }
 
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
@@ -46,5 +45,4 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			Duration: 1,
 		})
 	}
-
 }
