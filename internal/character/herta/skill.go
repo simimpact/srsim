@@ -56,6 +56,7 @@ func skillBeforeHitListener(mod *modifier.Instance, e event.HitStart) {
 	if mod.Engine().HPRatio(e.Defender) >= 0.5 {
 		a2increase := 0.0
 		herta, _ := mod.Engine().CharacterInfo(e.Attacker)
+		// A2
 		if herta.Traces["101"] {
 			a2increase = 0.25
 		}
