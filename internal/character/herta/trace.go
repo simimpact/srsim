@@ -26,6 +26,8 @@ func init() {
 func (c *char) initTraces() {
 	if c.info.Traces["102"] {
 		c.engine.AddModifier(c.id, info.Modifier{
+			Name:   a4,
+			Source: c.id,
 			DebuffRES: info.DebuffRESMap{
 				model.BehaviorFlag_STAT_CTRL: 0.35,
 			},
