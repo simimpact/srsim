@@ -52,5 +52,8 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 		passiveFlag: false,
 	}
 
+	c.initTalent()
+	c.initTraces()
+
 	return c
 }

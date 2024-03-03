@@ -13,15 +13,13 @@ const (
 
 func (c *char) initTalent() {
 	c.engine.Events().HPChange.Subscribe(c.talentListener)
-
 }
 
 var (
-	hertaCountInsert  = 0
-	hertaCount        = 0
-	hertaCountATK     = 0
-	passiveCooldown   = 0
-	scoringHertaCount = 0
+	hertaCountInsert = 0
+	hertaCount       = 0
+	hertaCountATK    = 0
+	passiveCooldown  = 0
 )
 
 func (c *char) talentListener(e event.HPChange) {
@@ -37,10 +35,8 @@ func (c *char) talentListener(e event.HPChange) {
 				c.engine.Events().AttackEnd.Subscribe(c.talentAfterAttackListener)
 				hertaCount += 1
 			}
-
 		}
 	}
-
 }
 
 func (c *char) talentAfterAttackListener(e event.AttackEnd) {
@@ -49,6 +45,7 @@ func (c *char) talentAfterAttackListener(e event.AttackEnd) {
 			hertaCountATK = 1
 			hertaCountInsert = 1
 			c.engine.InsertAbility(info.Insert{
+				Source: c.id,
 				AbortFlags: []model.BehaviorFlag{
 					model.BehaviorFlag_STAT_CTRL,
 					model.BehaviorFlag_DISABLE_ACTION,
@@ -57,7 +54,6 @@ func (c *char) talentAfterAttackListener(e event.AttackEnd) {
 				Execute:  c.talentInsert,
 				Priority: info.CharInsertAttackSelf,
 			})
-
 		}
 	}
 }
@@ -67,7 +63,6 @@ func (c *char) talentInsert() {
 	hertaCountInsert = 0
 	for hertaCount > 0 && len(c.engine.Enemies()) > 0 {
 		hertaCount -= 1
-		scoringHertaCount += 1
 
 		if c.info.Eidolon >= 2 {
 			c.engine.AddModifier(c.id, info.Modifier{
@@ -89,8 +84,10 @@ func (c *char) talentInsert() {
 		c.talentInsertAttack()
 	}
 
-	c.passiveFlag = false
+	c.engine.RemoveModifier(c.id, e4)
+	c.engine.EndAttack()
 
+	c.passiveFlag = false
 }
 
 func (c *char) talentInsertAttack() {
