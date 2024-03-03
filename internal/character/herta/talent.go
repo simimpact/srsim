@@ -2,16 +2,14 @@ package herta
 
 import (
 	"github.com/simimpact/srsim/pkg/engine/event"
+	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
 	Talent = "herta-talent"
 )
-
-func init() {
-
-}
 
 func (c *char) initTalent() {
 	c.engine.Events().HPChange.Subscribe(c.talentListener)
@@ -50,12 +48,17 @@ func (c *char) talentAfterAttackListener(e event.AttackEnd) {
 		if len(c.engine.Enemies()) > 0 {
 			hertaCountATK = 1
 			hertaCountInsert = 1
-			c.talentInsertAttack()
+			c.engine.InsertAbility(info.Insert{
+				Key:      Talent,
+				Execute:  c.talentInsert,
+				Priority: info.CharInsertAttackSelf,
+			})
+
 		}
 	}
 }
 
-func (c *char) talentInsertAttack() {
+func (c *char) talentInsert() {
 	c.passiveFlag = true
 	hertaCountInsert = 0
 	for hertaCount > 0 && len(c.engine.Enemies()) > 0 {
@@ -63,8 +66,39 @@ func (c *char) talentInsertAttack() {
 		scoringHertaCount += 1
 
 		if c.info.Eidolon >= 2 {
-
+			c.engine.AddModifier(c.id, info.Modifier{
+				Name:   e2,
+				Source: c.id,
+			})
 		}
+
+		if c.info.Eidolon >= 4 {
+			c.engine.AddModifier(c.id, info.Modifier{
+				Name:   e4,
+				Source: c.id,
+				Stats: info.PropMap{
+					prop.AllDamagePercent: 0.1,
+				},
+			})
+		}
+
+		c.talentInsertAttack()
 	}
 
+	c.passiveFlag = false
+
+}
+
+func (c *char) talentInsertAttack() {
+	c.engine.Attack(info.Attack{
+		Source:     c.id,
+		Targets:    c.engine.Enemies(),
+		AttackType: model.AttackType_INSERT,
+		DamageType: model.DamageType_ICE,
+		BaseDamage: info.DamageMap{
+			model.DamageFormula_BY_ATK: talent[c.info.TalentLevelIndex()],
+		},
+		EnergyGain:   5,
+		StanceDamage: 15,
+	})
 }
