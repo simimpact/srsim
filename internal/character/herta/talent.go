@@ -49,6 +49,10 @@ func (c *char) talentAfterAttackListener(e event.AttackEnd) {
 			hertaCountATK = 1
 			hertaCountInsert = 1
 			c.engine.InsertAbility(info.Insert{
+				AbortFlags: []model.BehaviorFlag{
+					model.BehaviorFlag_STAT_CTRL,
+					model.BehaviorFlag_DISABLE_ACTION,
+				},
 				Key:      Talent,
 				Execute:  c.talentInsert,
 				Priority: info.CharInsertAttackSelf,
@@ -91,6 +95,7 @@ func (c *char) talentInsert() {
 
 func (c *char) talentInsertAttack() {
 	c.engine.Attack(info.Attack{
+		Key:        Talent,
 		Source:     c.id,
 		Targets:    c.engine.Enemies(),
 		AttackType: model.AttackType_INSERT,
