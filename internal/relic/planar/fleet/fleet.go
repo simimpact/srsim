@@ -55,10 +55,10 @@ func check(mod *modifier.Instance) {
 
 	if stats.SPD() >= 120 && !applied {
 		for _, c := range engine.Characters() {
-			engine.AddModifier(i, info.Modifier{
+			engine.AddModifier(c, info.Modifier{
 				Name:   buff,
 				Source: owner,
-				Stats: info.PropMap{prop.ATKPercent, 0.08}
+				Stats: info.PropMap{prop.ATKPercent, 0.08},
 				
 			})
 		}
