@@ -11,6 +11,7 @@ import (
 
 const (
 	mod = key.Modifier("fleet-of-the-ageless")
+	buff = key.Modifier("fleet-of-the-ageless-atk-buff")
 )
 
 // Increases the wearer's Max HP by 12%. When the wearer's SPD reaches 120 or higher,
@@ -24,30 +25,52 @@ func init() {
 			},
 			{
 				MinCount: 2,
-				CreateEffect: func(engine engine.Engine, owner key.TargetID) {
-					targets := engine.Characters()
-					for _, i := range targets {
-						engine.AddModifier(i, info.Modifier{
-							Name:   mod,
-							Source: owner,
-						})
-					}
-				},
+				CreateEffect: create(engine.Engine, key.TargetID),
 			},
 		},
 	})
 
 	modifier.Register(mod, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAdd:            onCheck,
-			OnPropertyChange: onCheck,
+			OnAdd:            check,
+			OnPropertyChange: check,
 		},
+	})
+
+	modifier.Register(buff, modifier.Config{})
+}
+
+
+func create (engine engine.Engine, owner  key.TargetID){
+	engine.Events().BattleStart.Subscribe(func(event event.BattleStart){
+		for char := range event.CharInfo {
+			engine.AddModifier(char, mod)
+		}
 	})
 }
 
-func onCheck(mod *modifier.Instance) {
+func check(mod *modifier.Instance) {
 	stats := mod.OwnerStats()
-	if stats.SPD() >= 120 {
-		mod.SetProperty(prop.ATKPercent, 0.08)
+	applied := mod.State().(*bool)
+
+	if stats.SPD() >= 120 && !applied {
+		for _, c := range engine.Characters() {
+			engine.AddModifier(i, info.Modifier{
+				Name:   buff,
+				Source: owner,
+				Stats: info.PropMap{prop.ATKPercent, 0.08}
+				
+			})
+		}
+		mod.State().(*bool) = true
+	}
+
+	if stats.SPD() < 120 && applied {
+		for _, c := range engine.Characters() {
+			mod.Engine().RemoveModifierFromSource(c, mod.Owner(), buff)
+		}
+		mod.State().(*bool) = false
 	}
 }
+
+
