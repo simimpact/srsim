@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	mod = key.Modifier("fleet-of-the-ageless")
-	buff = key.Modifier("fleet-of-the-ageless-atk-buff")
+	mod key.Modifier = "fleet-of-the-ageless"
+	buff key.Modifier ="fleet-of-the-ageless-atk-buff"
 )
 
 // Increases the wearer's Max HP by 12%. When the wearer's SPD reaches 120 or higher,
