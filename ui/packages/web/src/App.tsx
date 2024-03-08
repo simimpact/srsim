@@ -2,9 +2,9 @@ import { Footer, Navigation } from "./components/Layout";
 import { AppRoutes } from "./routes";
 
 const App = () => (
-  <div className="h-screen flex flex-col bg-background">
+  <div className="bg-background flex min-h-screen flex-col">
     <Navigation />
-    <div className="w-full h-full flex items-center flex-grow py-4">
+    <div className="flex h-full w-full flex-grow items-center py-4">
       <AppRoutes />
     </div>
     <Footer />

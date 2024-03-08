@@ -21,7 +21,7 @@ func init() {
 		SkillInfo: character.SkillInfo{
 			Attack: character.Attack{
 				SPAdd:      1,
-				TargetType: model.TargetType_ALLIES,
+				TargetType: model.TargetType_ENEMIES,
 			},
 			Skill: character.Skill{
 				SPNeed:     1,

@@ -30,7 +30,7 @@ func init() {
 }
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	extraDamage := 0.0
-	if c.info.Traces["1201102"] {
+	if c.info.Traces["102"] {
 		extraDamage = 0.1
 	}
 	c.engine.AddModifier(target, info.Modifier{

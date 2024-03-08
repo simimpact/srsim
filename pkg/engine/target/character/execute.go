@@ -3,6 +3,7 @@ package character
 import (
 	"fmt"
 
+	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/target"
 	"github.com/simimpact/srsim/pkg/engine/target/evaltarget"
@@ -33,9 +34,21 @@ func (mgr *Manager) ExecuteAction(id key.TargetID, isInsert bool) (target.Execut
 		return target.ExecutableAction{}, err
 	}
 
-	check := skillInfo.Skill.CanUse
 	useSkill := act.Type == logic.ActionSkill
-	if useSkill && mgr.engine.SP() >= skillInfo.Skill.SPNeed && (check == nil || check(mgr.engine, char)) {
+	canUseSkill, err := mgr.engine.CanUseSkill(id)
+	if err != nil {
+		return target.ExecutableAction{}, err
+	}
+
+	if useSkill && !canUseSkill {
+		useSkill = false
+		act, err = mgr.eval.DefaultAction(id)
+		if err != nil {
+			return target.ExecutableAction{}, err
+		}
+	}
+
+	if useSkill {
 		primaryTarget, err := evaltarget.Evaluate(mgr.engine, evaltarget.Info{
 			Source:      id,
 			Evaluator:   act.TargetEvaluator,
@@ -49,14 +62,14 @@ func (mgr *Manager) ExecuteAction(id key.TargetID, isInsert bool) (target.Execut
 		return target.ExecutableAction{
 			Execute: func() {
 				char.Skill(primaryTarget, actionState{
-					mgr:      mgr,
-					source:   id,
+					engine:   mgr.engine,
 					isInsert: isInsert,
 				})
 			},
 			SPDelta:    -skillInfo.Skill.SPNeed,
 			AttackType: model.AttackType_SKILL,
 			IsInsert:   isInsert,
+			Key:        mgr.info[id].Key.String(),
 		}, nil
 	}
 
@@ -73,14 +86,14 @@ func (mgr *Manager) ExecuteAction(id key.TargetID, isInsert bool) (target.Execut
 	return target.ExecutableAction{
 		Execute: func() {
 			char.Attack(primaryTarget, actionState{
-				mgr:      mgr,
-				source:   id,
+				engine:   mgr.engine,
 				isInsert: isInsert,
 			})
 		},
 		SPDelta:    skillInfo.Attack.SPAdd,
 		AttackType: model.AttackType_NORMAL,
 		IsInsert:   isInsert,
+		Key:        mgr.info[id].Key.String(),
 	}, nil
 }
 
@@ -119,9 +132,8 @@ func (mgr *Manager) ExecuteUlt(act logic.Action) (target.ExecutableUlt, error) {
 		return target.ExecutableUlt{
 			Execute: func() {
 				singleUlt.Ult(primaryTarget, actionState{
-					mgr:      mgr,
-					source:   id,
-					isInsert: true,
+					engine:   mgr.engine,
+					isInsert: false,
 				})
 			},
 		}, nil
@@ -146,9 +158,8 @@ func (mgr *Manager) ExecuteUlt(act logic.Action) (target.ExecutableUlt, error) {
 		return target.ExecutableUlt{
 			Execute: func() {
 				multiUlt.UltAttack(primaryTarget, actionState{
-					mgr:      mgr,
-					source:   id,
-					isInsert: true,
+					engine:   mgr.engine,
+					isInsert: false,
 				})
 			},
 		}, nil
@@ -157,8 +168,7 @@ func (mgr *Manager) ExecuteUlt(act logic.Action) (target.ExecutableUlt, error) {
 }
 
 type actionState struct {
-	mgr      *Manager
-	source   key.TargetID
+	engine   engine.Engine
 	isInsert bool
 }
 
@@ -166,9 +176,5 @@ func (a actionState) IsInsert() bool {
 	return a.isInsert
 }
 func (a actionState) EndAttack() {
-	a.mgr.engine.EndAttack()
-}
-
-func (a actionState) CharacterInfo() info.Character {
-	return a.mgr.info[a.source]
+	a.engine.EndAttack()
 }

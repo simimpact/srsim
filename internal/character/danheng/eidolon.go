@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	E1 key.Modifier = "dan-heng-e1"
-	E4 key.Modifier = "dan-heng-e4"
+	E1 = "dan-heng-e1"
+	E4 = "dan-heng-e4"
 )
 
 func init() {
@@ -19,10 +19,11 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: func(mod *modifier.Instance, e event.HitStart) {
 				if e.Hit.Defender.CurrentHPRatio() >= 0.5 {
-					e.Hit.Attacker.AddProperty(prop.CritChance, 0.12)
+					e.Hit.Attacker.AddProperty(E1, prop.CritChance, 0.12)
 				}
 			},
 		},
+		CanModifySnapshot: true,
 	})
 
 	// When Dan Heng uses his Ultimate to defeat an enemy, he will immediately take action again.
@@ -30,7 +31,12 @@ func init() {
 	modifier.Register(E4, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnTriggerDeath: func(mod *modifier.Instance, target key.TargetID) {
-				mod.Engine().SetGauge(mod.Owner(), 0)
+				mod.Engine().SetGauge(info.ModifyAttribute{
+					Key:    E4,
+					Target: mod.Owner(),
+					Source: mod.Owner(),
+					Amount: 0,
+				})
 			},
 		},
 	})

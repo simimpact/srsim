@@ -1,11 +1,11 @@
 https://:project.pages.dev/*
   X-Robots-Tag: noindex
 
-/*
-  X-Frame-Options: DENY
-  X-Content-Type-Options: nosniff
-  Referrer-Policy: no-referrer
-  Permissions-Policy: document-domain=()
-  Content-Security-Policy: script-src 'self' static.cloudflareinsights.com
-  Content-Security-Policy: frame-ancestors 'none'
-  Content-Security-Policy: connect-src 'self' cloudflareinsights.com
+# /*
+#   X-Frame-Options: DENY
+#   X-Content-Type-Options: nosniff
+#   Referrer-Policy: no-referrer
+#   Permissions-Policy: document-domain=()
+#   Content-Security-Policy: script-src 'self' static.cloudflareinsights.com
+#   Content-Security-Policy: frame-ancestors 'none'
+#   Content-Security-Policy: connect-src 'self' cloudflareinsights.com

@@ -79,7 +79,7 @@ func newRandomBug(engine engine.Engine, target, source key.TargetID) info.Modifi
 		bugs = []key.Modifier{BugATK, BugDEF, BugSPD}
 	}
 	duration := 3
-	if char.Traces["1006101"] {
+	if char.Traces["101"] {
 		duration += 1
 	}
 	return info.Modifier{

@@ -6,7 +6,15 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 export default () => {
   return defineConfig({
-    plugins: [react(), tsconfigPaths(), visualizer()],
+    plugins: [
+      react({
+        babel: {
+          plugins: [["jotai/babel/plugin-react-refresh"], ["jotai/babel/plugin-debug-label"]],
+        },
+      }),
+      tsconfigPaths(),
+      visualizer(),
+    ],
     server: {
       proxy: {
         "/api": {

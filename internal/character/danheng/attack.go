@@ -6,11 +6,15 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
+const Normal key.Attack = "dan-heng-normal"
+
 var attackHits = []float64{0.45, 0.55}
 
 func (c *char) Attack(target key.TargetID, state info.ActionState) {
-	for _, hitRatio := range attackHits {
+	for i, hitRatio := range attackHits {
 		c.engine.Attack(info.Attack{
+			Key:        Normal,
+			HitIndex:   i,
 			Source:     c.id,
 			Targets:    []key.TargetID{target},
 			DamageType: model.DamageType_WIND,

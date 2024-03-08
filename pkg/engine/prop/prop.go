@@ -3,8 +3,6 @@ package prop
 //go:generate stringer -type=Property
 
 import (
-	"encoding/json"
-
 	"github.com/simimpact/srsim/pkg/model"
 )
 
@@ -123,6 +121,10 @@ const (
 	MinFatigue      Property = 92
 )
 
+func Total() int {
+	return len(model.Property_name)
+}
+
 func FromProto(p model.Property) Property {
 	return Property(p)
 }
@@ -131,8 +133,8 @@ func (p Property) ToProto() model.Property {
 	return model.Property(p)
 }
 
-func (p Property) MarshalJSON() ([]byte, error) {
-	return json.Marshal(model.Property_name[int32(p)])
+func (p Property) MarshalText() ([]byte, error) {
+	return []byte(model.Property_name[int32(p)]), nil
 }
 
 // For converting damage type to damage percent

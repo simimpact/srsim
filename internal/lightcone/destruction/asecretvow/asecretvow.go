@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	ASecretVow key.Modifier = "a_secret_vow"
+	ASecretVow = "a-secret-vow"
 )
 
 // Increases DMG dealt by the wearer by 20%.
@@ -29,6 +29,7 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: onBeforeHitAll,
 		},
+		CanModifySnapshot: true,
 	})
 }
 
@@ -46,6 +47,6 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 // If the enemy hp ratio is greater or equal than the attackers hp ratio, add dmg%
 func onBeforeHitAll(mod *modifier.Instance, e event.HitStart) {
 	if e.Hit.Attacker.CurrentHPRatio() <= e.Hit.Defender.CurrentHPRatio() {
-		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, mod.State().(float64))
+		e.Hit.Attacker.AddProperty(ASecretVow, prop.AllDamagePercent, mod.State().(float64))
 	}
 }

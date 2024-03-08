@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	Passkey key.Modifier = "passkey"
+	Passkey = "passkey"
 )
 
 // After the wearer uses their Skill, additionally regenerates 8/9/10/11/12 Energy.
@@ -49,6 +49,11 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 
 // after giving energy, remove this modifier so it cannot do it again
 func onAfterAction(mod *modifier.Instance, e event.ActionEnd) {
-	mod.Engine().ModifyEnergy(mod.Owner(), mod.State().(float64))
+	mod.Engine().ModifyEnergy(info.ModifyAttribute{
+		Key:    Passkey,
+		Target: mod.Owner(),
+		Source: mod.Owner(),
+		Amount: mod.State().(float64),
+	})
 	mod.RemoveSelf()
 }

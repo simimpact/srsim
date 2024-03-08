@@ -60,20 +60,13 @@ func (c *char) e2() {
 
 func (c *char) e4() {
 	if c.info.Eidolon >= 4 {
-		targets := c.engine.Characters()
-
-		for _, trg := range targets {
-			c.engine.AddModifier(trg, info.Modifier{
-				Name:   E4,
-				Source: c.id,
-			})
-		}
-
-		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAdded) {
-			c.engine.AddModifier(e.ID, info.Modifier{
-				Name:   E4,
-				Source: c.id,
-			})
+		c.engine.Events().CharactersAdded.Subscribe(func(e event.CharactersAdded) {
+			for _, char := range e.Characters {
+				c.engine.AddModifier(char.ID, info.Modifier{
+					Name:   E4,
+					Source: c.id,
+				})
+			}
 		})
 	}
 }

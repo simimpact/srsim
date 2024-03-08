@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	WindTornDagger key.Modifier = "sampo_talent"
+	WindTornDagger key.Modifier = "sampo-talent"
 )
 
 func init() {
@@ -32,7 +32,7 @@ func onAfterHit(mod *modifier.Instance, e event.HitEnd) {
 }
 
 func AddWindShearTalent(char info.Character, engine engine.Engine, owner, target key.TargetID, duration int, chance float64) {
-	if char.Traces["1108101"] {
+	if char.Traces["101"] {
 		duration += 1
 	}
 
@@ -45,7 +45,7 @@ func AddWindShearTalent(char info.Character, engine engine.Engine, owner, target
 	engine.AddModifier(target, info.Modifier{
 		Name:   common.WindShear,
 		Source: owner,
-		State: common.WindShearState{
+		State: &common.WindShearState{
 			DamagePercentage: damagePercentage,
 		},
 		Chance:   chance,

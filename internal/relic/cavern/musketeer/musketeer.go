@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	mod = key.Modifier("musketeer-of-wild-wheat")
+	name = "musketeer-of-wild-wheat"
 )
 
 // 2pc: ATK increases by 12%.
@@ -29,7 +29,7 @@ func init() {
 				Stats:    info.PropMap{prop.SPDPercent: 0.06},
 				CreateEffect: func(engine engine.Engine, owner key.TargetID) {
 					engine.AddModifier(owner, info.Modifier{
-						Name:   mod,
+						Name:   name,
 						Source: owner,
 					})
 				},
@@ -37,11 +37,11 @@ func init() {
 		},
 	})
 
-	modifier.Register(mod, modifier.Config{
+	modifier.Register(name, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeHit: func(mod *modifier.Instance, e event.HitStart) {
 				if e.Hit.AttackType == model.AttackType_NORMAL {
-					e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.1)
+					e.Hit.Attacker.AddProperty(name, prop.AllDamagePercent, 0.1)
 				}
 			},
 		},

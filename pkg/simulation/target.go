@@ -2,6 +2,7 @@ package simulation
 
 import (
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/target"
 	"github.com/simimpact/srsim/pkg/key"
 )
 
@@ -20,6 +21,10 @@ func (sim *Simulation) IsValid(target key.TargetID) bool {
 		return true
 	}
 	return false
+}
+
+func (sim *Simulation) IsAlive(target key.TargetID) bool {
+	return sim.Attr.IsAlive(target)
 }
 
 func (sim *Simulation) IsCharacter(target key.TargetID) bool {
@@ -43,10 +48,10 @@ func (sim *Simulation) IsNeutral(target key.TargetID) bool {
 	return false
 }
 
-func (sim *Simulation) AdjacentTo(target key.TargetID) []key.TargetID {
+func (sim *Simulation) AdjacentTo(t key.TargetID) []key.TargetID {
 	var targets []key.TargetID
 
-	switch sim.Targets[target] {
+	switch sim.Targets[t] {
 	case info.ClassCharacter:
 		targets = sim.characters
 	case info.ClassEnemy:
@@ -57,32 +62,27 @@ func (sim *Simulation) AdjacentTo(target key.TargetID) []key.TargetID {
 		targets = nil
 	}
 
-	for i, t := range targets {
-		if t != target {
-			continue
-		}
-
-		out := make([]key.TargetID, 0, 3)
-		if i != 0 {
-			out = append(out, targets[i-1])
-		}
-		out = append(out, t)
-		if i != len(targets)-1 {
-			out = append(out, targets[i+1])
-		}
-		return out
-	}
-	return nil
+	return target.AdjacentTo(targets, t)
 }
 
 func (sim *Simulation) Characters() []key.TargetID {
-	return sim.characters
+	out := make([]key.TargetID, len(sim.characters))
+	copy(out, sim.characters)
+	return out
 }
 
 func (sim *Simulation) Enemies() []key.TargetID {
-	return sim.enemies
+	out := make([]key.TargetID, len(sim.enemies))
+	copy(out, sim.enemies)
+	return out
 }
 
 func (sim *Simulation) Neutrals() []key.TargetID {
-	return sim.neutrals
+	out := make([]key.TargetID, len(sim.neutrals))
+	copy(out, sim.neutrals)
+	return out
+}
+
+func (sim *Simulation) Retarget(data info.Retarget) []key.TargetID {
+	return target.Retarget(sim.Rand(), sim.Attr, data)
 }

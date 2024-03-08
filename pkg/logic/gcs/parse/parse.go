@@ -757,6 +757,7 @@ func (p *Parser) parseMap() (ast.Expr, error) {
 	n := p.next()
 	expr := &ast.MapExpr{
 		Pos:    n.Pos,
+		Array:  make([]ast.Expr, 0),
 		Fields: make(map[string]ast.Expr),
 	}
 
@@ -767,22 +768,26 @@ func (p *Parser) parseMap() (ast.Expr, error) {
 
 	// loop until we hit square paren
 	for {
-		// we're expecting ident = int
-		i, err := p.consume(ast.ItemIdentifier)
-		if err != nil {
-			return nil, fmt.Errorf("ln%v: expecting identifier in map expression, got %v", i.Line, i.Val)
+		// we're expecting ident = expr (fields) or expr (array)
+		ele := p.next()
+		next := p.next()
+		if ele.Typ == ast.ItemIdentifier && next.Typ == ast.ItemAssign {
+			// ident = expr
+			e, err := p.parseExpr(Lowest)
+			if err != nil {
+				return nil, err
+			}
+			expr.Fields[ele.Val] = e
+		} else {
+			// expr
+			p.backup()
+			p.backup()
+			e, err := p.parseExpr(Lowest)
+			if err != nil {
+				return nil, err
+			}
+			expr.Array = append(expr.Array, e)
 		}
-
-		a, err := p.consume(ast.ItemAssign)
-		if err != nil {
-			return nil, fmt.Errorf("ln%v: expecting = after identifier in map expression, got %v", a.Line, a.Val)
-		}
-
-		e, err := p.parseExpr(Lowest)
-		if err != nil {
-			return nil, err
-		}
-		expr.Fields[i.Val] = e
 
 		// if we hit ], return; if we hit , keep going, other wise error
 		n := p.next()

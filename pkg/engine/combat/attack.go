@@ -6,7 +6,7 @@ import (
 )
 
 func (mgr *Manager) Attack(atk info.Attack) {
-	if len(atk.Targets) == 0 || mgr.attr.HPRatio(atk.Source) == 0 {
+	if len(atk.Targets) == 0 || !mgr.attr.IsAlive(atk.Source) {
 		return
 	}
 
@@ -14,6 +14,7 @@ func (mgr *Manager) Attack(atk info.Attack) {
 	if !mgr.isInAttack && atk.AttackType.IsQualified() {
 		mgr.isInAttack = true
 		mgr.attackInfo = attackInfo{
+			key:        atk.Key,
 			attacker:   atk.Source,
 			targets:    atk.Targets,
 			attackType: atk.AttackType,
@@ -21,6 +22,7 @@ func (mgr *Manager) Attack(atk info.Attack) {
 		}
 
 		mgr.event.AttackStart.Emit(event.AttackStart{
+			Key:        atk.Key,
 			Attacker:   atk.Source,
 			AttackType: atk.AttackType,
 			Targets:    atk.Targets,
@@ -37,6 +39,7 @@ func (mgr *Manager) EndAttack() {
 	if mgr.isInAttack {
 		mgr.isInAttack = false
 		mgr.event.AttackEnd.Emit(event.AttackEnd{
+			Key:        mgr.attackInfo.key,
 			Attacker:   mgr.attackInfo.attacker,
 			Targets:    mgr.attackInfo.targets,
 			AttackType: mgr.attackInfo.attackType,

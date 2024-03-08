@@ -9,6 +9,9 @@ import (
 
 // metadata on what is being inserted into the turn queue
 type Insert struct {
+	// Unique identifier for this insert
+	Key key.Insert
+
 	// The logic to run when this insert is executed during the turn
 	Execute func()
 
@@ -31,16 +34,20 @@ const (
 	CharHealSelf            InsertPriority = 48
 	CharReviveOthers        InsertPriority = 55
 	CharHealOthers          InsertPriority = 58
+	CharBuffSelf            InsertPriority = 65
 	CharInsertAttackSelf    InsertPriority = 75
 	CharInsertAttackOthers  InsertPriority = 115
 	EnemyReviveSelf         InsertPriority = 145
 	EnemyHealSelf           InsertPriority = 148
 	EnemyReviveOthers       InsertPriority = 155
 	EnemyHealOthers         InsertPriority = 158
+	EnemyBuffSelf           InsertPriority = 165
 	EnemyInsertAttackSelf   InsertPriority = 175
 	EnemyInsertAttackOthers InsertPriority = 215
-	CharInsertUlt           InsertPriority = 500
-	CharInsertAction        InsertPriority = 800
-	EnemyInsertUlt          InsertPriority = 1000
-	EnemyInsertAction       InsertPriority = 1300
+	CharInsertAction        InsertPriority = 500
+	EnemyInsertAction       InsertPriority = 1000
 )
+
+func (i InsertPriority) MarshalText() ([]byte, error) {
+	return []byte(i.String()), nil
+}

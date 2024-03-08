@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	Check key.Modifier = "something-irreplaceable"
+	Check              = "something-irreplaceable"
 	Buff  key.Modifier = "kinship"
 )
 
@@ -81,6 +81,7 @@ func conditions(mod *modifier.Instance) {
 		})
 
 		mod.Engine().Heal(info.Heal{
+			Key:      Check,
 			Targets:  []key.TargetID{mod.Owner()},
 			Source:   mod.Owner(),
 			BaseHeal: info.HealMap{model.HealFormula_BY_HEALER_ATK: heal},

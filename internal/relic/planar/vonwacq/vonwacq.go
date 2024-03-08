@@ -16,6 +16,8 @@ import (
 
 // Multi Wave Support not implemented
 
+const name key.Reason = "vonwacq"
+
 func init() {
 	relic.Register(key.SprightlyVonwacq, relic.Config{
 		Effects: []relic.SetEffect{
@@ -32,7 +34,13 @@ func Create(engine engine.Engine, owner key.TargetID) {
 	engine.Events().BattleStart.Subscribe(func(e event.BattleStart) {
 		for _, char := range e.CharStats {
 			if char.ID() == owner && char.SPD() >= 120 {
-				engine.ModifyGaugeNormalized(char.ID(), -0.4)
+				engine.ModifyGaugeNormalized(info.ModifyAttribute{
+					Key:    name,
+					Target: owner,
+					Source: owner,
+					Amount: -0.4,
+				})
+				return
 			}
 		}
 	})

@@ -1,3 +1,4 @@
+/* eslint-disable */
 module.exports = {
   root: true,
   env: {
@@ -10,7 +11,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
-    project: ["packages/*/tsconfig.json"],
+    project: ["packages/web/tsconfig.json"],
     tsconfigRootDir: __dirname,
     createDefaultProgram: true,
   },
@@ -61,6 +62,7 @@ module.exports = {
     "import/no-named-as-default-member": "off",
 
     "react/react-in-jsx-scope": "off",
+    "react/display-name": "off",
 
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": ["error", { ignoreRestSiblings: true }],

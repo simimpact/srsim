@@ -13,6 +13,8 @@ import (
 // 4pc:
 // At the start of the battle, immediately regenerates 1 Skill Point.
 
+const reason key.Reason = "passerby-of-wandering-cloud"
+
 func init() {
 	relic.Register(key.PasserbyOfWanderingCloud, relic.Config{
 		Effects: []relic.SetEffect{
@@ -23,7 +25,11 @@ func init() {
 			{
 				MinCount: 4,
 				CreateEffect: func(engine engine.Engine, owner key.TargetID) {
-					engine.ModifySP(1)
+					engine.ModifySP(info.ModifySP{
+						Key:    reason,
+						Source: owner,
+						Amount: 1,
+					})
 				},
 			},
 		},

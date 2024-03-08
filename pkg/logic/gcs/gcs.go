@@ -16,7 +16,7 @@ type ActionList struct {
 	Program   *ast.BlockStmt           `json:"-"`
 	Settings  *model.SimulatorSettings `json:"settings"`
 	Errors    []error                  `json:"-"` // These represents errors preventing ActionList from being executed
-	ErrorMsgs []string                 `json:"errors"`
+	ErrorMsgs []string                 `json:"error_msgs"`
 }
 
 func (a *ActionList) Copy() *ActionList {

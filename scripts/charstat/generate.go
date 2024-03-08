@@ -91,7 +91,7 @@ func main() {
 		err = OpenConfig(&avatarConfig, dmPath, value.JSONPath)
 		if err != nil {
 			fmt.Println(err)
-			return
+			continue
 		}
 
 		info := FindSkillInfo(avatarSkills, avatarConfig, key)
@@ -238,7 +238,8 @@ func ProcessCharacter(
 		if value.AvatarPromotionLimit != nil {
 			trace.Ascension = *value.AvatarPromotionLimit
 		}
-		data.Traces[strconv.Itoa(value.PointID)] = trace
+		tKey := strconv.Itoa(value.PointID)
+		data.Traces[tKey[len(tKey)-3:]] = trace
 	}
 
 	// save .go files

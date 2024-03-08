@@ -21,9 +21,17 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
+type RunOpts struct {
+	Config  *model.SimConfig
+	Eval    logic.Eval
+	Seed    int64
+	Loggers []logging.Logger `exhaustruct:"optional"`
+}
+
 type Simulation struct {
 	cfg  *model.SimConfig
 	eval logic.Eval
+	res  *model.IterationResult
 	seed int64
 
 	// services
@@ -32,7 +40,7 @@ type Simulation struct {
 	Event    *event.System
 	Queue    *queue.Handler
 	Modifier *modifier.Manager
-	Attr     *attribute.Service
+	Attr     attribute.Manager
 	Char     *character.Manager
 	Enemy    *enemy.Manager
 	Turn     turn.Manager
@@ -40,8 +48,6 @@ type Simulation struct {
 	Shield   *shield.Manager
 
 	// state
-	Sp            int
-	Tp            int
 	Targets       map[key.TargetID]info.TargetClass
 	characters    []key.TargetID
 	enemies       []key.TargetID
@@ -51,35 +57,27 @@ type Simulation struct {
 	ActionTargets map[key.TargetID]bool
 }
 
-func RunWithLog(logger logging.Logger, cfg *model.SimConfig, eval logic.Eval, seed int64) (*model.IterationResult, error) {
-	logging.InitLogger(logger)
-	return Run(cfg, eval, seed)
-}
-
-func Run(cfg *model.SimConfig, eval logic.Eval, seed int64) (*model.IterationResult, error) {
-	s := NewSimulation(cfg, eval, seed)
-	return s.Run()
+func Run(opts *RunOpts) (*model.IterationResult, error) {
+	logging.InitLoggers(opts.Loggers...)
+	return NewSimulation(opts.Config, opts.Eval, opts.Seed).Run()
 }
 
 func NewSimulation(cfg *model.SimConfig, eval logic.Eval, seed int64) *Simulation {
-	s := &Simulation{
-		cfg:  cfg,
-		eval: eval,
-		seed: seed,
+	s := new(Simulation)
+	s.cfg = cfg
+	s.eval = eval
+	s.seed = seed
 
-		Event:  &event.System{},
-		Queue:  queue.New(),
-		Random: rand.New(rand.NewSource(seed)),
-		IDGen:  key.NewTargetIDGenerator(),
+	s.Event = &event.System{}
+	s.Queue = queue.New()
+	s.Random = rand.New(rand.NewSource(seed))
+	s.IDGen = key.NewTargetIDGenerator()
 
-		Sp:            3,
-		Tp:            4, // TODO: define starting amount in config?
-		Targets:       make(map[key.TargetID]info.TargetClass, 15),
-		characters:    make([]key.TargetID, 0, 4),
-		enemies:       make([]key.TargetID, 0, 5),
-		neutrals:      make([]key.TargetID, 0, 5),
-		ActionTargets: make(map[key.TargetID]bool, 10),
-	}
+	s.Targets = make(map[key.TargetID]info.TargetClass, 15)
+	s.characters = make([]key.TargetID, 0, 4)
+	s.enemies = make([]key.TargetID, 0, 5)
+	s.neutrals = make([]key.TargetID, 0, 5)
+	s.ActionTargets = make(map[key.TargetID]bool, 10)
 
 	// init services
 

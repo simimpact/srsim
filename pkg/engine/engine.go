@@ -60,8 +60,15 @@ type Modifier interface {
 	// Returns true if the target has at least one instance of the modifier
 	HasModifier(target key.TargetID, modifier key.Modifier) bool
 
+	// Returns true if the target has at least once instance of the modifier from the given source
+	HasModifierFromSource(target, source key.TargetID, modifier key.Modifier) bool
+
 	// Returns the total count of modifiers that are of the given StatusType (Buff or Debuff)
-	ModifierCount(target key.TargetID, statusType model.StatusType) int
+	ModifierStatusCount(target key.TargetID, statusType model.StatusType) int
+
+	// Returns the number of stacks for a given modifier that was from the given source. This should
+	// only be used when accessing the modifier from outside the instance.
+	ModifierStackCount(target, source key.TargetID, modifier key.Modifier) float64
 
 	// Returns true if the target has the given behavior flag from an attached modifier. If multiple
 	// flags are passed, will return true if at least one is attached
@@ -80,6 +87,9 @@ type Attribute interface {
 	// Gets the current stance amount of the target.
 	Stance(target key.TargetID) float64
 
+	// Gets the max stance amount of the target
+	MaxStance(target key.TargetID) float64
+
 	// Gets the current energy amount of the target.
 	Energy(target key.TargetID) float64
 
@@ -94,32 +104,28 @@ type Attribute interface {
 
 	// Sets the target HP to the given amount. Source target is used for tracking who owns this HP
 	// modification in the event that the modification kills the target.
-	SetHP(target, source key.TargetID, amt float64) error
+	SetHP(data info.ModifyAttribute) error
 
 	// Modifies the target HP by the given ratio (% of health). The ratio data can include a floor value to
 	// ensure that the target HP does not go below the given threshold. Source target is used for
 	// tracking who owns this HP modification in the event that the modification kills the target.
-	ModifyHPByRatio(target, source key.TargetID, data info.ModifyHPByRatio) error
-
-	// Modifies the target HP by the given flat amount. Source target is used for tracking who owns
-	// this HP modification in the event that the modification kills the target.
-	ModifyHPByAmount(target, source key.TargetID, amt float64) error
+	ModifyHPByRatio(data info.ModifyHPByRatio) error
 
 	// Modifies the target stance by the given flat amount. Source target is used for tracking who
 	// owns this stance modification in the event that the stance reaches 0 and a break is triggered.
 	// This stance modification will also scale with the source's ALL_STANCE_DMG_PERCENT.
-	ModifyStance(target, source key.TargetID, amt float64) error
+	ModifyStance(data info.ModifyAttribute) error
 
 	// Modifies the target energy by the given flat amount. Energy amount added will be multiplied
 	// by the target's current Energy Regeneration amount.
-	ModifyEnergy(target key.TargetID, amt float64) error
+	ModifyEnergy(data info.ModifyAttribute) error
 
 	// Modifies the target energy by the given flat amount. This amount is fixed and will not be
 	// increased by the target's Energy Regeneration.
-	ModifyEnergyFixed(target key.TargetID, amt float64) error
+	ModifyEnergyFixed(data info.ModifyAttribute) error
 
-	// Add or remove Skill Points from the current sim state. Returns the new SP amount
-	ModifySP(amt int) int
+	// Add or remove Skill Points from the current sim state.
+	ModifySP(data info.ModifySP) error
 
 	// Return the current number of available Skill Points.
 	SP() int
@@ -167,24 +173,24 @@ type Insert interface {
 
 type Turn interface {
 	// Sets the gauge for the given target. The amount is specified in gauge units (base = 10,000)
-	SetGauge(target key.TargetID, amt float64) error
+	SetGauge(data info.ModifyAttribute) error
 
 	// Modifies the gauge for the given target using gauge normalization. If amt = 1.0, this will add
 	// 10,000 gauge to the targets gauge (amt defines the % of base gauge to add).
-	ModifyGaugeNormalized(target key.TargetID, amt float64) error
+	ModifyGaugeNormalized(data info.ModifyAttribute) error
 
 	// Modifies the gauge for the given target by adding AV to their gauge. Unlike gauge normalization,
 	// the amount of gauge this modifies will depend on the target's current speed:
 	//		gauge_added = amt * target_speed
-	ModifyGaugeAV(target key.TargetID, amt float64) error
+	ModifyGaugeAV(data info.ModifyAttribute) error
 
 	// Sets the current gauge cost to the given amount (the default value for gauge cost is 1.0).
 	// This determines what the active target's gauge will be set to on "Turn Reset" (at Action End).
 	// This is used by stuff like freeze which will set the targets next to be half gauge.
-	SetCurrentGaugeCost(amt float64)
+	SetCurrentGaugeCost(data info.ModifyCurrentGaugeCost)
 
 	// Modifies the current gauge cost by the given amount (will add to the current gauge cost value).
-	ModifyCurrentGaugeCost(amt float64)
+	ModifyCurrentGaugeCost(data info.ModifyCurrentGaugeCost)
 }
 
 type Info interface {
@@ -206,6 +212,9 @@ type Info interface {
 type Target interface {
 	// Check if the given TargetID is valid
 	IsValid(target key.TargetID) bool
+
+	// Check if the given TargetID is alive
+	IsAlive(target key.TargetID) bool
 
 	// returns true if the given TargetID is for a character
 	IsCharacter(target key.TargetID) bool
@@ -229,4 +238,8 @@ type Target interface {
 	AddNeutralTarget() key.TargetID
 
 	RemoveNeutralTarget(id key.TargetID)
+
+	// returns a list of filtered target ids based on a filter func and max amount of targets chosen
+	// (option to include targets in Limbo (0 HP)). used as an implementation of Retarget() method in DM
+	Retarget(data info.Retarget) []key.TargetID
 }

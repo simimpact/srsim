@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	A2 key.Modifier = "bronya-a2"
+	A2              = "bronya-a2"
 	A4 key.Modifier = "bronya-a4"
 	A6 key.Modifier = "bronya-a6"
 )
@@ -21,7 +21,7 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnBeforeHit: func(mod *modifier.Instance, e event.HitStart) {
 				if e.Hit.AttackType == model.AttackType_NORMAL {
-					e.Hit.Attacker.AddProperty(prop.CritChance, 1)
+					e.Hit.Attacker.AddProperty(A2, prop.CritChance, 1)
 				}
 			},
 		},
@@ -59,7 +59,7 @@ func init() {
 
 func (c *char) initTraces() {
 	// A2
-	if c.info.Traces["1101101"] {
+	if c.info.Traces["101"] {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:   A2,
 			Source: c.id,
@@ -67,40 +67,26 @@ func (c *char) initTraces() {
 	}
 
 	// A4
-	if c.info.Traces["1101102"] {
-		targets := c.engine.Characters()
-
-		for _, trg := range targets {
-			c.engine.AddModifier(trg, info.Modifier{
-				Name:   A4,
-				Source: c.id,
-			})
-		}
-
-		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAdded) {
-			c.engine.AddModifier(e.ID, info.Modifier{
-				Name:   A4,
-				Source: c.id,
-			})
+	if c.info.Traces["102"] {
+		c.engine.Events().CharactersAdded.Subscribe(func(e event.CharactersAdded) {
+			for _, char := range e.Characters {
+				c.engine.AddModifier(char.ID, info.Modifier{
+					Name:   A4,
+					Source: c.id,
+				})
+			}
 		})
 	}
 
 	// A6
-	if c.info.Traces["1101103"] {
-		targets := c.engine.Characters()
-
-		for _, trg := range targets {
-			c.engine.AddModifier(trg, info.Modifier{
-				Name:   A6,
-				Source: c.id,
-			})
-		}
-
-		c.engine.Events().CharacterAdded.Subscribe(func(e event.CharacterAdded) {
-			c.engine.AddModifier(e.ID, info.Modifier{
-				Name:   A6,
-				Source: c.id,
-			})
+	if c.info.Traces["103"] {
+		c.engine.Events().CharactersAdded.Subscribe(func(e event.CharactersAdded) {
+			for _, char := range e.Characters {
+				c.engine.AddModifier(char.ID, info.Modifier{
+					Name:   A6,
+					Source: c.id,
+				})
+			}
 		})
 	}
 }

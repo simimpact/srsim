@@ -24,8 +24,7 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 
 	crit := crit(hit, mgr.rdm)
 
-	base := baseDamage(hit)*hit.HitRatio + hit.DamageValue
-	bonus := bonusDamage(hit)
+	base := baseDamage(hit)*hit.HitRatio*bonusDamage(hit) + hit.DamageValue
 	defMult := defMult(hit)
 	res := res(hit)
 	vul := vul(hit)
@@ -34,18 +33,37 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 	allDamageReduce := damageReduce(hit)
 	critDmg := critDmg(hit, crit)
 
-	total := base * bonus * defMult * res * vul * toughnessMultiplier * fatigue * allDamageReduce * critDmg
+	total := base * defMult * res * vul * toughnessMultiplier * fatigue * allDamageReduce * critDmg
 
 	hpUpdate := mgr.shld.AbsorbDamage(hit.Defender.ID(), total)
-	mgr.attr.ModifyHPByAmount(hit.Defender.ID(), hit.Attacker.ID(), total, true)
-	mgr.attr.ModifyStance(hit.Defender.ID(), hit.Attacker.ID(), hit.StanceDamage*hit.HitRatio)
+
+	modify := info.ModifyAttribute{
+		Key:    key.Reason(hit.Key),
+		Target: hit.Defender.ID(),
+		Source: hit.Attacker.ID(),
+		Amount: 0,
+	}
+
+	modify.Amount = -hpUpdate
+	mgr.attr.ModifyHPByAmount(modify, true)
+
+	if hit.Defender.IsWeakTo(hit.DamageType) {
+		modify.Amount = -hit.StanceDamage * hit.HitRatio
+		mgr.attr.ModifyStance(modify)
+	}
+
+	modify.Amount = hit.EnergyGain * hit.HitRatio
 	if mgr.target.IsCharacter(hit.Attacker.ID()) {
-		mgr.attr.ModifyEnergy(hit.Attacker.ID(), hit.EnergyGain*hit.HitRatio)
+		// for character attacks, source and target should be the character
+		modify.Target = hit.Attacker.ID()
+		mgr.attr.ModifyEnergy(modify)
 	} else {
-		mgr.attr.ModifyEnergy(hit.Defender.ID(), hit.EnergyGain*hit.HitRatio)
+		mgr.attr.ModifyEnergy(modify)
 	}
 
 	mgr.event.HitEnd.Emit(event.HitEnd{
+		Key:                 hit.Key,
+		HitIndex:            hit.HitIndex,
 		Attacker:            hit.Attacker.ID(),
 		Defender:            hit.Defender.ID(),
 		AttackType:          hit.AttackType,
@@ -55,7 +73,6 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 		HPDamage:            hpUpdate,
 		HPRatioRemaining:    mgr.attr.HPRatio(hit.Defender.ID()),
 		BaseDamage:          base,
-		BonusDamage:         bonus,
 		DefenceMultiplier:   defMult,
 		Resistance:          res,
 		Vulnerability:       vul,
@@ -82,6 +99,8 @@ func (mgr *Manager) newHit(target key.TargetID, atk info.Attack) *info.Hit {
 	}
 
 	return &info.Hit{
+		Key:          atk.Key,
+		HitIndex:     atk.HitIndex,
 		Attacker:     mgr.attr.Stats(atk.Source),
 		Defender:     mgr.attr.Stats(target),
 		AttackType:   atk.AttackType,

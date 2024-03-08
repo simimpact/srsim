@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	CruisingintheStellarSea        key.Modifier = "cruising-in-the-stellar-sea"
+	CruisingintheStellarSea                     = "cruising-in-the-stellar-sea"
 	CruisingintheStellarSeaATKBuff key.Modifier = "cruising-in-the-stellar-sea-atk-buff"
 )
 
@@ -37,6 +37,7 @@ func init() {
 			OnBeforeHitAll: onBeforeHitAll,
 			OnTriggerDeath: onTriggerDeath,
 		},
+		CanModifySnapshot: true,
 	})
 
 	modifier.Register(CruisingintheStellarSeaATKBuff, modifier.Config{
@@ -59,7 +60,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 
 func onBeforeHitAll(mod *modifier.Instance, e event.HitStart) {
 	if e.Hit.Defender.CurrentHPRatio() <= 0.5 {
-		e.Hit.Attacker.AddProperty(prop.CritChance, mod.State().(Amts).cr)
+		e.Hit.Attacker.AddProperty(CruisingintheStellarSea, prop.CritChance, mod.State().(Amts).cr)
 	}
 }
 

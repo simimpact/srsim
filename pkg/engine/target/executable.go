@@ -7,6 +7,7 @@ type ExecutableAction struct {
 	SPDelta    int
 	AttackType model.AttackType
 	IsInsert   bool
+	Key        string
 }
 
 type ExecutableUlt struct {

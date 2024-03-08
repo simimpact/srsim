@@ -72,7 +72,7 @@ export const OuterLabels = <Datum,>({
               <text
                 dx={left ? "-.5em" : ".5em"}
                 textAnchor={left ? "end" : "start"}
-                className="text-xs font-mono font-thin fill-gray-400 cursor-default"
+                className="cursor-default fill-gray-400 font-mono text-xs font-thin"
               >
                 <tspan fill={labelColor(arc.data)}>{labelText(arc.data) + ": "}</tspan>
                 <tspan>{labelValue(arc.data)}</tspan>
