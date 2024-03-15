@@ -82,8 +82,10 @@ func (mgr *Manager) attemptResist(
 	debuffRES := trgtStats.GetDebuffRES(flags...)
 
 	chance := mod.Chance * (1 + effectHitRate) * (1 - effectRES) * (1 - debuffRES)
-	if mgr.engine.Rand().Float64() < chance {
-		return chance, false
+	if !mgr.engine.HasBehaviorFlag(target, model.BehaviorFlag_RESIST_DEBUFF) {
+		if mgr.engine.Rand().Float64() < chance {
+			return chance, false
+		}
 	}
 
 	// resisted, emit event
