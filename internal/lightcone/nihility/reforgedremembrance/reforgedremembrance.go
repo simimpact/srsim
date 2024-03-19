@@ -28,13 +28,6 @@ var dotFlags = []model.BehaviorFlag{
 	model.BehaviorFlag_STAT_DOT_POISON,
 }
 
-type dotState struct {
-	windShearState bool
-	burnState      bool
-	shockState     bool
-	bleedState     bool
-}
-
 // Increases the wearer's Effect Hit Rate by 40%. When the wearer deals DMG to an enemy
 // inflicted with Wind Shear, Burn, Shock, or Bleed, each respectively grants 1 stack of Prophet,
 // stacking up to 4 time(s). In a single battle, only 1 stack of Prophet can be granted for each
@@ -90,71 +83,29 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 func addProphetStack(mod *modifier.Instance, e event.HitStart) {
-	state := mod.State().(*state)
-	dotState := mod.State().(*dotState)
-	for _, dotFlag := range dotFlags {
-		if mod.Engine().HasBehaviorFlag(e.Defender, dotFlag) {
-			switch dotFlag {
-			case model.BehaviorFlag_STAT_DOT_ELECTRIC:
-				if !dotState.windShearState {
-					dotState.windShearState = true
-					mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-						Name:   atkBuff,
-						Source: mod.Owner(),
-						State:  state.atkBuff,
-					})
-					mod.Engine().AddModifier(e.Defender, info.Modifier{
-						Name:   defShred,
-						Source: mod.Owner(),
-						State:  state.defShred,
-					})
-				}
-			case model.BehaviorFlag_STAT_DOT_BURN:
-				if !dotState.burnState {
-					dotState.burnState = true
-					mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-						Name:   atkBuff,
-						Source: mod.Owner(),
-						State:  state.atkBuff,
-					})
-					mod.Engine().AddModifier(e.Defender, info.Modifier{
-						Name:   defShred,
-						Source: mod.Owner(),
-						State:  state.defShred,
-					})
-				}
-			case model.BehaviorFlag_STAT_DOT_BLEED:
-				if !dotState.bleedState {
-					dotState.bleedState = true
-					mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-						Name:   atkBuff,
-						Source: mod.Owner(),
-						State:  state.atkBuff,
-					})
-					mod.Engine().AddModifier(e.Defender, info.Modifier{
-						Name:   defShred,
-						Source: mod.Owner(),
-						State:  state.defShred,
-					})
-				}
-			case model.BehaviorFlag_STAT_DOT_POISON:
-				if !dotState.shockState {
-					dotState.shockState = true
-					mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-						Name:   atkBuff,
-						Source: mod.Owner(),
-						State:  state.atkBuff,
-					})
-					mod.Engine().AddModifier(e.Defender, info.Modifier{
-						Name:   defShred,
-						Source: mod.Owner(),
-						State:  state.defShred,
-					})
-				}
+    state := mod.State().(*state)
+	sum := func (mod, sum float64) float64 {
+		for _, flag := range dotFlags {
+			if mod.Engine().HasBehaviorFlag(e.Defender, flag) {
+				sum += (e.Defender).GetDotDamage(flag)
 			}
 		}
+		return sum
+	}
+	if sum > 0 {
+		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
+			Name: atkBuff,
+			Source: mod.Owner(),
+			State: state.atkBuff,
+		})
+		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
+			Name: defShred,
+			Source: mod.Owner(),
+			State: state.defShred,
+		})
 	}
 }
+
 
 func recalcAtkBuff(mod *modifier.Instance) {
 	atkBuff := mod.State().(float64) * mod.Count()
