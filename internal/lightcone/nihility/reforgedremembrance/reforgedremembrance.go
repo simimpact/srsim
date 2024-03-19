@@ -82,30 +82,35 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
+func GetDotDamage(defender key.TargetID, flag model.BehaviorFlag) float64 {
+	return 0
+}
+
 func addProphetStack(mod *modifier.Instance, e event.HitStart) {
-    state := mod.State().(*state)
-	sum := func (mod, sum float64) float64 {
+	state := mod.State().(*state)
+	sum := func(engine engine.Engine, _, sum float64) float64 {
 		for _, flag := range dotFlags {
-			if mod.Engine().HasBehaviorFlag(e.Defender, flag) {
-				sum += (e.Defender).GetDotDamage(flag)
+			if engine.HasBehaviorFlag(e.Defender, flag) {
+				sum += GetDotDamage(e.Defender, flag)
 			}
 		}
 		return sum
 	}
-	if sum > 0 {
+
+	dotSum := sum(mod.Engine(), mod.Count(), 0)
+	if dotSum > 0 {
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-			Name: atkBuff,
+			Name:   atkBuff,
 			Source: mod.Owner(),
-			State: state.atkBuff,
+			State:  state.atkBuff,
 		})
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-			Name: defShred,
+			Name:   defShred,
 			Source: mod.Owner(),
-			State: state.defShred,
+			State:  state.defShred,
 		})
 	}
 }
-
 
 func recalcAtkBuff(mod *modifier.Instance) {
 	atkBuff := mod.State().(float64) * mod.Count()
