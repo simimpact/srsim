@@ -12,9 +12,9 @@ import (
 )
 
 const (
-	rememberance key.Modifier = "reforged-rememberance" // rememberance = Prophet stack if i do this correctly
-	atkBuff      key.Modifier = "reforged-rememberance-atk-buff"
-	defShred     key.Modifier = "reforged-rememberance-def-shred"
+	remembrance key.Modifier = "reforged-remembrance " // rememberance = Prophet stack if i do this correctly
+	atkBuff     key.Modifier = "reforged-remembrance-atk-buff"
+	defShred    key.Modifier = "reforged-remembrance-def-shred"
 )
 
 type state struct {
@@ -33,7 +33,7 @@ func init() {
 		Path:          model.Path_NIHILITY,
 		Promotions:    promotions,
 	})
-	modifier.Register(rememberance, modifier.Config{
+	modifier.Register(remembrance, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnAfterHit: addProphetStack,
 		},
@@ -68,7 +68,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		defShred: 0.072 + 0.07*float64(lc.Imposition),
 	}
 	engine.AddModifier(owner, info.Modifier{
-		Name:   rememberance,
+		Name:   remembrance,
 		Source: owner,
 		Stats:  info.PropMap{prop.EffectHitRate: ehrAmt},
 		State:  &modState,
