@@ -128,6 +128,8 @@ enum BehaviorFlag {
   STAT_SPEED_UP = 113;
   STAT_ATTACH_WEAKNESS = 114;
   STAT_ENTANGLE = 115;
+  RESIST_DEBUFF = 116;
+  ENDURANCE = 117;
 }
 
 enum StatusType {
