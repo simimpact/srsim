@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	remembrance key.Modifier = "reforged-remembrance " // rememberance = Prophet stack if i do this correctly
+	remembrance key.Modifier = "reforged-remembrance" // rememberance = Prophet stack if i do this correctly
 	atkBuff     key.Modifier = "reforged-remembrance-atk-buff"
 	defShred    key.Modifier = "reforged-remembrance-def-shred"
 )
