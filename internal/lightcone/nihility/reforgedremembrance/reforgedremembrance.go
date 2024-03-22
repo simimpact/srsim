@@ -59,7 +59,7 @@ func init() {
 			model.BehaviorFlag_STAT_DEF_DOWN,
 		},
 		Stacking:          modifier.ReplaceBySource,
-		StatusType:        model.StatusType_STATUS_BUFF,
+		StatusType:        model.StatusType_STATUS_DEBUFF,
 		MaxCount:          4,
 		CountAddWhenStack: 1,
 		Listeners: modifier.Listeners{
