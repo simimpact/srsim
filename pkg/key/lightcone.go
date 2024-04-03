@@ -46,7 +46,7 @@ const (
 	WeWillMeetAgain                 LightCone = "we_will_meet_again"
 	Void                            LightCone = "void"
 	PatienceIsAllYouNeed            LightCone = "patience_is_all_you_need"
-	ReforgedRemembrance             LightCone = "reforged_rememberance"
+	ReforgedRemembrance             LightCone = "reforged_remembrance"
 )
 
 // Erudition
