@@ -26,6 +26,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/abundance/cornucopia"
 	_ "github.com/simimpact/srsim/internal/lightcone/abundance/echoesofthecoffin"
 	_ "github.com/simimpact/srsim/internal/lightcone/abundance/finefruit"
+	_ "github.com/simimpact/srsim/internal/lightcone/abundance/heyoverhere"
 	_ "github.com/simimpact/srsim/internal/lightcone/abundance/multiplication"
 	_ "github.com/simimpact/srsim/internal/lightcone/abundance/perfecttiming"
 	_ "github.com/simimpact/srsim/internal/lightcone/abundance/postopconversation"
