@@ -42,7 +42,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	hpBuff := 0.07 + 0.01*float64(lc.Imposition)
 
 	engine.AddModifier(owner, info.Modifier{
-		Name:   HeyOverHereBuff,
+		Name:   HeyOverHere,
 		Source: owner,
 		Stats:  info.PropMap{prop.HPPercent: hpBuff},
 		State:  0.13 + 0.03*float64(lc.Imposition), // healing bonus
