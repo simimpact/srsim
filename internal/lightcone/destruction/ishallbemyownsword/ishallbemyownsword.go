@@ -12,11 +12,11 @@ import (
 )
 
 const (
-	Check              key.Modifier = "i-shall-be-my-own-sword"
+	OwnSword           key.Modifier = "i-shall-be-my-own-sword"
 	Eclipse            key.Modifier = "i-shall-be-my-own-sword-eclipse"
 	EclipseAllyMonitor key.Modifier = "i-shall-be-my-own-sword-eclipse-ally-monitor"
-	EclipseDmgBonus                 = "i-shall-be-my-own-sword-dmg-bonus"
-	EclipseDefIgnore                = "i-shall-be-my-own-sword-def-ignore"
+	EclipseDmgBonus                 = "i-shall-be-my-own-sword-dmg-bonus-buff"
+	EclipseDefIgnore                = "i-shall-be-my-own-sword-def-ignore-buff"
 )
 
 type state struct {
@@ -33,11 +33,7 @@ func init() {
 		Promotions:    promotions,
 	})
 
-	modifier.Register(Check, modifier.Config{
-		Listeners: modifier.Listeners{
-			OnBeforeAttack: onBeforeAttack,
-		},
-	})
+	modifier.Register(OwnSword, modifier.Config{})
 
 	modifier.Register(EclipseAllyMonitor, modifier.Config{
 		Listeners: modifier.Listeners{
@@ -53,6 +49,7 @@ func init() {
 		CountAddWhenStack: 1,
 		CanModifySnapshot: true,
 		Listeners: modifier.Listeners{
+			OnBeforeAttack: onBeforeAttack,
 			OnBeforeHitAll: onBeforeHitAll,
 			OnAfterAttack:  onAfterAttack,
 		},
@@ -65,7 +62,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	defIgnore := 0.1 + 0.02*float64(lc.Imposition)
 
 	engine.AddModifier(owner, info.Modifier{
-		Name:   Check,
+		Name:   OwnSword,
 		Source: owner,
 		Stats:  info.PropMap{prop.CritDMG: cdmgBuff},
 	})
@@ -80,6 +77,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 					State: state{
 						dmgBonus:  dmgBonus,
 						defIgnore: defIgnore,
+						flag:      false,
 					},
 				})
 			}
@@ -121,7 +119,7 @@ func onBeforeAttack(mod *modifier.Instance, e event.AttackStart) {
 func onBeforeHitAll(mod *modifier.Instance, e event.HitStart) {
 	st := mod.State().(*state)
 	if st.flag {
-		e.Hit.Attacker.AddProperty(EclipseDmgBonus, prop.AllDamagePercent, float64(mod.Count())*st.dmgBonus)
+		e.Hit.Attacker.AddProperty(EclipseDmgBonus, prop.AllDamagePercent, mod.Count()*st.dmgBonus)
 		if mod.Count() == 3 {
 			e.Hit.Defender.AddProperty(EclipseDefIgnore, prop.DEFPercent, -st.defIgnore)
 		}
