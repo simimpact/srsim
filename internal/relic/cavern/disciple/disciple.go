@@ -23,7 +23,7 @@ const (
 // TO-DO: in onHPChange, assumes e.Target means source; check whether this is correct
 
 func init() {
-	relic.Register(key.BandOfSizzlingThunder, relic.Config{
+	relic.Register(key.LongevousDisciple, relic.Config{
 		Effects: []relic.SetEffect{
 			{
 				MinCount: 2,
