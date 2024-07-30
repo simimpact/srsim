@@ -48,8 +48,7 @@ func init() {
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_BUFF,
 		Listeners: modifier.Listeners{
-			OnAdd:         onAdd,
-			OnAfterAttack: onAfterAttack,
+			OnAfterAttack: removeBuff,
 		},
 	})
 }
@@ -65,14 +64,11 @@ func onAfterUltimate(mod *modifier.Instance, e event.ActionEnd) {
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 			Name:   buff,
 			Source: mod.Owner(),
+			Stats:  info.PropMap{prop.FireDamagePercent: 0.12},
 		})
 	}
 }
 
-func onAdd(mod *modifier.Instance) {
-	mod.AddProperty(prop.FireDamagePercent, 0.12)
-}
-
-func onAfterAttack(mod *modifier.Instance, e event.AttackEnd) {
+func removeBuff(mod *modifier.Instance, e event.AttackEnd) {
 	mod.RemoveSelf()
 }

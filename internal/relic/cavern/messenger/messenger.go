@@ -46,9 +46,6 @@ func init() {
 	modifier.Register(buff, modifier.Config{
 		Stacking:   modifier.Replace,
 		StatusType: model.StatusType_STATUS_BUFF,
-		Listeners: modifier.Listeners{
-			OnAdd: onAdd,
-		},
 	})
 }
 
@@ -59,11 +56,8 @@ func onBeforeUlt(mod *modifier.Instance, e event.ActionStart) {
 				Name:     buff,
 				Source:   mod.Owner(),
 				Duration: 1,
+				Stats:    info.PropMap{prop.SPDPercent: 0.12},
 			})
 		}
 	}
-}
-
-func onAdd(mod *modifier.Instance) {
-	mod.AddProperty(prop.SPDPercent, 0.12)
 }

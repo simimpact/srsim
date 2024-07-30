@@ -39,11 +39,11 @@ func init() {
 	})
 	modifier.Register(celestial, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAfterAttack: onAfterAttack,
+			OnAfterAttack: removeSelf,
 		},
 	})
 }
 
-func onAfterAttack(mod *modifier.Instance, e event.AttackEnd) {
+func removeSelf(mod *modifier.Instance, e event.AttackEnd) {
 	mod.RemoveSelf()
 }

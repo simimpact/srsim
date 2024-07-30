@@ -47,7 +47,7 @@ func init() {
 }
 
 func onBeforeHitAll(mod *modifier.Instance, e event.HitStart) {
-	debuffCount := float64(e.Hit.Defender.StatusCount(model.StatusType_STATUS_DEBUFF))
+	debuffCount := e.Hit.Defender.StatusCount(model.StatusType_STATUS_DEBUFF)
 	if debuffCount >= 1 {
 		e.Hit.Attacker.AddProperty(wastelandercr, prop.CritChance, 0.1)
 		if mod.Engine().HasBehaviorFlag(e.Defender, model.BehaviorFlag_STAT_CONFINE) {

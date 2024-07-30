@@ -46,9 +46,6 @@ func init() {
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_BUFF,
 		Duration:   1,
-		Listeners: modifier.Listeners{
-			OnAdd: onAdd,
-		},
 	})
 }
 
@@ -57,10 +54,7 @@ func onBeforeSkill(mod *modifier.Instance, e event.ActionStart) {
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 			Name:   buff,
 			Source: mod.Owner(),
+			Stats:  info.PropMap{prop.ATKPercent: 0.2},
 		})
 	}
-}
-
-func onAdd(mod *modifier.Instance) {
-	mod.AddProperty(prop.ATKPercent, 0.2)
 }

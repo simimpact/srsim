@@ -42,7 +42,6 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnPhase1: onPhase1,
 		},
-		CanModifySnapshot: true,
 	})
 }
 
