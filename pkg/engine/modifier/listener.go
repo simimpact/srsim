@@ -3,6 +3,7 @@ package modifier
 import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/model"
 )
 
 type Listeners struct {
@@ -133,6 +134,12 @@ type Listeners struct {
 
 	// Called when an action finishes being executed (attack, skill, ult)
 	OnAfterAction func(mod *Instance, e event.ActionEnd)
+
+	// Called when a debuff application is resisted
+	OnResistDebuff func(mod *Instance)
+
+	// Called when a buff application is resisted
+	OnResistBuff func(mod *Instance)
 }
 
 func (mgr *Manager) subscribe() {
@@ -141,6 +148,7 @@ func (mgr *Manager) subscribe() {
 	// sim events
 	events.ActionStart.Subscribe(mgr.actionStart)
 	events.ActionEnd.Subscribe(mgr.actionEnd)
+	events.ModifierResisted.Subscribe(mgr.emitResist)
 
 	// attribute events
 	events.HPChange.Subscribe(mgr.hpChange)
@@ -162,6 +170,26 @@ func (mgr *Manager) subscribe() {
 	events.HitEnd.Subscribe(mgr.hitEnd)
 	events.HealStart.Subscribe(mgr.healStart, 100)
 	events.HealEnd.Subscribe(mgr.healEnd)
+}
+
+func (mgr *Manager) emitResist(e event.ModifierResisted) {
+	modifierStatusType := modifierCatalog[e.Modifier].StatusType
+	switch modifierStatusType {
+	case model.StatusType_STATUS_DEBUFF:
+		for _, mod := range mgr.itr(e.Target) {
+			f := mod.listeners.OnResistDebuff
+			if f != nil {
+				f(mod)
+			}
+		}
+	case model.StatusType_STATUS_BUFF:
+		for _, mod := range mgr.itr(e.Target) {
+			f := mod.listeners.OnResistBuff
+			if f != nil {
+				f(mod)
+			}
+		}
+	}
 }
 
 func (mgr *Manager) emitPropertyChange(target key.TargetID) {
