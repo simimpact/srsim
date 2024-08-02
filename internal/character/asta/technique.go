@@ -7,12 +7,12 @@ import (
 )
 
 const (
-	asta_technique = "asta-technique"
+	astaTechnique = "asta-technique"
 )
 
 func (c *char) Technique(target key.TargetID, state info.ActionState) {
 	c.engine.Attack(info.Attack{
-		Key:        asta_technique,
+		Key:        astaTechnique,
 		Targets:    c.engine.Enemies(),
 		Source:     c.id,
 		AttackType: model.AttackType_MAZE,

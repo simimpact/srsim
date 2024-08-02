@@ -44,6 +44,13 @@ func (c *char) initTalent() {
 		Name:   astaTalent,
 		Source: c.id,
 	})
+
+	// E2 flag is applied at start of battle REGARDLESS of Asta's actual Eidolon level,
+	// as the first Asta turn is not supposed to consume stacks.
+	c.engine.AddModifier(c.id, info.Modifier{
+		Name:   e2,
+		Source: c.id,
+	})
 }
 
 func phase1TalentListener(mod *modifier.Instance) {
@@ -58,7 +65,7 @@ func phase1TalentListener(mod *modifier.Instance) {
 		if newStackCount < 0 {
 			newStackCount = 0
 		}
-		if newStackCount <= 2 {
+		if newStackCount < 2 {
 			mod.Engine().RemoveModifier(mod.Owner(), e4)
 		}
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
@@ -120,6 +127,9 @@ func addedStacksListener(mod *modifier.Instance) {
 	mod.AddProperty(prop.DEFPercent, a6DefRatio*mod.Count())
 
 	for _, ally := range mod.Engine().Characters() {
+		if ally == mod.Source() {
+			continue
+		}
 		mod.Engine().AddModifier(ally, info.Modifier{
 			Name:   astaTeammateCharging,
 			Source: mod.Owner(),

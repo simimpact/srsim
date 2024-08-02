@@ -19,7 +19,7 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 			Name:   common.Burn,
 			Source: c.id,
 			State: &common.BurnState{
-				DamagePercentage:    0.5,
+				DamagePercentage:    0.5 * basic[c.info.AttackLevelIndex()],
 				DamageValue:         0,
 				DEFDamagePercentage: 0,
 			},
