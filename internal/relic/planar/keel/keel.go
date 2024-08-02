@@ -13,15 +13,14 @@ import (
 // 2pc: Increases the wearer's Effect RES by 10%.
 //      When the wearer's Effect RES is at 30% or higher, all allies' CRIT DMG increases by 10%.
 
-// TO-DO: how to handle `applied` and pointer logic, where to put the stats
-
 const (
 	check    = "broken-keel"
 	keelcdmg = "broken-keel-cdmg"
 )
 
 type state struct {
-	applied *bool
+	// "flag" to reduce redundancy when adding and removing buff
+	applied bool
 }
 
 func init() {
@@ -52,16 +51,13 @@ func Create(engine engine.Engine, owner key.TargetID) {
 	engine.AddModifier(owner, info.Modifier{
 		Name:   check,
 		Source: owner,
+		State:  &state{applied: false},
 	})
 	engine.Events().BattleStart.Subscribe(func(event event.BattleStart) {
-		appliedInit := false
 		for char := range event.CharInfo {
 			engine.AddModifier(char, info.Modifier{
 				Name:   keelcdmg,
 				Source: owner,
-				State: state{
-					applied: &appliedInit,
-				},
 			})
 		}
 	})
@@ -69,9 +65,9 @@ func Create(engine engine.Engine, owner key.TargetID) {
 
 func onCheck(mod *modifier.Instance) {
 	stats := mod.OwnerStats()
-	applied := mod.State().(*bool)
+	st := mod.State().(*state)
 
-	if stats.EffectRES() >= 0.3 && !*applied {
+	if stats.EffectRES() >= 0.3 && !st.applied {
 		for _, c := range mod.Engine().Characters() {
 			mod.Engine().AddModifier(c, info.Modifier{
 				Name:   keelcdmg,
@@ -79,13 +75,13 @@ func onCheck(mod *modifier.Instance) {
 				Stats:  info.PropMap{prop.CritDMG: 0.1},
 			})
 		}
-		*mod.State().(*bool) = true
+		st.applied = true
 	}
 
-	if stats.EffectRES() < 0.3 && *applied {
+	if stats.EffectRES() < 0.3 && st.applied {
 		for _, c := range mod.Engine().Characters() {
 			mod.Engine().RemoveModifierFromSource(c, mod.Owner(), keelcdmg)
 		}
-		*mod.State().(*bool) = false
+		st.applied = false
 	}
 }
