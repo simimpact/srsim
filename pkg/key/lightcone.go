@@ -99,6 +99,7 @@ const (
 	PerfectTiming            LightCone = "perfect_timing"
 	TimeWaitsforNoOne        LightCone = "time_waits_for_no_one"
 	EchoesoftheCoffin        LightCone = "echoes_of_the_coffin"
+	HeyOverHere              LightCone = "hey_over_here"
 )
 
 func (l LightCone) String() string {
