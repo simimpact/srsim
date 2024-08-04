@@ -25,6 +25,12 @@ type state struct {
 	defIgnore float64
 }
 
+// ncreases the wearer's CRIT DMG by 20%.
+// When an ally (excluding the wearer) gets attacked or loses HP, the wearer gains 1 stack of Eclipse, up to a max of 3 stack(s).
+// Each stack of Eclipse increases the DMG of the wearer's next attack by 14%.
+// When 3 stack(s) are reached, additionally enables that attack to ignore 12% of the enemy's DEF.
+// This effect will be removed after the wearer uses an attack.
+
 func init() {
 	lightcone.Register(key.IShallBeMyOwnSword, lightcone.Config{
 		CreatePassive: Create,
