@@ -22,6 +22,7 @@ const (
 	Sushang               Character = "sushang"
 	Natasha               Character = "natasha"
 	March7th              Character = "march7th"
+	Yanqing               Character = "yanqing"
 	Seele                 Character = "seele"
 )
 
