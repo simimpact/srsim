@@ -22,6 +22,10 @@ type state struct {
 	dmgMax float64
 }
 
+// Increases the wearer's Effect RES by 12%.
+// For every 100 of DEF the wearer has, increases the wearer's DMG dealt by 0.8%,
+// up to a maximum DMG increase of 32%.
+
 func init() {
 	lightcone.Register(key.DestinysThreadsForewoven, lightcone.Config{
 		CreatePassive: Create,
