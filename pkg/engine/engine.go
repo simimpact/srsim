@@ -213,6 +213,9 @@ type Target interface {
 	// Check if the given TargetID is valid
 	IsValid(target key.TargetID) bool
 
+	// Check if the given TargetID is alive
+	IsAlive(target key.TargetID) bool
+
 	// returns true if the given TargetID is for a character
 	IsCharacter(target key.TargetID) bool
 

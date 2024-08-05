@@ -1,6 +1,7 @@
 package common
 
 import (
+	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/key"
@@ -16,6 +17,10 @@ const (
 type ShockState struct {
 	DamagePercentage float64
 	DamageValue      float64
+}
+
+type BreakShockState struct {
+	BreakBaseMulti float64
 }
 
 func init() {
@@ -53,7 +58,7 @@ func init() {
 }
 
 func shockPhase1(mod *modifier.Instance) {
-	state, ok := mod.State().(ShockState)
+	state, ok := mod.State().(*ShockState)
 	if !ok {
 		panic("incorrect state used for shock modifier")
 	}
@@ -74,6 +79,11 @@ func shockPhase1(mod *modifier.Instance) {
 }
 
 func breakShockPhase1(mod *modifier.Instance) {
+	state, ok := mod.State().(*ShockState)
+	if !ok {
+		panic("incorrect state used for shock modifier")
+	}
+
 	// perform break shock damage
 	mod.Engine().Attack(info.Attack{
 		Key:        BreakShock,
@@ -82,7 +92,37 @@ func breakShockPhase1(mod *modifier.Instance) {
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_THUNDER,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_BREAK_DAMAGE: 2,
+			model.DamageFormula_BY_BREAK_DAMAGE: state.DamagePercentage,
+		},
+		AsPureDamage: true,
+		UseSnapshot:  true,
+	})
+}
+
+func (s ShockState) TriggerDot(mod info.Modifier, ratio float64, engine engine.Engine, target key.TargetID) {
+	engine.Attack(info.Attack{
+		Key:        Shock,
+		Source:     mod.Source,
+		Targets:    []key.TargetID{target},
+		AttackType: model.AttackType_DOT,
+		DamageType: model.DamageType_THUNDER,
+		BaseDamage: info.DamageMap{
+			model.DamageFormula_BY_ATK: s.DamagePercentage * ratio,
+		},
+		AsPureDamage: true,
+		UseSnapshot:  true,
+	})
+}
+
+func (s BreakShockState) TriggerDot(mod info.Modifier, ratio float64, engine engine.Engine, target key.TargetID) {
+	engine.Attack(info.Attack{
+		Key:        BreakShock,
+		Source:     mod.Source,
+		Targets:    []key.TargetID{target},
+		AttackType: model.AttackType_DOT,
+		DamageType: model.DamageType_THUNDER,
+		BaseDamage: info.DamageMap{
+			model.DamageFormula_BY_BREAK_DAMAGE: s.BreakBaseMulti * ratio,
 		},
 		AsPureDamage: true,
 		UseSnapshot:  true,

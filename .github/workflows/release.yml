@@ -1,0 +1,29 @@
+name: release build
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: go-setup-and-test
+        uses: ./.github/actions/go-setup-and-test
+      - name: Build Binary
+        run: |
+          # make file runnable, might not be necessary
+          chmod +x "${GITHUB_WORKSPACE}/scripts/build.sh"
+          # run the script
+          "${GITHUB_WORKSPACE}/scripts/build.sh"
+      - name: Release Binary
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            LICENSE
+            srsim_windows_amd64.exe
+            srsim_darwin_arm64
+            srsim_darwin_amd64
+            srsim_linux_amd64

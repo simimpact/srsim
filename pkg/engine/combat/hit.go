@@ -47,8 +47,10 @@ func (mgr *Manager) performHit(hit *info.Hit) {
 	modify.Amount = -hpUpdate
 	mgr.attr.ModifyHPByAmount(modify, true)
 
-	modify.Amount = -hit.StanceDamage * hit.HitRatio
-	mgr.attr.ModifyStance(modify)
+	if hit.Defender.IsWeakTo(hit.DamageType) {
+		modify.Amount = -hit.StanceDamage * hit.HitRatio
+		mgr.attr.ModifyStance(modify)
+	}
 
 	modify.Amount = hit.EnergyGain * hit.HitRatio
 	if mgr.target.IsCharacter(hit.Attacker.ID()) {
