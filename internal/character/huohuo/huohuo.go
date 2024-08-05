@@ -38,22 +38,22 @@ func init() {
 }
 
 type char struct {
-	engine      engine.Engine
-	id          key.TargetID
-	info        info.Character
-	DispelCount int
-	TalentRound int
-	E2Count     int
+	engine        engine.Engine
+	id            key.TargetID
+	info          info.Character
+	DispelCount   int
+	TalentRound   int
+	E2ReviveCount int
 }
 
 func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character) info.CharInstance {
 	c := &char{
-		engine:      engine,
-		id:          id,
-		info:        charInfo,
-		DispelCount: 0,
-		TalentRound: 0,
-		E2Count:     0,
+		engine:        engine,
+		id:            id,
+		info:          charInfo,
+		DispelCount:   0,
+		TalentRound:   0,
+		E2ReviveCount: 2,
 	}
 	c.TalentInit()
 	c.engine.Events().HealStart.Subscribe(c.E4OnHeal, 0)

@@ -10,8 +10,10 @@ import (
 )
 
 const (
-	E2 key.Heal     = "huohuo-e2"
-	E6 key.Modifier = "huohuo-e6"
+	E2       key.Heal     = "huohuo-e2"
+	E2Boost  key.Reason   = "huohuo-e2-heal-boost"
+	E2Insert key.Insert   = "huohuo-e2-insert"
+	E6       key.Modifier = "huohuo-e6"
 )
 
 func init() {
@@ -28,27 +30,35 @@ func E2OnKill(mod *modifier.Instance) bool {
 	if c.info.Eidolon < 2 {
 		return false
 	}
-	if c.E2Count == 2 {
+	if c.E2ReviveCount == 0 {
 		return false
 	}
-	c.E2Count++
+	c.E2ReviveCount--
 	c.TalentRound--
 	if c.TalentRound == 0 {
 		c.RemoveBuff()
 	}
-	c.engine.Heal(info.Heal{
-		Key:      E2,
-		Targets:  []key.TargetID{mod.Owner()},
-		Source:   c.id,
-		BaseHeal: info.HealMap{model.HealFormula_BY_TARGET_MAX_HP: 0.5},
+	c.engine.InsertAbility(info.Insert{
+		Key: E2Insert,
+		Execute: func() {
+			c.engine.Heal(info.Heal{
+				Key:      E2,
+				Targets:  []key.TargetID{mod.Owner()},
+				Source:   c.id,
+				BaseHeal: info.HealMap{model.HealFormula_BY_TARGET_MAX_HP: 0.5},
+			})
+		},
+		Source:     c.id,
+		AbortFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL, model.BehaviorFlag_DISABLE_ACTION},
 	})
 	return true
 }
 
-//TODO: E4 max ratio? add to heal rate or finally multiply
-
 func (c *char) E4OnHeal(e *event.HealStart) {
-
+	if c.info.Eidolon < 4 {
+		return
+	}
+	e.Healer.AddProperty(E2Boost, prop.HealBoost, 0.8*(1-e.Target.CurrentHPRatio()))
 }
 
 func (c *char) E6OnHeal(e *event.HealStart) {

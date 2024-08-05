@@ -13,6 +13,11 @@ const (
 )
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
+	c.engine.DispelStatus(target, info.Dispel{
+		Status: model.StatusType_STATUS_DEBUFF,
+		Order:  model.DispelOrder_LAST_ADDED,
+		Count:  1,
+	})
 	c.engine.Heal(info.Heal{
 		Key:     Skill,
 		Targets: []key.TargetID{target},
@@ -30,11 +35,6 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 			model.HealFormula_BY_HEALER_MAX_HP: skillAdjacentRate[c.info.SkillLevelIndex()],
 		},
 		HealValue: skillAdjacentValue[c.info.SkillLevelIndex()],
-	})
-	c.engine.DispelStatus(target, info.Dispel{
-		Status: model.StatusType_STATUS_DEBUFF,
-		Order:  model.DispelOrder_LAST_ADDED,
-		Count:  1,
 	})
 	c.engine.ModifyEnergy(info.ModifyAttribute{
 		Target: c.id,
