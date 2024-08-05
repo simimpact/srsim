@@ -50,6 +50,7 @@ func E2OnKill(mod *modifier.Instance) bool {
 		},
 		Source:     c.id,
 		AbortFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL, model.BehaviorFlag_DISABLE_ACTION},
+		Priority:   info.CharReviveOthers,
 	})
 	return true
 }
