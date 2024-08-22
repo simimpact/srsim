@@ -92,6 +92,10 @@ func (sim *Simulation) ModifyEnergyFixed(data info.ModifyAttribute) error {
 	return sim.Attr.ModifyEnergyFixed(data)
 }
 
+func (sim *Simulation) TurnOrder() []key.TargetID {
+	return sim.Turn.TurnOrder()
+}
+
 func (sim *Simulation) SetGauge(data info.ModifyAttribute) error {
 	sim.ActionTargets[data.Target] = true
 	return sim.Turn.SetGauge(data)

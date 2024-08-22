@@ -172,6 +172,9 @@ type Insert interface {
 }
 
 type Turn interface {
+	// Returns a list of TargetIDs sorted by their AV
+	TurnOrder() []key.TargetID
+
 	// Sets the gauge for the given target. The amount is specified in gauge units (base = 10,000)
 	SetGauge(data info.ModifyAttribute) error
 
