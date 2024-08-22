@@ -815,3 +815,17 @@ func (mr *MockEngineMockRecorder) Stats(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Stats", reflect.TypeOf((*MockEngine)(nil).Stats), arg0)
 }
+
+// TurnOrder mocks base method.
+func (m *MockEngine) TurnOrder() []key.TargetID {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "TurnOrder")
+	ret0, _ := ret[0].([]key.TargetID)
+	return ret0
+}
+
+// TurnOrder indicates an expected call of TurnOrder.
+func (mr *MockEngineMockRecorder) TurnOrder() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TurnOrder", reflect.TypeOf((*MockEngine)(nil).TurnOrder))
+}
