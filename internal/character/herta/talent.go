@@ -4,11 +4,13 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/prop"
+	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
-	Talent = "herta-talent"
+	Talent         = "herta-talent"
+	TalentCooldown = "herta-passive-cooldown"
 )
 
 func (c *char) initTalent() {
@@ -19,7 +21,8 @@ var (
 	hertaCountInsert = 0
 	hertaCount       = 0
 	hertaCountATK    = 0
-	passiveCooldown  = 0
+	// Map that keeps track of whether or not a given target is on cooldown for the purposes of herta's talent
+	passiveCooldowns = make(map[key.TargetID]bool)
 )
 
 func (c *char) talentListener(e event.HPChange) {
@@ -29,13 +32,20 @@ func (c *char) talentListener(e event.HPChange) {
 		hertaCountInsert = 0
 	}
 
+	onCD, ok := passiveCooldowns[e.Target]
+
 	if e.NewHPRatio <= 0.5 {
-		if c.engine.IsEnemy(e.Target) && passiveCooldown == 0 && !c.engine.HasBehaviorFlag(c.id, model.BehaviorFlag_STAT_CTRL) {
+		// Check if enemy, is either not in the map (never seen before) or is in there and
+		if c.engine.IsEnemy(e.Target) && (!ok || !onCD) && !c.engine.HasBehaviorFlag(c.id, model.BehaviorFlag_STAT_CTRL) {
 			if len(c.engine.Enemies()) > 0 {
 				c.engine.Events().AttackEnd.Subscribe(c.talentAfterAttackListener)
 				hertaCount += 1
+				passiveCooldowns[e.Target] = true
 			}
 		}
+	} else if e.NewHPRatio > 0.5 {
+		// Reset "passivecooldown" flag on the enemy (happens in event of enemy being healed or otherwise restoring hp)
+		passiveCooldowns[e.Target] = false
 	}
 }
 
@@ -90,6 +100,7 @@ func (c *char) talentInsert() {
 	c.passiveFlag = false
 }
 
+// The actual attack
 func (c *char) talentInsertAttack() {
 	c.engine.Attack(info.Attack{
 		Key:        Talent,
