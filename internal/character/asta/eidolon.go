@@ -10,6 +10,7 @@ const (
 func init() {
 	modifier.Register(e2, modifier.Config{
 		Duration: 1,
+		Stacking: modifier.ReplaceBySource,
 	})
 
 	modifier.Register(e4, modifier.Config{
