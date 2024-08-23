@@ -2,10 +2,12 @@ package guinaifen
 
 import (
 	"github.com/simimpact/srsim/internal/global/common"
+	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
+	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
@@ -33,7 +35,7 @@ func init() {
 		StatusType: model.StatusType_STATUS_DEBUFF,
 		Stacking:   modifier.ReplaceBySource,
 		Listeners: modifier.Listeners{
-			OnAdd: FirekissonStack,
+			OnAdd: FirekissOnStack,
 		},
 	})
 }
@@ -89,7 +91,7 @@ func checkFirekiss(mod *modifier.Instance, e event.HitStart) {
 }
 
 // calculate the received damage increase
-func FirekissonStack(mod *modifier.Instance) {
+func FirekissOnStack(mod *modifier.Instance) {
 	gui, _ := mod.Engine().CharacterInfo(mod.Source())
 	mod.SetProperty(prop.AllDamageTaken, mod.Count()*talent[gui.TalentLevelIndex()])
 }
@@ -99,26 +101,24 @@ func A2(mod *modifier.Instance, e event.AttackStart) {
 	gui, _ := mod.Engine().CharacterInfo(mod.Owner())
 	if gui.Traces["101"] && e.AttackType == model.AttackType_NORMAL {
 		target := e.Targets[0]
+		multiplier := skillBurn[gui.SkillLevelIndex()]
+		chance := 0.8
 		if gui.Eidolon >= 2 && mod.Engine().HasBehaviorFlag(target, model.BehaviorFlag_STAT_DOT_BURN) {
-			mod.Engine().AddModifier(target, info.Modifier{
-				Name:   common.Burn,
-				Source: mod.Owner(),
-				State: &common.BurnState{
-					DamagePercentage: skillBurn[gui.SkillLevelIndex()] + 0.4,
-				},
-				Chance:   0.8,
-				Duration: 2,
-			})
-		} else {
-			mod.Engine().AddModifier(target, info.Modifier{
-				Name:   common.Burn,
-				Source: mod.Owner(),
-				State: &common.BurnState{
-					DamagePercentage: skillBurn[gui.SkillLevelIndex()],
-				},
-				Chance:   0.8,
-				Duration: 2,
-			})
+			multiplier += 0.4
 		}
+		applyBurn(mod.Engine(), mod.Owner(), target, multiplier, chance)
 	}
+}
+
+// Talent's burn application function, with the Burn multiplier and its base chance as inputs
+func applyBurn(engine engine.Engine, source key.TargetID, target key.TargetID, multiplier float64, chance float64) {
+	engine.AddModifier(target, info.Modifier{
+		Name:   common.Burn,
+		Source: source,
+		State: &common.BurnState{
+			DamagePercentage: multiplier,
+		},
+		Chance:   chance,
+		Duration: 2,
+	})
 }

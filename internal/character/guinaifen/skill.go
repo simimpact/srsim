@@ -1,7 +1,6 @@
 package guinaifen
 
 import (
-	"github.com/simimpact/srsim/internal/global/common"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
@@ -40,28 +39,13 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 
 	// apply Burn with Skill's chance
 	for _, trg := range targetList {
+		multiplier := skillBurn[c.info.SkillLevelIndex()]
+		chance := 1.0
 		// E2
 		if c.info.Eidolon >= 2 && c.engine.HasBehaviorFlag(trg, model.BehaviorFlag_STAT_DOT_BURN) {
-			c.engine.AddModifier(target, info.Modifier{
-				Name:   common.Burn,
-				Source: c.id,
-				State: &common.BurnState{
-					DamagePercentage: skillBurn[c.info.SkillLevelIndex()] + 0.4,
-				},
-				Chance:   1,
-				Duration: 2,
-			})
-		} else {
-			c.engine.AddModifier(target, info.Modifier{
-				Name:   common.Burn,
-				Source: c.id,
-				State: &common.BurnState{
-					DamagePercentage: skillBurn[c.info.SkillLevelIndex()],
-				},
-				Chance:   1,
-				Duration: 2,
-			})
+			multiplier += 0.4
 		}
+		c.applyBurn(target, multiplier, chance)
 	}
 
 	// Main target
@@ -93,4 +77,9 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	})
 
 	c.engine.EndAttack()
+}
+
+// Skill's burn application method, uses Talent's burn application function
+func (c *char) applyBurn(target key.TargetID, multiplier float64, chance float64) {
+	applyBurn(c.engine, c.id, target, multiplier, chance)
 }
