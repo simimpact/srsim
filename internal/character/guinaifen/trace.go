@@ -35,7 +35,8 @@ func (c *char) initTraces() {
 
 	if c.info.Traces["103"] {
 		c.engine.AddModifier(c.id, info.Modifier{
-			Name: A6,
+			Name:   A6,
+			Source: c.id,
 		})
 	}
 }
