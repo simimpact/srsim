@@ -40,23 +40,42 @@ func init() {
 	})
 	modifier.Register(check, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeAction: onBeforeUlt,
+			OnBeforeAction: BuffSelf,
+			OnAfterAction:  BuffAllies,
 		},
 	})
 	modifier.Register(buff, modifier.Config{
 		Stacking:   modifier.Replace,
 		StatusType: model.StatusType_STATUS_BUFF,
+		Duration:   1,
 	})
 }
 
-func onBeforeUlt(mod *modifier.Instance, e event.ActionStart) {
+// workaround for missing "eligible" target list in ActionStart:
+// apply buff to owner when OnBeforeAction is triggered
+// KNOWN BUG: this will also buff owners equipping this 4p set even if they do not target allies with an Ult
+func BuffSelf(mod *modifier.Instance, e event.ActionStart) {
+	if e.AttackType == model.AttackType_ULT {
+		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
+			Name:   buff,
+			Source: mod.Owner(),
+			Stats:  info.PropMap{prop.SPDPercent: 0.12},
+		})
+	}
+}
+
+// apply buff to other allies when OnAfterAction is triggered
+// INACCURACY: this should apply instead when OnBeforeAction is triggered
+func BuffAllies(mod *modifier.Instance, e event.ActionEnd) {
 	if e.AttackType == model.AttackType_ULT {
 		for _, char := range mod.Engine().Characters() {
+			if char == mod.Owner() {
+				continue
+			}
 			mod.Engine().AddModifier(char, info.Modifier{
-				Name:     buff,
-				Source:   mod.Owner(),
-				Duration: 1,
-				Stats:    info.PropMap{prop.SPDPercent: 0.12},
+				Name:   buff,
+				Source: mod.Owner(),
+				Stats:  info.PropMap{prop.SPDPercent: 0.12},
 			})
 		}
 	}
