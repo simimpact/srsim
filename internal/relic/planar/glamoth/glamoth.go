@@ -3,7 +3,6 @@ package glamoth
 import (
 	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/equip/relic"
-	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
@@ -36,19 +35,17 @@ func init() {
 
 	modifier.Register(name, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHit: onBeforeHit,
+			OnAdd:            onCheck,
+			OnPropertyChange: onCheck,
 		},
 	})
 }
 
-func onBeforeHit(mod *modifier.Instance, e event.HitStart) {
+func onCheck(mod *modifier.Instance) {
 	stats := mod.OwnerStats()
 	if stats.SPD() >= 160 {
-		e.Hit.Attacker.AddProperty(name, prop.AllDamagePercent, 0.18)
-		return
-	}
-
-	if stats.SPD() >= 135 {
-		e.Hit.Attacker.AddProperty(name, prop.AllDamagePercent, 0.12)
+		mod.SetProperty(prop.AllDamagePercent, 0.18)
+	} else if stats.SPD() >= 135 {
+		mod.SetProperty(prop.AllDamagePercent, 0.12)
 	}
 }
