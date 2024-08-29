@@ -12,6 +12,7 @@ const (
 	Gepard                Character = "gepard"
 	Himeko                Character = "himeko"
 	Hook                  Character = "hook"
+	Luka                  Character = "luka"
 	Kafka                 Character = "kafka"
 	Pela                  Character = "pela"
 	Qingque               Character = "qingque"
