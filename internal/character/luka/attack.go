@@ -31,7 +31,11 @@ func (c *char) basicAttack(target key.TargetID, state info.ActionState) {
 		AttackType: model.AttackType_NORMAL,
 		DamageType: model.DamageType_PHYSICAL,
 		Source:     c.id,
-		BaseDamage: info.DamageMap{},
+		BaseDamage: info.DamageMap{
+			model.DamageFormula_BY_ATK: basic[c.info.AttackLevelIndex()],
+		},
+		StanceDamage: 30,
+		EnergyGain:   20,
 	})
 
 	state.EndAttack()
