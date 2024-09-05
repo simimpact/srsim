@@ -61,6 +61,14 @@ func Create(engine engine.Engine, owner key.TargetID) {
 			})
 		}
 	})
+	// remove buff from all chars on planar holder's death
+	engine.Events().TargetDeath.Subscribe(func(e event.TargetDeath) {
+		if e.Target == owner {
+			for _, char := range engine.Characters() {
+				engine.RemoveModifierFromSource(char, owner, keelcdmg)
+			}
+		}
+	})
 }
 
 func onCheck(mod *modifier.Instance) {
