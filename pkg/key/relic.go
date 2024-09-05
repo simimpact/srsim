@@ -21,6 +21,7 @@ const (
 	SprightlyVonwacq       Relic = "sprightly_vonwacq"
 	PanGalactic            Relic = "pan_galactic"
 	RutilantArena          Relic = "rutilant_arena"
+	PenaconyLandOfDreams   Relic = "penacony-land-of-dreams"
 )
 
 func (r Relic) String() string {
