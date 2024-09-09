@@ -9,7 +9,8 @@ import (
 )
 
 const (
-	vuln = "luka-ult-vuln"
+	ultimate = "luka-ult"
+	vuln     = "luka-ult-vuln"
 )
 
 func init() {
@@ -32,6 +33,19 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		Duration: 3,
 		Stats: info.PropMap{
 			prop.AllDamageTaken: ultVuln[c.info.UltLevelIndex()],
+		},
+	})
+
+	c.engine.Attack(info.Attack{
+		Key:          ultimate,
+		Targets:      []key.TargetID{target},
+		Source:       c.id,
+		AttackType:   model.AttackType_ULT,
+		DamageType:   model.DamageType_PHYSICAL,
+		StanceDamage: 90,
+		EnergyGain:   5,
+		BaseDamage: info.DamageMap{
+			model.DamageFormula_BY_ATK: ult[c.info.UltLevelIndex()],
 		},
 	})
 }
