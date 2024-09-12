@@ -48,4 +48,6 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			model.DamageFormula_BY_ATK: ult[c.info.UltLevelIndex()],
 		},
 	})
+
+	state.EndAttack()
 }
