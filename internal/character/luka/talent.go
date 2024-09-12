@@ -14,6 +14,7 @@ func init() {
 }
 
 func (c *char) initTalent() {
+	// Luka should not stack e4 with this initial stack
 	c.fightingSpirit = 1
 }
 
