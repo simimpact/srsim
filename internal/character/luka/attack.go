@@ -1,6 +1,7 @@
 package luka
 
 import (
+	"github.com/simimpact/srsim/internal/global/common"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
@@ -27,28 +28,68 @@ func (c *char) enhancedBasic(target key.TargetID, state info.ActionState) {
 
 	c.fightingSpirit -= 2
 
-	c.directHits(target)
-	c.risingUppercut(target)
-}
-
-func (c *char) directHits(target key.TargetID) {
 	punchCount := 3
-	for punchCount > 0 {
+	extraPunchCount := 0
+	for i := 0; i < punchCount; i++ {
 		c.engine.Attack(info.Attack{
-			Key:     DirectHit,
-			Targets: []key.TargetID{target},
+			Key:        DirectHit,
+			Targets:    []key.TargetID{target},
+			Source:     c.id,
+			AttackType: model.AttackType_NORMAL,
+			DamageType: model.DamageType_PHYSICAL,
+			BaseDamage: info.DamageMap{
+				model.DamageFormula_BY_ATK: enhancedBasicDirectPunch[c.info.AttackLevelIndex()],
+			},
+			// The exact calc they use in the dm
+			StanceDamage: 60 * 0.5 * 0.3,
 		})
 		if c.engine.Rand().Float64() > 0.5 {
-
+			extraPunchCount += 1
 		}
 	}
+
+	for j := 0; j < extraPunchCount; j++ {
+		c.engine.Attack(info.Attack{
+			Key:        DirectHit,
+			Targets:    []key.TargetID{target},
+			Source:     c.id,
+			AttackType: model.AttackType_NORMAL,
+			DamageType: model.DamageType_PHYSICAL,
+			BaseDamage: info.DamageMap{
+				model.DamageFormula_BY_ATK: enhancedBasicDirectPunch[c.info.AttackLevelIndex()],
+			},
+		})
+	}
+
+	c.risingUppercut(target)
+
+	for _, dot := range c.engine.GetModifersByBehaviorFlag(target, model.BehaviorFlag_STAT_DOT_BLEED) {
+		dot.State.(common.TriggerableDot).TriggerDot(dot, talentRatio[c.info.TalentLevelIndex()], c.engine, target)
+	}
+
+	if c.info.Eidolon >= 6 {
+		for _, dot := range c.engine.GetModifersByBehaviorFlag(target, model.BehaviorFlag_STAT_DOT_BLEED) {
+			for k := 0; k < (punchCount + extraPunchCount); k++ {
+				dot.State.(common.TriggerableDot).TriggerDot(dot, 0.08, c.engine, target)
+			}
+		}
+	}
+
+	state.EndAttack()
 }
 
 func (c *char) risingUppercut(target key.TargetID) {
 	c.engine.Attack(
 		info.Attack{
-			Key:     RisingUppercut,
-			Targets: []key.TargetID{target},
+			Key:        RisingUppercut,
+			Targets:    []key.TargetID{target},
+			Source:     c.id,
+			DamageType: model.DamageType_PHYSICAL,
+			AttackType: model.AttackType_NORMAL,
+			BaseDamage: info.DamageMap{
+				model.DamageFormula_BY_ATK: enhancedBasicRisingUppercut[c.info.AttackLevelIndex()],
+			},
+			StanceDamage: 60 * 0.5,
 		},
 	)
 }
