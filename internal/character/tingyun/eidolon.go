@@ -47,6 +47,7 @@ func doE2(mod *modifier.Instance, target key.TargetID) {
 		Key:    E2,
 		Target: mod.Owner(),
 		Source: mod.Source(),
+		Amount: 5.0,
 	})
 	st.e2flag = true
 }
