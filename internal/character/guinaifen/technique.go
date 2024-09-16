@@ -11,9 +11,7 @@ const (
 )
 
 func (c *char) Technique(target key.TargetID, state info.ActionState) {
-
 	bounceCount := 4
-
 	for i := 0; i < bounceCount; i++ {
 		target := c.engine.Retarget(info.Retarget{
 			Targets: c.engine.Enemies(),

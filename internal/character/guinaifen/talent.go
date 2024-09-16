@@ -70,7 +70,6 @@ func (c *char) initTalent() {
 }
 
 func checkFirekiss(mod *modifier.Instance, e event.HitStart) {
-
 	gui, _ := mod.Engine().CharacterInfo(mod.Source())
 	maxStacks := 3
 	if gui.Eidolon >= 6 {
@@ -111,12 +110,14 @@ func A2(mod *modifier.Instance, e event.AttackStart) {
 }
 
 // Talent's burn application function, with the Burn multiplier and its base chance as inputs
-func applyBurn(engine engine.Engine, source key.TargetID, target key.TargetID, multiplier float64, chance float64) {
+func applyBurn(engine engine.Engine, source, target key.TargetID, multiplier, chance float64) {
 	engine.AddModifier(target, info.Modifier{
 		Name:   common.Burn,
 		Source: source,
 		State: &common.BurnState{
-			DamagePercentage: multiplier,
+			DamagePercentage:    multiplier,
+			DamageValue:         0,
+			DEFDamagePercentage: 0,
 		},
 		Chance:   chance,
 		Duration: 2,

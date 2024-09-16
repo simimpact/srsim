@@ -80,6 +80,6 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 }
 
 // Skill's burn application method, uses Talent's burn application function
-func (c *char) applyBurn(target key.TargetID, multiplier float64, chance float64) {
+func (c *char) applyBurn(target key.TargetID, multiplier, chance float64) {
 	applyBurn(c.engine, c.id, target, multiplier, chance)
 }
