@@ -53,6 +53,5 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 	}
 
 	c.initTalent()
-	c.initEidolons()
 	return c
 }

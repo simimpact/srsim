@@ -14,10 +14,6 @@ const (
 	e4 = "luka-e4"
 )
 
-func (c *char) initEidolons() {
-
-}
-
 func init() {
 	modifier.Register(e1, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
