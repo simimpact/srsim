@@ -23,13 +23,10 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		StanceDamage: 60,
 	})
 
-	// triggers all Burns
-	burns := []key.Modifier{common.Burn, common.BreakBurn}
+	// triggers all Burns on all enemies
 	for _, trg := range c.engine.Enemies() {
-		for _, triggerable := range burns {
-			for _, dot := range c.engine.GetModifiers(trg, triggerable) {
-				dot.State.(common.TriggerableDot).TriggerDot(dot, ultDetonateBurn[c.info.UltLevelIndex()], c.engine, trg)
-			}
+		for _, dot := range c.engine.GetModifersByBehaviorFlag(target, model.BehaviorFlag_STAT_DOT_BURN) {
+			dot.State.(common.TriggerableDot).TriggerDot(dot, ultDetonateBurn[c.info.UltLevelIndex()], c.engine, trg)
 		}
 	}
 
