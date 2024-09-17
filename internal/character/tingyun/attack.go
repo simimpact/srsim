@@ -28,7 +28,7 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 		StanceDamage: 30,
 	})
 
-	c.engine.RemoveModifier(c.id, A4)
-
 	c.engine.EndAttack()
+
+	c.engine.RemoveModifier(c.id, A4)
 }
