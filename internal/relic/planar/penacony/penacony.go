@@ -47,7 +47,7 @@ func Create(engine engine.Engine, owner key.TargetID) {
 	engine.Events().BattleStart.Subscribe(func(e event.BattleStart) {
 		for _, char := range engine.Characters() {
 			charInfo, _ := engine.CharacterInfo(char)
-			if charInfo.Element == holderInfo.Element {
+			if char != owner && charInfo.Element == holderInfo.Element {
 				engine.AddModifier(char, info.Modifier{
 					Name:   dmgBuff,
 					Source: owner,
