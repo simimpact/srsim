@@ -9,7 +9,8 @@ import (
 )
 
 const (
-	LukaBleed = "luka-bleed"
+	LukaBleed            = "luka-bleed"
+	Skill     key.Attack = "luka-skill"
 )
 
 func init() {
@@ -39,6 +40,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 
 	c.engine.Attack(info.Attack{
 		Source:     c.id,
+		Key:        Skill,
 		Targets:    []key.TargetID{target},
 		AttackType: model.AttackType_SKILL,
 		DamageType: model.DamageType_PHYSICAL,
@@ -55,7 +57,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 }
 
 // Luka's bleed has custom logic that differs slightly from common bleeds
-type LukaBleedState struct {
+type BleedState struct {
 	DamagePercentage    float64
 	EnemyHealthRatioCap float64
 }
@@ -64,7 +66,7 @@ func (c *char) applyBleed(target key.TargetID) {
 	c.engine.AddModifier(target, info.Modifier{
 		Name:   LukaBleed,
 		Source: c.id,
-		State: LukaBleedState{
+		State: BleedState{
 			DamagePercentage:    skillDotCap[c.info.SkillLevelIndex()],
 			EnemyHealthRatioCap: 0.24,
 		},
@@ -74,7 +76,7 @@ func (c *char) applyBleed(target key.TargetID) {
 }
 
 // Implementation of: github.com/srsim/internal/global/common/triggerable_dot.go
-func (b *LukaBleedState) TriggerDot(dot info.Modifier, ratio float64, engine engine.Engine, target key.TargetID) {
+func (b *BleedState) TriggerDot(dot info.Modifier, ratio float64, engine engine.Engine, target key.TargetID) {
 	owner := engine.Stats(dot.Source)
 	targetStats := engine.Stats(target)
 	bleedDamage := b.EnemyHealthRatioCap * targetStats.MaxHP()
@@ -84,11 +86,14 @@ func (b *LukaBleedState) TriggerDot(dot info.Modifier, ratio float64, engine eng
 	}
 	engine.Attack(
 		info.Attack{
-			Key:          LukaBleed,
-			Source:       dot.Source,
-			Targets:      []key.TargetID{target},
-			AttackType:   model.AttackType_DOT,
-			DamageType:   model.DamageType_PHYSICAL,
+			Key:        LukaBleed,
+			Source:     dot.Source,
+			Targets:    []key.TargetID{target},
+			AttackType: model.AttackType_DOT,
+			DamageType: model.DamageType_PHYSICAL,
+			BaseDamage: info.DamageMap{
+				model.DamageFormula_BY_ATK: 0,
+			},
 			DamageValue:  bleedDamage,
 			AsPureDamage: true,
 		},

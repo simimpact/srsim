@@ -29,7 +29,6 @@ func init() {
 			OnAdd: stackAttack,
 		},
 	})
-
 }
 
 func (c *char) e1Check(target key.TargetID) {
