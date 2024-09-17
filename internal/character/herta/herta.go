@@ -30,7 +30,7 @@ func init() {
 				TargetType: model.TargetType_ENEMIES,
 			},
 			Technique: character.Technique{
-				TargetType: model.TargetType_ENEMIES,
+				TargetType: model.TargetType_SELF,
 				IsAttack:   false,
 			},
 		},
