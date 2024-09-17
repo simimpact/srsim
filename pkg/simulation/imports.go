@@ -103,6 +103,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/relic/planar/belobog"
 	_ "github.com/simimpact/srsim/internal/relic/planar/izumo"
 	_ "github.com/simimpact/srsim/internal/relic/planar/pangalactic"
+	_ "github.com/simimpact/srsim/internal/relic/planar/penacony"
 	_ "github.com/simimpact/srsim/internal/relic/planar/rutilant"
 	_ "github.com/simimpact/srsim/internal/relic/planar/salsotto"
 	_ "github.com/simimpact/srsim/internal/relic/planar/space"
