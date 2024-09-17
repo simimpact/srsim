@@ -37,6 +37,7 @@ func Create(engine engine.Engine, owner key.TargetID) {
 			charInfo, _ := engine.CharacterInfo(char)
 			if char != owner && charInfo.Path == ownerInfo.Path {
 				samePath++
+				break
 			}
 		}
 
