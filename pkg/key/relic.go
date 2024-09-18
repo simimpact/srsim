@@ -10,6 +10,7 @@ const (
 	KnightOfPurityPalace       Relic = "knight_of_purity_palace"
 	GeniusOfBrilliantStars     Relic = "genius_of_brilliant_stars"
 	ChampionOfStreetwiseBoxing Relic = "champion_of_streetwise_boxing"
+	AshblazingGrandDuke        Relic = "ashblazing_grand_duke"
 )
 
 // Planar
