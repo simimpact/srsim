@@ -5,6 +5,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/equip/relic"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 )
@@ -26,17 +27,28 @@ func init() {
 			},
 		},
 	})
+
+	modifier.Register(name, modifier.Config{
+		Stacking: modifier.ReplaceBySource,
+	})
 }
 
 func Create(engine engine.Engine, owner key.TargetID) {
+	firstCharacter := engine.Characters()[0]
+
 	engine.Events().BattleStart.Subscribe(func(e event.BattleStart) {
-		firstCharacter := engine.Characters()[0]
 		if firstCharacter != owner {
 			engine.AddModifier(firstCharacter, info.Modifier{
 				Name:   name,
 				Source: owner,
 				Stats:  info.PropMap{prop.ATKPercent: 0.12},
 			})
+		}
+	})
+
+	engine.Events().TargetDeath.Subscribe(func(e event.TargetDeath) {
+		if e.Target == owner {
+			engine.RemoveModifierFromSource(firstCharacter, owner, name)
 		}
 	})
 }
