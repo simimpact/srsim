@@ -12,13 +12,15 @@ import (
 )
 
 const (
-	name = "wind-soaring-valorous"
+	mod        key.Modifier = "wind-soaring-valorous"
+	buffUltDmg key.Modifier = "wind-soaring-valorous-ult-buff"
 )
 
 // 2pc: Increases ATK by 12%.
-// 4pc: Increases the wearer's CRIT Rate by 6%. 
-//		After the wearer uses follow-up attack, 
-//		increases DMG dealt by Ultimate by 36%, lasting for 1 turn(s).
+// 4pc: Increases the wearer's CRIT Rate by 6%.
+//
+//	After the wearer uses follow-up attack,
+//	increases DMG dealt by Ultimate by 36%, lasting for 1 turn(s).
 func init() {
 	relic.Register(key.WindSoaringValorous, relic.Config{
 		Effects: []relic.SetEffect{
@@ -28,7 +30,7 @@ func init() {
 			},
 			{
 				MinCount: 4,
-				Stats:	  info.PropMap{prop.CritChance: 0.06},
+				Stats:    info.PropMap{prop.CritChance: 0.06},
 				CreateEffect: func(engine engine.Engine, owner key.TargetID) {
 					engine.AddModifier(owner, info.Modifier{
 						Name:   mod,
@@ -45,27 +47,27 @@ func init() {
 		},
 	})
 
-	modifier.Register(BuffUltDmg, modifier.Config{
+	modifier.Register(buffUltDmg, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_BUFF,
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: doBuffUlt,
-		}
+		},
 	})
 }
 
 func onBeforeAttack(mod *modifier.Instance, e event.AttackStart) {
 	if e.AttackType == model.AttackType_INSERT {
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-			Name:     BuffUltDmg,
+			Name:     buffUltDmg,
 			Source:   mod.Owner(),
 			Duration: 1,
 		})
 	}
 }
 
-func doBuffUlt(mod *modifier.Instance, e event.BeforeHit)  {
-	if e.AttackType == model.AttackType_ULT {
-		e.Hit.Attacker.AddProperty(prop.AllDamagePercent, 0.36)
+func doBuffUlt(mod *modifier.Instance, e event.HitStart) {
+	if e.Hit.AttackType == model.AttackType_ULT {
+		e.Hit.Attacker.AddProperty(key.Reason(buffUltDmg), prop.AllDamagePercent, 0.36)
 	}
 }
