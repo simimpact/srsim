@@ -100,6 +100,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/relic/cavern/hunterofglacialforest"
 	_ "github.com/simimpact/srsim/internal/relic/cavern/musketeer"
 	_ "github.com/simimpact/srsim/internal/relic/cavern/puritypalace"
+	_ "github.com/simimpact/srsim/internal/relic/cavern/valorous"
 	_ "github.com/simimpact/srsim/internal/relic/cavern/wanderingcloud"
 	_ "github.com/simimpact/srsim/internal/relic/planar/belobog"
 	_ "github.com/simimpact/srsim/internal/relic/planar/glamoth"
