@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	name = "glamoth"
+	name = "firmament-frontline-glamoth"
 )
 
 // 2pc:
