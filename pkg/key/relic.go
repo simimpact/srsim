@@ -21,7 +21,7 @@ const (
 	SprightlyVonwacq       Relic = "sprightly_vonwacq"
 	PanGalactic            Relic = "pan_galactic"
 	RutilantArena          Relic = "rutilant_arena"
-	Glamoth                Relic = "glamoth"
+	Glamoth                Relic = "firmament_frontline_glamoth"
 	PenaconyLandOfDreams   Relic = "penacony_land_of_dreams"
 	IzumoGensei            Relic = "izumo_gensei_and_takama_divine_realm"
 )
