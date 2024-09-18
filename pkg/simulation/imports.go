@@ -95,6 +95,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/trendoftheuniversalmarket"
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/wearewildfire"
 	_ "github.com/simimpact/srsim/internal/relic/cavern/championboxing"
+	_ "github.com/simimpact/srsim/internal/relic/cavern/duke"
 	_ "github.com/simimpact/srsim/internal/relic/cavern/genius"
 	_ "github.com/simimpact/srsim/internal/relic/cavern/hunterofglacialforest"
 	_ "github.com/simimpact/srsim/internal/relic/cavern/musketeer"
@@ -107,5 +108,4 @@ import (
 	_ "github.com/simimpact/srsim/internal/relic/planar/space"
 	_ "github.com/simimpact/srsim/internal/relic/planar/talia"
 	_ "github.com/simimpact/srsim/internal/relic/planar/vonwacq"
-	_ "github.com/simpact/srsim/internal/relic/cavern/duke"
 )
