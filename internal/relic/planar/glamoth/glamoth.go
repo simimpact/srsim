@@ -43,9 +43,12 @@ func init() {
 
 func onCheck(mod *modifier.Instance) {
 	stats := mod.OwnerStats()
-	if stats.SPD() >= 160 {
+	switch {
+	case stats.SPD() >= 160:
 		mod.SetProperty(prop.AllDamagePercent, 0.18)
-	} else if stats.SPD() >= 135 {
+	case stats.SPD() >= 135:
 		mod.SetProperty(prop.AllDamagePercent, 0.12)
+	default:
+		mod.SetProperty(prop.AllDamagePercent, 0)
 	}
 }
