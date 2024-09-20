@@ -63,7 +63,7 @@ func buffOnAttacked(mod *modifier.Instance, e event.AttackEnd) {
 
 func buffOnHPConsume(mod *modifier.Instance, e event.HPChange) {
 	// bypass if: hpchangebydmg is true, hpchange source isn't lc holder, hpchange increase hp.
-	if e.IsHPChangeByDamage || e.Target != mod.Owner() || e.NewHP > e.OldHP {
+	if e.IsHPChangeByDamage || e.Source != mod.Owner() || e.NewHP > e.OldHP {
 		return
 	}
 	dmgAmt := mod.State().(float64)
