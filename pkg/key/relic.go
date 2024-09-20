@@ -18,6 +18,7 @@ const (
 	WastelanderOfBanditryDesert    Relic = "wastelander_of_banditry_desert"
 	LongevousDisciple              Relic = "longevous_disciple"
 	MessengerTraversingHackerspace Relic = "messenger_traversing_hackerspace"
+	WindSoaringValorous            Relic = "the_wind_soaring_valorous"
 )
 
 // Planar
@@ -31,6 +32,9 @@ const (
 	RutilantArena           Relic = "rutilant_arena"
 	CelestialDifferentiator Relic = "celestial_differentiator"
 	BrokenKeel              Relic = "broken_keel"
+	Glamoth                 Relic = "firmament_frontline_glamoth"
+	PenaconyLandOfDreams    Relic = "penacony_land_of_dreams"
+	IzumoGensei             Relic = "izumo_gensei_and_takama_divine_realm"
 )
 
 func (r Relic) String() string {
