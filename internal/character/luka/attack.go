@@ -24,8 +24,6 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 }
 
 func (c *char) enhancedBasic(target key.TargetID, state info.ActionState) {
-	c.e1Check(target)
-
 	c.fightingSpirit -= 2
 
 	punchCount := 3
@@ -43,7 +41,7 @@ func (c *char) enhancedBasic(target key.TargetID, state info.ActionState) {
 			// The exact calc they use in the dm
 			StanceDamage: 60 * 0.5 * 0.3,
 		})
-		if c.engine.Rand().Float64() > 0.5 {
+		if c.info.Traces["103"] && c.engine.Rand().Float64() > 0.5 {
 			extraPunchCount += 1
 		}
 	}
