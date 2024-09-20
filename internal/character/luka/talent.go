@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	a2 key.Reason = "luka-a2"
+	a4 key.Reason = "luka-a4"
 )
 
 func (c *char) initTalent() {
@@ -36,7 +36,7 @@ func (c *char) incrementFightingSpritBy(amt int) {
 
 	if c.info.Traces["102"] && addValue > 0 {
 		c.engine.ModifyEnergy(info.ModifyAttribute{
-			Key:    a2,
+			Key:    a4,
 			Target: c.id,
 			Source: c.id,
 			Amount: float64(3 * addValue),
