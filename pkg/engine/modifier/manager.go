@@ -73,6 +73,20 @@ func (mgr *Manager) GetModifiers(target key.TargetID, name key.Modifier) []info.
 	return out
 }
 
+func (mgr *Manager) GetModifiersByBehaviorFlag(target key.TargetID, flag model.BehaviorFlag) []info.Modifier {
+	out := make([]info.Modifier, 0, 5)
+	for _, mod := range mgr.targets[target] {
+		for _, candidateFlag := range mod.BehaviorFlags() {
+			if candidateFlag == flag {
+				out = append(out, mod.ToModel())
+				break
+			}
+		}
+	}
+
+	return out
+}
+
 func (mgr *Manager) ModifierStackCount(target, source key.TargetID, modifier key.Modifier) float64 {
 	count := 0.0
 	for _, mod := range mgr.targets[target] {
