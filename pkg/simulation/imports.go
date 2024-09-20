@@ -115,7 +115,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/relic/planar/celestial"
 	_ "github.com/simimpact/srsim/internal/relic/planar/keel"
 	_ "github.com/simimpact/srsim/internal/relic/planar/glamoth"
-	_ "github.com/simimpact/srsim/internal/relic/planar/izumo
+	_ "github.com/simimpact/srsim/internal/relic/planar/izumo"
 	_ "github.com/simimpact/srsim/internal/relic/planar/pangalactic"
 	_ "github.com/simimpact/srsim/internal/relic/planar/penacony"
 	_ "github.com/simimpact/srsim/internal/relic/planar/rutilant"
