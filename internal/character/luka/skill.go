@@ -20,6 +20,9 @@ func init() {
 			Stacking:      modifier.ReplaceBySource,
 			Duration:      3,
 			BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_DOT, model.BehaviorFlag_STAT_DOT_BLEED},
+			Listeners: modifier.Listeners{
+				OnPhase1: dealDotDmg,
+			},
 		},
 	)
 }
@@ -28,7 +31,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	c.e1Check(target)
 
 	if c.info.Eidolon >= 2 && c.engine.Stats(target).IsWeakTo(model.DamageType_PHYSICAL) {
-		c.incrementFightingSprit()
+		c.incrementFightingSpritBy(1)
 	}
 
 	if c.info.Traces["101"] {
@@ -52,7 +55,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	})
 
 	c.applyBleed(target)
-	c.incrementFightingSprit()
+	c.incrementFightingSpritBy(1)
 	state.EndAttack()
 }
 
@@ -89,6 +92,31 @@ func (b *BleedState) TriggerDot(dot info.Modifier, ratio float64, engine engine.
 			Key:        LukaBleed,
 			Source:     dot.Source,
 			Targets:    []key.TargetID{target},
+			AttackType: model.AttackType_DOT,
+			DamageType: model.DamageType_PHYSICAL,
+			BaseDamage: info.DamageMap{
+				model.DamageFormula_BY_ATK: 0,
+			},
+			DamageValue:  bleedDamage,
+			AsPureDamage: true,
+		},
+	)
+}
+
+func dealDotDmg(mod *modifier.Instance) {
+	b := mod.State().(BleedState)
+	owner := mod.Engine().Stats(mod.Source())
+	targetStats := mod.Engine().Stats(mod.Owner())
+	bleedDamage := b.EnemyHealthRatioCap * targetStats.MaxHP()
+	skillCap := b.DamagePercentage * owner.ATK()
+	if bleedDamage > (skillCap) {
+		bleedDamage = skillCap
+	}
+	mod.Engine().Attack(
+		info.Attack{
+			Key:        LukaBleed,
+			Source:     mod.Source(),
+			Targets:    []key.TargetID{mod.Owner()},
 			AttackType: model.AttackType_DOT,
 			DamageType: model.DamageType_PHYSICAL,
 			BaseDamage: info.DamageMap{
