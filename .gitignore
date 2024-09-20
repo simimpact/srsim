@@ -200,3 +200,6 @@ scripts/*/result
 
 # random intelliJ stuff for the unintelligent coder
 .idea/*
+
+# .DS_Store files from MacOS that are automatically created
+.DS_Store
