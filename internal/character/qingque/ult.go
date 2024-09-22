@@ -23,6 +23,8 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		EnergyGain:   5,
 	})
 
+	state.EndAttack()
+
 	c.tiles = []int{4, 0, 0}
 	c.suits[0] = "Yu"
 	c.engine.AddModifier(c.id, info.Modifier{
@@ -30,5 +32,4 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		Source: c.id,
 		Stats:  info.PropMap{prop.ATKPercent: talent[c.info.TalentLevelIndex()]},
 	})
-	state.EndAttack()
 }
