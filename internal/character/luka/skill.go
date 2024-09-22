@@ -23,6 +23,8 @@ func init() {
 			Listeners: modifier.Listeners{
 				OnPhase1: dealDotDmg,
 			},
+			TickMoment:        modifier.ModifierPhase1End,
+			CanModifySnapshot: true,
 		},
 	)
 }
@@ -31,7 +33,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	c.e1Check(target)
 
 	if c.info.Eidolon >= 2 && c.engine.Stats(target).IsWeakTo(model.DamageType_PHYSICAL) {
-		c.incrementFightingSpritBy(1)
+		c.incrementFightingSpiritBy(1)
 	}
 
 	if c.info.Traces["101"] {
@@ -55,7 +57,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	})
 
 	c.applyBleed(target)
-	c.incrementFightingSpritBy(1)
+	c.incrementFightingSpiritBy(1)
 	state.EndAttack()
 }
 

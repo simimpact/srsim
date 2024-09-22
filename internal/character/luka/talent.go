@@ -14,12 +14,10 @@ func (c *char) initTalent() {
 	c.fightingSpirit = 1
 }
 
-func (c *char) incrementFightingSpritBy(amt int) {
-	addValue := 0
+func (c *char) incrementFightingSpiritBy(amt int) {
+	addValue := amt
 	if c.fightingSpirit >= 3 {
 		addValue = 4 - c.fightingSpirit
-	} else {
-		addValue = amt
 	}
 	c.fightingSpirit += amt
 	if c.fightingSpirit > 4 {

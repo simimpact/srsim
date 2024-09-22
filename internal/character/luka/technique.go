@@ -28,6 +28,6 @@ func (c *char) Technique(target key.TargetID, state info.ActionState) {
 	// inflict same bleed as skill
 	c.applyBleed(victim[0])
 
-	c.incrementFightingSpritBy(1)
+	c.incrementFightingSpiritBy(1)
 	state.EndAttack()
 }

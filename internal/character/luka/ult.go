@@ -26,7 +26,7 @@ func init() {
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	c.e1Check(target)
 
-	c.incrementFightingSpritBy(2)
+	c.incrementFightingSpiritBy(2)
 	c.engine.AddModifier(target, info.Modifier{
 		Name:     vuln,
 		Source:   c.id,
