@@ -85,6 +85,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/nihility/inthenameoftheworld"
 	_ "github.com/simimpact/srsim/internal/lightcone/nihility/loop"
 	_ "github.com/simimpact/srsim/internal/lightcone/nihility/patienceisallyouneed"
+	_ "github.com/simimpact/srsim/internal/lightcone/nihility/reforgedremembrance"
 	_ "github.com/simimpact/srsim/internal/lightcone/nihility/resolutionshinesaspearlsofsweat"
 	_ "github.com/simimpact/srsim/internal/lightcone/nihility/void"
 	_ "github.com/simimpact/srsim/internal/lightcone/nihility/wewillmeetagain"
