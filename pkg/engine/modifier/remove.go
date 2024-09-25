@@ -79,20 +79,20 @@ func (mgr *Manager) dispelIds(target key.TargetID, dispel info.Dispel) map[int]s
 	switch dispel.Order {
 	case model.DispelOrder_FIRST_ADDED:
 		for i := 0; i < l && len(out) < dispel.Count; i++ {
-			if mgr.targets[target][i].statusType == dispel.Status {
+			if mgr.targets[target][i].statusType == dispel.Status && mgr.targets[target][i].canDispel {
 				out[i] = struct{}{}
 			}
 		}
 	case model.DispelOrder_LAST_ADDED:
 		for i := len(mgr.targets[target]) - 1; i > 0 && len(out) < dispel.Count; i-- {
-			if mgr.targets[target][i].statusType == dispel.Status {
+			if mgr.targets[target][i].statusType == dispel.Status && mgr.targets[target][i].canDispel {
 				out[i] = struct{}{}
 			}
 		}
 	case model.DispelOrder_RANDOM:
 		var options []int
 		for i, mod := range mgr.targets[target] {
-			if mod.statusType == dispel.Status {
+			if mod.statusType == dispel.Status && mod.canDispel {
 				options = append(options, i)
 			}
 		}
