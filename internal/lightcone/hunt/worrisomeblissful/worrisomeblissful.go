@@ -81,7 +81,8 @@ func applyTame(mod *modifier.Instance, e event.AttackEnd) {
 	if mod.State().(state).fuaflag {
 		for _, trg := range e.Targets {
 			mod.Engine().AddModifier(trg, info.Modifier{
-				Name: tame,
+				Name:   tame,
+				Source: mod.Owner(),
 			})
 		}
 	}
