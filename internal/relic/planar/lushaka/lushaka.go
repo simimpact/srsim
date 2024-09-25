@@ -8,6 +8,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
@@ -29,7 +30,8 @@ func init() {
 	})
 
 	modifier.Register(name, modifier.Config{
-		Stacking: modifier.ReplaceBySource,
+		StatusType: model.StatusType_STATUS_BUFF,
+		Stacking:   modifier.ReplaceBySource,
 	})
 }
 
