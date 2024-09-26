@@ -1,6 +1,7 @@
 package common
 
 import (
+	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/key"
@@ -95,6 +96,41 @@ func breakBleedPhase1(mod *modifier.Instance) {
 			model.DamageFormula_BY_BREAK_DAMAGE: 0,
 		},
 		DamageValue:  state.BaseDamageValue,
+		AsPureDamage: true,
+		UseSnapshot:  true,
+	})
+}
+
+// Custom event trigger for bleed dots
+func (b BleedState) TriggerDot(mod info.Modifier, ratio float64, engine engine.Engine, target key.TargetID) {
+	// perform bleed damage
+	engine.Attack(info.Attack{
+		Key:        Bleed,
+		Source:     mod.Source,
+		Targets:    []key.TargetID{target},
+		AttackType: model.AttackType_DOT,
+		DamageType: model.DamageType_PHYSICAL,
+		BaseDamage: info.DamageMap{
+			model.DamageFormula_BY_ATK: b.DamagePercentage * ratio,
+		},
+		DamageValue: b.DamageValue,
+		UseSnapshot: true,
+	})
+}
+
+// Ditto, but for break dots
+func (b BreakBleedState) TriggerDot(mod info.Modifier, ratio float64, engine engine.Engine, target key.TargetID) {
+	// perform break bleed damage
+	engine.Attack(info.Attack{
+		Key:        BreakBleed,
+		Source:     mod.Source,
+		Targets:    []key.TargetID{target},
+		AttackType: model.AttackType_DOT,
+		DamageType: model.DamageType_PHYSICAL,
+		BaseDamage: info.DamageMap{
+			model.DamageFormula_BY_BREAK_DAMAGE: 0,
+		},
+		DamageValue:  b.BaseDamageValue * ratio,
 		AsPureDamage: true,
 		UseSnapshot:  true,
 	})

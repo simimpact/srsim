@@ -58,6 +58,9 @@ const (
 	GeniusesRepose            LightCone = "geniuses_repose"
 	NightontheMilkyWay        LightCone = "night_on_the_milky_way"
 	TheBirthoftheSelf         LightCone = "the_birth_of_the_self"
+	MaketheWorldClamor        LightCone = "make_the_world_clamor"
+	Sagacity                  LightCone = "sagacity"
+	AnInstantBeforeAGaze      LightCone = "an_instant_before_a_gaze"
 )
 
 // Harmony
@@ -96,6 +99,7 @@ const (
 	PerfectTiming            LightCone = "perfect_timing"
 	TimeWaitsforNoOne        LightCone = "time_waits_for_no_one"
 	EchoesoftheCoffin        LightCone = "echoes_of_the_coffin"
+	HeyOverHere              LightCone = "hey_over_here"
 )
 
 func (l LightCone) String() string {

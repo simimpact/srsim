@@ -68,8 +68,6 @@ var debugFlags = []cli.Flag{
 var version string
 
 func init() {
-	// TODO: get version from tag & gh workflow (https://www.forkingbytes.com/blog/dynamic-versioning-your-go-application/)
-	// default version commit hash?
 	cli.VersionPrinter = func(ctx *cli.Context) {
 		fmt.Fprintf(ctx.App.Writer, "srsim version %s (%s)\n", ctx.App.Version, "")
 	}
@@ -99,6 +97,15 @@ func main() {
 				HideHelpCommand:        true,
 				Flags:                  concatMultipleSlices(debugFlags, globalFlags),
 				Action:                 run,
+			},
+			{
+				Name:      "update",
+				Usage:     "update srsim to latest version",
+				UsageText: "srsim update",
+				HideHelp:  true,
+				Action: func(ctx *cli.Context) error {
+					return update(version)
+				},
 			},
 			{
 				Name:     "version",
@@ -153,8 +160,12 @@ func run(ctx *cli.Context) error {
 		return cli.Exit(err, 1)
 	}
 
-	if err := os.MkdirAll(ctx.String("outpath"), os.ModeDir); err != nil {
+	if err := os.MkdirAll(ctx.String("outpath"), os.ModePerm); err != nil {
 		return cli.Exit(err, 1)
+	}
+
+	if ctx.Int("iterations") > 0 {
+		config.Settings.Iterations = uint32(ctx.Int("iterations"))
 	}
 
 	opts := &ExecutionOpts{

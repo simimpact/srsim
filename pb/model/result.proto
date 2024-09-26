@@ -54,10 +54,21 @@ message SimResult {
 }
 
 message Statistics {
+  //damage stats
+  optional DescriptiveStats total_damage_dealt = 1;
+  optional DescriptiveStats total_damage_taken = 2;
+  optional OverviewStats total_damage_dealt_per_cycle = 3;
+
+  //turn stats
+  optional DescriptiveStats total_av = 10;
 
 }
 
 message IterationResult {
+  double total_damage_dealt = 1;
+  double total_damage_taken = 2;
+
+  double total_av = 10;
 }
 
 message OverviewStats {

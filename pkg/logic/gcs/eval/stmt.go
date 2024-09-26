@@ -66,7 +66,7 @@ func (e *Eval) evalLet(l *ast.LetStmt, env *Env) (Obj, error) {
 	if exist {
 		return nil, fmt.Errorf("variable %v already exists; cannot redeclare", l.Ident.Val)
 	}
-	env.varMap[l.Ident.Val] = &res
+	env.setv(l.Ident.Val, res)
 	return &null{}, nil
 }
 
@@ -79,7 +79,7 @@ func (e *Eval) evalFnStmt(l *ast.FnStmt, env *Env) (Obj, error) {
 		Args: l.Args,
 		Body: l.Body,
 	}
-	env.varMap[l.FunVal.Val] = &res
+	env.setv(l.FunVal.Val, res)
 	return &null{}, nil
 }
 

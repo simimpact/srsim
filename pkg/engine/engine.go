@@ -77,6 +77,10 @@ type Modifier interface {
 	// Returns a list of read-only modifiers that are currently attached to the given target. This
 	// should rarely be used
 	GetModifiers(target key.TargetID, modifier key.Modifier) []info.Modifier
+
+	// Returns a list of read-only modifiers currently attached to the given target that also have the
+	// given BehaviorFlag
+	GetModifersByBehaviorFlag(target key.TargetID, flag model.BehaviorFlag) []info.Modifier
 }
 
 type Attribute interface {
@@ -212,6 +216,9 @@ type Info interface {
 type Target interface {
 	// Check if the given TargetID is valid
 	IsValid(target key.TargetID) bool
+
+	// Check if the given TargetID is alive
+	IsAlive(target key.TargetID) bool
 
 	// returns true if the given TargetID is for a character
 	IsCharacter(target key.TargetID) bool

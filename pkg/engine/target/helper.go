@@ -14,11 +14,10 @@ func AdjacentTo(targets []key.TargetID, target key.TargetID) []key.TargetID {
 			continue
 		}
 
-		out := make([]key.TargetID, 0, 3)
+		out := make([]key.TargetID, 0, 2)
 		if i != 0 {
 			out = append(out, targets[i-1])
 		}
-		out = append(out, t)
 		if i != len(targets)-1 {
 			out = append(out, targets[i+1])
 		}
