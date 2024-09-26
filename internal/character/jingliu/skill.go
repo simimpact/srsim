@@ -23,9 +23,11 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	}
 	if len(c.engine.AdjacentTo(target)) == 0 && c.info.Eidolon >= 1 {
 		c.EnhancedSkillE1(target, state)
+		c.afterUlt = false
 		return
 	}
 	c.EnhancedSkill(target, state)
+	c.afterUlt = false
 }
 
 func (c *char) NormalSkill(target key.TargetID, state info.ActionState) {

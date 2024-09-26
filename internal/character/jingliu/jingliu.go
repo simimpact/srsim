@@ -50,6 +50,7 @@ type char struct {
 	info       info.Character
 	Syzygy     int
 	isEnhanced bool
+	afterUlt   bool
 }
 
 func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character) info.CharInstance {
@@ -59,9 +60,11 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 		info:       charInfo,
 		Syzygy:     0,
 		isEnhanced: false,
+		afterUlt:   false,
 	}
 	engine.Events().TurnEnd.Subscribe(c.checkSyzygy)
 	engine.Events().ActionStart.Subscribe(c.E1Listener)
+	engine.Events().HitStart.Subscribe(c.E2Listener)
 	engine.Events().HitStart.Subscribe(c.A6Listener)
 	return c
 }

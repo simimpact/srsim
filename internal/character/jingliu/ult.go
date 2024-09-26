@@ -14,9 +14,11 @@ const (
 func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	if len(c.engine.AdjacentTo(target)) == 0 && c.info.Eidolon >= 1 {
 		c.E1Ult(target, state)
+		c.afterUlt = true
 		return
 	}
 	c.NormalUlt(target, state)
+	c.afterUlt = true
 }
 
 func (c *char) NormalUlt(target key.TargetID, state info.ActionState) {
@@ -46,12 +48,6 @@ func (c *char) NormalUlt(target key.TargetID, state info.ActionState) {
 	state.EndAttack()
 
 	c.gainSyzygy()
-	if c.info.Eidolon >= 2 {
-		c.engine.AddModifier(c.id, info.Modifier{
-			Name:   E2,
-			Source: c.id,
-		})
-	}
 }
 
 func (c *char) E1Ult(target key.TargetID, state info.ActionState) {
@@ -80,10 +76,4 @@ func (c *char) E1Ult(target key.TargetID, state info.ActionState) {
 	state.EndAttack()
 
 	c.gainSyzygy()
-	if c.info.Eidolon >= 2 {
-		c.engine.AddModifier(c.id, info.Modifier{
-			Name:   E2,
-			Source: c.id,
-		})
-	}
 }

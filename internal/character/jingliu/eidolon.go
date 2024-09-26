@@ -9,19 +9,12 @@ import (
 )
 
 const (
-	E1     = "jingliu-e1"
-	E2     = "jingliu-e2-listener"
-	E2Buff = "jingliu-e2"
+	E1 = "jingliu-e1"
+	E2 = "jingliu-e2"
 )
 
 func init() {
 	modifier.Register(E2, modifier.Config{
-		StatusType: model.StatusType_UNKNOWN_STATUS,
-		Listeners: modifier.Listeners{
-			OnBeforeAction: E2Listener,
-		},
-	})
-	modifier.Register(E2Buff, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
 		Listeners: modifier.Listeners{
 			OnAfterAction: removeWhenEndAttack,
@@ -43,15 +36,8 @@ func (c *char) E1Listener(e event.ActionStart) {
 	}
 }
 
-func E2Listener(mod *modifier.Instance, e event.ActionStart) {
-	tmp, _ := mod.Engine().CharacterInstance(mod.Owner())
-	c := tmp.(*char)
-	if c.isEnhanced && e.AttackType == model.AttackType_SKILL {
-		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-			Name:   E2Buff,
-			Source: mod.Owner(),
-			Stats:  info.PropMap{prop.AllDamagePercent: 0.8},
-		})
-		mod.RemoveSelf()
+func (c *char) E2Listener(e event.HitStart) {
+	if c.isEnhanced && c.afterUlt && e.Hit.AttackType == model.AttackType_SKILL {
+		e.Hit.Attacker.AddProperty(E2, prop.AllDamagePercent, 0.8)
 	}
 }

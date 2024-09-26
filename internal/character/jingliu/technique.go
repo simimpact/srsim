@@ -23,11 +23,11 @@ func (c *char) Technique(target key.TargetID, state info.ActionState) {
 			Duration: 1,
 		})
 	}
+	c.gainSyzygy()
 	c.engine.ModifyEnergy(info.ModifyAttribute{
 		Key:    Tech,
 		Target: c.id,
 		Source: c.id,
 		Amount: 15,
 	})
-	c.gainSyzygy()
 }
