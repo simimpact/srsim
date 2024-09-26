@@ -20,9 +20,6 @@ const (
 func init() {
 	modifier.Register(EnhanceModeBuff, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
-		Listeners: modifier.Listeners{
-			OnBeforeAction: A6Listener,
-		},
 	})
 	modifier.Register(TalentBuff, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
@@ -131,5 +128,6 @@ func removeWhenEndAttack(mod *modifier.Instance, e event.ActionEnd) {
 func (c *char) checkSyzygy(e event.TurnEnd) {
 	if c.Syzygy == 0 {
 		c.isEnhanced = false
+		c.engine.RemoveModifier(c.id, EnhanceModeBuff)
 	}
 }

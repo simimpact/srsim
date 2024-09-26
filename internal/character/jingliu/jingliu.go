@@ -62,5 +62,6 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 	}
 	engine.Events().TurnEnd.Subscribe(c.checkSyzygy)
 	engine.Events().ActionStart.Subscribe(c.E1Listener)
+	engine.Events().HitStart.Subscribe(c.A6Listener)
 	return c
 }

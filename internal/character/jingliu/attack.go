@@ -13,7 +13,7 @@ const (
 var attackRatio = []float64{0.3, 0.7}
 
 // Attack should be banned when enter enhanced mode
-// TODO: create issue later
+
 func (c *char) Attack(target key.TargetID, state info.ActionState) {
 	for i, hitRatio := range attackRatio {
 		c.engine.Attack(info.Attack{

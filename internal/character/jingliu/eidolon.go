@@ -36,10 +36,9 @@ func init() {
 func (c *char) E1Listener(e event.ActionStart) {
 	if (c.isEnhanced && e.AttackType == model.AttackType_SKILL) || e.AttackType == model.AttackType_ULT {
 		c.engine.AddModifier(c.id, info.Modifier{
-			Name:            E1,
-			Source:          c.id,
-			Stats:           info.PropMap{prop.CritDMG: 0.24},
-			TickImmediately: true,
+			Name:   E1,
+			Source: c.id,
+			Stats:  info.PropMap{prop.CritDMG: 0.24},
 		})
 	}
 }

@@ -11,13 +11,6 @@ const (
 )
 
 func (c *char) Technique(target key.TargetID, state info.ActionState) {
-	c.engine.ModifyEnergyFixed(info.ModifyAttribute{
-		Key:    Tech,
-		Target: c.id,
-		Source: c.id,
-		Amount: 15,
-	})
-	c.gainSyzygy()
 	for _, Target := range c.engine.Enemies() {
 		c.engine.AddModifier(Target, info.Modifier{
 			Name:   common.Freeze,
@@ -30,4 +23,11 @@ func (c *char) Technique(target key.TargetID, state info.ActionState) {
 			Duration: 1,
 		})
 	}
+	c.engine.ModifyEnergy(info.ModifyAttribute{
+		Key:    Tech,
+		Target: c.id,
+		Source: c.id,
+		Amount: 15,
+	})
+	c.gainSyzygy()
 }
