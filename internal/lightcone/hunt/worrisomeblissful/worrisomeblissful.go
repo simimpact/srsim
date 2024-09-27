@@ -74,6 +74,7 @@ func buffFuaDmg(mod *modifier.Instance, e event.HitStart) {
 	if e.Hit.AttackType == model.AttackType_INSERT {
 		st := mod.State().(*state)
 		e.Hit.Attacker.AddProperty(check, prop.AllDamagePercent, st.dmgBonus)
+		// flag for checking whether to apply Tame debuff
 		st.fuaflag = true
 	}
 }
@@ -86,6 +87,8 @@ func applyTame(mod *modifier.Instance, e event.AttackEnd) {
 				Name:   tame,
 				Source: mod.Owner(),
 				State: state{
+					fuaflag:   st.fuaflag,
+					dmgBonus:  st.dmgBonus,
 					cdmgBonus: st.cdmgBonus,
 				},
 			})
