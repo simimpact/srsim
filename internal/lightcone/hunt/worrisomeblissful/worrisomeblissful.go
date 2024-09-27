@@ -86,11 +86,7 @@ func applyTame(mod *modifier.Instance, e event.AttackEnd) {
 			mod.Engine().AddModifier(trg, info.Modifier{
 				Name:   tame,
 				Source: mod.Owner(),
-				State: state{
-					fuaflag:   st.fuaflag,
-					dmgBonus:  st.dmgBonus,
-					cdmgBonus: st.cdmgBonus,
-				},
+				State:  st.cdmgBonus,
 			})
 		}
 		st.fuaflag = false
@@ -99,7 +95,7 @@ func applyTame(mod *modifier.Instance, e event.AttackEnd) {
 
 func buffCdmg(mod *modifier.Instance, e event.HitStart) {
 	if mod.Engine().IsCharacter(e.Attacker) {
-		cdmgBonus := mod.State().(*state).cdmgBonus
+		cdmgBonus := mod.State().(state).cdmgBonus
 		e.Hit.Attacker.AddProperty(tame, prop.CritDMG, mod.Count()*cdmgBonus)
 	}
 }
