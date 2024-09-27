@@ -55,9 +55,9 @@ func init() {
 		CountAddWhenStack: 1,
 		CanModifySnapshot: true,
 		Listeners: modifier.Listeners{
-			OnBeforeAttack: onBeforeAttack,
-			OnBeforeHitAll: onBeforeHitAll,
-			OnAfterAttack:  onAfterAttack,
+			OnBeforeAttack: setFlag,
+			OnBeforeHitAll: applyEclipse,
+			OnAfterAttack:  removeEclipse,
 		},
 	})
 }
@@ -80,7 +80,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 				engine.AddModifier(char, info.Modifier{
 					Name:   EclipseAllyMonitor,
 					Source: owner,
-					State: state{
+					State: &state{
 						dmgBonus:  dmgBonus,
 						defIgnore: defIgnore,
 						flag:      false,
@@ -101,28 +101,29 @@ func onAfterBeingAttacked(mod *modifier.Instance, e event.AttackEnd) {
 	addStack(mod)
 }
 
-// helper function to handle stacks
+// helper function to handle stacks, adds a new Eclipse modifier, handing over values from the Monitor mod to the Eclipse mod
+
 func addStack(mod *modifier.Instance) {
 	st := mod.State().(*state)
 	mod.Engine().AddModifier(mod.Source(), info.Modifier{
 		Name:   Eclipse,
 		Source: mod.Owner(),
-		State: state{
+		State: &state{
 			dmgBonus:  st.dmgBonus,
 			defIgnore: st.defIgnore,
-			flag:      false,
+			flag:      st.flag,
 		},
 	})
 }
 
-// set flag
-func onBeforeAttack(mod *modifier.Instance, e event.AttackStart) {
+// set flag that makes sure to only apply Eclipse on an attack
+func setFlag(mod *modifier.Instance, e event.AttackStart) {
 	st := mod.State().(*state)
 	st.flag = true
 }
 
 // if flag, apply Eclipse buff(s)
-func onBeforeHitAll(mod *modifier.Instance, e event.HitStart) {
+func applyEclipse(mod *modifier.Instance, e event.HitStart) {
 	st := mod.State().(*state)
 	if st.flag {
 		e.Hit.Attacker.AddProperty(EclipseDmgBonus, prop.AllDamagePercent, mod.Count()*st.dmgBonus)
@@ -133,6 +134,6 @@ func onBeforeHitAll(mod *modifier.Instance, e event.HitStart) {
 }
 
 // remove mod after attack
-func onAfterAttack(mod *modifier.Instance, e event.AttackEnd) {
+func removeEclipse(mod *modifier.Instance, e event.AttackEnd) {
 	mod.RemoveSelf()
 }
