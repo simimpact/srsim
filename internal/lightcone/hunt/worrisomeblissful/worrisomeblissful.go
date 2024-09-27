@@ -36,7 +36,7 @@ func init() {
 
 	modifier.Register(check, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHitAll: buffFua,
+			OnBeforeHitAll: buffFuaDmg,
 			OnAfterAttack:  applyTame,
 		},
 	})
@@ -62,7 +62,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		Stats: info.PropMap{
 			prop.CritChance: crAmt,
 		},
-		State: state{
+		State: &state{
 			fuaflag:   false,
 			dmgBonus:  dmgAmt,
 			cdmgBonus: cdmgAmt,
@@ -70,26 +70,33 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func buffFua(mod *modifier.Instance, e event.HitStart) {
+func buffFuaDmg(mod *modifier.Instance, e event.HitStart) {
 	if e.Hit.AttackType == model.AttackType_INSERT {
-		e.Hit.Attacker.AddProperty(check, prop.AllDamagePercent, mod.State().(state).dmgBonus)
-		mod.State().(*state).fuaflag = true
+		st := mod.State().(*state)
+		e.Hit.Attacker.AddProperty(check, prop.AllDamagePercent, st.dmgBonus)
+		st.fuaflag = true
 	}
 }
 
 func applyTame(mod *modifier.Instance, e event.AttackEnd) {
-	if mod.State().(state).fuaflag {
+	st := mod.State().(*state)
+	if st.fuaflag {
 		for _, trg := range e.Targets {
 			mod.Engine().AddModifier(trg, info.Modifier{
 				Name:   tame,
 				Source: mod.Owner(),
+				State: state{
+					cdmgBonus: st.cdmgBonus,
+				},
 			})
 		}
+		st.fuaflag = false
 	}
 }
 
 func buffCdmg(mod *modifier.Instance, e event.HitStart) {
 	if mod.Engine().IsCharacter(e.Attacker) {
-		e.Hit.Attacker.AddProperty(tame, prop.CritDMG, mod.Count()*mod.State().(state).cdmgBonus)
+		cdmgBonus := mod.State().(*state).cdmgBonus
+		e.Hit.Attacker.AddProperty(tame, prop.CritDMG, mod.Count()*cdmgBonus)
 	}
 }
