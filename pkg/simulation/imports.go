@@ -77,6 +77,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/hunt/subscribeformore"
 	_ "github.com/simimpact/srsim/internal/lightcone/hunt/swordplay"
 	_ "github.com/simimpact/srsim/internal/lightcone/nihility/beforethetutorialmissionstarts"
+	_ "github.com/simimpact/srsim/internal/lightcone/nihility/boundlesschoreo"
 	_ "github.com/simimpact/srsim/internal/lightcone/nihility/eyesoftheprey"
 	_ "github.com/simimpact/srsim/internal/lightcone/nihility/fermata"
 	_ "github.com/simimpact/srsim/internal/lightcone/nihility/goodnightandsleepwell"
