@@ -88,13 +88,13 @@ func applyDisputation(mod *modifier.Instance, e event.AttackStart) {
 			Name:   Disputation,
 			Source: mod.Owner(),
 			Stats:  info.PropMap{prop.AllDamagePercent: st.dmgBonus},
-			State:  st,
+			State:  st.defignore,
 		})
 	}
 }
 
 func applyDefignore(mod *modifier.Instance, e event.HitStart) {
 	if e.Hit.AttackType == model.AttackType_INSERT {
-		e.Hit.Defender.AddProperty(Disputation, prop.DEFPercent, -mod.State().(state).defignore)
+		e.Hit.Defender.AddProperty(Disputation, prop.DEFPercent, -mod.State().(float64))
 	}
 }
