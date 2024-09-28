@@ -30,6 +30,7 @@ const (
 	ReturntoDarkness        LightCone = "return_to_darkness"
 	SleepLiketheDead        LightCone = "sleep_like_the_dead"
 	IntheNight              LightCone = "in_the_night"
+	BaptismofPureThought    LightCone = "baptism_of_pure_thought"
 )
 
 // Nihility
