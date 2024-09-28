@@ -283,6 +283,20 @@ func (mr *MockEngineMockRecorder) ExtendModifierDuration(arg0, arg1, arg2 interf
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExtendModifierDuration", reflect.TypeOf((*MockEngine)(nil).ExtendModifierDuration), arg0, arg1, arg2)
 }
 
+// GetActiveTarget mocks base method.
+func (m *MockEngine) GetActiveTarget() key.TargetID {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetActiveTarget")
+	ret0, _ := ret[0].(key.TargetID)
+	return ret0
+}
+
+// GetActiveTarget indicates an expected call of GetActiveTarget.
+func (mr *MockEngineMockRecorder) GetActiveTarget() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetActiveTarget", reflect.TypeOf((*MockEngine)(nil).GetActiveTarget))
+}
+
 // GetModifiers mocks base method.
 func (m *MockEngine) GetModifiers(arg0 key.TargetID, arg1 key.Modifier) []info.Modifier {
 	m.ctrl.T.Helper()

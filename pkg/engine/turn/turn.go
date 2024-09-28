@@ -97,6 +97,11 @@ func (mgr *manager) TurnOrder() []key.TargetID {
 	return targetOrder
 }
 
+// GetActiveTarget returns the ID of the target that is active/is taking the turn from the Manager.
+func (mgr *manager) GetActiveTarget() key.TargetID {
+	return mgr.activeTarget
+}
+
 // EventTurnStatus returns an array of event.TurnStatus structs populated with the current ID, Gauge, and AV of each target in the Manager's turnOrder.
 func (mgr *manager) EventTurnStatus() []event.TurnStatus {
 	turnStatus := make([]event.TurnStatus, mgr.orderHandler.Len())
