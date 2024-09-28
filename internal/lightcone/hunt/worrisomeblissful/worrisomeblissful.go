@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	check = "worrisome-blissful"
-	tame  = "worrisome-blissful-cdmg-debuff"
+	Check = "worrisome-blissful"
+	Tame  = "worrisome-blissful-cdmg-debuff"
 )
 
 type state struct {
@@ -34,16 +34,17 @@ func init() {
 		Promotions:    promotions,
 	})
 
-	modifier.Register(check, modifier.Config{
+	modifier.Register(Check, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: buffFuaDmg,
 			OnAfterAttack:  applyTame,
 		},
 	})
 
-	modifier.Register(tame, modifier.Config{
-		StatusType:        model.StatusType_STATUS_DEBUFF,
-		Stacking:          modifier.ReplaceBySource,
+	modifier.Register(Tame, modifier.Config{
+		StatusType: model.StatusType_STATUS_DEBUFF,
+		Stacking:   modifier.ReplaceBySource,
+		// CanDispel: true,
 		MaxCount:          2,
 		CountAddWhenStack: 1,
 		Listeners: modifier.Listeners{
@@ -57,7 +58,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	dmgAmt := 0.25 + 0.05*float64(lc.Imposition)
 	cdmgAmt := 0.1 + 0.02*float64(lc.Imposition)
 	engine.AddModifier(owner, info.Modifier{
-		Name:   check,
+		Name:   Check,
 		Source: owner,
 		Stats: info.PropMap{
 			prop.CritChance: crAmt,
@@ -73,7 +74,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 func buffFuaDmg(mod *modifier.Instance, e event.HitStart) {
 	if e.Hit.AttackType == model.AttackType_INSERT {
 		st := mod.State().(*state)
-		e.Hit.Attacker.AddProperty(check, prop.AllDamagePercent, st.dmgBonus)
+		e.Hit.Attacker.AddProperty(Check, prop.AllDamagePercent, st.dmgBonus)
 		// flag for checking whether to apply Tame debuff
 		st.fuaflag = true
 	}
@@ -84,7 +85,7 @@ func applyTame(mod *modifier.Instance, e event.AttackEnd) {
 	if st.fuaflag {
 		for _, trg := range e.Targets {
 			mod.Engine().AddModifier(trg, info.Modifier{
-				Name:   tame,
+				Name:   Tame,
 				Source: mod.Owner(),
 				State:  st.cdmgBonus,
 			})
@@ -95,7 +96,7 @@ func applyTame(mod *modifier.Instance, e event.AttackEnd) {
 
 func buffCdmg(mod *modifier.Instance, e event.HitStart) {
 	if mod.Engine().IsCharacter(e.Attacker) {
-		cdmgBonus := mod.State().(state).cdmgBonus
-		e.Hit.Attacker.AddProperty(tame, prop.CritDMG, mod.Count()*cdmgBonus)
+		cdmgBonus := mod.State().(float64)
+		e.Hit.Attacker.AddProperty(Tame, prop.CritDMG, mod.Count()*cdmgBonus)
 	}
 }
