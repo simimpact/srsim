@@ -4,44 +4,28 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
-	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
 const (
-	Skill       = "luocha-skill"
-	E2HealBoost = "luocha-e2-healboost"
-	E2Shield    = "luocha-e2-shield"
+	Skill         = "luocha-skill"
+	SkillInsert   = "luocha-skill-insert"
+	SkillInsertCD = "luocha-skill-insert-cooldown"
 )
 
-func init() {
-	modifier.Register(E2HealBoost, modifier.Config{
-		Stacking: modifier.ReplaceBySource,
-		Listeners: modifier.Listeners{
-			OnBeforeDealHeal: applyE2HealBoost,
-		},
-	})
+var IsInsert bool
 
-	modifier.Register(E2Shield, modifier.Config{
-		Stacking:   modifier.Replace,
-		StatusType: model.StatusType_STATUS_BUFF,
-		// CanDispel: true,
-		Duration: 2,
-		Listeners: modifier.Listeners{
-			OnAdd: func(mod *modifier.Instance) {
-				mod.Engine().AddShield(E2Shield, info.Shield{
-					Source:      mod.Source(),
-					Target:      mod.Owner(),
-					BaseShield:  info.ShieldMap{model.ShieldFormula_SHIELD_BY_SHIELDER_ATK: 0.18},
-					ShieldValue: 240,
-				})
-			},
-			OnRemove: func(mod *modifier.Instance) {
-				mod.Engine().RemoveShield(E2Shield, mod.Owner())
-			},
-		},
+func init() {
+	modifier.Register(SkillInsert, modifier.Config{})
+
+	modifier.Register(SkillInsertCD, modifier.Config{
+		TickMoment: modifier.ModifierPhase1End,
 	})
+}
+
+func (c *char) initSkillInsert() {
+	c.engine.Events().HPChange.Subscribe(c.SkillInsertListener)
 }
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
@@ -87,16 +71,48 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		Amount: 30,
 	})
 
-	// add 1 stack of Abyssal Flower
-	c.engine.AddModifier(c.id, info.Modifier{
-		Name:   abyssFlower,
-		Source: c.id,
-	})
+	// add 1 stack of Abyss Flower if no Field active
+	if !c.engine.HasModifier(c.id, Field) {
+		c.engine.AddModifier(c.id, info.Modifier{
+			Name:   AbyssFlower,
+			Source: c.id,
+		})
+	}
 
 	// something with inserts
+	if IsInsert {
+		IsInsert = false
+	}
 }
 
-func applyE2HealBoost(mod *modifier.Instance, e *event.HealStart) {
-	e.Healer.AddProperty(E2HealBoost, prop.HealBoost, 0.3)
-	mod.RemoveSelf()
+func (c *char) SkillInsertListener(e event.HPChange) {
+	// bypass if hp change is positive
+	if e.NewHP > e.OldHP {
+		return
+	}
+
+	// bypass if on cooldown
+	if c.engine.HasModifier(c.id, SkillInsertCD) {
+		return
+	}
+
+	// bypass if CC'd or unable to act
+	cond1 := c.engine.HasBehaviorFlag(c.id, model.BehaviorFlag_STAT_CTRL)
+	cond2 := c.engine.HasBehaviorFlag(c.id, model.BehaviorFlag_DISABLE_ACTION)
+	if cond1 || cond2 {
+		return
+	}
+
+	trg := c.engine.Retarget(info.Retarget{
+		Targets: c.engine.Enemies(),
+		Filter: func(target key.TargetID) bool {
+			// missing filters
+			return true
+		},
+		Max: 1,
+	})
+
+	if c.engine.HPRatio(trg[0]) <= 0.5 {
+		// 	// apply another mod that applies another mod...
+	}
 }

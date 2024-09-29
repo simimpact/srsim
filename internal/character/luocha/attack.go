@@ -6,7 +6,7 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
-const Normal key.Attack = "kafka-normal"
+const Normal key.Attack = "luocha-normal"
 
 var hitSplit = []float64{0.3, 0.3, 0.4}
 

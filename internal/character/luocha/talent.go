@@ -10,15 +10,13 @@ import (
 )
 
 const (
-	abyssFlower       = "luocha-abyss-flower"
+	AbyssFlower       = "luocha-Abyss-flower"
 	Field             = "luocha-field"
 	FieldHeal         = "luocha-field-heal"
 	A4                = "luocha-a4"
 	Insert            = "luocha-insert"
 	InsertMark        = "luocha-insert-mark"
 	DisableInsertMark = "luocha-disable-insert-mark"
-	E1                = "luocha-e1"
-	E4                = "luocha-e4"
 )
 
 type state struct {
@@ -27,7 +25,7 @@ type state struct {
 }
 
 func (c *char) init() {
-	modifier.Register(abyssFlower, modifier.Config{
+	modifier.Register(AbyssFlower, modifier.Config{
 		Stacking:          modifier.ReplaceBySource,
 		MaxCount:          2,
 		CountAddWhenStack: 1,
@@ -58,17 +56,6 @@ func (c *char) init() {
 		Listeners: modifier.Listeners{
 			OnAfterAttack: doFieldHeal,
 		},
-	})
-
-	modifier.Register(E1, modifier.Config{
-		Stacking:   modifier.ReplaceBySource,
-		StatusType: model.StatusType_STATUS_BUFF,
-	})
-
-	modifier.Register(E4, modifier.Config{
-		Stacking:      modifier.ReplaceBySource,
-		StatusType:    model.StatusType_STATUS_DEBUFF,
-		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_FATIGUE},
 	})
 }
 
@@ -103,7 +90,7 @@ func doInsert(mod *modifier.Instance) {
 		AbortFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_CTRL, model.BehaviorFlag_DISABLE_ACTION},
 	})
 
-	mod.Engine().RemoveModifier(mod.Source(), abyssFlower)
+	mod.Engine().RemoveModifier(mod.Source(), AbyssFlower)
 	mod.Engine().RemoveModifier(mod.Source(), InsertMark)
 }
 

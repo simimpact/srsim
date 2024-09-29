@@ -26,6 +26,7 @@ const (
 	March7th              Character = "march7th"
 	Seele                 Character = "seele"
 	Huohuo                Character = "huohuo"
+	Luocha                Character = "luocha"
 )
 
 func (c Character) String() string {
