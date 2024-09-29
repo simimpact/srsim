@@ -297,6 +297,20 @@ func (mr *MockEngineMockRecorder) GetActiveTarget() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetActiveTarget", reflect.TypeOf((*MockEngine)(nil).GetActiveTarget))
 }
 
+// GetModifersByBehaviorFlag mocks base method.
+func (m *MockEngine) GetModifersByBehaviorFlag(arg0 key.TargetID, arg1 model.BehaviorFlag) []info.Modifier {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetModifersByBehaviorFlag", arg0, arg1)
+	ret0, _ := ret[0].([]info.Modifier)
+	return ret0
+}
+
+// GetModifersByBehaviorFlag indicates an expected call of GetModifersByBehaviorFlag.
+func (mr *MockEngineMockRecorder) GetModifersByBehaviorFlag(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetModifersByBehaviorFlag", reflect.TypeOf((*MockEngine)(nil).GetModifersByBehaviorFlag), arg0, arg1)
+}
+
 // GetModifiers mocks base method.
 func (m *MockEngine) GetModifiers(arg0 key.TargetID, arg1 key.Modifier) []info.Modifier {
 	m.ctrl.T.Helper()
