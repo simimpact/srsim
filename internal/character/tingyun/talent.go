@@ -22,6 +22,13 @@ func init() {
 	modifier.Register(IsTingyun, modifier.Config{})
 }
 
+func (c *char) initTalent() {
+	c.engine.AddModifier(c.id, info.Modifier{
+		Name:   IsTingyun,
+		Source: c.id,
+	})
+}
+
 func doProcTalent(mod *modifier.Instance, e event.AttackEnd) {
 	if e.AttackType == model.AttackType_NORMAL && mod.Engine().HasModifier(mod.Owner(), IsTingyun) {
 		st := mod.State().(*skillState)

@@ -51,6 +51,7 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 	}
 
 	c.initTraces()
+	c.initTalent()
 
 	return c
 }
