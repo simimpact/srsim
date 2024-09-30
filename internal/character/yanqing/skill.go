@@ -28,5 +28,5 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		})
 	}
 	c.tryFollow(target)
-	c.addTalent()
+	c.engine.AddModifier(c.id, c.getTalent(false))
 }

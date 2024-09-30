@@ -29,38 +29,48 @@ func init() {
 	})
 }
 
-func (c *char) addTalent() {
-	temp := info.Modifier{
+func (c *char) getTalent(ult bool) info.Modifier {
+	mod := info.Modifier{
 		Name:   Soulsteel,
 		Source: c.id,
 		Stats: info.PropMap{
 			prop.CritChance: talentCritRate[c.info.TalentLevelIndex()],
 			prop.CritDMG:    talentCritDmg[c.info.TalentLevelIndex()],
 		},
+		TickImmediately: ult,
 	}
 	if c.info.Traces["102"] {
-		temp.DebuffRES = info.DebuffRESMap{model.BehaviorFlag_STAT_CTRL: 0.2}
+		mod.DebuffRES = info.DebuffRESMap{model.BehaviorFlag_STAT_CTRL: 0.2}
 	}
 	if c.info.Eidolon >= 2 {
-		temp.Stats.Set(prop.EnergyRegen, 0.1)
+		mod.Stats.Set(prop.EnergyRegen, 0.1)
 	}
-	c.engine.AddModifier(c.id, temp)
+	if ult {
+		mod.Stats.Modify(prop.CritDMG, ultCritDmg[c.info.UltLevelIndex()])
+	}
+	return mod
 }
+
+var followHits = []float64{0.3, 0.7}
 
 func (c *char) tryFollow(target key.TargetID) {
 	if c.engine.HasModifier(c.id, Soulsteel) && c.engine.Rand().Float64() <= talentFollowChance[c.info.TalentLevelIndex()] {
 		c.engine.InsertAbility(info.Insert{
 			Execute: func() {
-				c.engine.Attack(info.Attack{
-					Key:          TalentAttack,
-					Source:       c.id,
-					Targets:      []key.TargetID{target},
-					DamageType:   model.DamageType_ICE,
-					AttackType:   model.AttackType_INSERT,
-					BaseDamage:   info.DamageMap{model.DamageFormula_BY_ATK: talentFollowRate[c.info.TalentLevelIndex()]},
-					StanceDamage: 30,
-					EnergyGain:   10,
-				})
+				for i, hitRatio := range followHits {
+					c.engine.Attack(info.Attack{
+						Key:          TalentAttack,
+						HitIndex:     i,
+						Source:       c.id,
+						Targets:      []key.TargetID{target},
+						DamageType:   model.DamageType_ICE,
+						AttackType:   model.AttackType_INSERT,
+						BaseDamage:   info.DamageMap{model.DamageFormula_BY_ATK: talentFollowRate[c.info.TalentLevelIndex()]},
+						StanceDamage: 30,
+						EnergyGain:   10,
+						HitRatio:     hitRatio,
+					})
+				}
 				c.engine.AddModifier(target, info.Modifier{
 					Name:   common.Freeze,
 					Source: c.id,
