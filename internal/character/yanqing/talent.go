@@ -57,6 +57,14 @@ func (c *char) tryFollow(target key.TargetID) {
 	if c.engine.HasModifier(c.id, Soulsteel) && c.engine.Rand().Float64() <= talentFollowChance[c.info.TalentLevelIndex()] {
 		c.engine.InsertAbility(info.Insert{
 			Execute: func() {
+				if !c.engine.IsAlive(target) {
+					target = c.engine.Retarget(info.Retarget{
+						Targets:      c.engine.Enemies(),
+						IncludeLimbo: false,
+						Max:          1,
+						Filter:       func(t key.TargetID) bool { return true },
+					})[0]
+				}
 				for i, hitRatio := range followHits {
 					c.engine.Attack(info.Attack{
 						Key:          TalentAttack,
