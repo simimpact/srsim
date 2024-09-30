@@ -20,7 +20,7 @@ const (
 func init() {
 	modifier.Register(Soulsteel, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
-		Stacking:   modifier.Replace,
+		Stacking:   modifier.ReplaceBySource,
 		Duration:   1,
 		Listeners: modifier.Listeners{
 			OnAfterBeingHitAll: OnHitRemove,

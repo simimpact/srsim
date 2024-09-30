@@ -49,6 +49,6 @@ func (c *char) E4Listener(e event.HPChange) {
 func E6Listener(mod *modifier.Instance, target key.TargetID) {
 	cinfo, _ := mod.Engine().CharacterInfo(mod.Owner())
 	if cinfo.Eidolon >= 6 {
-		mod.Engine().AddModifier(mod.Owner(), mod.ToModel())
+		mod.Engine().ExtendModifierDuration(mod.Owner(), mod.Name(), 1)
 	}
 }
