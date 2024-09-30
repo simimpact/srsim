@@ -31,6 +31,7 @@ type RunOpts struct {
 type Simulation struct {
 	cfg  *model.SimConfig
 	eval logic.Eval
+	res  *model.IterationResult
 	seed int64
 
 	// services
@@ -62,22 +63,21 @@ func Run(opts *RunOpts) (*model.IterationResult, error) {
 }
 
 func NewSimulation(cfg *model.SimConfig, eval logic.Eval, seed int64) *Simulation {
-	s := &Simulation{
-		cfg:  cfg,
-		eval: eval,
-		seed: seed,
+	s := new(Simulation)
+	s.cfg = cfg
+	s.eval = eval
+	s.seed = seed
 
-		Event:  &event.System{},
-		Queue:  queue.New(),
-		Random: rand.New(rand.NewSource(seed)),
-		IDGen:  key.NewTargetIDGenerator(),
+	s.Event = &event.System{}
+	s.Queue = queue.New()
+	s.Random = rand.New(rand.NewSource(seed))
+	s.IDGen = key.NewTargetIDGenerator()
 
-		Targets:       make(map[key.TargetID]info.TargetClass, 15),
-		characters:    make([]key.TargetID, 0, 4),
-		enemies:       make([]key.TargetID, 0, 5),
-		neutrals:      make([]key.TargetID, 0, 5),
-		ActionTargets: make(map[key.TargetID]bool, 10),
-	}
+	s.Targets = make(map[key.TargetID]info.TargetClass, 15)
+	s.characters = make([]key.TargetID, 0, 4)
+	s.enemies = make([]key.TargetID, 0, 5)
+	s.neutrals = make([]key.TargetID, 0, 5)
+	s.ActionTargets = make(map[key.TargetID]bool, 10)
 
 	// init services
 

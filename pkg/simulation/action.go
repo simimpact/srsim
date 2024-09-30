@@ -47,6 +47,18 @@ func (sim *Simulation) InsertAbility(i info.Insert) {
 	})
 }
 
+func (sim *Simulation) InsertUlt(ult logic.Action) {
+	sim.Queue.Insert(queue.Task{
+		Source:   ult.Target,
+		Priority: info.CharInsertAction,
+		AbortFlags: []model.BehaviorFlag{
+			model.BehaviorFlag_STAT_CTRL,
+			model.BehaviorFlag_DISABLE_ACTION,
+		},
+		Execute: func() { sim.executeUlt(ult) },
+	})
+}
+
 func (sim *Simulation) ultCheck() error {
 	ults, err := sim.eval.UltCheck()
 	if err != nil {
@@ -54,21 +66,12 @@ func (sim *Simulation) ultCheck() error {
 	}
 	for _, act := range ults {
 		if sim.Attr.FullEnergy(act.Target) {
-			sim.Queue.Insert(queue.Task{
-				Source:   act.Target,
-				Priority: info.CharInsertAction,
-				AbortFlags: []model.BehaviorFlag{
-					model.BehaviorFlag_STAT_CTRL,
-					model.BehaviorFlag_DISABLE_ACTION,
-				},
-				Execute: func() { sim.executeUlt(act) }, // TODO: error handling
-			})
-
-			sim.Attr.ModifyEnergy(info.ModifyAttribute{
+			sim.InsertUlt(act)
+			sim.Attr.SetEnergy(info.ModifyAttribute{
 				Key:    "ult",
 				Target: act.Target,
 				Source: act.Target,
-				Amount: -sim.Attr.MaxEnergy(act.Target),
+				Amount: 0,
 			})
 		}
 	}

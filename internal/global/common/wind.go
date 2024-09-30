@@ -1,6 +1,7 @@
 package common
 
 import (
+	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/key"
@@ -14,6 +15,10 @@ const (
 
 type WindShearState struct {
 	DamagePercentage float64
+}
+
+type BreakWindShearState struct {
+	BreakBaseMulti float64
 }
 
 func init() {
@@ -70,6 +75,11 @@ func windShearPhase1(mod *modifier.Instance) {
 }
 
 func breakWindShearPhase1(mod *modifier.Instance) {
+	state, ok := mod.State().(*BreakWindShearState)
+	if !ok {
+		panic("incorrect state used for wind shear modifier")
+	}
+
 	// perform break wind shear damage
 	mod.Engine().Attack(info.Attack{
 		Key:        BreakWindShear,
@@ -78,7 +88,36 @@ func breakWindShearPhase1(mod *modifier.Instance) {
 		AttackType: model.AttackType_DOT,
 		DamageType: model.DamageType_WIND,
 		BaseDamage: info.DamageMap{
-			model.DamageFormula_BY_BREAK_DAMAGE: mod.Count(),
+			model.DamageFormula_BY_BREAK_DAMAGE: state.BreakBaseMulti * mod.Count(),
+		},
+		AsPureDamage: true,
+		UseSnapshot:  true,
+	})
+}
+
+func (w WindShearState) TriggerDot(mod info.Modifier, ratio float64, engine engine.Engine, target key.TargetID) {
+	engine.Attack(info.Attack{
+		Key:        WindShear,
+		Source:     mod.Source,
+		Targets:    []key.TargetID{target},
+		AttackType: model.AttackType_DOT,
+		DamageType: model.DamageType_WIND,
+		BaseDamage: info.DamageMap{
+			model.DamageFormula_BY_ATK: w.DamagePercentage * mod.Count * ratio,
+		},
+		UseSnapshot: true,
+	})
+}
+
+func (w BreakWindShearState) TriggerDot(mod info.Modifier, ratio float64, engine engine.Engine, target key.TargetID) {
+	engine.Attack(info.Attack{
+		Key:        BreakWindShear,
+		Source:     mod.Source,
+		Targets:    []key.TargetID{target},
+		AttackType: model.AttackType_DOT,
+		DamageType: model.DamageType_WIND,
+		BaseDamage: info.DamageMap{
+			model.DamageFormula_BY_BREAK_DAMAGE: w.BreakBaseMulti * mod.Count * ratio,
 		},
 		AsPureDamage: true,
 		UseSnapshot:  true,
