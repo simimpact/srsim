@@ -65,5 +65,11 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 			},
 		})
 	}
+	if c.info.Eidolon >= 4 {
+		c.engine.AddModifier(id, info.Modifier{
+			Name:   E4ListenerBuff,
+			Source: c.id,
+		})
+	}
 	return c
 }
