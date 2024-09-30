@@ -70,7 +70,44 @@ func execute(opts *ExecutionOpts) error {
 	fmt.Printf("results generated: %s\n", ResultFile(opts.outpath))
 	fmt.Println()
 
+	title("--- results summary ---")
+	printResult(result)
+	fmt.Println()
+
 	return nil
+}
+
+// TODO: this is only a temporary func to pretty print some results; to be replaced with
+// proper ui
+func printResult(result *model.SimResult) {
+	fmt.Printf(
+		"avg total damage dealt: %.2f (min: %.2f, max %.2f, std: %.2f)\n",
+		result.Statistics.GetTotalDamageDealt().GetMean(),
+		result.Statistics.GetTotalDamageDealt().GetMin(),
+		result.Statistics.GetTotalDamageDealt().GetMax(),
+		result.Statistics.GetTotalDamageDealt().GetSD(),
+	)
+	fmt.Printf(
+		"avg total damage taken: %.2f (min: %.2f, max %.2f, std: %.2f)\n",
+		result.Statistics.GetTotalDamageTaken().GetMean(),
+		result.Statistics.GetTotalDamageTaken().GetMin(),
+		result.Statistics.GetTotalDamageTaken().GetMax(),
+		result.Statistics.GetTotalDamageTaken().GetSD(),
+	)
+	fmt.Printf(
+		"avg total AV: %.2f (min: %.2f, max %.2f, std: %.2f)\n",
+		result.Statistics.GetTotalAv().GetMean(),
+		result.Statistics.GetTotalAv().GetMin(),
+		result.Statistics.GetTotalAv().GetMax(),
+		result.Statistics.GetTotalAv().GetSD(),
+	)
+	fmt.Printf(
+		"avg damage dealt per cycle: %.2f (min: %.2f, max %.2f, std: %.2f)\n",
+		result.Statistics.GetTotalDamageDealtPerCycle().GetMean(),
+		result.Statistics.GetTotalDamageDealtPerCycle().GetMin(),
+		result.Statistics.GetTotalDamageDealtPerCycle().GetMax(),
+		result.Statistics.GetTotalDamageDealtPerCycle().GetSD(),
+	)
 }
 
 func executeLogging(opts *ExecutionOpts) error {

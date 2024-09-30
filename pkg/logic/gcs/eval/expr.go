@@ -182,7 +182,15 @@ func (e *Eval) evalBinaryExpr(b *ast.BinaryExpr, env *Env) (Obj, error) {
 
 func (e *Eval) evalMap(m *ast.MapExpr, env *Env) (Obj, error) {
 	r := &mapval{
+		array:  make([]Obj, 0),
 		fields: make(map[string]Obj),
+	}
+	for _, v := range m.Array {
+		obj, err := e.evalExpr(v, env)
+		if err != nil {
+			return nil, err
+		}
+		r.array = append(r.array, obj)
 	}
 	for k, v := range m.Fields {
 		obj, err := e.evalExpr(v, env)

@@ -20,11 +20,7 @@ func Evaluate(engine engine.Engine, i Info) (key.TargetID, error) {
 	eval, ok := evaluators[i.Evaluator]
 	if !ok {
 		// so it's target id
-		target := key.TargetID(i.Evaluator)
-		if !engine.IsValid(target) {
-			return -1, fmt.Errorf("invalid target id: %d", target)
-		}
-		return target, nil
+		return validateTarget(engine, i)
 	}
 
 	targets, err := candidates(engine, i)
@@ -56,4 +52,32 @@ func candidates(engine engine.Engine, i Info) ([]key.TargetID, error) {
 	default:
 		return nil, fmt.Errorf("unknown TargetType: %v", i.TargetType)
 	}
+}
+
+func validateTarget(engine engine.Engine, i Info) (key.TargetID, error) {
+	target := key.TargetID(i.Evaluator)
+	if !engine.IsValid(target) {
+		return -1, fmt.Errorf("invalid target id: %d", target)
+	}
+	if !engine.IsAlive(target) {
+		return -1, fmt.Errorf("target %d is dead", target)
+	}
+
+	switch i.TargetType {
+	case model.TargetType_ALLIES:
+		if !engine.IsCharacter(target) {
+			return -1, fmt.Errorf("target %d is not a character", target)
+		}
+	case model.TargetType_ENEMIES:
+		if !engine.IsEnemy(target) {
+			return -1, fmt.Errorf("target %d is not an enemy", target)
+		}
+	case model.TargetType_SELF:
+		if target != i.Source {
+			return -1, fmt.Errorf("target %d is not the same as the source (%d)", target, i.Source)
+		}
+	default:
+		return -1, fmt.Errorf("unknown TargetType: %v", i.TargetType)
+	}
+	return target, nil
 }

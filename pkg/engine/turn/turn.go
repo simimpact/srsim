@@ -209,6 +209,7 @@ func (mgr *manager) ResetTurn() error {
 	// Unless we are also checking for other SPD changes that happened during the turn, in which case sort.Stable() is better to use, but only after we move the element to the end
 	// so as to ensure that, in the case of a tie, it is properly at the tail end of the tied elements.
 	mgr.orderHandler.turnOrder = append(mgr.orderHandler.turnOrder, mgr.orderHandler.turnOrder[0])
+	mgr.orderHandler.turnOrder = mgr.orderHandler.turnOrder[1:]
 	sort.Stable(mgr.orderHandler)
 
 	mgr.event.TurnReset.Emit(event.TurnReset{
