@@ -10,13 +10,13 @@ import (
 )
 
 const (
-	AbyssFlower       = "luocha-Abyss-flower"
-	Field             = "luocha-field"
-	FieldHeal         = "luocha-field-heal"
-	A4                = "luocha-a4"
-	Insert            = "luocha-insert"
-	InsertMark        = "luocha-insert-mark"
-	DisableInsertMark = "luocha-disable-insert-mark"
+	AbyssFlower             = "luocha-Abyss-flower"
+	Field                   = "luocha-field"
+	FieldHeal               = "luocha-field-heal"
+	A4                      = "luocha-a4"
+	TalentInsert            = "luocha-talent-insert"
+	TalentInsertMark        = "luocha-talent-insert-mark"
+	DisableTalentInsertMark = "luocha-disable-talent-insert-mark"
 )
 
 type state struct {
@@ -34,13 +34,13 @@ func (c *char) init() {
 		},
 	})
 
-	modifier.Register(InsertMark, modifier.Config{
+	modifier.Register(TalentInsertMark, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAdd: doInsert,
+			OnAdd: doTalentInsert,
 		},
 	})
 
-	modifier.Register(DisableInsertMark, modifier.Config{
+	modifier.Register(DisableTalentInsertMark, modifier.Config{
 		Listeners: modifier.Listeners{},
 	})
 
@@ -62,19 +62,19 @@ func (c *char) init() {
 func checkStacks(mod *modifier.Instance) {
 	if mod.Count() >= 2 {
 		mod.Engine().AddModifier(mod.Source(), info.Modifier{
-			Name:   InsertMark,
+			Name:   TalentInsertMark,
 			Source: mod.Owner(),
 		})
 	}
 }
 
-func doInsert(mod *modifier.Instance) {
-	mod.Engine().RemoveModifier(mod.Source(), DisableInsertMark)
+func doTalentInsert(mod *modifier.Instance) {
+	mod.Engine().RemoveModifier(mod.Source(), DisableTalentInsertMark)
 
 	luo := mod.Owner()
 	ci, _ := mod.Engine().CharacterInfo(luo)
 	mod.Engine().InsertAbility(info.Insert{
-		Key:      Insert,
+		Key:      TalentInsert,
 		Priority: info.CharBuffSelf,
 		Execute: func() {
 			mod.Engine().AddModifier(mod.Source(), info.Modifier{
@@ -91,7 +91,7 @@ func doInsert(mod *modifier.Instance) {
 	})
 
 	mod.Engine().RemoveModifier(mod.Source(), AbyssFlower)
-	mod.Engine().RemoveModifier(mod.Source(), InsertMark)
+	mod.Engine().RemoveModifier(mod.Source(), TalentInsertMark)
 }
 
 func addSubMods(mod *modifier.Instance) {
