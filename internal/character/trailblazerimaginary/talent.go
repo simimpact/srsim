@@ -51,7 +51,7 @@ func superBreakListener(mod *modifier.Instance, e event.HitStart) {
 		enemyCount = 5
 	}
 	if sourceInfo.Traces["103"] {
-		damage = damage * (1 + vulner[enemyCount])
+		damage *= (1 + vulner[enemyCount])
 	}
 
 	if mod.Engine().Stance(e.Defender) == 0 {
