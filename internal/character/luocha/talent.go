@@ -41,7 +41,9 @@ func (c *char) init() {
 	})
 
 	modifier.Register(DisableTalentInsertMark, modifier.Config{
-		Listeners: modifier.Listeners{},
+		Listeners: modifier.Listeners{
+			OnAdd: modRemoveSubscribe,
+		},
 	})
 
 	modifier.Register(Field, modifier.Config{
@@ -95,7 +97,7 @@ func doTalentInsert(mod *modifier.Instance) {
 }
 
 func addSubMods(mod *modifier.Instance) {
-	// apply sub modifiers as normal modifiers
+	// Apply sub modifiers as normal modifiers
 	st := mod.State().(state)
 	ci, _ := mod.Engine().CharacterInfo(mod.Owner())
 
@@ -110,7 +112,7 @@ func addSubMods(mod *modifier.Instance) {
 			},
 		})
 
-		// E1
+		// Do E1
 		mod.Engine().AddModifier(trg, info.Modifier{
 			Name:   E1,
 			Source: mod.Owner(),
@@ -118,7 +120,7 @@ func addSubMods(mod *modifier.Instance) {
 		})
 	}
 
-	// E4
+	// Do E4
 	if ci.Eidolon >= 4 {
 		for _, trg := range mod.Engine().Enemies() {
 			mod.Engine().AddModifier(trg, info.Modifier{
@@ -131,7 +133,7 @@ func addSubMods(mod *modifier.Instance) {
 }
 
 func removeSubMods(mod *modifier.Instance) {
-	// remove sub modifiers with a workaround
+	// Remove sub modifiers with a workaround
 	ci, _ := mod.Engine().CharacterInfo(mod.Owner())
 
 	for _, trg := range mod.Engine().Characters() {
@@ -150,7 +152,7 @@ func removeSubMods(mod *modifier.Instance) {
 
 func doFieldHeal(mod *modifier.Instance, e event.AttackEnd) {
 	st := mod.State().(state)
-	// heal self
+	// Heal self
 	mod.Engine().Heal(info.Heal{
 		Key:     FieldHeal,
 		Targets: []key.TargetID{mod.Owner()},
@@ -161,7 +163,7 @@ func doFieldHeal(mod *modifier.Instance, e event.AttackEnd) {
 		HealValue: st.talentFlat,
 	})
 
-	// heal other allies (A4)
+	// Do A4: heal other allies
 	ci, _ := mod.Engine().CharacterInfo(mod.Source())
 	if ci.Traces["102"] {
 		mod.Engine().Heal(info.Heal{
@@ -179,4 +181,22 @@ func doFieldHeal(mod *modifier.Instance, e event.AttackEnd) {
 			HealValue: 93,
 		})
 	}
+}
+
+// Function to mimic OnListenModifierRemove
+func modRemoveSubscribe(mod *modifier.Instance) {
+	mod.Engine().Events().ModifierRemoved.Subscribe(func(event event.ModifierRemoved) {
+		if event.Target == mod.Source() {
+			cond1 := mod.Engine().HasBehaviorFlag(mod.Source(), model.BehaviorFlag_STAT_CTRL)
+			cond2 := mod.Engine().HasBehaviorFlag(mod.Source(), model.BehaviorFlag_DISABLE_ACTION)
+			// Bypass if CC'd or unable to act
+			if cond1 || cond2 {
+				return
+			}
+			mod.Engine().AddModifier(mod.Source(), info.Modifier{
+				Name:   TalentInsertMark,
+				Source: mod.Source(),
+			})
+		}
+	})
 }
