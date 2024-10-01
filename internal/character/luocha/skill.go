@@ -132,7 +132,6 @@ func doInsertSkill(mod *modifier.Instance) {
 				mod.Engine().RemoveModifier(mod.Source(), InsertSkillRetarget)
 				// Do skill as insert
 				ExecuteSkill(mod.Engine(), mod.Source(), trg[0])
-
 			} else {
 				// Remove mark mod on all allies and retarget mod on source
 				for _, marktrg := range mod.Engine().Characters() {
@@ -170,7 +169,7 @@ func (c *char) onInsertFinish(e event.InsertEnd) {
 }
 
 // Helper function for executing Skill through c.Skill and through doInsertSkill
-func ExecuteSkill(engine engine.Engine, source key.TargetID, target key.TargetID) {
+func ExecuteSkill(engine engine.Engine, source, target key.TargetID) {
 	charInfo, _ := engine.CharacterInfo(source)
 
 	// Do A2: Dispel debuff if applicable
