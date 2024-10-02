@@ -57,6 +57,10 @@ func (sim *Simulation) GetModifiers(target key.TargetID, modifier key.Modifier) 
 	return sim.Modifier.GetModifiers(target, modifier)
 }
 
+func (sim *Simulation) GetModifersByBehaviorFlag(target key.TargetID, flag model.BehaviorFlag) []info.Modifier {
+	return sim.Modifier.GetModifiersByBehaviorFlag(target, flag)
+}
+
 func (sim *Simulation) ModifierStackCount(target, source key.TargetID, modifier key.Modifier) float64 {
 	return sim.Modifier.ModifierStackCount(target, source, modifier)
 }
