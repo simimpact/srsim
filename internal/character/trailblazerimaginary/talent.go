@@ -30,7 +30,10 @@ func init() {
 		Duration: 3,
 	})
 	modifier.Register(E4ListenerBuff, modifier.Config{
-		Listeners: modifier.Listeners{OnPropertyChange: E4Listener},
+		Listeners: modifier.Listeners{
+			OnPropertyChange: E4Listener,
+			OnRemove:         E4Remove,
+		},
 	})
 	modifier.Register(E4Buff, modifier.Config{
 		Stacking: modifier.Replace,
@@ -100,14 +103,23 @@ func (c *char) talentListener(e event.StanceBreak) {
 func E4Listener(mod *modifier.Instance) {
 	for _, target := range mod.Engine().Characters() {
 		if target == mod.Owner() {
-			break
+			continue
 		}
 		mod.Engine().AddModifier(target, info.Modifier{
-			Name:   BackupDancer,
+			Name:   E4Buff,
 			Source: mod.Owner(),
 			Stats: info.PropMap{
 				prop.BreakEffect: 0.15 * mod.Engine().Stats(mod.Owner()).BreakEffect(),
 			},
 		})
+	}
+}
+
+func E4Remove(mod *modifier.Instance) {
+	for _, target := range mod.Engine().Characters() {
+		if target == mod.Owner() {
+			continue
+		}
+		mod.Engine().RemoveModifier(target, E4Buff)
 	}
 }
