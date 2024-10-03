@@ -7,7 +7,7 @@ var (
 		model.BehaviorFlag_ENDURANCE: {model.BehaviorFlag_STAT_CTRL},
 	}
 
-	statusTypeImmmunities = map[model.BehaviorFlag][]model.StatusType{
+	statusTypeImmunities = map[model.BehaviorFlag][]model.StatusType{
 		model.BehaviorFlag_RESIST_DEBUFF: {model.StatusType_STATUS_DEBUFF},
 	}
 )

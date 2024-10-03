@@ -77,7 +77,7 @@ func (mgr *Manager) attemptResist(
 	// Check all instances of forced resistance possibilities
 	forceResisted := false
 	if mgr.engine.HasBehaviorFlag(target, model.BehaviorFlag_RESIST_DEBUFF) {
-		for _, statType := range statusTypeImmmunities[model.BehaviorFlag_RESIST_DEBUFF] {
+		for _, statType := range statusTypeImmunities[model.BehaviorFlag_RESIST_DEBUFF] {
 			if modifierCatalog[mod.Name].StatusType == statType {
 				forceResisted = true
 				break
