@@ -10,6 +10,8 @@ const (
 	DanHeng               Character = "danheng"
 	DanHengImbibitorLunae Character = "danhengimbibitorlunae"
 	Gepard                Character = "gepard"
+	Guinaifen             Character = "guinaifen"
+	Herta                 Character = "herta"
 	Himeko                Character = "himeko"
 	Hook                  Character = "hook"
 	Kafka                 Character = "kafka"
@@ -23,6 +25,7 @@ const (
 	Natasha               Character = "natasha"
 	March7th              Character = "march7th"
 	Seele                 Character = "seele"
+	Huohuo                Character = "huohuo"
 )
 
 func (c Character) String() string {
