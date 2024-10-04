@@ -74,6 +74,29 @@ func (mgr *Manager) attemptResist(
 		return -1, false
 	}
 
+	// Check all instances of forced resistance possibilities
+	forceResisted := false
+	if mgr.engine.HasBehaviorFlag(target, model.BehaviorFlag_RESIST_DEBUFF) {
+		for _, statType := range statusTypeImmunities[model.BehaviorFlag_RESIST_DEBUFF] {
+			if modifierCatalog[mod.Name].StatusType == statType {
+				forceResisted = true
+				break
+			}
+		}
+	} else if mgr.engine.HasBehaviorFlag(target, model.BehaviorFlag_ENDURANCE) {
+		for _, flag := range flags {
+			if forceResisted {
+				break
+			}
+			for _, behavior := range behaviorFlagImmunities[model.BehaviorFlag_ENDURANCE] {
+				if flag == behavior {
+					forceResisted = true
+					break
+				}
+			}
+		}
+	}
+
 	srcStats := mgr.engine.Stats(mod.Source)
 	trgtStats := mgr.engine.Stats(target)
 
@@ -82,7 +105,7 @@ func (mgr *Manager) attemptResist(
 	debuffRES := trgtStats.GetDebuffRES(flags...)
 
 	chance := mod.Chance * (1 + effectHitRate) * (1 - effectRES) * (1 - debuffRES)
-	if mgr.engine.Rand().Float64() < chance {
+	if mgr.engine.Rand().Float64() < chance && !forceResisted {
 		return chance, false
 	}
 
