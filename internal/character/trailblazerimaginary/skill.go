@@ -27,15 +27,16 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		},
 		StanceDamage: stanceDamage,
 		EnergyGain:   6,
+		HitIndex:     0,
 	})
 	extra := 4
 	if c.info.Eidolon >= 6 {
 		extra = 6
 	}
-	for i := 0; i < extra; i++ {
-		c.Hit()
+	for i := 1; i <= extra; i++ {
+		c.Hit(i)
 	}
-	if c.info.Eidolon >= 1 && !c.E1Used {
+	if !c.E1Used && c.info.Eidolon >= 1 {
 		c.E1Used = true
 		c.engine.ModifySP(info.ModifySP{
 			Key:    E1,
@@ -46,7 +47,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	state.EndAttack()
 }
 
-func (c *char) Hit() {
+func (c *char) Hit(index int) {
 	allTargetsDead := true
 	for _, t := range c.engine.Enemies() {
 		if c.engine.HPRatio(t) > 0 {
@@ -73,5 +74,6 @@ func (c *char) Hit() {
 		},
 		StanceDamage: 15.0,
 		EnergyGain:   6,
+		HitIndex:     index,
 	})
 }

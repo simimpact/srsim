@@ -21,22 +21,26 @@ const (
 
 func init() {
 	modifier.Register(BackupDancer, modifier.Config{
-		Stacking: modifier.Refresh,
+		Stacking: modifier.Replace,
 		Listeners: modifier.Listeners{
 			OnBeforeHit: superBreakListener,
 		},
+		StatusType: model.StatusType_STATUS_BUFF,
 	})
 	modifier.Register(E2Buff, modifier.Config{
-		Duration: 3,
+		Duration:   3,
+		StatusType: model.StatusType_STATUS_BUFF,
 	})
 	modifier.Register(E4ListenerBuff, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnPropertyChange: E4Listener,
 			OnRemove:         E4Remove,
 		},
+		StatusType: model.StatusType_UNKNOWN_STATUS,
 	})
 	modifier.Register(E4Buff, modifier.Config{
-		Stacking: modifier.Replace,
+		Stacking:   modifier.Replace,
+		StatusType: model.StatusType_STATUS_BUFF,
 	})
 }
 
@@ -53,7 +57,7 @@ func superBreakListener(mod *modifier.Instance, e event.HitStart) {
 	if enemyCount > 5 {
 		enemyCount = 5
 	}
-	if sourceInfo.Traces["103"] {
+	if sourceInfo.Traces["101"] {
 		damage *= (1 + vulner[enemyCount])
 	}
 
@@ -84,13 +88,14 @@ func (c *char) buffListener(e event.TurnStart) {
 }
 
 func (c *char) talentListener(e event.StanceBreak) {
+
 	c.engine.ModifyEnergy(info.ModifyAttribute{
 		Key:    talent,
 		Source: c.id,
 		Target: c.id,
 		Amount: talentEnergy[c.info.TalentLevelIndex()],
 	})
-	if c.info.Traces["101"] {
+	if c.info.Traces["103"] {
 		c.engine.ModifyGaugeNormalized(info.ModifyAttribute{
 			Key:    A2,
 			Target: e.Target,
