@@ -10,8 +10,6 @@ import (
 )
 
 const (
-	BackupDancer   key.Modifier = "trailblazerimaginary-backupdancer"
-	SuperBreak     key.Attack   = "trailblazerimaginary-superbreak"
 	talent         key.Reason   = "trailblazerimaginary-talent"
 	A2             key.Reason   = "trailblazerimaginary-a2"
 	E2Buff         key.Modifier = "trailblazerimaginary-e2buff"
@@ -20,13 +18,6 @@ const (
 )
 
 func init() {
-	modifier.Register(BackupDancer, modifier.Config{
-		Stacking: modifier.Replace,
-		Listeners: modifier.Listeners{
-			OnBeforeHit: superBreakListener,
-		},
-		StatusType: model.StatusType_STATUS_BUFF,
-	})
 	modifier.Register(E2Buff, modifier.Config{
 		Duration:   3,
 		StatusType: model.StatusType_STATUS_BUFF,
@@ -42,37 +33,6 @@ func init() {
 		Stacking:   modifier.Replace,
 		StatusType: model.StatusType_STATUS_BUFF,
 	})
-}
-
-var vulner = []float64{0, 0.6, 0.5, 0.4, 0.3, 0.2}
-
-func superBreakListener(mod *modifier.Instance, e event.HitStart) {
-	sourceInfo, _ := mod.Engine().CharacterInfo(mod.Source())
-	attackerInfo, _ := mod.Engine().CharacterInfo(e.Attacker)
-	attackerStats := mod.Engine().Stats(e.Attacker)
-
-	damage := baseBreakDamage[attackerInfo.Level] * (1 + attackerStats.BreakEffect()) * e.Hit.StanceDamage
-
-	enemyCount := len(mod.Engine().Enemies())
-	if enemyCount > 5 {
-		enemyCount = 5
-	}
-	if sourceInfo.Traces["101"] {
-		damage *= (1 + vulner[enemyCount])
-	}
-
-	if mod.Engine().Stance(e.Defender) == 0 {
-		mod.Engine().Attack(info.Attack{
-			Key:          SuperBreak,
-			Source:       e.Attacker,
-			Targets:      []key.TargetID{e.Defender},
-			DamageType:   e.Hit.DamageType,
-			AttackType:   model.AttackType_ELEMENT_DAMAGE,
-			BaseDamage:   info.DamageMap{},
-			DamageValue:  damage,
-			AsPureDamage: true,
-		})
-	}
 }
 
 func (c *char) buffListener(e event.TurnStart) {
