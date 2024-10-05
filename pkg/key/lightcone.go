@@ -46,6 +46,7 @@ const (
 	WeWillMeetAgain                 LightCone = "we_will_meet_again"
 	Void                            LightCone = "void"
 	PatienceIsAllYouNeed            LightCone = "patience_is_all_you_need"
+	AlongthePassingShore            LightCone = "along_the_passing_shore"
 )
 
 // Erudition
