@@ -103,10 +103,8 @@ func applyVuln(mod *modifier.Instance, e event.HitStart) {
 	// Logic to apply the debuff on the first hit, ensuring that this hit also benefits from the vuln effect
 	if !mod.Engine().HasModifierFromSource(e.Defender, mod.Owner(), AllIn) {
 		st.applieddynamic = false
-	} else {
-		if !st.applieddynamic {
-			e.Hit.Defender.AddProperty(AllIn, prop.AllDamageTaken, st.vuln)
-			st.applieddynamic = true
-		}
+	} else if !st.applieddynamic {
+		e.Hit.Defender.AddProperty(AllIn, prop.AllDamageTaken, st.vuln)
+		st.applieddynamic = true
 	}
 }
