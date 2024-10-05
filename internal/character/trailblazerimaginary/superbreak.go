@@ -50,8 +50,7 @@ func startStanceDamageRecord(mod *modifier.Instance, e event.AttackStart) {
 
 func stanceDamageListener(mod *modifier.Instance, e event.HitStart) {
 	if mod.Engine().Stance(e.Defender) == 0 {
-		data := mod.State().(recorderData)
-		data.stanceDamage += e.Hit.StanceDamage
+		mod.State().(*recorderData).stanceDamage += e.Hit.StanceDamage
 	}
 }
 
