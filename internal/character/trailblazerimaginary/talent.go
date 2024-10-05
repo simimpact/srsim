@@ -48,7 +48,6 @@ func (c *char) buffListener(e event.TurnStart) {
 }
 
 func (c *char) talentListener(e event.StanceBreak) {
-
 	c.engine.ModifyEnergy(info.ModifyAttribute{
 		Key:    talent,
 		Source: c.id,
