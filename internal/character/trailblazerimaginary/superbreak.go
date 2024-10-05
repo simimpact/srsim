@@ -58,7 +58,7 @@ func stanceDamageListener(mod *modifier.Instance, e event.HitStart) {
 	}
 }
 
-func getModifierFromSource(engine engine.Engine, target key.TargetID, source key.TargetID, modifier key.Modifier) []info.Modifier {
+func getModifierFromSource(engine engine.Engine, target, source key.TargetID, modifier key.Modifier) []info.Modifier {
 	modifierList := engine.GetModifiers(target, modifier)
 	resList := []info.Modifier{}
 	for _, mod := range modifierList {
