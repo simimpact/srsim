@@ -61,6 +61,11 @@ type Modifier struct {
 
 	// Any additional weaknesses that are applied to the target by this modifier.
 	Weakness WeaknessMap `exhaustruct:"optional" json:"weakness"`
+
+	// CanDispel indicates whether the modifier can be removed through dispel effects.
+	// If true, the modifier can be targeted and removed by dispel abilities; if false (default),
+	// it is immune to dispel.
+	CanDispel bool `exhaustruct:"optional" json:"can_dispel"`
 }
 
 type Dispel struct {
