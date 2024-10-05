@@ -1,0 +1,3 @@
+package ruanmei
+
+func init() {}
