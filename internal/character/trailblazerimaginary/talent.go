@@ -10,11 +10,12 @@ import (
 )
 
 const (
-	talent         key.Reason   = "trailblazerimaginary-talent"
-	A2             key.Reason   = "trailblazerimaginary-a2"
-	E2Buff         key.Modifier = "trailblazerimaginary-e2buff"
-	E4ListenerBuff key.Modifier = "trailblazerimaginary-e4listener"
-	E4Buff         key.Modifier = "trailblazerimaginary-e4buff"
+	talent                key.Reason   = "trailblazerimaginary-talent"
+	A2                    key.Reason   = "trailblazerimaginary-a2"
+	E2Buff                key.Modifier = "trailblazerimaginary-e2buff"
+	E4ListenerBuff        key.Modifier = "trailblazerimaginary-e4listener"
+	E4Buff                key.Modifier = "trailblazerimaginary-e4buff"
+	BackupDancerCountdown key.Modifier = "trailblazerimaginary-backupdancercountdown"
 )
 
 func init() {
@@ -33,17 +34,34 @@ func init() {
 		Stacking:   modifier.Replace,
 		StatusType: model.StatusType_STATUS_BUFF,
 	})
+	modifier.Register(BackupDancerCountdown, modifier.Config{
+		Stacking:   modifier.Refresh,
+		StatusType: model.StatusType_UNKNOWN_STATUS,
+		TickMoment: modifier.ModifierPhase1End,
+		Duration:   3,
+		Listeners: modifier.Listeners{
+			OnAdd:    addBackupDancer,
+			OnRemove: removeBackupDancer,
+		},
+	})
 }
 
-func (c *char) buffListener(e event.TurnStart) {
-	if e.Active != c.id {
-		return
+func addBackupDancer(mod *modifier.Instance) {
+	sourceInfo, _ := mod.Engine().CharacterInfo(mod.Source())
+	for _, target := range mod.Engine().Characters() {
+		mod.Engine().AddModifier(target, info.Modifier{
+			Name:   BackupDancer,
+			Source: mod.Source(),
+			Stats: info.PropMap{
+				prop.BreakEffect: ultBreakEffect[sourceInfo.UltLevelIndex()],
+			},
+		})
 	}
-	c.ultLifeTime--
-	if c.ultLifeTime <= 0 {
-		for _, target := range c.engine.Characters() {
-			c.engine.RemoveModifier(target, BackupDancer)
-		}
+}
+
+func removeBackupDancer(mod *modifier.Instance) {
+	for _, target := range mod.Engine().Characters() {
+		mod.Engine().RemoveModifierFromSource(target, mod.Source(), BackupDancer)
 	}
 }
 

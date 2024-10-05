@@ -39,22 +39,19 @@ func init() {
 }
 
 type char struct {
-	engine      engine.Engine
-	id          key.TargetID
-	info        info.Character
-	ultLifeTime int
-	E1Used      bool
+	engine engine.Engine
+	id     key.TargetID
+	info   info.Character
+	E1Used bool
 }
 
 func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character) info.CharInstance {
 	c := &char{
-		engine:      engine,
-		id:          id,
-		info:        charInfo,
-		ultLifeTime: 0,
-		E1Used:      false,
+		engine: engine,
+		id:     id,
+		info:   charInfo,
+		E1Used: false,
 	}
-	engine.Events().TurnStart.Subscribe(c.buffListener)
 	engine.Events().StanceBreak.Subscribe(c.talentListener)
 	if c.info.Eidolon >= 2 {
 		c.engine.AddModifier(id, info.Modifier{
