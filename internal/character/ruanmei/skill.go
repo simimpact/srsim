@@ -42,6 +42,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 
 // Overtone is summarized from 4 "sub" mods with 2 being purely for display to only 2 "sub" mods
 func addOvertone(mod *modifier.Instance) {
+	// Calculate how much DMG Bonus should be given
 	rm, _ := mod.Engine().CharacterInfo(mod.Owner())
 	dmgAmt := skillDmg[rm.SkillLevelIndex()]
 	if rm.Traces["103"] {
@@ -71,3 +72,5 @@ func removeOvertone(mod *modifier.Instance) {
 		mod.Engine().RemoveModifier(trg, OvertoneBreakEfficiency)
 	}
 }
+
+// Technique doing Insert with autocast Skill (without consuming SP)

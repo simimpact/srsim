@@ -5,6 +5,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
+	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
 
@@ -12,54 +13,26 @@ const (
 	Talent              = "ruanmei-talent"
 	TalentSpdBuff       = "ruanmei-talent-spd-buff"
 	TalentBreakListener = "ruanmei-talent-break-listener"
-	UltResPen           = "ruanmei-ult-res-pen"
-	A2                  = "ruanmei-a2"
-	E2                  = "ruanmei-e2"
-	E4                  = "ruanmei-e4"
-	E4Listener          = "ruanmei-e4-listener"
+	TalentBreak         = "ruanmei-talent-break-damage"
 )
 
 func init() {
 	modifier.Register(Talent, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAdd:    addSpdAndA2,
-			OnRemove: removeUltResPen,
+			OnAdd:         addSpdAndA2,
+			OnRemove:      removeUltResPen,
+			OnBeforeDying: removeTalentA2E2,
 		},
+	})
+	modifier.Register(TalentSpdBuff, modifier.Config{
+		Stacking:      modifier.Refresh,
+		StatusType:    model.StatusType_STATUS_BUFF,
+		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_UP},
 	})
 	modifier.Register(TalentBreakListener, modifier.Config{
 		Stacking: modifier.ReplaceBySource,
 		Listeners: modifier.Listeners{
 			OnBeingBreak: doTalentBreakDamage,
-		},
-	})
-	modifier.Register(UltResPen, modifier.Config{
-		Stacking: modifier.Refresh,
-	})
-	modifier.Register(A2, modifier.Config{
-		StatusType: model.StatusType_STATUS_BUFF,
-	})
-	modifier.Register(E2, modifier.Config{
-		StatusType: model.StatusType_STATUS_BUFF,
-		Listeners: modifier.Listeners{
-			OnBeforeHitAll: applyE2,
-		},
-	})
-	// E4 is summarized to 1 buff mod
-	modifier.Register(E4, modifier.Config{
-		Stacking:   modifier.ReplaceBySource,
-		StatusType: model.StatusType_STATUS_BUFF,
-		// CanDispel: true,
-	})
-	// Causes known bug of the breaking hit not benefitting from E4 as this should apply with OnBeforeBeingBreak
-	modifier.Register(E4Listener, modifier.Config{
-		Listeners: modifier.Listeners{
-			OnBeingBreak: func(mod *modifier.Instance) {
-				mod.Engine().AddModifier(mod.Source(), info.Modifier{
-					Name:     E4,
-					Source:   mod.Source(),
-					Duration: 3,
-				})
-			},
 		},
 	})
 }
@@ -100,13 +73,13 @@ func (c *char) initTalent() {
 		},
 	)
 
-	// Add mods to upcoming enemies
+	// Add mods to upcoming enemies (similar inaccuracy as above)
 	c.engine.Events().EnemiesAdded.Subscribe(
 		func(event event.EnemiesAdded) {
 			for _, trg := range c.engine.Enemies() {
 				if c.info.Eidolon >= 4 {
 					c.engine.AddModifier(trg, info.Modifier{
-						Name:   E4,
+						Name:   E4Listener,
 						Source: c.id,
 					})
 				}
@@ -118,7 +91,40 @@ func (c *char) initTalent() {
 		},
 	)
 
-	// Remove TalentBreakListener when Ruan Mei dies
+	// Remove TalentBreakListener from all enemies when Ruan Mei dies
+	c.engine.Events().TargetDeath.Subscribe(func(event event.TargetDeath) {
+		if event.Target == c.id {
+			for _, trg := range c.engine.Enemies() {
+				c.engine.RemoveModifierFromSource(trg, c.id, TalentBreakListener)
+			}
+		}
+	})
+
+	// Add mods on BattleStart
+	c.engine.Events().BattleStart.Subscribe(func(event event.BattleStart) {
+		if c.info.Eidolon >= 2 {
+			for _, trg := range c.engine.Characters() {
+				c.engine.AddModifier(trg, info.Modifier{
+					Name:   E2,
+					Source: c.id,
+				})
+			}
+		}
+		if c.info.Eidolon >= 4 {
+			for _, trg := range c.engine.Enemies() {
+				c.engine.AddModifier(trg, info.Modifier{
+					Name:   E4Listener,
+					Source: c.id,
+				})
+			}
+		}
+		if c.info.Traces["103"] {
+			c.engine.AddModifier(c.id, info.Modifier{
+				Name:   A6,
+				Source: c.id,
+			})
+		}
+	})
 }
 
 // Add mods to existing allies
@@ -141,14 +147,35 @@ func addSpdAndA2(mod *modifier.Instance) {
 
 func removeUltResPen(mod *modifier.Instance) {
 	for _, trg := range mod.Engine().Characters() {
-		mod.Engine().RemoveModifier(trg, UltResPen)
+		mod.Engine().RemoveModifier(trg, UltResPenAlly)
 	}
 }
 
-func doTalentBreakDamage(mod *modifier.Instance) {
-
+func removeTalentA2E2(mod *modifier.Instance) {
+	for _, trg := range mod.Engine().Characters() {
+		mod.Engine().RemoveModifier(trg, TalentSpdBuff)
+		mod.Engine().RemoveModifier(trg, A2)
+		mod.Engine().RemoveModifier(trg, E2)
+	}
 }
 
-func applyE2(mod *modifier.Instance, e event.HitStart) {
+// Applies Talent's Break Damage without adding another mod
+func doTalentBreakDamage(mod *modifier.Instance) {
+	// Team member check skipped as it is deemed unnecessary
 
+	rm, _ := mod.Engine().CharacterInfo(mod.Source())
+	mult := talentBreakDamage[rm.TalentLevelIndex()]
+	if rm.Eidolon >= 6 {
+		mult += 2
+	}
+	maxStanceMult := ((mod.Engine().MaxStance(mod.Owner()) / 30) + 2) / 4
+	mod.Engine().Attack(info.Attack{
+		Key:          TalentBreak,
+		Targets:      []key.TargetID{mod.Owner()},
+		Source:       mod.Source(),
+		DamageType:   model.DamageType_ICE,
+		AttackType:   model.AttackType_ELEMENT_DAMAGE,
+		BaseDamage:   info.DamageMap{model.DamageFormula_BY_BREAK_DAMAGE: mult * maxStanceMult},
+		AsPureDamage: true,
+	})
 }
