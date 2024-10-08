@@ -12,9 +12,8 @@ import (
 )
 
 const (
-	psim        = "past-self-in-mirror"
-	psimDmgBuff = "past-self-in-mirror-dmg-buff"
-	psimEnergy  = "past-self-in-mirror-energy"
+	psim       = "past-self-in-mirror"
+	psimEnergy = "past-self-in-mirror-energy"
 )
 
 // Increases the wearer's Break Effect by 60%.
@@ -28,7 +27,9 @@ func init() {
 		Path:          model.Path_HARMONY,
 		Promotions:    promotions,
 	})
-	modifier.Register(psimDmgBuff, modifier.Config{
+	modifier.Register(psim, modifier.Config{
+		Stacking:   modifier.ReplaceBySource,
+		StatusType: model.StatusType_STATUS_BUFF,
 		Listeners: modifier.Listeners{
 			OnAfterAction: afterUlt,
 		},
@@ -76,7 +77,7 @@ func afterUlt(mod *modifier.Instance, e event.ActionEnd) {
 	amt := 0.2 + 0.04*mod.State().(float64)
 	for _, char := range mod.Engine().Characters() {
 		mod.Engine().AddModifier(char, info.Modifier{
-			Name:     psimDmgBuff,
+			Name:     psim,
 			Source:   mod.Owner(),
 			Stats:    info.PropMap{prop.AllDamagePercent: amt},
 			Duration: 3,
