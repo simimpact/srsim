@@ -11,6 +11,7 @@ import (
 type mockTurnManager struct {
 	t            *testing.T
 	turnSequence []key.TargetID
+	activeTarget key.TargetID
 }
 
 type TurnCommand struct {
@@ -22,6 +23,7 @@ func newMockManager(t *testing.T) *mockTurnManager {
 	return &mockTurnManager{
 		t:            t,
 		turnSequence: nil,
+		activeTarget: 0,
 	}
 }
 
@@ -51,6 +53,7 @@ func (m *mockTurnManager) StartTurn() (key.TargetID, float64, []event.TurnStatus
 		return 1, 100000, nil, nil
 	}
 	tgt := m.turnSequence[0]
+	m.activeTarget = tgt
 	m.turnSequence = m.turnSequence[1:]
 	return tgt, 0, nil, nil
 }
@@ -61,6 +64,10 @@ func (m *mockTurnManager) TurnOrder() []key.TargetID {
 
 func (m *mockTurnManager) ResetTurn() error {
 	return nil
+}
+
+func (m *mockTurnManager) GetActiveTarget() key.TargetID {
+	return m.activeTarget
 }
 
 func (m *mockTurnManager) SetGauge(data info.ModifyAttribute) error {

@@ -283,6 +283,20 @@ func (mr *MockEngineMockRecorder) ExtendModifierDuration(arg0, arg1, arg2 interf
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExtendModifierDuration", reflect.TypeOf((*MockEngine)(nil).ExtendModifierDuration), arg0, arg1, arg2)
 }
 
+// GetActiveTarget mocks base method.
+func (m *MockEngine) GetActiveTarget() key.TargetID {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetActiveTarget")
+	ret0, _ := ret[0].(key.TargetID)
+	return ret0
+}
+
+// GetActiveTarget indicates an expected call of GetActiveTarget.
+func (mr *MockEngineMockRecorder) GetActiveTarget() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetActiveTarget", reflect.TypeOf((*MockEngine)(nil).GetActiveTarget))
+}
+
 // GetModifersByBehaviorFlag mocks base method.
 func (m *MockEngine) GetModifersByBehaviorFlag(arg0 key.TargetID, arg1 model.BehaviorFlag) []info.Modifier {
 	m.ctrl.T.Helper()
@@ -828,4 +842,18 @@ func (m *MockEngine) Stats(arg0 key.TargetID) *info.Stats {
 func (mr *MockEngineMockRecorder) Stats(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Stats", reflect.TypeOf((*MockEngine)(nil).Stats), arg0)
+}
+
+// TurnOrder mocks base method.
+func (m *MockEngine) TurnOrder() []key.TargetID {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "TurnOrder")
+	ret0, _ := ret[0].([]key.TargetID)
+	return ret0
+}
+
+// TurnOrder indicates an expected call of TurnOrder.
+func (mr *MockEngineMockRecorder) TurnOrder() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TurnOrder", reflect.TypeOf((*MockEngine)(nil).TurnOrder))
 }
