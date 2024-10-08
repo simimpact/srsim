@@ -12,9 +12,9 @@ import (
 )
 
 const (
-	psim            = "past-self-in-mirror"
-	psimDmgBuff     = "past-self-in-mirror-dmg-buff"
-	psimEnergyRegen = "past-self-in-mirror-energy"
+	psim        = "past-self-in-mirror"
+	psimDmgBuff = "past-self-in-mirror-dmg-buff"
+	psimEnergy  = "past-self-in-mirror-energy"
 )
 
 // Increases the wearer's Break Effect by 60%.
@@ -30,7 +30,7 @@ func init() {
 	})
 	modifier.Register(psimDmgBuff, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnAfterAction: dmgBuffOnUlt,
+			OnAfterAction: afterUlt,
 		},
 	})
 }
@@ -44,9 +44,21 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		Stats:  info.PropMap{prop.BreakEffect: amt},
 		State:  float64(lc.Imposition),
 	})
+
+	energyAmt := 8.5 + 2.5*float64(lc.Imposition)
+	engine.Events().BattleStart.Subscribe(func(event event.BattleStart) {
+		for _, char := range engine.Characters() {
+			engine.ModifyEnergy(info.ModifyAttribute{
+				Key:    psimEnergy,
+				Target: char,
+				Source: owner,
+				Amount: energyAmt,
+			})
+		}
+	})
 }
 
-func dmgBuffOnUlt(mod *modifier.Instance, e event.ActionEnd) {
+func afterUlt(mod *modifier.Instance, e event.ActionEnd) {
 	if e.AttackType != model.AttackType_ULT {
 		return
 	}
