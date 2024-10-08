@@ -45,7 +45,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		State:  float64(lc.Imposition),
 	})
 
-	energyAmt := 8.5 + 2.5*float64(lc.Imposition)
+	energyAmt := 7.5 + 2.5*float64(lc.Imposition)
 	engine.Events().BattleStart.Subscribe(func(event event.BattleStart) {
 		for _, char := range engine.Characters() {
 			engine.ModifyEnergy(info.ModifyAttribute{
