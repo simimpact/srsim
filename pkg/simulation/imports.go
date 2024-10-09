@@ -60,6 +60,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/erudition/passkey"
 	_ "github.com/simimpact/srsim/internal/lightcone/erudition/sagacity"
 	_ "github.com/simimpact/srsim/internal/lightcone/erudition/thebirthoftheself"
+	_ "github.com/simimpact/srsim/internal/lightcone/erudition/thedaythecosmosfell"
 	_ "github.com/simimpact/srsim/internal/lightcone/erudition/theseriousnessofbreakfast"
 	_ "github.com/simimpact/srsim/internal/lightcone/erudition/todayisanotherpeacefulday"
 	_ "github.com/simimpact/srsim/internal/lightcone/harmony/carvethemoonweavetheclouds"
