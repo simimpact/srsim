@@ -4,12 +4,14 @@ type Character string
 
 const (
 	Arlan                 Character = "arlan"
+	Asta                  Character = "asta"
 	Blade                 Character = "blade"
 	Bronya                Character = "bronya"
 	Clara                 Character = "clara"
 	DanHeng               Character = "danheng"
 	DanHengImbibitorLunae Character = "danhengimbibitorlunae"
 	Gepard                Character = "gepard"
+	Jingliu               Character = "jingliu"
 	Guinaifen             Character = "guinaifen"
 	Herta                 Character = "herta"
 	Himeko                Character = "himeko"
