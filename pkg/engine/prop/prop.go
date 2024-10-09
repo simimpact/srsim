@@ -82,6 +82,7 @@ const (
 	WindDamageRES
 
 	// Elemental Penetrates
+	AllDamagePEN
 	PhysicalPEN
 	FirePEN
 	IcePEN

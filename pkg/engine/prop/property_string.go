@@ -50,49 +50,50 @@ func _() {
 	_ = x[QuantumDamageRES-39]
 	_ = x[ImaginaryDamageRES-40]
 	_ = x[WindDamageRES-41]
-	_ = x[PhysicalPEN-42]
-	_ = x[FirePEN-43]
-	_ = x[IcePEN-44]
-	_ = x[ThunderPEN-45]
-	_ = x[QuantumPEN-46]
-	_ = x[ImaginaryPEN-47]
-	_ = x[WindPEN-48]
-	_ = x[AllDamageTaken-49]
-	_ = x[PhysicalDamageTaken-50]
-	_ = x[FireDamageTaken-51]
-	_ = x[IceDamageTaken-52]
-	_ = x[ThunderDamageTaken-53]
-	_ = x[QuantumDamageTaken-54]
-	_ = x[ImaginaryDamageTaken-55]
-	_ = x[WindDamageTaken-56]
-	_ = x[AllDamagePercent-57]
-	_ = x[DOTDamagePercent-58]
-	_ = x[FireDamagePercent-59]
-	_ = x[IceDamagePercent-60]
-	_ = x[ThunderDamagePercent-61]
-	_ = x[QuantumDamagePercent-62]
-	_ = x[ImaginaryDamagePercent-63]
-	_ = x[WindDamagePercent-64]
-	_ = x[PhysicalDamagePercent-65]
-	_ = x[AllStanceDMGPercent-66]
+	_ = x[AllDamagePEN-42]
+	_ = x[PhysicalPEN-43]
+	_ = x[FirePEN-44]
+	_ = x[IcePEN-45]
+	_ = x[ThunderPEN-46]
+	_ = x[QuantumPEN-47]
+	_ = x[ImaginaryPEN-48]
+	_ = x[WindPEN-49]
+	_ = x[AllDamageTaken-50]
+	_ = x[PhysicalDamageTaken-51]
+	_ = x[FireDamageTaken-52]
+	_ = x[IceDamageTaken-53]
+	_ = x[ThunderDamageTaken-54]
+	_ = x[QuantumDamageTaken-55]
+	_ = x[ImaginaryDamageTaken-56]
+	_ = x[WindDamageTaken-57]
+	_ = x[AllDamagePercent-58]
+	_ = x[DOTDamagePercent-59]
+	_ = x[FireDamagePercent-60]
+	_ = x[IceDamagePercent-61]
+	_ = x[ThunderDamagePercent-62]
+	_ = x[QuantumDamagePercent-63]
+	_ = x[ImaginaryDamagePercent-64]
+	_ = x[WindDamagePercent-65]
+	_ = x[PhysicalDamagePercent-66]
+	_ = x[AllStanceDMGPercent-67]
 	_ = x[AllDamageReduce-90]
 	_ = x[Fatigue-91]
 	_ = x[MinFatigue-92]
 }
 
 const (
-	_Property_name_0 = "InvalidHPBaseHPPercentHPFlatHPConvertATKBaseATKPercentATKFlatATKConvertDEFBaseDEFPercentDEFFlatDEFConvertSPDBaseSPDPercentSPDFlatSPDConvertCritChanceCritDMGEnergyRegenEnergyRegenConvertEffectHitRateEffectHitRateConvertEffectRESEffectRESConvertHealBoostHealBoostConvertHealTakenShieldBoostShieldTakenAggroBaseAggroPercentAggroFlatBreakEffectAllDamageRESPhysicalDamageRESFireDamageRESIceDamageRESThunderDamageRESQuantumDamageRESImaginaryDamageRESWindDamageRESPhysicalPENFirePENIcePENThunderPENQuantumPENImaginaryPENWindPENAllDamageTakenPhysicalDamageTakenFireDamageTakenIceDamageTakenThunderDamageTakenQuantumDamageTakenImaginaryDamageTakenWindDamageTakenAllDamagePercentDOTDamagePercentFireDamagePercentIceDamagePercentThunderDamagePercentQuantumDamagePercentImaginaryDamagePercentWindDamagePercentPhysicalDamagePercentAllStanceDMGPercent"
+	_Property_name_0 = "InvalidHPBaseHPPercentHPFlatHPConvertATKBaseATKPercentATKFlatATKConvertDEFBaseDEFPercentDEFFlatDEFConvertSPDBaseSPDPercentSPDFlatSPDConvertCritChanceCritDMGEnergyRegenEnergyRegenConvertEffectHitRateEffectHitRateConvertEffectRESEffectRESConvertHealBoostHealBoostConvertHealTakenShieldBoostShieldTakenAggroBaseAggroPercentAggroFlatBreakEffectAllDamageRESPhysicalDamageRESFireDamageRESIceDamageRESThunderDamageRESQuantumDamageRESImaginaryDamageRESWindDamageRESAllDamagePENPhysicalPENFirePENIcePENThunderPENQuantumPENImaginaryPENWindPENAllDamageTakenPhysicalDamageTakenFireDamageTakenIceDamageTakenThunderDamageTakenQuantumDamageTakenImaginaryDamageTakenWindDamageTakenAllDamagePercentDOTDamagePercentFireDamagePercentIceDamagePercentThunderDamagePercentQuantumDamagePercentImaginaryDamagePercentWindDamagePercentPhysicalDamagePercentAllStanceDMGPercent"
 	_Property_name_1 = "AllDamageReduceFatigueMinFatigue"
 )
 
 var (
-	_Property_index_0 = [...]uint16{0, 7, 13, 22, 28, 37, 44, 54, 61, 71, 78, 88, 95, 105, 112, 122, 129, 139, 149, 156, 167, 185, 198, 218, 227, 243, 252, 268, 277, 288, 299, 308, 320, 329, 340, 352, 369, 382, 394, 410, 426, 444, 457, 468, 475, 481, 491, 501, 513, 520, 534, 553, 568, 582, 600, 618, 638, 653, 669, 685, 702, 718, 738, 758, 780, 797, 818, 837}
+	_Property_index_0 = [...]uint16{0, 7, 13, 22, 28, 37, 44, 54, 61, 71, 78, 88, 95, 105, 112, 122, 129, 139, 149, 156, 167, 185, 198, 218, 227, 243, 252, 268, 277, 288, 299, 308, 320, 329, 340, 352, 369, 382, 394, 410, 426, 444, 457, 469, 480, 487, 493, 503, 513, 525, 532, 546, 565, 580, 594, 612, 630, 650, 665, 681, 697, 714, 730, 750, 770, 792, 809, 830, 849}
 	_Property_index_1 = [...]uint8{0, 15, 22, 32}
 )
 
 func (i Property) String() string {
 	switch {
-	case 0 <= i && i <= 66:
+	case 0 <= i && i <= 67:
 		return _Property_name_0[_Property_index_0[i]:_Property_index_0[i+1]]
 	case 90 <= i && i <= 92:
 		i -= 90
