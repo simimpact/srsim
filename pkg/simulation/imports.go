@@ -39,6 +39,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/abundance/sharedfeeling"
 	_ "github.com/simimpact/srsim/internal/lightcone/abundance/timewaitsfornoone"
 	_ "github.com/simimpact/srsim/internal/lightcone/abundance/warmthshortenscoldnights"
+	_ "github.com/simimpact/srsim/internal/lightcone/abundance/whatisreal"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/asecretvow"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/collapsingsky"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/mutualdemise"
