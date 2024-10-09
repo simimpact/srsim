@@ -4,17 +4,18 @@ type LightCone string
 
 // Destruction
 const (
-	TheMolesWelcomeYou     LightCone = "the_moles_welcome_you"
-	NowheretoRun           LightCone = "nowhere_to_run"
-	MutualDemise           LightCone = "mutual_demise"
-	ASecretVow             LightCone = "a_secret_vow"
-	ShatteredHome          LightCone = "shattered_home"
-	SomethingIrreplaceable LightCone = "something_irreplaceable"
-	UndertheBlueSky        LightCone = "under_the_blue_sky"
-	CollapsingSky          LightCone = "collapsing_sky"
-	OntheFallofanAeon      LightCone = "on_the_fall_of_an_aeon"
-	WoofWalkTime           LightCone = "woof_walk_time"
-	TheUnreachableSide     LightCone = "the_unreachable_side"
+	TheMolesWelcomeYou          LightCone = "the_moles_welcome_you"
+	NowheretoRun                LightCone = "nowhere_to_run"
+	MutualDemise                LightCone = "mutual_demise"
+	ASecretVow                  LightCone = "a_secret_vow"
+	ShatteredHome               LightCone = "shattered_home"
+	SomethingIrreplaceable      LightCone = "something_irreplaceable"
+	UndertheBlueSky             LightCone = "under_the_blue_sky"
+	CollapsingSky               LightCone = "collapsing_sky"
+	OntheFallofanAeon           LightCone = "on_the_fall_of_an_aeon"
+	WoofWalkTime                LightCone = "woof_walk_time"
+	TheUnreachableSide          LightCone = "the_unreachable_side"
+	WhereaboutsShouldDreamsRest LightCone = "whereabouts_should_dreams_rest"
 )
 
 // Hunt
