@@ -126,6 +126,7 @@ func dealDotDmg(mod *modifier.Instance) {
 			},
 			DamageValue:  bleedDamage,
 			AsPureDamage: true,
+			UseSnapshot:  true,
 		},
 	)
 }
