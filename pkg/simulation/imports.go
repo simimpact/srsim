@@ -49,6 +49,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/themoleswelcomeyou"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/theunreachableside"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/underthebluesky"
+	_ "github.com/simimpact/srsim/internal/lightcone/destruction/whereaboutsshoulddreamsrest"
 	_ "github.com/simimpact/srsim/internal/lightcone/destruction/woofwalktime"
 	_ "github.com/simimpact/srsim/internal/lightcone/erudition/aninstantbeforeagaze"
 	_ "github.com/simimpact/srsim/internal/lightcone/erudition/beforedawn"
