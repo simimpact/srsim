@@ -38,6 +38,8 @@ func (c *char) enhancedBasic(target key.TargetID, state info.ActionState) {
 			Source:     c.id,
 			AttackType: model.AttackType_NORMAL,
 			DamageType: model.DamageType_PHYSICAL,
+			HitIndex:   i,
+			HitRatio:   hitIndices[i],
 			BaseDamage: info.DamageMap{
 				model.DamageFormula_BY_ATK: enhancedBasicDirectPunch[c.info.AttackLevelIndex()],
 			},
