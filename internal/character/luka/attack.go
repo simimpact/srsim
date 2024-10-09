@@ -41,7 +41,7 @@ func (c *char) enhancedBasic(target key.TargetID, state info.ActionState) {
 			HitIndex:   i,
 			HitRatio:   hitIndices[i],
 			BaseDamage: info.DamageMap{
-				model.DamageFormula_BY_ATK: enhancedBasicDirectPunch[c.info.AttackLevelIndex()],
+				model.DamageFormula_BY_ATK: enhancedBasicDirectPunch[c.info.AttackLevelIndex()] / hitIndices[i],
 			},
 			// The exact calc they use in the dm
 			StanceDamage: 60 * 0.5,
@@ -54,8 +54,9 @@ func (c *char) enhancedBasic(target key.TargetID, state info.ActionState) {
 				Source:     c.id,
 				AttackType: model.AttackType_NORMAL,
 				DamageType: model.DamageType_PHYSICAL,
+				HitRatio:   hitIndices[i],
 				BaseDamage: info.DamageMap{
-					model.DamageFormula_BY_ATK: enhancedBasicDirectPunch[c.info.AttackLevelIndex()],
+					model.DamageFormula_BY_ATK: enhancedBasicDirectPunch[c.info.AttackLevelIndex()] / hitIndices[i],
 				},
 			})
 		}
@@ -90,6 +91,7 @@ func (c *char) risingUppercut(target key.TargetID) {
 				model.DamageFormula_BY_ATK: enhancedBasicRisingUppercut[c.info.AttackLevelIndex()],
 			},
 			StanceDamage: 60 * 0.5,
+			EnergyGain:   20,
 		},
 	)
 }
