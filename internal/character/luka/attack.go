@@ -31,7 +31,6 @@ func (c *char) enhancedBasic(target key.TargetID, state info.ActionState) {
 	punchCount := 3
 	extraPunchCount := 0
 	for i := 0; i < punchCount; i++ {
-
 		c.engine.Attack(info.Attack{
 			Key:        DirectHit,
 			Targets:    []key.TargetID{target},
