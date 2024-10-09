@@ -23,12 +23,15 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 	}
 }
 
+var hitIndices = []float64{0.4, 0.3, 0.3}
+
 func (c *char) enhancedBasic(target key.TargetID, state info.ActionState) {
 	c.fightingSpirit -= 2
 
 	punchCount := 3
 	extraPunchCount := 0
 	for i := 0; i < punchCount; i++ {
+
 		c.engine.Attack(info.Attack{
 			Key:        DirectHit,
 			Targets:    []key.TargetID{target},
@@ -39,24 +42,21 @@ func (c *char) enhancedBasic(target key.TargetID, state info.ActionState) {
 				model.DamageFormula_BY_ATK: enhancedBasicDirectPunch[c.info.AttackLevelIndex()],
 			},
 			// The exact calc they use in the dm
-			StanceDamage: 60 * 0.5 * 0.3,
+			StanceDamage: 60 * 0.5,
 		})
 		if c.info.Traces["103"] && c.engine.Rand().Float64() > 0.5 {
 			extraPunchCount += 1
+			c.engine.Attack(info.Attack{
+				Key:        DirectHit,
+				Targets:    []key.TargetID{target},
+				Source:     c.id,
+				AttackType: model.AttackType_NORMAL,
+				DamageType: model.DamageType_PHYSICAL,
+				BaseDamage: info.DamageMap{
+					model.DamageFormula_BY_ATK: enhancedBasicDirectPunch[c.info.AttackLevelIndex()],
+				},
+			})
 		}
-	}
-
-	for j := 0; j < extraPunchCount; j++ {
-		c.engine.Attack(info.Attack{
-			Key:        DirectHit,
-			Targets:    []key.TargetID{target},
-			Source:     c.id,
-			AttackType: model.AttackType_NORMAL,
-			DamageType: model.DamageType_PHYSICAL,
-			BaseDamage: info.DamageMap{
-				model.DamageFormula_BY_ATK: enhancedBasicDirectPunch[c.info.AttackLevelIndex()],
-			},
-		})
 	}
 
 	c.risingUppercut(target)
