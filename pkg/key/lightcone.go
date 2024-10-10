@@ -61,6 +61,7 @@ const (
 	MaketheWorldClamor        LightCone = "make_the_world_clamor"
 	Sagacity                  LightCone = "sagacity"
 	AnInstantBeforeAGaze      LightCone = "an_instant_before_a_gaze"
+	AftertheCharmonyFall      LightCone = "after_the_charmony_fall"
 )
 
 // Harmony
