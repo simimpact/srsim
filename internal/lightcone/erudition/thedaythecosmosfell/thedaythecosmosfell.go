@@ -30,7 +30,7 @@ func init() {
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_BUFF,
 		Listeners: modifier.Listeners{
-			OnAfterAttack: onAfterAttack,
+			OnAfterAttack: weaknessCheck,
 		},
 	})
 }
@@ -45,7 +45,7 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 	})
 }
 
-func onAfterAttack(mod *modifier.Instance, e event.AttackEnd) {
+func weaknessCheck(mod *modifier.Instance, e event.AttackEnd) {
 	matchingWeakness := 0
 	charInfo, _ := mod.Engine().CharacterInfo(mod.Owner())
 	for _, target := range e.Targets {
