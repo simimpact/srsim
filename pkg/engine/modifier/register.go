@@ -74,6 +74,11 @@ type Config struct {
 	// Attacks and Heals can execute in a "snapshot" state. In this state, the modifier listeners will
 	// not be called by default. Can be overwritten by setting this field to true
 	CanModifySnapshot bool
+
+	// CanDispel indicates whether the modifier can be removed through dispel effects.
+	// If true, the modifier can be targeted and removed by dispel abilities; if false (default),
+	// it is immune to dispel.
+	CanDispel bool
 }
 
 // Determines how duplicate modifiers will "stack" when added. Note: not all stacking behaviors can
