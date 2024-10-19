@@ -18,6 +18,9 @@ const (
 func init() {
 	modifier.Register(E1, modifier.Config{
 		Stacking: modifier.ReplaceBySource,
+		Listeners: modifier.Listeners{
+			OnBeforeHitAll: applyE1,
+		},
 	})
 	modifier.Register(E2, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
@@ -44,6 +47,10 @@ func init() {
 			},
 		},
 	})
+}
+
+func applyE1(mod *modifier.Instance, e event.HitStart) {
+	e.Hit.Defender.AddProperty(E1, prop.DEFPercent, -0.2)
 }
 
 func applyE2(mod *modifier.Instance, e event.HitStart) {

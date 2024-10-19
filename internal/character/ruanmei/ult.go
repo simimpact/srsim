@@ -1,6 +1,7 @@
 package ruanmei
 
 import (
+	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
@@ -27,22 +28,22 @@ func init() {
 			OnRemove: removeUltMods,
 		},
 	})
+	// 2 mods summarized to 1 mod that represents both logic and visual/Buff status type
 	modifier.Register(UltResPenAlly, modifier.Config{
 		Stacking: modifier.Refresh,
 	})
-	// Purely for visual/Buff status type
+	// Purely for visual/Buff status type for other allies
 	modifier.Register(UltBuffAlly, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_BUFF,
 	})
 	modifier.Register(UltDebuff, modifier.Config{
 		Listeners: modifier.Listeners{
-			// OnAllowAction: removeReset
-			// OnListenTurnEnd: removeSelf
-			// OnHPChange: removeCDAndSelf
-			OnEndBreak: doUltImprint,
-			// OnDispel: removeCD,
-			// OnBreakExtendAnim: doUltImprintWithoutRemove (??)
+			// OnAllowAction: removeReset, (unknown mechanic, will be ignored)
+			OnHPChange: removeCDAndSelf,
+			OnEndBreak: doUltImprintWithRemove,
+			// OnDispel: removeCD, (missing listener)
+			// OnBreakExtendAnim: doUltImprint, (missing listener)
 		},
 	})
 	modifier.Register(UltDebuffCD, modifier.Config{
@@ -55,6 +56,55 @@ func init() {
 				mod.RemoveSelf()
 			},
 		},
+	})
+}
+
+func (c *char) initUlt() {
+	if c.info.Eidolon >= 1 {
+		// Apply E1 to allies created while Ult is active
+		c.engine.Events().CharactersAdded.Subscribe(func(event event.CharactersAdded) {
+			for _, char := range event.Characters {
+				trg := char.ID
+				c.engine.AddModifier(trg, info.Modifier{
+					Name:   E1,
+					Source: c.id,
+				})
+			}
+		})
+	}
+	// Apply TR Debuff with AttackEnd while RM has Ult
+	c.engine.Events().AttackEnd.Subscribe(func(event event.AttackEnd) {
+		if !c.engine.IsCharacter(event.Attacker) {
+			return
+		}
+		if c.engine.HasModifier(c.id, Ult) {
+			for _, trg := range event.Targets {
+				c.engine.AddModifier(trg, info.Modifier{
+					Name:   UltDebuff,
+					Source: c.id,
+				})
+				c.engine.AddModifier(trg, info.Modifier{
+					Name:   UltDebuffCD,
+					Source: c.id,
+				})
+			}
+		}
+	})
+	// Remove UltDebuff after it procs its damage
+	c.engine.Events().TurnEnd.Subscribe(func(event event.TurnEnd) {
+		for _, trg := range c.engine.Enemies() {
+			if c.engine.HasModifierFromSource(trg, c.id, UltDebuff) {
+				// Get UltDebuff's dynamic value
+			}
+		}
+	})
+	// Remove UltDebuff from all enemies if RM dies
+	c.engine.Events().TargetDeath.Subscribe(func(event event.TargetDeath) {
+		if event.Target == c.id {
+			for _, trg := range c.engine.Enemies() {
+				c.engine.RemoveModifierFromSource(trg, c.id, UltDebuff)
+			}
+		}
 	})
 }
 
@@ -77,10 +127,15 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			})
 		}
 	}
-	// Subscribe to CharactersAdded for E1 and AttackEnd for Debuff
+	for _, trg := range c.engine.Characters() {
+		c.engine.AddModifier(trg, info.Modifier{
+			Name:   UltBuffAlly,
+			Source: c.id,
+		})
+	}
 }
 
-// Need to implement AllDamagePEN
+// Missing AllDamagePEN
 func addResPen(mod *modifier.Instance) {
 	for _, trg := range mod.Engine().Characters() {
 		if trg == mod.Owner() {
@@ -103,6 +158,28 @@ func removeUltMods(mod *modifier.Instance) {
 	}
 }
 
-func doUltImprint(mod *modifier.Instance) {
-
+func removeCDAndSelf(mod *modifier.Instance, e event.HPChange) {
+	if mod.Engine().HPRatio(mod.Owner()) == 0 {
+		mod.Engine().RemoveModifier(mod.Owner(), UltDebuffCD)
+		mod.RemoveSelf()
+	}
 }
+
+func doUltImprintWithRemove(mod *modifier.Instance) {
+	doUltImprint(mod)
+	mod.Engine().RemoveModifier(mod.Owner(), UltDebuffCD)
+	mod.RemoveSelf()
+}
+
+func doUltImprint(mod *modifier.Instance) {
+	mod.Engine().InsertAbility(info.Insert{
+		Key: UltDebuff,
+		Execute: func() {
+
+		},
+		Source:   mod.Source(),
+		Priority: info.CharInsertAttackSelf,
+	})
+}
+
+// Need to do logic for "..._Count" dynamic value (declare inside UltDebuff)
