@@ -60,6 +60,6 @@ func onBeforeHitAll(mod *modifier.Instance, e event.HitStart) {
 
 	amt := 0.2 + 0.04*mod.State().(float64)
 	if mod.Engine().HasModifier(e.Hit.Defender.ID(), routed) {
-		e.Hit.Attacker.AddProperty(routed, prop.AllDamagePercent, amt)
+		e.Hit.Defender.AddProperty(routed, prop.AllDamageTaken, amt)
 	}
 }
