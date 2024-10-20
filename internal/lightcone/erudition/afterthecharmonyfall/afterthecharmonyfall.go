@@ -27,8 +27,9 @@ func init() {
 		Promotions:    promotions,
 	})
 	modifier.Register(charmonyFallSpd, modifier.Config{
-		Stacking:   modifier.ReplaceBySource,
-		StatusType: model.StatusType_STATUS_BUFF,
+		Stacking:      modifier.ReplaceBySource,
+		StatusType:    model.StatusType_STATUS_BUFF,
+		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_UP},
 		Listeners: modifier.Listeners{
 			OnAfterAction: addSpdBuff,
 		},
@@ -46,8 +47,8 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 func addSpdBuff(mod *modifier.Instance, e event.ActionEnd) {
-	amt := 0.06 + 0.02*mod.State().(float64)
 	if e.AttackType == model.AttackType_ULT {
+		amt := 0.06 + 0.02*mod.State().(float64)
 		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 			Name:     charmonyFallSpd,
 			Source:   mod.Owner(),
