@@ -1,0 +1,17 @@
+{
+  "name": "@srsim/ts-types",
+  "private": "true",
+  "version": "0.0.0",
+  "main": "src/index.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "protobufjs": "^7.1.2",
+    "ts-proto": "^1.181.1"
+  },
+  "dependencies": {
+    "long": "^5.2.3",
+    "rxjs": "^7.8.1"
+  }
+}
