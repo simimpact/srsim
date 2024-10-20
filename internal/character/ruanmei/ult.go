@@ -149,16 +149,15 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	}
 }
 
-// Missing AllDamagePEN
 func addResPen(mod *modifier.Instance) {
 	for _, trg := range mod.Engine().Characters() {
 		if trg == mod.Owner() {
-			mod.AddProperty(prop.IcePEN, mod.State().(float64))
+			mod.AddProperty(prop.AllDamagePEN, mod.State().(float64))
 		} else {
 			mod.Engine().AddModifier(trg, info.Modifier{
 				Name:   UltResPenAlly,
 				Source: mod.Owner(),
-				Stats:  info.PropMap{prop.IcePEN: mod.State().(float64)},
+				Stats:  info.PropMap{prop.AllDamagePEN: mod.State().(float64)},
 			})
 		}
 	}
