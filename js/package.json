@@ -3,6 +3,7 @@
     "packageManager": "pnpm@9.7.0",
     "private": true,
     "scripts": {
+        "start": "pnpm --filter @srsim/web dev",
         "storybook": "pnpm --filter @srsim/storybook storybook",
         "build": "turbo build",
         "dev": "turbo dev",
