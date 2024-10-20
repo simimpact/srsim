@@ -3,6 +3,15 @@
 version: "3"
 
 tasks:
+  go:
+    desc: generate go code
+    cmds:
+      - |
+        protoc \
+              --experimental_allow_proto3_optional \
+              --go_out=module=github.com/simimpact/srsim:. \
+              --go-grpc_out=module=github.com/simimpact/srsim:. \
+              pb/**/*.proto
   ts-types:
     desc: generate ts types
     cmds:

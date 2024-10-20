@@ -26,19 +26,23 @@ export interface SimResult {
 
 export interface Statistics {
   /** damage stats */
-  totalDamageDealt?: DescriptiveStats | undefined;
-  totalDamageTaken?: DescriptiveStats | undefined;
-  totalDamageDealtPerCycle?:
+  total_damage_dealt?: DescriptiveStats | undefined;
+  total_damage_taken?: DescriptiveStats | undefined;
+  total_damage_dealt_per_cycle?:
     | OverviewStats
     | undefined;
   /** turn stats */
-  totalAv?: DescriptiveStats | undefined;
+  total_av?: DescriptiveStats | undefined;
+  damage_dealt_by_cycle?: OverviewStats[] | undefined;
+  damage_taken_by_cycle?: OverviewStats[] | undefined;
 }
 
 export interface IterationResult {
   totalDamageDealt?: number | undefined;
   totalDamageTaken?: number | undefined;
   totalAv?: number | undefined;
+  cumulativeDamageDealtByCycle?: number[] | undefined;
+  cumulativeDamageTakenByCycle?: number[] | undefined;
 }
 
 export interface OverviewStats {
@@ -298,26 +302,38 @@ export const SimResult = {
 
 function createBaseStatistics(): Statistics {
   return {
-    totalDamageDealt: undefined,
-    totalDamageTaken: undefined,
-    totalDamageDealtPerCycle: undefined,
-    totalAv: undefined,
+    total_damage_dealt: undefined,
+    total_damage_taken: undefined,
+    total_damage_dealt_per_cycle: undefined,
+    total_av: undefined,
+    damage_dealt_by_cycle: [],
+    damage_taken_by_cycle: [],
   };
 }
 
 export const Statistics = {
   encode(message: Statistics, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.totalDamageDealt !== undefined) {
-      DescriptiveStats.encode(message.totalDamageDealt, writer.uint32(10).fork()).ldelim();
+    if (message.total_damage_dealt !== undefined) {
+      DescriptiveStats.encode(message.total_damage_dealt, writer.uint32(10).fork()).ldelim();
     }
-    if (message.totalDamageTaken !== undefined) {
-      DescriptiveStats.encode(message.totalDamageTaken, writer.uint32(18).fork()).ldelim();
+    if (message.total_damage_taken !== undefined) {
+      DescriptiveStats.encode(message.total_damage_taken, writer.uint32(18).fork()).ldelim();
     }
-    if (message.totalDamageDealtPerCycle !== undefined) {
-      OverviewStats.encode(message.totalDamageDealtPerCycle, writer.uint32(26).fork()).ldelim();
+    if (message.total_damage_dealt_per_cycle !== undefined) {
+      OverviewStats.encode(message.total_damage_dealt_per_cycle, writer.uint32(26).fork()).ldelim();
     }
-    if (message.totalAv !== undefined) {
-      DescriptiveStats.encode(message.totalAv, writer.uint32(82).fork()).ldelim();
+    if (message.total_av !== undefined) {
+      DescriptiveStats.encode(message.total_av, writer.uint32(82).fork()).ldelim();
+    }
+    if (message.damage_dealt_by_cycle !== undefined && message.damage_dealt_by_cycle.length !== 0) {
+      for (const v of message.damage_dealt_by_cycle) {
+        OverviewStats.encode(v!, writer.uint32(90).fork()).ldelim();
+      }
+    }
+    if (message.damage_taken_by_cycle !== undefined && message.damage_taken_by_cycle.length !== 0) {
+      for (const v of message.damage_taken_by_cycle) {
+        OverviewStats.encode(v!, writer.uint32(98).fork()).ldelim();
+      }
     }
     return writer;
   },
@@ -334,28 +350,42 @@ export const Statistics = {
             break;
           }
 
-          message.totalDamageDealt = DescriptiveStats.decode(reader, reader.uint32());
+          message.total_damage_dealt = DescriptiveStats.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 18) {
             break;
           }
 
-          message.totalDamageTaken = DescriptiveStats.decode(reader, reader.uint32());
+          message.total_damage_taken = DescriptiveStats.decode(reader, reader.uint32());
           continue;
         case 3:
           if (tag !== 26) {
             break;
           }
 
-          message.totalDamageDealtPerCycle = OverviewStats.decode(reader, reader.uint32());
+          message.total_damage_dealt_per_cycle = OverviewStats.decode(reader, reader.uint32());
           continue;
         case 10:
           if (tag !== 82) {
             break;
           }
 
-          message.totalAv = DescriptiveStats.decode(reader, reader.uint32());
+          message.total_av = DescriptiveStats.decode(reader, reader.uint32());
+          continue;
+        case 11:
+          if (tag !== 90) {
+            break;
+          }
+
+          message.damage_dealt_by_cycle!.push(OverviewStats.decode(reader, reader.uint32()));
+          continue;
+        case 12:
+          if (tag !== 98) {
+            break;
+          }
+
+          message.damage_taken_by_cycle!.push(OverviewStats.decode(reader, reader.uint32()));
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -368,28 +398,44 @@ export const Statistics = {
 
   fromJSON(object: any): Statistics {
     return {
-      totalDamageDealt: isSet(object.totalDamageDealt) ? DescriptiveStats.fromJSON(object.totalDamageDealt) : undefined,
-      totalDamageTaken: isSet(object.totalDamageTaken) ? DescriptiveStats.fromJSON(object.totalDamageTaken) : undefined,
-      totalDamageDealtPerCycle: isSet(object.totalDamageDealtPerCycle)
-        ? OverviewStats.fromJSON(object.totalDamageDealtPerCycle)
+      total_damage_dealt: isSet(object.total_damage_dealt)
+        ? DescriptiveStats.fromJSON(object.total_damage_dealt)
         : undefined,
-      totalAv: isSet(object.totalAv) ? DescriptiveStats.fromJSON(object.totalAv) : undefined,
+      total_damage_taken: isSet(object.total_damage_taken)
+        ? DescriptiveStats.fromJSON(object.total_damage_taken)
+        : undefined,
+      total_damage_dealt_per_cycle: isSet(object.total_damage_dealt_per_cycle)
+        ? OverviewStats.fromJSON(object.total_damage_dealt_per_cycle)
+        : undefined,
+      total_av: isSet(object.total_av) ? DescriptiveStats.fromJSON(object.total_av) : undefined,
+      damage_dealt_by_cycle: globalThis.Array.isArray(object?.damage_dealt_by_cycle)
+        ? object.damage_dealt_by_cycle.map((e: any) => OverviewStats.fromJSON(e))
+        : [],
+      damage_taken_by_cycle: globalThis.Array.isArray(object?.damage_taken_by_cycle)
+        ? object.damage_taken_by_cycle.map((e: any) => OverviewStats.fromJSON(e))
+        : [],
     };
   },
 
   toJSON(message: Statistics): unknown {
     const obj: any = {};
-    if (message.totalDamageDealt !== undefined) {
-      obj.totalDamageDealt = DescriptiveStats.toJSON(message.totalDamageDealt);
+    if (message.total_damage_dealt !== undefined) {
+      obj.total_damage_dealt = DescriptiveStats.toJSON(message.total_damage_dealt);
     }
-    if (message.totalDamageTaken !== undefined) {
-      obj.totalDamageTaken = DescriptiveStats.toJSON(message.totalDamageTaken);
+    if (message.total_damage_taken !== undefined) {
+      obj.total_damage_taken = DescriptiveStats.toJSON(message.total_damage_taken);
     }
-    if (message.totalDamageDealtPerCycle !== undefined) {
-      obj.totalDamageDealtPerCycle = OverviewStats.toJSON(message.totalDamageDealtPerCycle);
+    if (message.total_damage_dealt_per_cycle !== undefined) {
+      obj.total_damage_dealt_per_cycle = OverviewStats.toJSON(message.total_damage_dealt_per_cycle);
     }
-    if (message.totalAv !== undefined) {
-      obj.totalAv = DescriptiveStats.toJSON(message.totalAv);
+    if (message.total_av !== undefined) {
+      obj.total_av = DescriptiveStats.toJSON(message.total_av);
+    }
+    if (message.damage_dealt_by_cycle?.length) {
+      obj.damage_dealt_by_cycle = message.damage_dealt_by_cycle.map((e) => OverviewStats.toJSON(e));
+    }
+    if (message.damage_taken_by_cycle?.length) {
+      obj.damage_taken_by_cycle = message.damage_taken_by_cycle.map((e) => OverviewStats.toJSON(e));
     }
     return obj;
   },
@@ -399,25 +445,33 @@ export const Statistics = {
   },
   fromPartial<I extends Exact<DeepPartial<Statistics>, I>>(object: I): Statistics {
     const message = createBaseStatistics();
-    message.totalDamageDealt = (object.totalDamageDealt !== undefined && object.totalDamageDealt !== null)
-      ? DescriptiveStats.fromPartial(object.totalDamageDealt)
+    message.total_damage_dealt = (object.total_damage_dealt !== undefined && object.total_damage_dealt !== null)
+      ? DescriptiveStats.fromPartial(object.total_damage_dealt)
       : undefined;
-    message.totalDamageTaken = (object.totalDamageTaken !== undefined && object.totalDamageTaken !== null)
-      ? DescriptiveStats.fromPartial(object.totalDamageTaken)
+    message.total_damage_taken = (object.total_damage_taken !== undefined && object.total_damage_taken !== null)
+      ? DescriptiveStats.fromPartial(object.total_damage_taken)
       : undefined;
-    message.totalDamageDealtPerCycle =
-      (object.totalDamageDealtPerCycle !== undefined && object.totalDamageDealtPerCycle !== null)
-        ? OverviewStats.fromPartial(object.totalDamageDealtPerCycle)
+    message.total_damage_dealt_per_cycle =
+      (object.total_damage_dealt_per_cycle !== undefined && object.total_damage_dealt_per_cycle !== null)
+        ? OverviewStats.fromPartial(object.total_damage_dealt_per_cycle)
         : undefined;
-    message.totalAv = (object.totalAv !== undefined && object.totalAv !== null)
-      ? DescriptiveStats.fromPartial(object.totalAv)
+    message.total_av = (object.total_av !== undefined && object.total_av !== null)
+      ? DescriptiveStats.fromPartial(object.total_av)
       : undefined;
+    message.damage_dealt_by_cycle = object.damage_dealt_by_cycle?.map((e) => OverviewStats.fromPartial(e)) || [];
+    message.damage_taken_by_cycle = object.damage_taken_by_cycle?.map((e) => OverviewStats.fromPartial(e)) || [];
     return message;
   },
 };
 
 function createBaseIterationResult(): IterationResult {
-  return { totalDamageDealt: 0, totalDamageTaken: 0, totalAv: 0 };
+  return {
+    totalDamageDealt: 0,
+    totalDamageTaken: 0,
+    totalAv: 0,
+    cumulativeDamageDealtByCycle: [],
+    cumulativeDamageTakenByCycle: [],
+  };
 }
 
 export const IterationResult = {
@@ -430,6 +484,20 @@ export const IterationResult = {
     }
     if (message.totalAv !== undefined && message.totalAv !== 0) {
       writer.uint32(81).double(message.totalAv);
+    }
+    if (message.cumulativeDamageDealtByCycle !== undefined && message.cumulativeDamageDealtByCycle.length !== 0) {
+      writer.uint32(90).fork();
+      for (const v of message.cumulativeDamageDealtByCycle) {
+        writer.double(v);
+      }
+      writer.ldelim();
+    }
+    if (message.cumulativeDamageTakenByCycle !== undefined && message.cumulativeDamageTakenByCycle.length !== 0) {
+      writer.uint32(98).fork();
+      for (const v of message.cumulativeDamageTakenByCycle) {
+        writer.double(v);
+      }
+      writer.ldelim();
     }
     return writer;
   },
@@ -462,6 +530,40 @@ export const IterationResult = {
 
           message.totalAv = reader.double();
           continue;
+        case 11:
+          if (tag === 89) {
+            message.cumulativeDamageDealtByCycle!.push(reader.double());
+
+            continue;
+          }
+
+          if (tag === 90) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.cumulativeDamageDealtByCycle!.push(reader.double());
+            }
+
+            continue;
+          }
+
+          break;
+        case 12:
+          if (tag === 97) {
+            message.cumulativeDamageTakenByCycle!.push(reader.double());
+
+            continue;
+          }
+
+          if (tag === 98) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.cumulativeDamageTakenByCycle!.push(reader.double());
+            }
+
+            continue;
+          }
+
+          break;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -476,6 +578,12 @@ export const IterationResult = {
       totalDamageDealt: isSet(object.totalDamageDealt) ? globalThis.Number(object.totalDamageDealt) : 0,
       totalDamageTaken: isSet(object.totalDamageTaken) ? globalThis.Number(object.totalDamageTaken) : 0,
       totalAv: isSet(object.totalAv) ? globalThis.Number(object.totalAv) : 0,
+      cumulativeDamageDealtByCycle: globalThis.Array.isArray(object?.cumulativeDamageDealtByCycle)
+        ? object.cumulativeDamageDealtByCycle.map((e: any) => globalThis.Number(e))
+        : [],
+      cumulativeDamageTakenByCycle: globalThis.Array.isArray(object?.cumulativeDamageTakenByCycle)
+        ? object.cumulativeDamageTakenByCycle.map((e: any) => globalThis.Number(e))
+        : [],
     };
   },
 
@@ -490,6 +598,12 @@ export const IterationResult = {
     if (message.totalAv !== undefined && message.totalAv !== 0) {
       obj.totalAv = message.totalAv;
     }
+    if (message.cumulativeDamageDealtByCycle?.length) {
+      obj.cumulativeDamageDealtByCycle = message.cumulativeDamageDealtByCycle;
+    }
+    if (message.cumulativeDamageTakenByCycle?.length) {
+      obj.cumulativeDamageTakenByCycle = message.cumulativeDamageTakenByCycle;
+    }
     return obj;
   },
 
@@ -501,6 +615,8 @@ export const IterationResult = {
     message.totalDamageDealt = object.totalDamageDealt ?? 0;
     message.totalDamageTaken = object.totalDamageTaken ?? 0;
     message.totalAv = object.totalAv ?? 0;
+    message.cumulativeDamageDealtByCycle = object.cumulativeDamageDealtByCycle?.map((e) => e) || [];
+    message.cumulativeDamageTakenByCycle = object.cumulativeDamageTakenByCycle?.map((e) => e) || [];
     return message;
   },
 };
