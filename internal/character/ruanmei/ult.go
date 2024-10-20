@@ -42,8 +42,9 @@ func init() {
 			// OnAllowAction: removeReset, (unknown mechanic, will be ignored)
 			OnHPChange: removeCDAndSelf,
 			OnEndBreak: doUltImprintWithRemove,
-			// OnDispel: removeCD, (missing listener)
-			// OnBreakExtendAnim: doUltImprint, (missing listener)
+			// OnDispel: removeCD, (Missing OnDispel listener)
+			// OnBreakExtendAnim: doUltImprint, (Missing OnBreakExtend listener)
+			// Missing BreakExtend flag implementation
 		},
 	})
 	modifier.Register(UltDebuffCD, modifier.Config{
@@ -72,16 +73,19 @@ func (c *char) initUlt() {
 			}
 		})
 	}
-	// Apply TR Debuff with AttackEnd while RM has Ult
+
+	// Apply UltDebuff with AttackEnd while RM has Ult
 	c.engine.Events().AttackEnd.Subscribe(func(event event.AttackEnd) {
 		if !c.engine.IsCharacter(event.Attacker) {
 			return
 		}
 		if c.engine.HasModifier(c.id, Ult) {
 			for _, trg := range event.Targets {
+				removeThisTurn := false
 				c.engine.AddModifier(trg, info.Modifier{
 					Name:   UltDebuff,
 					Source: c.id,
+					State:  &removeThisTurn,
 				})
 				c.engine.AddModifier(trg, info.Modifier{
 					Name:   UltDebuffCD,
@@ -90,15 +94,25 @@ func (c *char) initUlt() {
 			}
 		}
 	})
-	// Remove UltDebuff after it procs its damage
+
+	// Remove UltDebuff if Imprint Damage was during this turn
 	c.engine.Events().TurnEnd.Subscribe(func(event event.TurnEnd) {
 		for _, trg := range c.engine.Enemies() {
 			if c.engine.HasModifierFromSource(trg, c.id, UltDebuff) {
 				// Get UltDebuff's dynamic value
+				mod := c.engine.GetModifiers(trg, UltDebuff)[0]
+				removeThisTurn, ok := mod.State.(*bool)
+				if !ok {
+					panic("expected *bool for State")
+				}
+				if *removeThisTurn {
+					*removeThisTurn = false
+					c.engine.RemoveModifier(trg, UltDebuff)
+				}
 			}
 		}
 	})
-	// Remove UltDebuff from all enemies if RM dies
+	// Remove UltDebuff when RM dies
 	c.engine.Events().TargetDeath.Subscribe(func(event event.TargetDeath) {
 		if event.Target == c.id {
 			for _, trg := range c.engine.Enemies() {
@@ -172,14 +186,48 @@ func doUltImprintWithRemove(mod *modifier.Instance) {
 }
 
 func doUltImprint(mod *modifier.Instance) {
+	removeThisTurn, ok := mod.State().(*bool)
+	if !ok {
+		panic("expected *bool for mod.State()")
+	}
+	*removeThisTurn = true
+
+	// "Custom event"
+	rm, _ := mod.Engine().CharacterInfo(mod.Source())
+	delayAmt := mod.Engine().Stats(mod.Source()).BreakEffect()*0.2 + 0.1
+	mult := ultBreakDamage[rm.UltLevelIndex()]
+	maxStanceMult := ((mod.Engine().MaxStance(mod.Owner()) / 30) + 2) / 4
+	mod.Engine().SetCurrentGaugeCost(info.ModifyCurrentGaugeCost{
+		Key:    UltDebuff,
+		Source: mod.Source(),
+		Amount: -1,
+	})
+
 	mod.Engine().InsertAbility(info.Insert{
 		Key: UltDebuff,
 		Execute: func() {
-
+			mod.Engine().Attack(info.Attack{
+				Key:          UltDebuff,
+				Targets:      []key.TargetID{mod.Owner()},
+				Source:       mod.Source(),
+				DamageType:   model.DamageType_ICE,
+				AttackType:   model.AttackType_ELEMENT_DAMAGE,
+				BaseDamage:   info.DamageMap{model.DamageFormula_BY_BREAK_DAMAGE: mult * maxStanceMult},
+				AsPureDamage: true,
+			})
 		},
 		Source:   mod.Source(),
 		Priority: info.CharInsertAttackSelf,
 	})
+
+	mod.Engine().ModifyGaugeNormalized(info.ModifyAttribute{
+		Key:    UltDebuff,
+		Target: mod.Owner(),
+		Source: mod.Source(),
+		Amount: delayAmt,
+	})
 }
 
-// Need to do logic for "..._Count" dynamic value (declare inside UltDebuff)
+func removeCD(mod *modifier.Instance) {
+	mod.Engine().RemoveModifier(mod.Owner(), UltDebuffCD)
+}

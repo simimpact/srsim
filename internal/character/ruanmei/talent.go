@@ -46,8 +46,8 @@ func (c *char) initTalent() {
 	// Add mods to upcoming allies
 	// Slightly inaccurate as this should:
 	// - trigger after any entity gets created,
-	// - check if it is part of allied team,
-	// - apply the mods to the target.
+	// - check if the target is part of allied team,
+	// - apply the relevant mods to the target.
 	c.engine.Events().CharactersAdded.Subscribe(
 		func(event event.CharactersAdded) {
 			for _, trg := range c.engine.Characters() {
@@ -159,7 +159,7 @@ func removeTalentA2E2(mod *modifier.Instance) {
 	}
 }
 
-// Applies Talent's Break Damage without adding another mod
+// Applies Talent's Break Damage directly, without adding another mod
 func doTalentBreakDamage(mod *modifier.Instance) {
 	// Team member check skipped as it is deemed unnecessary
 
