@@ -58,8 +58,8 @@ func onBeforeHitAll(mod *modifier.Instance, e event.HitStart) {
 		Stats:    info.PropMap{prop.SPDPercent: -0.2},
 	})
 
-	amt := 0.2 + 0.04*mod.State().(float64)
 	if mod.Engine().HasModifier(e.Hit.Defender.ID(), routed) {
+		amt := 0.2 + 0.04*mod.State().(float64)
 		e.Hit.Defender.AddProperty(routed, prop.AllDamageTaken, amt)
 	}
 }
