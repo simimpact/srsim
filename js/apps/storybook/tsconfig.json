@@ -1,0 +1,32 @@
+{
+  "extends": "@srsim/typescript-config/nextjs.json",
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+    // "lib": [
+    //   "dom",
+    //   "dom.iterable",
+    //   "esnext"
+    // ],
+    // "resolveJsonModule": true,
+    // "incremental": true,
+    // "paths": {
+    //   "@/*": ["./src/*"]
+    // }
+  },
+  "include": [
+    "next-env.d.ts",
+    "next.config.js",
+    ".next/types/**/*.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "tailwind.config.js",
+    "postcss.config.js"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

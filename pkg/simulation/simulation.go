@@ -52,7 +52,6 @@ type Simulation struct {
 	characters    []key.TargetID
 	enemies       []key.TargetID
 	neutrals      []key.TargetID
-	TotalAV       float64
 	Active        key.TargetID
 	ActionTargets map[key.TargetID]bool
 }

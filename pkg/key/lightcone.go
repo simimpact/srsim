@@ -4,17 +4,18 @@ type LightCone string
 
 // Destruction
 const (
-	TheMolesWelcomeYou     LightCone = "the_moles_welcome_you"
-	NowheretoRun           LightCone = "nowhere_to_run"
-	MutualDemise           LightCone = "mutual_demise"
-	ASecretVow             LightCone = "a_secret_vow"
-	ShatteredHome          LightCone = "shattered_home"
-	SomethingIrreplaceable LightCone = "something_irreplaceable"
-	UndertheBlueSky        LightCone = "under_the_blue_sky"
-	CollapsingSky          LightCone = "collapsing_sky"
-	OntheFallofanAeon      LightCone = "on_the_fall_of_an_aeon"
-	WoofWalkTime           LightCone = "woof_walk_time"
-	TheUnreachableSide     LightCone = "the_unreachable_side"
+	TheMolesWelcomeYou          LightCone = "the_moles_welcome_you"
+	NowheretoRun                LightCone = "nowhere_to_run"
+	MutualDemise                LightCone = "mutual_demise"
+	ASecretVow                  LightCone = "a_secret_vow"
+	ShatteredHome               LightCone = "shattered_home"
+	SomethingIrreplaceable      LightCone = "something_irreplaceable"
+	UndertheBlueSky             LightCone = "under_the_blue_sky"
+	CollapsingSky               LightCone = "collapsing_sky"
+	OntheFallofanAeon           LightCone = "on_the_fall_of_an_aeon"
+	WoofWalkTime                LightCone = "woof_walk_time"
+	TheUnreachableSide          LightCone = "the_unreachable_side"
+	WhereaboutsShouldDreamsRest LightCone = "whereabouts_should_dreams_rest"
 )
 
 // Hunt
@@ -61,6 +62,7 @@ const (
 	MaketheWorldClamor        LightCone = "make_the_world_clamor"
 	Sagacity                  LightCone = "sagacity"
 	AnInstantBeforeAGaze      LightCone = "an_instant_before_a_gaze"
+	TheDayTheCosmosFell       LightCone = "the_day_the_cosmos_fell"
 )
 
 // Harmony
@@ -99,6 +101,8 @@ const (
 	PerfectTiming            LightCone = "perfect_timing"
 	TimeWaitsforNoOne        LightCone = "time_waits_for_no_one"
 	EchoesoftheCoffin        LightCone = "echoes_of_the_coffin"
+	HeyOverHere              LightCone = "hey_over_here"
+	WhatIsReal               LightCone = "what_is_real"
 )
 
 func (l LightCone) String() string {
