@@ -148,13 +148,12 @@ func beginTurn(sim *Simulation) (stateFn, error) {
 			"unexpected: turn manager returned an invalid target for next turn %w", err)
 	}
 	sim.Active = next
-	sim.TotalAV += av
 
 	sim.Event.TurnStart.Emit(event.TurnStart{
 		Active:     next,
 		TargetType: sim.Targets[next],
 		DeltaAV:    av,
-		TotalAV:    sim.TotalAV,
+		TotalAV:    sim.Turn.TotalAV(),
 		TurnOrder:  turnOrder,
 	})
 	sim.Modifier.Tick(sim.Active, info.TurnStart)
@@ -246,13 +245,13 @@ func (sim *Simulation) exitCheck(next stateFn) (stateFn, error) {
 		reason = model.TerminationReason_BATTLE_LOSS
 	case len(sim.enemies) == 0:
 		reason = model.TerminationReason_BATTLE_WIN
-	case int(sim.TotalAV/100) >= int(sim.cfg.Settings.CycleLimit):
+	case int(sim.Turn.TotalAV()/100) >= int(sim.cfg.Settings.CycleLimit):
 		reason = model.TerminationReason_TIMEOUT
 	}
 
 	if reason != model.TerminationReason_INVALID_TERMINATION {
 		sim.Event.Termination.Emit(event.Termination{
-			TotalAV: sim.TotalAV,
+			TotalAV: sim.Turn.TotalAV(),
 			Reason:  reason,
 		})
 		return nil, nil
