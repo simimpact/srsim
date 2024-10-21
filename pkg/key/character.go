@@ -21,6 +21,7 @@ const (
 	Pela                  Character = "pela"
 	Qingque               Character = "qingque"
 	SilverWolf            Character = "silverwolf"
+	TrailblazerImaginary  Character = "trailblazerimaginary"
 	DummyCharacter        Character = "dummy_character"
 	Sampo                 Character = "sampo"
 	Serval                Character = "serval"
