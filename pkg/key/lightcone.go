@@ -15,6 +15,7 @@ const (
 	OntheFallofanAeon      LightCone = "on_the_fall_of_an_aeon"
 	WoofWalkTime           LightCone = "woof_walk_time"
 	TheUnreachableSide     LightCone = "the_unreachable_side"
+	IShallBeMyOwnSword     LightCone = "i_shall_be_my_own_sword"
 )
 
 // Hunt
