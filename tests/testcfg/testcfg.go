@@ -5,6 +5,7 @@ import (
 	"github.com/simimpact/srsim/pkg/model"
 )
 
+//nolint:exhaustruct // unused options ok left uninitialized
 func TestConfigTwoElites() *model.SimConfig {
 	return &model.SimConfig{
 		Settings: &model.SimulatorSettings{
@@ -15,6 +16,7 @@ func TestConfigTwoElites() *model.SimConfig {
 	}
 }
 
+//nolint:exhaustruct // unused options ok left uninitialized
 func StandardEnemy() *model.Enemy {
 	return &model.Enemy{
 		Key:   key.DummyEnemy.String(),

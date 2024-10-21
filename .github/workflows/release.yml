@@ -27,3 +27,7 @@ jobs:
             srsim_darwin_arm64
             srsim_darwin_amd64
             srsim_linux_amd64
+            srsim_server_windows_amd64.exe
+            srsim_server_darwin_arm64
+            srsim_server_darwin_amd64
+            srsim_server_linux_amd64

@@ -19,11 +19,13 @@ func init() {
 	relic.Register(key.PasserbyOfWanderingCloud, relic.Config{
 		Effects: []relic.SetEffect{
 			{
-				MinCount: 2,
-				Stats:    info.PropMap{prop.HealBoost: 0.10},
+				MinCount:     2,
+				Stats:        info.PropMap{prop.HealBoost: 0.10},
+				CreateEffect: nil,
 			},
 			{
 				MinCount: 4,
+				Stats:    nil,
 				CreateEffect: func(engine engine.Engine, owner key.TargetID) {
 					engine.ModifySP(info.ModifySP{
 						Key:    reason,

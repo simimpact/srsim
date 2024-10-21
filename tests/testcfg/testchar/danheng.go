@@ -21,6 +21,7 @@ func DanHung() *model.Character {
 		},
 		LightCone:   testcone.OnlySilenceRemains(),
 		Relics:      nil,
+		StartHp:     0,
 		StartEnergy: 0,
 	}
 }
