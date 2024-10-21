@@ -20,6 +20,7 @@ func init() {
 		Effects: []relic.SetEffect{
 			{
 				MinCount: 2,
+				Stats:    nil,
 				CreateEffect: func(engine engine.Engine, owner key.TargetID) {
 					engine.AddModifier(owner, info.Modifier{
 						Name:   mod,

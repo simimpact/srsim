@@ -3,7 +3,7 @@ package handler_test
 import (
 	"testing"
 
-	. "github.com/simimpact/srsim/pkg/engine/event/handler"
+	"github.com/simimpact/srsim/pkg/engine/event/handler"
 )
 
 type mutableTestEvent struct {
@@ -11,24 +11,24 @@ type mutableTestEvent struct {
 }
 
 func TestMutableEmitNoSubscription(t *testing.T) {
-	var handler MutableEventHandler[mutableTestEvent]
+	var h handler.MutableEventHandler[mutableTestEvent]
 	x := mutableTestEvent{value: 10}
-	handler.Emit(&x)
+	h.Emit(&x)
 }
 
 func TestMutableListeners(t *testing.T) {
-	var handler MutableEventHandler[mutableTestEvent]
+	var h handler.MutableEventHandler[mutableTestEvent]
 
-	handler.Subscribe(func(event *mutableTestEvent) {
+	h.Subscribe(func(event *mutableTestEvent) {
 		event.value = 0
 	}, 2)
 
-	handler.Subscribe(func(event *mutableTestEvent) {
+	h.Subscribe(func(event *mutableTestEvent) {
 		event.value *= event.value
 	}, 1)
 
 	evt := mutableTestEvent{value: 10}
-	handler.Emit(&evt)
+	h.Emit(&evt)
 	if evt.value != 0 {
 		t.Errorf("Value %d does not equal expected 1", evt.value)
 	}

@@ -1,6 +1,6 @@
 module github.com/simimpact/srsim
 
-go 1.20
+go 1.23.1
 
 require (
 	github.com/aclements/go-moremath v0.0.0-20210112150236-f10218a38794
@@ -11,6 +11,8 @@ require (
 	github.com/creativeprojects/go-selfupdate v1.1.2
 	github.com/davecgh/go-spew v1.1.1
 	github.com/fatih/color v1.15.0
+	github.com/go-chi/chi v1.5.5
+	github.com/go-chi/cors v1.2.1
 	github.com/golang/mock v1.6.0
 	github.com/schollz/progressbar/v3 v3.13.1
 	github.com/stretchr/testify v1.8.4
@@ -46,7 +48,6 @@ require (
 	golang.org/x/term v0.13.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
-	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.5.1 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
