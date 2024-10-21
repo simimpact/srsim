@@ -8,6 +8,7 @@ import {
   Tooltip,
   Axis,
 } from "@visx/xychart";
+import { ParentSize } from "@visx/responsive";
 import { model } from "@srsim/ts-types";
 import { OverviewStats } from "@srsim/ts-types/src/generated/index.model";
 
@@ -25,6 +26,8 @@ const accessors = {
   xAccessor: (d: OrderedOverviewStats) => d.index,
   yAccessor: (d: OrderedOverviewStats) => d.data.mean,
 };
+
+const MIN_HEIGHT = 300;
 
 export function OverviewStatsBarGraph(props: OverviewStatsBarGraphsProps) {
   let max = Number.MIN_VALUE;
@@ -45,21 +48,32 @@ export function OverviewStatsBarGraph(props: OverviewStatsBarGraphsProps) {
   }
 
   return (
-    <XYChart height={300} xScale={{ type: "band" }} yScale={{ type: "linear" }}>
-      <AnimatedAxis orientation="bottom" />
-      <AnimatedGrid columns={false} numTicks={4} />
-      <AnimatedBarSeries dataKey={props.dataKey} data={data} {...accessors} radius={1} />
-      <Axis orientation="left" tickValues={axisVals}></Axis>
-      <Tooltip
-        snapTooltipToDatumX
-        snapTooltipToDatumY
-        showVerticalCrosshair
-        showSeriesGlyphs
-        renderTooltip={({ tooltipData, colorScale }) => {
-          const data = tooltipData!.nearestDatum!.datum as OrderedOverviewStats;
-          return <div>{data.data.mean!}</div>;
-        }}
-      />
-    </XYChart>
+    <ParentSize>
+      {({ width, height }) => {
+        let h = height;
+        //set min height
+        if (h < MIN_HEIGHT) {
+          h = MIN_HEIGHT;
+        }
+        return (
+          <XYChart height={h} width={width} xScale={{ type: "band" }} yScale={{ type: "linear" }}>
+            <AnimatedAxis orientation="bottom" />
+            <AnimatedGrid columns={false} numTicks={4} />
+            <AnimatedBarSeries dataKey={props.dataKey} data={data} {...accessors} radius={1} />
+            <Axis orientation="left" tickValues={axisVals}></Axis>
+            <Tooltip
+              snapTooltipToDatumX
+              snapTooltipToDatumY
+              showVerticalCrosshair
+              showSeriesGlyphs
+              renderTooltip={({ tooltipData, colorScale }) => {
+                const data = tooltipData!.nearestDatum!.datum as OrderedOverviewStats;
+                return <div>{data.data.mean!}</div>;
+              }}
+            />
+          </XYChart>
+        );
+      }}
+    </ParentSize>
   );
 }

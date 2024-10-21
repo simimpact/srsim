@@ -11,3 +11,5 @@ export * from "./radio-group";
 export * from "./checkbox";
 export * from "./slider";
 export * from "./tooltip";
+export * from "./alert";
+export * from "./progress";

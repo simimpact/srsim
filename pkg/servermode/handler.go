@@ -72,10 +72,12 @@ func (s *Server) latest() http.HandlerFunc {
 		var res struct {
 			Result string `json:"result"`
 			Hash   string `json:"hash"`
+			Iters  int    `json:"iters"`
 			Done   bool   `json:"done"`
 			Error  string `json:"error"`
 		}
 		res.Done = wk.done
+		res.Iters = wk.currentCount
 
 		// regardless of what results looks like, we should delete worker if done
 		defer func() {

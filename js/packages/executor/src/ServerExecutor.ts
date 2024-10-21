@@ -101,7 +101,7 @@ export class ServerExecutor implements Executor {
   public run(
     cfg: string,
     iterations: number,
-    updateResult: (result: SimResult, hash: string) => void
+    updateResult: (result: SimResult, iters: number, hash: string) => void
   ): Promise<boolean | void> {
     const c = this;
     return new Promise((resolve, reject) => {
@@ -125,7 +125,7 @@ export class ServerExecutor implements Executor {
             let simres: SimResult;
             try {
               simres = JSON.parse(resp.data.result);
-              updateResult(simres, resp.data.hash);
+              updateResult(simres, resp.data.iters, resp.data.hash);
             } catch (e) {
               c.is_running = false;
               console.log("error decoding sim result");

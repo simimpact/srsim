@@ -44,6 +44,8 @@ type SimulatorCoreProps = {
 };
 
 const DEFAULT_VIEWER_THROTTLE = 100;
+// TODO: this should be an user option
+const DEFAULT_ITERS = 1000;
 const cfgKey = 'user_local_cfg';
 
 const SimulatorCore = ({exec}: SimulatorCoreProps) => {
@@ -63,11 +65,15 @@ const SimulatorCore = ({exec}: SimulatorCoreProps) => {
 
   const run = () => {
     const updateResult = throttle(
-      (res: model.SimResult, hash: string) => {
+      (res: model.SimResult, iters: number, hash: string) => {
         console.log('updating result', res);
         dispatch({
           type: 'SET_RESULT',
-          payload: res,
+          payload: {
+            result: res,
+            progress: (100 * iters) / DEFAULT_ITERS,
+            done: iters === DEFAULT_ITERS,
+          },
         });
       },
       DEFAULT_VIEWER_THROTTLE,
@@ -75,7 +81,7 @@ const SimulatorCore = ({exec}: SimulatorCoreProps) => {
     );
 
     exec()
-      .run(cfg, 1000, updateResult)
+      .run(cfg, DEFAULT_ITERS, updateResult)
       .catch((err) => {
         dispatch({
           type: 'SET_ERROR',

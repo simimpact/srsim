@@ -5,13 +5,19 @@ import {produce} from 'immer';
 
 export interface State {
   data: model.SimResult | null;
+  progress: number | null;
+  done: boolean | null;
   recoveryConfig: string | null;
   error: string | null;
 }
 
 type SetResult = {
   type: 'SET_RESULT';
-  payload: model.SimResult;
+  payload: {
+    result: model.SimResult;
+    progress: number;
+    done: boolean;
+  };
 };
 
 type SetError = {
@@ -30,6 +36,8 @@ export type Actions = SetResult | SetError | Clear;
 
 export const initialState: State = {
   data: null,
+  progress: null,
+  done: null,
   recoveryConfig: null,
   error: null,
 };
@@ -53,7 +61,9 @@ export const ViewerProvider = ({children}: ContextProviderProps) => {
     produce((state: State, action: Actions) => {
       switch (action.type) {
         case 'SET_RESULT':
-          state.data = action.payload;
+          state.data = action.payload.result;
+          state.progress = action.payload.progress;
+          state.done = action.payload.done;
           state.error = null;
           state.recoveryConfig = null;
           break;
@@ -63,6 +73,8 @@ export const ViewerProvider = ({children}: ContextProviderProps) => {
           break;
         case 'CLEAR':
           state.data = null;
+          state.progress = null;
+          state.done = null;
           state.recoveryConfig = null;
           state.error = null;
           break;

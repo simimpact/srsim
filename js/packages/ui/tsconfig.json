@@ -13,7 +13,8 @@
     }
   },
   "include": [
-    "."
+    ".",
+    "../../apps/web/src/app/viewer/group.tsx"
   ],
   "exclude": [
     "node_modules",
