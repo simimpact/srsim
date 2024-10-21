@@ -17,6 +17,7 @@
         "@srsim/eslint-config": "workspace:*",
         "@srsim/typescript-config": "workspace:*",
         "prettier": "^3.3.2",
+        "next": "14.2.5",
         "turbo": "^2.0.12"
     }
 }
