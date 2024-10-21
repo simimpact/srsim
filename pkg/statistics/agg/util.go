@@ -40,6 +40,7 @@ func ToOverviewStats(input *stats.Sample) *model.OverviewStats {
 		Q1:   Ptr(input.Quantile(0.25)),
 		Q2:   Ptr(input.Quantile(0.5)),
 		Q3:   Ptr(input.Quantile(0.75)),
+		Hist: nil,
 	}
 
 	// Scott's normal reference rule

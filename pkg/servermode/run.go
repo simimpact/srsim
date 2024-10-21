@@ -48,6 +48,7 @@ func (s *Server) run() http.HandlerFunc {
 		s.Log.Info("config decoded ok; running", "id", id)
 
 		ctx, cancel := context.WithTimeout(context.Background(), s.Timeout)
+		//nolint:exhaustruct // internal fields don't need to be initialized
 		wp := &workerpool{
 			id:      id,
 			yamlCfg: payload.Config,

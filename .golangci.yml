@@ -179,5 +179,7 @@ issues:
   exclude-rules:
     - source: "//noinspection"
       linters: [gocritic]
+    - path: "pkg/logic/gcs/*" # exclude exhauststruct on gcs because there's a lot of internal fields ok left not initialized
+      linters: [exhaustruct]
   exclude-dirs:
     - scripts/*/result # exclude script-generated results such as charstat from linting

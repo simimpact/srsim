@@ -31,12 +31,14 @@ type Server struct {
 }
 
 func New(opts ...ConfigOpt) (*Server, error) {
+	//nolint:exhaustruct // internal fields don't need to be initialized
 	cfg := &Config{}
 	for _, opt := range opts {
 		if err := opt(cfg); err != nil {
 			return nil, err
 		}
 	}
+	//nolint:exhaustruct // internal fields don't need to be initialized
 	s := &Server{
 		Config: *cfg,
 		pool:   make(map[string]*workerpool),
@@ -69,6 +71,7 @@ func WithTimeout(dur time.Duration) ConfigOpt {
 func (s *Server) routes() {
 	s.Log.Debug("setting up server routes for preview generation server")
 	s.Router.Use(middleware.Logger)
+	//nolint:exhaustruct // unused options ok left uninitialized
 	s.Router.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"https://*", "http://*"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},

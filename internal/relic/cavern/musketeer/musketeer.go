@@ -21,8 +21,9 @@ func init() {
 	relic.Register(key.MusketeerOfWildWheat, relic.Config{
 		Effects: []relic.SetEffect{
 			{
-				MinCount: 2,
-				Stats:    info.PropMap{prop.ATKPercent: 0.12},
+				MinCount:     2,
+				Stats:        info.PropMap{prop.ATKPercent: 0.12},
+				CreateEffect: nil,
 			},
 			{
 				MinCount: 4,
