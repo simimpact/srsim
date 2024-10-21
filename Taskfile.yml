@@ -7,3 +7,8 @@ includes:
 
 tasks:
   default: task -l
+  lint:
+    desc: run golangci-lint and tests
+    cmds:
+      - go test ./pkg/... ./tests/...
+      - golangci-lint run --fast --fix --print-issued-lines=false --out-format=colored-line-number --issues-exit-code=0
