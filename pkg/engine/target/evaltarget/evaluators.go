@@ -24,23 +24,23 @@ func first(engine engine.Engine, candidates []key.TargetID) (key.TargetID, error
 }
 
 func lowestHPRatio(engine engine.Engine, candidates []key.TargetID) (key.TargetID, error) {
-	min := candidates[0]
+	lowest := candidates[0]
 	minHP := engine.HPRatio(candidates[0])
 	for _, c := range candidates {
 		if hp := engine.HPRatio(c); hp < minHP {
-			min, minHP = c, hp
+			lowest, minHP = c, hp
 		}
 	}
-	return min, nil
+	return lowest, nil
 }
 
 func lowestHP(engine engine.Engine, candidates []key.TargetID) (key.TargetID, error) {
-	min := candidates[0]
+	lowest := candidates[0]
 	minHP := engine.Stats(candidates[0]).CurrentHP()
 	for i := 1; i < len(candidates); i++ {
 		if hp := engine.Stats(candidates[i]).CurrentHP(); hp < minHP {
-			min, minHP = candidates[i], hp
+			lowest, minHP = candidates[i], hp
 		}
 	}
-	return min, nil
+	return lowest, nil
 }

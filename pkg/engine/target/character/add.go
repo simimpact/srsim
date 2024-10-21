@@ -175,11 +175,11 @@ func abilityLevels(levels *model.Abilities) info.AbilityLevel {
 	return out
 }
 
-func limitAbilityLevel(lvl, max int) int {
+func limitAbilityLevel(lvl, maxLvl int) int {
 	if lvl < 1 {
 		return 1
-	} else if lvl > max {
-		return max
+	} else if lvl > maxLvl {
+		return maxLvl
 	}
 	return lvl
 }
