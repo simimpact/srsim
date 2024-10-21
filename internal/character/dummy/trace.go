@@ -5,6 +5,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/target/character"
 )
 
+//nolint:exhaustruct // unused options ok left as 0
 var traces = character.TraceMap{
 	"101": {
 		Ascension: 2,

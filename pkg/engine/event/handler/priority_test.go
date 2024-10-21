@@ -3,27 +3,27 @@ package handler_test
 import (
 	"testing"
 
-	. "github.com/simimpact/srsim/pkg/engine/event/handler"
+	"github.com/simimpact/srsim/pkg/engine/event/handler"
 )
 
 func TestPriorityEmitNoSubscription(t *testing.T) {
-	var handler PriorityEventHandler[int]
-	handler.Emit(10)
+	var h handler.PriorityEventHandler[int]
+	h.Emit(10)
 }
 
 func TestPriorityListeners(t *testing.T) {
-	var handler PriorityEventHandler[int]
+	var h handler.PriorityEventHandler[int]
 
 	value := 0
-	handler.Subscribe(func(event int) {
+	h.Subscribe(func(event int) {
 		value = event / value
 	}, 2)
 
-	handler.Subscribe(func(event int) {
+	h.Subscribe(func(event int) {
 		value += event
 	}, 1)
 
-	handler.Emit(4)
+	h.Emit(4)
 	if value != 1 {
 		t.Errorf("Value %d does not equal expected 1", value)
 	}
