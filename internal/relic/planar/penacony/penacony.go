@@ -21,11 +21,13 @@ func init() {
 	relic.Register(key.PenaconyLandOfDreams, relic.Config{
 		Effects: []relic.SetEffect{
 			{
-				MinCount: 2,
-				Stats:    info.PropMap{prop.EnergyRegen: 0.05},
+				MinCount:     2,
+				Stats:        info.PropMap{prop.EnergyRegen: 0.05},
+				CreateEffect: nil,
 			},
 			{
 				MinCount: 2,
+				Stats:    nil,
 				CreateEffect: func(engine engine.Engine, owner key.TargetID) {
 					engine.AddModifier(owner, info.Modifier{
 						Name:   mod,

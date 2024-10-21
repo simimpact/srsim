@@ -12,6 +12,7 @@ import (
 // TODO: example config, generate when no config found
 // TODO: key signing
 
+//nolint:exhaustruct // cli.Flag has a lot of options that are fine left at default if not used
 var globalFlags = []cli.Flag{
 	&cli.StringFlag{
 		Name:    "outpath",
@@ -42,6 +43,7 @@ var globalFlags = []cli.Flag{
 	},
 }
 
+//nolint:exhaustruct // cli.Flag has a lot of options that are fine left at default if not use
 var runFlags = []cli.Flag{
 	&cli.IntFlag{
 		Name:    "iterations",
@@ -57,6 +59,7 @@ var runFlags = []cli.Flag{
 	},
 }
 
+//nolint:exhaustruct // cli.Flag has a lot of options that are fine left at default if not use
 var debugFlags = []cli.Flag{
 	&cli.BoolFlag{
 		Name:    "stdout",
@@ -74,6 +77,7 @@ func init() {
 }
 
 func main() {
+	//nolint:exhaustruct // cli.App has a lot of options that are fine left at default if not use
 	app := &cli.App{
 		Name:     "srsim",
 		Usage:    "a Honkai: Star Rail monte carlo battle simulator",
