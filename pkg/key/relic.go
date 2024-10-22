@@ -10,6 +10,8 @@ const (
 	KnightOfPurityPalace       Relic = "knight_of_purity_palace"
 	GeniusOfBrilliantStars     Relic = "genius_of_brilliant_stars"
 	ChampionOfStreetwiseBoxing Relic = "champion_of_streetwise_boxing"
+	AshblazingGrandDuke        Relic = "the_ashblazing_grand_duke"
+	WindSoaringValorous        Relic = "the_wind_soaring_valorous"
 )
 
 // Planar
@@ -21,6 +23,7 @@ const (
 	SprightlyVonwacq       Relic = "sprightly_vonwacq"
 	PanGalactic            Relic = "pan_galactic"
 	RutilantArena          Relic = "rutilant_arena"
+	Glamoth                Relic = "firmament_frontline_glamoth"
 	PenaconyLandOfDreams   Relic = "penacony_land_of_dreams"
 	IzumoGensei            Relic = "izumo_gensei_and_takama_divine_realm"
 )

@@ -16,6 +16,7 @@ func DummyChar() *model.Character {
 		Abilities:   nil,
 		LightCone:   testcone.DataBank(),
 		Relics:      nil,
+		StartHp:     0,
 		StartEnergy: 0,
 	}
 }
