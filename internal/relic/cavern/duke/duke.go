@@ -63,6 +63,7 @@ func init() {
 		Stacking:          modifier.ReplaceBySource,
 		MaxCount:          8,
 		CountAddWhenStack: 1,
+		Duration: 3,
 		Listeners: modifier.Listeners{
 			OnAdd: onAddStack,
 		},
@@ -81,9 +82,13 @@ func addFuaDamage(mod *modifier.Instance, e event.HitStart) {
 // and lasts for 3 turn(s). This effect is removed the next time the wearer uses a follow-up attack.
 func onBeforeHitBuff(mod *modifier.Instance, e event.HitStart) {
 	if e.Hit.AttackType == model.AttackType_INSERT {
-		if mod.Engine().HasModifierFromSource(e.Attacker, mod.Owner(), dukeAttackBuff) { // todo finish
+		if mod.Engine().HasModifierFromSource(e.Attacker, mod.Owner(), dukeAttackBuff) {
 			if !(mod.Engine().ModifierStackCount(e.Attacker, mod.Owner(), dukeAttackBuff) == 8) {
-				mod.Engine().ExtendModifierCount(e.Attacker, dukeAttackBuff, 1)
+				e.Hit.Attacker.AddProperty(dukeAttackBuff, prop.ATKPercent, mod.Engine().ModifierStackCount(e.Attacker, mod.Owner(), dukeAttackBuff)*0.06)
+				mod.Engine().AddModifier(e.Attacker, info.Modifier{
+					Name: dukeAttackBuff,
+					Source: mod.Owner(),
+				})
 			}
 		} else {
 			mod.Engine().AddModifier(e.Attacker, info.Modifier{
