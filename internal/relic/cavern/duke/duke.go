@@ -85,7 +85,7 @@ func onBeforeHitBuff(mod *modifier.Instance, e event.HitStart) {
 	if e.Hit.AttackType == model.AttackType_INSERT {
 		if mod.Engine().HasModifierFromSource(e.Attacker, mod.Owner(), dukeAttackBuff) {
 			if !(mod.Engine().ModifierStackCount(e.Attacker, mod.Owner(), dukeAttackBuff) == 8) {
-				e.Hit.Attacker.AddProperty(dukeAttackBuff, prop.ATKPercent, mod.Engine().ModifierStackCount(e.Attacker, mod.Owner(), dukeAttackBuff)*0.06)
+				e.Hit.Attacker.AddProperty(dukeAttackBuff, prop.ATKPercent, 0.06)
 				mod.Engine().AddModifier(e.Attacker, info.Modifier{
 					Name:   dukeAttackBuff,
 					Source: mod.Owner(),
@@ -96,7 +96,7 @@ func onBeforeHitBuff(mod *modifier.Instance, e event.HitStart) {
 				Name:   dukeAttackBuff,
 				Source: mod.Owner(),
 			})
-			e.Hit.Attacker.AddProperty(dukeAttackBuff, prop.ATKPercent, mod.Engine().ModifierStackCount(e.Attacker, mod.Owner(), dukeAttackBuff)*0.06)
+			e.Hit.Attacker.AddProperty(dukeAttackBuff, prop.ATKPercent, 0.06)
 		}
 	}
 }
