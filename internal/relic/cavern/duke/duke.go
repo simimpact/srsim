@@ -63,8 +63,8 @@ func init() {
 		Stacking:          modifier.ReplaceBySource,
 		MaxCount:          8,
 		CountAddWhenStack: 1,
-		Duration: 3,
-		StatusType: model.StatusType_STATUS_BUFF,
+		Duration:          3,
+		StatusType:        model.StatusType_STATUS_BUFF,
 		Listeners: modifier.Listeners{
 			OnAdd: onAddStack,
 		},
@@ -87,7 +87,7 @@ func onBeforeHitBuff(mod *modifier.Instance, e event.HitStart) {
 			if !(mod.Engine().ModifierStackCount(e.Attacker, mod.Owner(), dukeAttackBuff) == 8) {
 				e.Hit.Attacker.AddProperty(dukeAttackBuff, prop.ATKPercent, mod.Engine().ModifierStackCount(e.Attacker, mod.Owner(), dukeAttackBuff)*0.06)
 				mod.Engine().AddModifier(e.Attacker, info.Modifier{
-					Name: dukeAttackBuff,
+					Name:   dukeAttackBuff,
 					Source: mod.Owner(),
 				})
 			}
