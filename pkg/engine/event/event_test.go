@@ -3,11 +3,11 @@ package event_test
 import (
 	"testing"
 
-	. "github.com/simimpact/srsim/pkg/engine/event"
+	"github.com/simimpact/srsim/pkg/engine/event"
 )
 
 func TestEventSystem(t *testing.T) {
-	var sys System
+	var sys event.System
 
 	value := 0
 	sys.Ping.Subscribe(func(event int) {

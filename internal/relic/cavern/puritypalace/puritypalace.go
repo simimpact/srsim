@@ -13,12 +13,14 @@ func init() {
 	relic.Register(key.KnightOfPurityPalace, relic.Config{
 		Effects: []relic.SetEffect{
 			{
-				MinCount: 2,
-				Stats:    info.PropMap{prop.DEFPercent: 0.15},
+				MinCount:     2,
+				Stats:        info.PropMap{prop.DEFPercent: 0.15},
+				CreateEffect: nil,
 			},
 			{
-				MinCount: 4,
-				Stats:    info.PropMap{prop.ShieldBoost: 0.20},
+				MinCount:     4,
+				Stats:        info.PropMap{prop.ShieldBoost: 0.20},
+				CreateEffect: nil,
 			},
 		},
 	})
