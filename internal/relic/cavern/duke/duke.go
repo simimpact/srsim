@@ -64,6 +64,7 @@ func init() {
 		MaxCount:          8,
 		CountAddWhenStack: 1,
 		Duration: 3,
+		StatusType: model.StatusType_STATUS_BUFF,
 		Listeners: modifier.Listeners{
 			OnAdd: onAddStack,
 		},
