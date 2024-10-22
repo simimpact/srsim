@@ -87,7 +87,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	c.engine.AddModifier(target, info.Modifier{
 		Name:   Benediction,
 		Source: c.id,
-		State: skillState{
+		State: &skillState{
 			tingEidolon:       c.info.Eidolon,
 			e2flag:            false,
 			skillPursuedMltp:  skillPursued[c.info.SkillLevelIndex()],

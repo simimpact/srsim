@@ -23,7 +23,7 @@ func init() {
 }
 
 func doE1OnUlt(mod *modifier.Instance, e event.ActionEnd) {
-	st := mod.State().(skillState)
+	st := mod.State().(*skillState)
 	// bypass
 	if st.tingEidolon < 1 {
 		return
