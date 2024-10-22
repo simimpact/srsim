@@ -33,6 +33,7 @@ func init() {
 						Source: owner,
 					})
 				},
+				Stats: nil,
 			},
 			{
 				MinCount: 4,
@@ -42,6 +43,7 @@ func init() {
 						Source: owner,
 					})
 				},
+				Stats: nil,
 			},
 		},
 	})
