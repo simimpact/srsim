@@ -75,7 +75,7 @@ const TotalIterations = (props: RollupCardProps) => {
 
 export const RollupGrid = (props: RollupCardProps) => {
   return (
-    <div className="grid grid-cols-3 gap-2 pl-2">
+    <div className="grid grid-cols-3 gap-2">
       <TotalIterations {...props} />
       <DamagePerCycleRollup {...props} />
       <TotalDamageDealt {...props} />

@@ -1,9 +1,10 @@
 "use client";
 import React from "react";
 import { ViewerContext } from "./provider";
-import { GraphCard, InProgress, OverviewStatsBarGraph } from "ui";
-import { RollupGrid } from "./rollup";
+import { Card, InProgress, Tabs, TabsContent, TabsList, TabsTrigger } from "ui";
 import { ExecutorContext } from "../exec/provider";
+import { Summary } from "./summary";
+import { Sample } from "./sample";
 
 export default function Viewer() {
   const { state } = React.useContext(ViewerContext);
@@ -19,7 +20,7 @@ export default function Viewer() {
     return <div>No stats available yet...</div>;
   }
   return (
-    <div className="p-3 flex flex-col min-h-screen">
+    <div className="p-3 flex flex-col">
       {exec.running() ? (
         <InProgress
           val={state.progress ?? 0}
@@ -29,17 +30,22 @@ export default function Viewer() {
           }}
         />
       ) : null}
-      <RollupGrid data={state.data.statistics} />
-      <div className="flex flex-col h-full mt-2 pl-2">
-        {state.data.statistics.damage_dealt_by_cycle === undefined ? null : (
-          <GraphCard title="Average Damage By Cycle">
-            <OverviewStatsBarGraph
-              dataKey="avg_dmg_by_cycle"
-              data={state.data.statistics.damage_dealt_by_cycle}
-            />
-          </GraphCard>
-        )}
-      </div>
+      <Tabs defaultValue="summary" className="w-full">
+        <TabsList>
+          <TabsTrigger value="summary">Result</TabsTrigger>
+          <TabsTrigger value="sample">Sample</TabsTrigger>
+        </TabsList>
+        <TabsContent value="summary">
+          <Card className="p-4">
+            <Summary data={state.data} />
+          </Card>
+        </TabsContent>
+        <TabsContent value="sample">
+          <Card className="p-4">
+            <Sample />
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

@@ -35,7 +35,7 @@ const CardTemplate = ({
   return (
     <div className={"flex basis-1/4 flex-auto min-w-fit "}>
       <Card className={c} onClick={() => interactable && value != undefined && click()}>
-        <div className="flex flex-col justify-start dark:bg-slate-800 bg-slate-100 w-full">
+        <div className="flex flex-col justify-start bg-muted w-full">
           <CardHeader className="pb-2">
             <CardTitle>{title}</CardTitle>
           </CardHeader>
