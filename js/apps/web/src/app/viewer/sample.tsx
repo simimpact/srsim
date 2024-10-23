@@ -53,6 +53,7 @@ export const Sample = ({ data }: PropType) => {
       case "TurnStart":
         return (
           <LogCard
+            className="pt-6"
             msg={`${nameMap[e.event.active] ?? e.event.active}'s turn (current av: ${e.event.total_av.toFixed(0)})`}
             icon={<FcSportsMode />}
           />
