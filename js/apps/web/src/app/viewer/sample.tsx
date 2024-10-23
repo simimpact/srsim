@@ -3,7 +3,7 @@ import React, { ReactNode } from "react";
 import { ExecutorContext } from "../exec/provider";
 import { model, SimLog } from "@srsim/ts-types";
 import { Button } from "ui";
-import { FcRight, FcSportsMode, FcSupport } from "react-icons/fc";
+import { FcChargeBattery, FcRight, FcSportsMode, FcSupport } from "react-icons/fc";
 
 type PropType = {
   data: model.SimResult;
@@ -69,8 +69,22 @@ export const Sample = ({ data }: PropType) => {
         return (
           <LogCard
             className="pl-6"
-            msg={`${nameMap[e.event.attacker] ?? e.event.attacker}'s ${e.event.attack_type} hit ${nameMap[e.event.defender] ?? e.event.defender}, dealt ${e.event.total_damage.toLocaleString()}`}
+            msg={`${nameMap[e.event.attacker] ?? e.event.attacker}'s ${e.event.attack_type} hit ${nameMap[e.event.defender] ?? e.event.defender}, dealt ${e.event.total_damage.toLocaleString()} [${e.event.key}]`}
             icon={<FcSupport />}
+          />
+        );
+      case "SPChange":
+        let t = "gained";
+        let diff = e.event.new_sp - e.event.old_sp;
+        if (diff < 0) {
+          t = "lost";
+          diff = -1 * diff;
+        }
+        return (
+          <LogCard
+            msg={`${t} ${diff} SP (source: ${nameMap[e.event.source] ?? e.event.source} [${e.event.key}]) `}
+            icon={<FcChargeBattery />}
+            className="pl-2"
           />
         );
       default:
