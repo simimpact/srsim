@@ -19,7 +19,7 @@ export class NullExecutor implements Executor {
   public run(
     cfg: string,
     iterations: number,
-    updateResult: (result: SimResult, iters: number, hash: string) => void //hash is currently unused; we add iters because currently not in PB
+    updateResult: (result: SimResult, hash: string) => void //hash is currently unused
   ): Promise<boolean | void> {
     return new Promise((_, reject) => reject("null executor - cannot run"));
   }

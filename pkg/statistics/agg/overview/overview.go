@@ -13,6 +13,7 @@ func init() {
 
 type buffer struct {
 	iters              uint32
+	itersCompleted     uint32
 	dpc                *calc.Sample
 	totalDamageDealt   calc.StreamStats
 	totalDamageTaken   calc.StreamStats
@@ -69,6 +70,7 @@ func (b *buffer) Add(result *model.IterationResult) {
 	b.totalDamageTaken.Add(result.TotalDamageTaken)
 	b.totalAV.Add(result.TotalAv)
 	b.dpc.Xs = append(b.dpc.Xs, result.TotalDamageDealt*100/result.TotalAv)
+	b.itersCompleted++
 
 	var last float64
 	for i, v := range result.CumulativeDamageDealtByCycle {
@@ -89,6 +91,7 @@ func (b *buffer) Add(result *model.IterationResult) {
 }
 
 func (b *buffer) Flush(result *model.Statistics) {
+	result.Iterations += b.itersCompleted
 	result.TotalDamageDealt = agg.ToDescriptiveStats(&b.totalDamageDealt)
 	result.TotalDamageTaken = agg.ToDescriptiveStats(&b.totalDamageTaken)
 	result.TotalAv = agg.ToDescriptiveStats(&b.totalAV)

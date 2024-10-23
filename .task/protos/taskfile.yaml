@@ -3,6 +3,11 @@
 version: "3"
 
 tasks:
+  default:
+    desc: run all protos generation
+    cmds:
+      - task: go
+      - task: ts-types
   go:
     desc: generate go code
     cmds:

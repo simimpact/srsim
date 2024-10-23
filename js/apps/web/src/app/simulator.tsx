@@ -26,31 +26,27 @@ const SimulatorCore = ({ exec }: SimulatorCoreProps) => {
   const router = useRouter();
   const [cfg, setCfg] = React.useState<string>("");
   React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      const saved = window.localStorage.getItem(cfgKey);
-      if (saved === null) {
-        window.localStorage.setItem(cfgKey, "");
-        return;
-      }
-      setCfg(saved);
+    const saved = window.localStorage.getItem(cfgKey);
+    if (saved === null) {
+      window.localStorage.setItem(cfgKey, "");
+      return;
     }
+    setCfg(saved);
   }, []);
   React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(cfgKey, cfg);
-    }
+    localStorage.setItem(cfgKey, cfg);
   }, [cfg]);
   const { dispatch } = React.useContext(ViewerContext);
 
   const run = () => {
     const updateResult = throttle(
-      (res: model.SimResult, iters: number, hash: string) => {
+      (res: model.SimResult, hash: string) => {
         console.log("updating result", res);
         dispatch({
           type: "SET_RESULT",
           payload: {
             result: res,
-            progress: (100 * iters) / DEFAULT_ITERS,
+            progress: (100 * (res.statistics?.iterations ?? 0)) / DEFAULT_ITERS,
           },
         });
       },
