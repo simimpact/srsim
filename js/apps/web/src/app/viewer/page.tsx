@@ -1,12 +1,15 @@
-'use client';
-import React from 'react';
-import {ViewerContext} from './provider';
-import {GraphCard, InProgress, OverviewStatsBarGraph} from 'ui';
-import {RollupGrid} from './rollup';
+"use client";
+import React from "react";
+import { ViewerContext } from "./provider";
+import { GraphCard, InProgress, OverviewStatsBarGraph } from "ui";
+import { RollupGrid } from "./rollup";
+import { ExecutorContext } from "../exec/provider";
 
 export default function Viewer() {
-  const {state} = React.useContext(ViewerContext);
-  if (state.error !== null && state.error !== '') {
+  const { state } = React.useContext(ViewerContext);
+  const { supplier } = React.useContext(ExecutorContext);
+  const exec = supplier();
+  if (state.error !== null && state.error !== "") {
     return <pre>{state.error}</pre>;
   }
   if (state.data === null) {
@@ -17,8 +20,14 @@ export default function Viewer() {
   }
   return (
     <div className="p-3 flex flex-col min-h-screen">
-      {!state.done ? (
-        <InProgress val={state.progress ?? 0} className="mb-2" />
+      {exec.running() ? (
+        <InProgress
+          val={state.progress ?? 0}
+          className="mb-2"
+          cancel={() => {
+            exec.cancel();
+          }}
+        />
       ) : null}
       <RollupGrid data={state.data.statistics} />
       <div className="flex flex-col h-full mt-2">

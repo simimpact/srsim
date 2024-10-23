@@ -1,48 +1,20 @@
 "use client";
-import React, { useRef } from "react";
+import React from "react";
 import { Button, Editor } from "@ui/components";
-import { Executor, ExecutorSupplier, ServerExecutor } from "@srsim/executor";
+import { Executor } from "@srsim/executor";
 import { useRouter } from "next/navigation";
 import { throttle } from "lodash-es";
 import { model } from "@srsim/ts-types";
 import { ViewerContext } from "./viewer/provider";
-
-let exec: ServerExecutor | undefined;
-const urlKey = "server-mode-url";
-const defaultURL = "http://127.0.0.1:54321";
+import { ExecutorContext } from "./exec/provider";
 
 export default function Simulator() {
-  const [url, setURL] = React.useState<string>(defaultURL);
-  React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      const saved = window.localStorage.getItem(urlKey);
-      if (saved === null) {
-        window.localStorage.setItem(urlKey, defaultURL);
-        return;
-      }
-      setURL(saved);
-    }
-  }, []);
-  React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(urlKey, url);
-    }
-    if (exec != null) {
-      exec.set_url(url);
-    }
-  }, [url]);
-  const supplier = useRef<ExecutorSupplier<ServerExecutor>>(() => {
-    if (exec == null) {
-      exec = new ServerExecutor(url);
-    }
-    return exec;
-  });
-
-  return <SimulatorCore exec={supplier.current} />;
+  const { supplier } = React.useContext(ExecutorContext);
+  return <SimulatorCore exec={supplier()} />;
 }
 
 type SimulatorCoreProps = {
-  exec: ExecutorSupplier<Executor>;
+  exec: Executor;
 };
 
 const DEFAULT_VIEWER_THROTTLE = 100;
@@ -79,7 +51,6 @@ const SimulatorCore = ({ exec }: SimulatorCoreProps) => {
           payload: {
             result: res,
             progress: (100 * iters) / DEFAULT_ITERS,
-            done: iters === DEFAULT_ITERS,
           },
         });
       },
@@ -87,17 +58,15 @@ const SimulatorCore = ({ exec }: SimulatorCoreProps) => {
       { leading: true, trailing: true }
     );
 
-    exec()
-      .run(cfg, DEFAULT_ITERS, updateResult)
-      .catch(err => {
-        dispatch({
-          type: "SET_ERROR",
-          payload: {
-            error: err,
-            config: cfg,
-          },
-        });
+    exec.run(cfg, DEFAULT_ITERS, updateResult).catch(err => {
+      dispatch({
+        type: "SET_ERROR",
+        payload: {
+          error: err,
+          config: cfg,
+        },
       });
+    });
 
     router.push("/viewer");
   };
