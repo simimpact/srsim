@@ -1,4 +1,4 @@
-import { SimConfig, SimResult } from "@srsim/ts-types/src/generated/index.model";
+import { model, SimLog } from "@srsim/ts-types";
 import axios from "axios";
 import { Executor } from "./Executor";
 
@@ -46,7 +46,7 @@ export class ServerExecutor implements Executor {
     return this.is_running;
   }
 
-  public validate(cfg: string): Promise<SimConfig> {
+  public validate(cfg: string): Promise<model.SimConfig> {
     return new Promise((resolve, reject) => {
       axios
         .post(`${this.ipaddr}/validate/${this.id}`, {
@@ -73,18 +73,32 @@ export class ServerExecutor implements Executor {
     });
   }
 
-  public sample(cfg: string, seed: string): Promise<any> {
+  public sample(cfg: string, seed: string): Promise<SimLog[]> {
     const c = this;
     return new Promise((resolve, reject) => {
       axios
-        .post(`${this.ipaddr}/sample/${this.id}`, {
-          config: cfg,
-          seed: parseInt(seed),
-        })
+        .post(
+          `${this.ipaddr}/sample/${this.id}`,
+          {
+            config: cfg,
+            seed: parseInt(seed),
+          },
+          { transformResponse: undefined }
+        )
         .then(function (resp) {
           //resp should be gzipped data... do something about this...
           console.log("sample resp", resp);
-          resolve(resp.data);
+          //json strins need to split
+          const asText = resp.data;
+          const binding: any[] = asText.split("\n");
+          const events: SimLog[] = []; // TODO: TS
+          binding.forEach(line => {
+            if (line != "") {
+              const data = JSON.parse(line as string) as SimLog; // TODO: TS
+              events.push(data);
+            }
+          });
+          resolve(events);
         })
         .catch(function (resp) {
           console.log("something went wrong fetch sample", resp);
@@ -101,7 +115,7 @@ export class ServerExecutor implements Executor {
   public run(
     cfg: string,
     iterations: number,
-    updateResult: (result: SimResult, hash: string) => void
+    updateResult: (result: model.SimResult, hash: string) => void
   ): Promise<boolean | void> {
     const c = this;
     return new Promise((resolve, reject) => {
@@ -122,7 +136,7 @@ export class ServerExecutor implements Executor {
               reject("unexpected response from server: blank result");
               return;
             }
-            let simres: SimResult;
+            let simres: model.SimResult;
             try {
               simres = JSON.parse(resp.data.result);
               updateResult(simres, resp.data.hash);

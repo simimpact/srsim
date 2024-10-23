@@ -42,7 +42,7 @@ export default function Viewer() {
         </TabsContent>
         <TabsContent value="sample">
           <Card className="p-4">
-            <Sample />
+            <Sample data={state.data} />
           </Card>
         </TabsContent>
       </Tabs>
