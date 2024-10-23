@@ -26,16 +26,17 @@ const SimulatorCore = ({ exec }: SimulatorCoreProps) => {
   const router = useRouter();
   const [cfg, setCfg] = React.useState<string>("");
   React.useEffect(() => {
-    const saved = window.localStorage.getItem(cfgKey);
+    const saved = localStorage.getItem(cfgKey);
     if (saved === null) {
-      window.localStorage.setItem(cfgKey, "");
+      localStorage.setItem(cfgKey, "");
       return;
     }
     setCfg(saved);
   }, []);
-  React.useEffect(() => {
+  const updateCfg = (v: string) => {
+    setCfg(v);
     localStorage.setItem(cfgKey, cfg);
-  }, [cfg]);
+  };
   const { dispatch } = React.useContext(ViewerContext);
 
   const run = () => {
@@ -68,7 +69,7 @@ const SimulatorCore = ({ exec }: SimulatorCoreProps) => {
   };
   return (
     <div className="m-3">
-      <Editor cfg={cfg} onChange={v => setCfg(v)} className="mb-2"></Editor>
+      <Editor cfg={cfg} onChange={updateCfg} className="mb-2"></Editor>
       <div className="sticky bottom-0 flex flex-col gap-y-1 z-10">
         <Button variant="secondary" onClick={() => run()}>
           Run

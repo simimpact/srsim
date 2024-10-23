@@ -1,14 +1,14 @@
-'use client';
-import Link from 'next/link';
-import {useRouter} from 'next/navigation';
-import React from 'react';
+"use client";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React from "react";
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
   navigationMenuTriggerStyle,
-} from 'ui';
+} from "ui";
 
 export default function Navigation() {
   const router = useRouter();
@@ -17,19 +17,15 @@ export default function Navigation() {
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              <Link href={'/'}>Simulator</Link>
+            <NavigationMenuLink className={navigationMenuTriggerStyle()} href="/">
+              Simulator
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Docs
-            </NavigationMenuLink>
+            <NavigationMenuLink className={navigationMenuTriggerStyle()}>Docs</NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              About
-            </NavigationMenuLink>
+            <NavigationMenuLink className={navigationMenuTriggerStyle()}>About</NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
