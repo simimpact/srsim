@@ -82,7 +82,7 @@ export const Sample = ({ data }: PropType) => {
         }
         return (
           <LogCard
-            msg={`${t} ${diff} SP (source: ${nameMap[e.event.source] ?? e.event.source} [${e.event.key}]) `}
+            msg={`${t} ${diff} SP (source: ${nameMap[e.event.source] ?? e.event.source} [${e.event.key}]), current ${e.event.new_sp} `}
             icon={<FcChargeBattery />}
             className="pl-2"
           />
