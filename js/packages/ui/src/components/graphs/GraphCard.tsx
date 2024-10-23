@@ -8,13 +8,11 @@ type CardProps = {
 
 export const GraphCard = (props: CardProps) => {
   return (
-    <div className="pl-1">
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle>{props.title}</CardTitle>
-        </CardHeader>
-        <CardContent>{props.children}</CardContent>
-      </Card>
-    </div>
+    <Card className="bg-muted">
+      <CardHeader className="pb-2 ">
+        <CardTitle>{props.title}</CardTitle>
+      </CardHeader>
+      <CardContent>{props.children}</CardContent>
+    </Card>
   );
 };

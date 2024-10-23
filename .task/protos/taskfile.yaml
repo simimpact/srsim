@@ -3,6 +3,11 @@
 version: "3"
 
 tasks:
+  default:
+    desc: run all protos generation
+    cmds:
+      - task: go
+      - task: ts-types
   go:
     desc: generate go code
     cmds:
@@ -26,3 +31,7 @@ tasks:
               --ts_proto_opt=useJsonName=true \
               --ts_proto_opt=outputIndex=true \
               pb/**/*.proto
+  tygo:
+    desc: run tygo
+    dir: js/packages/ts-types
+    cmd: go run github.com/gzuidhof/tygo@latest generate

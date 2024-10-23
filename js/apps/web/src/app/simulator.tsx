@@ -1,48 +1,20 @@
 "use client";
-import React, { useRef } from "react";
+import React from "react";
 import { Button, Editor } from "@ui/components";
-import { Executor, ExecutorSupplier, ServerExecutor } from "@srsim/executor";
+import { Executor } from "@srsim/executor";
 import { useRouter } from "next/navigation";
 import { throttle } from "lodash-es";
 import { model } from "@srsim/ts-types";
 import { ViewerContext } from "./viewer/provider";
-
-let exec: ServerExecutor | undefined;
-const urlKey = "server-mode-url";
-const defaultURL = "http://127.0.0.1:54321";
+import { ExecutorContext } from "./exec/provider";
 
 export default function Simulator() {
-  const [url, setURL] = React.useState<string>(defaultURL);
-  React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      const saved = window.localStorage.getItem(urlKey);
-      if (saved === null) {
-        window.localStorage.setItem(urlKey, defaultURL);
-        return;
-      }
-      setURL(saved);
-    }
-  }, []);
-  React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(urlKey, url);
-    }
-    if (exec != null) {
-      exec.set_url(url);
-    }
-  }, [url]);
-  const supplier = useRef<ExecutorSupplier<ServerExecutor>>(() => {
-    if (exec == null) {
-      exec = new ServerExecutor(url);
-    }
-    return exec;
-  });
-
-  return <SimulatorCore exec={supplier.current} />;
+  const { supplier } = React.useContext(ExecutorContext);
+  return <SimulatorCore exec={supplier()} />;
 }
 
 type SimulatorCoreProps = {
-  exec: ExecutorSupplier<Executor>;
+  exec: Executor;
 };
 
 const DEFAULT_VIEWER_THROTTLE = 100;
@@ -54,32 +26,28 @@ const SimulatorCore = ({ exec }: SimulatorCoreProps) => {
   const router = useRouter();
   const [cfg, setCfg] = React.useState<string>("");
   React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      const saved = window.localStorage.getItem(cfgKey);
-      if (saved === null) {
-        window.localStorage.setItem(cfgKey, "");
-        return;
-      }
-      setCfg(saved);
+    const saved = localStorage.getItem(cfgKey);
+    if (saved === null) {
+      localStorage.setItem(cfgKey, "");
+      return;
     }
+    setCfg(saved);
   }, []);
-  React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(cfgKey, cfg);
-    }
-  }, [cfg]);
+  const updateCfg = (v: string) => {
+    setCfg(v);
+    localStorage.setItem(cfgKey, cfg);
+  };
   const { dispatch } = React.useContext(ViewerContext);
 
   const run = () => {
     const updateResult = throttle(
-      (res: model.SimResult, iters: number, hash: string) => {
+      (res: model.SimResult, hash: string) => {
         console.log("updating result", res);
         dispatch({
           type: "SET_RESULT",
           payload: {
             result: res,
-            progress: (100 * iters) / DEFAULT_ITERS,
-            done: iters === DEFAULT_ITERS,
+            progress: (100 * (res.statistics?.iterations ?? 0)) / DEFAULT_ITERS,
           },
         });
       },
@@ -87,23 +55,21 @@ const SimulatorCore = ({ exec }: SimulatorCoreProps) => {
       { leading: true, trailing: true }
     );
 
-    exec()
-      .run(cfg, DEFAULT_ITERS, updateResult)
-      .catch(err => {
-        dispatch({
-          type: "SET_ERROR",
-          payload: {
-            error: err,
-            config: cfg,
-          },
-        });
+    exec.run(cfg, DEFAULT_ITERS, updateResult).catch(err => {
+      dispatch({
+        type: "SET_ERROR",
+        payload: {
+          error: err,
+          config: cfg,
+        },
       });
+    });
 
     router.push("/viewer");
   };
   return (
     <div className="m-3">
-      <Editor cfg={cfg} onChange={v => setCfg(v)} className="mb-2"></Editor>
+      <Editor cfg={cfg} onChange={updateCfg} className="mb-2"></Editor>
       <div className="sticky bottom-0 flex flex-col gap-y-1 z-10">
         <Button variant="secondary" onClick={() => run()}>
           Run

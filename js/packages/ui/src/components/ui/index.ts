@@ -13,3 +13,4 @@ export * from "./slider";
 export * from "./tooltip";
 export * from "./alert";
 export * from "./progress";
+export * from "./tabs";
