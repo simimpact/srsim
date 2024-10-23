@@ -32,8 +32,9 @@ func newSample(itr uint32) *calc.Sample {
 
 func NewAgg(cfg *model.SimConfig) (agg.Aggregator, error) {
 	out := buffer{
-		iters: cfg.Settings.Iterations,
-		dpc:   newSample(cfg.Settings.Iterations),
+		iters:          cfg.Settings.Iterations,
+		itersCompleted: 0,
+		dpc:            newSample(cfg.Settings.Iterations),
 		totalDamageTaken: calc.StreamStats{
 			Count: 0,
 			Total: 0,
