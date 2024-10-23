@@ -15,7 +15,7 @@ const DamagePerCycleRollup = (props: RollupCardProps) => {
   const d = props.data.total_damage_dealt_per_cycle;
   return (
     <RollupCard
-      color="bg-red"
+      color="bg-red-500"
       title="Damage Per Cycle (DPC)"
       value={fmt(d?.mean)}
       auxStats={[
@@ -34,7 +34,7 @@ const TotalDamageDealt = (props: RollupCardProps) => {
   const d = props.data.total_damage_dealt;
   return (
     <RollupCard
-      color="bg-blue"
+      color="bg-blue-500"
       title="Total Damage Dealt (TDD)"
       value={fmt(d?.mean)}
       auxStats={[
@@ -53,7 +53,7 @@ const TotalDamageTaken = (props: RollupCardProps) => {
   const d = props.data.total_damage_taken;
   return (
     <RollupCard
-      color="bg-blue"
+      color="bg-yellow-500"
       title="Total Damage Taken (TDT)"
       value={fmt(d?.mean)}
       auxStats={[
@@ -70,16 +70,16 @@ const TotalDamageTaken = (props: RollupCardProps) => {
 
 const TotalIterations = (props: RollupCardProps) => {
   const d = props.data.iterations;
-  return <RollupCard color="bg-blue" title="Iterations" value={fmt(d)} />;
+  return <RollupCard color="bg-green-600" title="Iterations" value={fmt(d)} />;
 };
 
 export const RollupGrid = (props: RollupCardProps) => {
   return (
-    <div className="grid grid-cols-3 gap-y-2">
+    <div className="grid grid-cols-3 gap-2 pl-2">
+      <TotalIterations {...props} />
       <DamagePerCycleRollup {...props} />
       <TotalDamageDealt {...props} />
       <TotalDamageTaken {...props} />
-      <TotalIterations {...props} />
     </div>
   );
 };

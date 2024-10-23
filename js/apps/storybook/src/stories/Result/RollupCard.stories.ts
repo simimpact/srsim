@@ -23,7 +23,7 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Primary: Story = {
   args: {
-    color: "bg-red",
+    color: "bg-red-500",
     title: "Damage Per Cycle (DPC)",
     value: "66,000",
     auxStats: [

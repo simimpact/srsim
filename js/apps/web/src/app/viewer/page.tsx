@@ -30,7 +30,7 @@ export default function Viewer() {
         />
       ) : null}
       <RollupGrid data={state.data.statistics} />
-      <div className="flex flex-col h-full mt-2">
+      <div className="flex flex-col h-full mt-2 pl-2">
         {state.data.statistics.damage_dealt_by_cycle === undefined ? null : (
           <GraphCard title="Average Damage By Cycle">
             <OverviewStatsBarGraph

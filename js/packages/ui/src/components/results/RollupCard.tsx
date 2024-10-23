@@ -28,14 +28,14 @@ const CardTemplate = ({
 }: CardProps) => {
   const interactable = click !== null;
   const c = cn(
-    "flex flex-auto flex-row items-stretch justify-between" +
-      `${interactable ? " hover:cursor-pointer" : ""}`
+    "flex flex-auto flex-row items-stretch justify-between pl-2 " +
+      `${color} ${interactable ? " hover:cursor-pointer" : ""}`
   );
 
   return (
-    <div className={"flex basis-1/4 flex-auto pl-1 min-w-fit " + color}>
+    <div className={"flex basis-1/4 flex-auto min-w-fit "}>
       <Card className={c} onClick={() => interactable && value != undefined && click()}>
-        <div className="flex flex-col justify-start">
+        <div className="flex flex-col justify-start dark:bg-slate-800 bg-slate-100 w-full">
           <CardHeader className="pb-2">
             <CardTitle>{title}</CardTitle>
           </CardHeader>
