@@ -7,6 +7,9 @@ packages:
       - "target.go"
       - "interface.go"
 
+    ident_mappings:
+      Stats: StatsEncoded
+
     type_mappings:
       key.TargetID: string
       key.Relic: string
