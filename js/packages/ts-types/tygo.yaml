@@ -7,6 +7,9 @@ packages:
       - "target.go"
       - "interface.go"
 
+    ident_mappings:
+      Stats: StatsEncoded
+
     type_mappings:
       key.TargetID: string
       key.Relic: string
@@ -37,6 +40,9 @@ packages:
 
   - path: "github.com/simimpact/srsim/pkg/engine/event"
     output_path: "src/go-types/event.ts"
+
+    ident_mappings:
+      Stats: StatsEncoded
 
     type_mappings:
       # necessary since cant ignore generating these even though not used by UI

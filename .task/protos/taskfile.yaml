@@ -8,6 +8,7 @@ tasks:
     cmds:
       - task: go
       - task: ts-types
+      - task: tygo
   go:
     desc: generate go code
     cmds:
@@ -34,4 +35,6 @@ tasks:
   tygo:
     desc: run tygo
     dir: js/packages/ts-types
-    cmd: go run github.com/gzuidhof/tygo@latest generate
+    # cmd: go run github.com/gzuidhof/tygo@latest generate
+    # install
+    cmd: tygo generate

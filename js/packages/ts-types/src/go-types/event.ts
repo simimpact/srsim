@@ -87,6 +87,7 @@ export interface HitStart {
 export type HitEndEventHandler = Handler<HitEnd>;
 export interface HitEnd {
   key: string;
+  hit?: info.Hit;
   hit_index: number /* int */;
   attacker: string;
   defender: string;

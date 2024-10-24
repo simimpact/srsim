@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Button, Editor } from "@ui/components";
+import { Alert, Button, Editor } from "@ui/components";
 import { Executor } from "@srsim/executor";
 import { useRouter } from "next/navigation";
 import { throttle } from "lodash-es";
@@ -70,6 +70,7 @@ const SimulatorCore = ({ exec }: SimulatorCoreProps) => {
   return (
     <div className="m-3">
       <Editor cfg={cfg} onChange={updateCfg} className="mb-2"></Editor>
+      {!exec.ready() ? <Alert>Server not ready. Are you sure it is running?</Alert> : null}
       <div className="sticky bottom-0 flex flex-col gap-y-1 z-10">
         <Button variant="secondary" onClick={() => run()}>
           Run

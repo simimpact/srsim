@@ -210,12 +210,12 @@ export interface Hit {
    * The stats of the attacker of this hit. These stats are a snapshot of the target's state and
    * can be modified
    */
-  attacker?: Stats;
+  attacker?: StatsEncoded;
   /**
    * The stats of the defender of this hit. These stats are a snapshot of the target's state and
    * can be modified
    */
-  defender?: Stats;
+  defender?: StatsEncoded;
   /**
    * The type of attack (IE: dot, ult, insert, etc)
    */
