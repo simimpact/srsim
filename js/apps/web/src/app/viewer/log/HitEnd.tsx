@@ -34,7 +34,7 @@ export const HitEnd = ({ names, event }: Prop) => {
           <div>{`${names[e.event.attacker] ?? e.event.attacker}'s ${e.event.attack_type} hit ${names[e.event.defender] ?? e.event.defender}, dealt ${e.event.total_damage.toLocaleString()} [${e.event.key}]`}</div>
         </div>
       </DialogTrigger>
-      <DialogContent className="max-h-[70%] max-w-[70%] overflow-scroll">
+      <DialogContent className="max-h-[70%] max-w-[70%] overflow-auto">
         <DialogHeader>
           <DialogTitle>HitEnd Details: {e.event.key}</DialogTitle>
         </DialogHeader>
