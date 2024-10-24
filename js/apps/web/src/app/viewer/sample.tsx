@@ -1,9 +1,9 @@
 "use client";
-import React, { ReactNode } from "react";
+import React from "react";
 import { ExecutorContext } from "../exec/provider";
 import { model, SimLog } from "@srsim/ts-types";
 import { Button } from "ui";
-import { FcRight, FcSportsMode, FcSupport } from "react-icons/fc";
+import { ActionStart, HitEnd, SPChange, TurnStart } from "./log";
 
 type PropType = {
   data: model.SimResult;
@@ -35,8 +35,7 @@ export const Sample = ({ data }: PropType) => {
 
   let nameMap: { [key: string]: string } = {};
 
-  const rows = logs.map(e => {
-    let name = "";
+  const rows = logs.map((e, i) => {
     switch (e.name) {
       case "CharactersAdded":
         //map char names
@@ -51,28 +50,13 @@ export const Sample = ({ data }: PropType) => {
         });
         return null;
       case "TurnStart":
-        return (
-          <LogCard
-            msg={`${nameMap[e.event.active] ?? e.event.active}'s turn (current av: ${e.event.total_av.toFixed(0)})`}
-            icon={<FcSportsMode />}
-          />
-        );
+        return <TurnStart key={i} names={nameMap} event={e} />;
       case "ActionStart":
-        return (
-          <LogCard
-            className="pl-2"
-            msg={`${nameMap[e.event.owner] ?? e.event.owner} used ${e.event.attack_type}`}
-            icon={<FcRight />}
-          />
-        );
+        return <ActionStart key={i} names={nameMap} event={e} />;
       case "HitEnd":
-        return (
-          <LogCard
-            className="pl-6"
-            msg={`${nameMap[e.event.attacker] ?? e.event.attacker}'s ${e.event.attack_type} hit ${nameMap[e.event.defender] ?? e.event.defender}, dealt ${e.event.total_damage.toLocaleString()}`}
-            icon={<FcSupport />}
-          />
-        );
+        return <HitEnd key={i} names={nameMap} event={e} />;
+      case "SPChange":
+        return <SPChange key={i} names={nameMap} event={e} />;
       default:
         return null;
     }
@@ -81,21 +65,6 @@ export const Sample = ({ data }: PropType) => {
   return (
     <div>
       <pre>{rows}</pre>
-    </div>
-  );
-};
-
-type LogCardProp = {
-  msg: string;
-  icon: ReactNode | null;
-  className?: string;
-};
-
-const LogCard = ({ msg, icon, className }: LogCardProp) => {
-  return (
-    <div className={"rounded-sm border-1 bg-muted flex flex-row w-full " + className}>
-      {icon}
-      <div>{msg}</div>
     </div>
   );
 };

@@ -8,6 +8,7 @@ tasks:
     cmds:
       - task: go
       - task: ts-types
+      - task: tygo
   go:
     desc: generate go code
     cmds:
