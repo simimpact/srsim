@@ -13,7 +13,7 @@ export const LogCard = ({ msg, icon, className, children = null }: LogCardProp) 
   const c = cn(
     "flex flex-row items-center w-full gap-x-2",
     className,
-    children === null ? "" : "cursor-pointer"
+    children === null ? "" : "cursor-pointer text-blue-700"
   );
 
   if (children === null) {
