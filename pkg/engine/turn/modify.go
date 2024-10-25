@@ -18,11 +18,11 @@ func (mgr *manager) SetGauge(data info.ModifyAttribute) error {
 	previousGauge := mgr.target(data.Target).gauge
 
 	// if there's no change to Gauge, exit early
-	if previousGauge == data.Amount {
+	if previousGauge == int64(data.Amount) {
 		return nil
 	}
 
-	mgr.target(data.Target).gauge = data.Amount
+	mgr.target(data.Target).gauge = int64(data.Amount)
 
 	// find target index in mgr.orderHandler.turnOrder
 	targetIndex, err := mgr.orderHandler.FindTargetIndex(data.Target)
@@ -57,25 +57,25 @@ func (mgr *manager) SetGauge(data info.ModifyAttribute) error {
 }
 
 func (mgr *manager) ModifyGaugeNormalized(data info.ModifyAttribute) error {
-	data.Amount = mgr.target(data.Target).gauge + data.Amount*BaseGauge
+	data.Amount = float64(mgr.target(data.Target).gauge) + data.Amount*float64(BaseGauge)
 	return mgr.SetGauge(data)
 }
 
 func (mgr *manager) ModifyGaugeAV(data info.ModifyAttribute) error {
 	added := mgr.attr.Stats(data.Target).SPD() * data.Amount // SPD * AV = gauge
-	data.Amount = mgr.target(data.Target).gauge + added
+	data.Amount = float64(mgr.target(data.Target).gauge) + added
 
 	return mgr.SetGauge(data)
 }
 
 func (mgr *manager) ModifyCurrentGaugeCost(data info.ModifyCurrentGaugeCost) {
-	data.Amount = mgr.gaugeCost + data.Amount
+	data.Amount = float64(mgr.gaugeCost) + data.Amount
 	mgr.SetCurrentGaugeCost(data)
 }
 
 func (mgr *manager) SetCurrentGaugeCost(data info.ModifyCurrentGaugeCost) {
 	prev := mgr.gaugeCost
-	mgr.gaugeCost = data.Amount
+	mgr.gaugeCost = int64(data.Amount)
 
 	if prev == mgr.gaugeCost {
 		return
