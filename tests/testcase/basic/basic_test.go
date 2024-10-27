@@ -26,9 +26,6 @@ func TestBasicTest(t *testing.T) {
 func (t *BasicTest) Test_Framework() {
 	t.StartSimulation()
 	t.Expect(termination.ExpectFor())
-	if err := t.WaitForSimulationFinished(); err != nil {
-		t.FailNow("simulation did not finish without err", "err", err)
-	}
 }
 
 // Verify that we can manually dictate turns
@@ -43,9 +40,6 @@ func (t *BasicTest) Test_TurnLogic() {
 	t.Expect(turnstart.ExpectFor(), turnstart.CurrentTurnIs(dan.ID()))
 	t.TerminateRun()
 	t.Expect(termination.ExpectFor())
-	if err := t.WaitForSimulationFinished(); err != nil {
-		t.FailNow("simulation did not finish without err", "err", err)
-	}
 }
 
 // Verify that we can manually continue with AutoContinue disabled
@@ -56,9 +50,6 @@ func (t *BasicTest) Test_ManualContinue() {
 	t.Continue()
 	t.Expect(termination.ExpectFor())
 	t.Continue()
-	if err := t.WaitForSimulationFinished(); err != nil {
-		t.FailNow("simulation did not finish without err", "err", err)
-	}
 }
 
 // Verify that LoadYamlCfg properly loads the correct cfg settings
@@ -68,9 +59,6 @@ func (t *BasicTest) Test_LoadYaml() {
 	t.Expect(turnstart.ExpectFor(), turnstart.CurrentTurnIs(t.Characters.Character(key.DanHeng).ID()))
 	t.Expect(termination.ExpectFor())
 	t.Require().Equal(key.TargetID(1), t.Characters.Character(key.DanHeng).ID())
-	if err := t.WaitForSimulationFinished(); err != nil {
-		t.FailNow("simulation did not finish without err", "err", err)
-	}
 }
 
 // Verify that LoadYamlCfg loads properly without a gcsl eval
@@ -80,9 +68,6 @@ func (t *BasicTest) Test_LoadYamlWithoutEval() {
 	t.Expect(turnstart.ExpectFor(), turnstart.CurrentTurnIs(t.Characters.Character(key.DanHeng).ID()))
 	t.Expect(termination.ExpectFor())
 	t.Require().Equal(key.TargetID(1), t.Characters.Character(key.DanHeng).ID())
-	if err := t.WaitForSimulationFinished(); err != nil {
-		t.FailNow("simulation did not finish without err", "err", err)
-	}
 }
 
 // Verify that t.Continue does not deadlock if AutoContinue is disabled, or if it is called twice with AutoContinue enabled
@@ -94,9 +79,6 @@ func (t *BasicTest) Test_AutoContinue_Deadlock() {
 	t.Expect(termination.ExpectFor())
 	t.Continue()
 	t.Continue()
-	if err := t.WaitForSimulationFinished(); err != nil {
-		t.FailNow("simulation did not finish without err", "err", err)
-	}
 }
 
 // Verify that MaxTraces creates a proper TraceMap
@@ -109,7 +91,4 @@ func (t *BasicTest) Test_TraceMap_Registration() {
 	t.Expect(termination.ExpectFor())
 	// 16% from OSR, 18% from Traces
 	dan.Equal(prop.ATKPercent, 0.34)
-	if err := t.WaitForSimulationFinished(); err != nil {
-		t.FailNow("simulation did not finish without err", "err", err)
-	}
 }

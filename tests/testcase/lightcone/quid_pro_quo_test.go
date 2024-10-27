@@ -36,7 +36,4 @@ func (t *QPQTest) Test_EnergyAdd() {
 	t.Assert.Equal(0, dummy.Stats().Energy())
 	t.Assert.Equal(8, dan.Stats().Energy())
 	t.Continue()
-	if err := t.WaitForSimulationFinished(); err != nil {
-		t.FailNow("simulation did not finish without err", "err", err)
-	}
 }

@@ -27,7 +27,4 @@ func (t *MusketeerTest) Test_Musketeer_4p() {
 	dan.Equal(prop.SPDPercent, 0.06)
 	// OSR +16, Musketeer +12
 	dan.Equal(prop.ATKPercent, 0.28)
-	if err := t.WaitForSimulationFinished(); err != nil {
-		t.FailNow("simulation did not finish without err", "err", err)
-	}
 }

@@ -75,13 +75,24 @@ func (s *Stub) TearDownTest() {
 	fmt.Println("Test Finished")
 	logging.InitLoggers()
 	s.cfgEval = nil
-	select {
-	case <-s.eventPipe:
-		s.haltSignaller <- struct{}{}
-	default:
+	// hacky way to drain the sim and make sure it finishes first
+	for {
+		select {
+		case <-s.ctx.Done(): // wait for sim to finish
+			switch s.ctx.Err() {
+			case context.Canceled:
+				// finished ok; we can close down
+				close(s.haltSignaller)
+				return
+			default:
+				// sim did not end without error
+				panic(s.ctx.Err())
+			}
+		case <-s.eventPipe:
+		case s.haltSignaller <- struct{}{}:
+			fmt.Println("forcing continue at end of test")
+		}
 	}
-	close(s.eventPipe)
-	close(s.haltSignaller)
 }
 
 // StartSimulation handles the setup for starting the asynchronous sim run.
