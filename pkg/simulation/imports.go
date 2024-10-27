@@ -71,6 +71,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/harmony/memoriesofthepast"
 	_ "github.com/simimpact/srsim/internal/lightcone/harmony/meshingcogs"
 	_ "github.com/simimpact/srsim/internal/lightcone/harmony/planetaryrendezvous"
+	_ "github.com/simimpact/srsim/internal/lightcone/harmony/poisedtobloom"
 	_ "github.com/simimpact/srsim/internal/lightcone/hunt/adversarial"
 	_ "github.com/simimpact/srsim/internal/lightcone/hunt/arrows"
 	_ "github.com/simimpact/srsim/internal/lightcone/hunt/cruisinginthestellarsea"
