@@ -7,6 +7,7 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
+// TODO: Add some way for neutrals to refer back to their owners/summoners to use their stats?
 func (mgr *Manager) AddNeutral(id key.TargetID, key key.NeutralTarget) error {
 	config, ok := neutralCatalog[key]
 	if !ok {
