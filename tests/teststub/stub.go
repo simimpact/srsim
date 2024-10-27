@@ -1,6 +1,7 @@
 package teststub
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"time"
@@ -45,6 +46,9 @@ type Stub struct {
 
 	// Assert wraps common assertion methods for convenience
 	Assert assertion
+
+	// Context to check if simulation run is completed
+	ctx context.Context
 }
 
 func (s *Stub) SetupTest() {
@@ -99,12 +103,15 @@ func (s *Stub) StartSimulation() {
 		s.simulator.Turn = s.Turn
 	}
 	s.Characters.attributes = s.simulator.Attr
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute*2)
+	s.ctx = ctx
 	go func() {
 		itres, err := s.simulator.Run()
+		defer cancel()
 		if err != nil {
 			s.FailNow("Simulation run error", err)
 		}
-		fmt.Println(itres)
+		fmt.Printf("test simulation run finished with damage %v\n", itres.TotalDamageDealt)
 	}()
 	// start sim logic, fast-forward sim to BattleStart state, so we can initialize the remaining helper stuff
 	s.Expect(battlestart.ExpectFor())
@@ -115,6 +122,27 @@ func (s *Stub) StartSimulation() {
 	if !s.autoContinue {
 		s.isExpecting = true
 		s.Continue()
+	}
+}
+
+func (s *Stub) WaitForSimulationFinished() error {
+	// this is hacky as hell but we need to spam continue to let sim finish
+	// and we do this by consuming all events and spamming continue
+	for {
+		select {
+		case <-s.ctx.Done():
+			// check if timed out
+			switch s.ctx.Err() {
+			case context.Canceled:
+				return nil
+			default:
+				return s.ctx.Err()
+			}
+		case e := <-s.eventPipe:
+			fmt.Printf("there are more events at end of test: %v\n", e)
+		case s.haltSignaller <- struct{}{}:
+			fmt.Println("forcing continue at end of test")
+		}
 	}
 }
 
