@@ -239,7 +239,7 @@ type Target interface {
 	Neutrals() []key.TargetID
 
 	// TODO: target type, (Light, Dark, Neutral)
-	AddNeutralTarget() key.TargetID
+	AddNeutralTarget(key key.NeutralTarget) key.TargetID
 
 	RemoveNeutralTarget(id key.TargetID)
 

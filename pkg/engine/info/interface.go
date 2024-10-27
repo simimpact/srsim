@@ -35,3 +35,7 @@ type ActionState interface {
 type EnemyInstance interface {
 	Action(target key.TargetID, state ActionState)
 }
+
+type NeutralTargetInstance interface {
+	Attack(target key.TargetID, state ActionState)
+}

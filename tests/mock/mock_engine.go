@@ -54,17 +54,17 @@ func (mr *MockEngineMockRecorder) AddModifier(arg0, arg1 interface{}) *gomock.Ca
 }
 
 // AddNeutralTarget mocks base method.
-func (m *MockEngine) AddNeutralTarget() key.TargetID {
+func (m *MockEngine) AddNeutralTarget(arg0 key.NeutralTarget) key.TargetID {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddNeutralTarget")
+	ret := m.ctrl.Call(m, "AddNeutralTarget", arg0)
 	ret0, _ := ret[0].(key.TargetID)
 	return ret0
 }
 
 // AddNeutralTarget indicates an expected call of AddNeutralTarget.
-func (mr *MockEngineMockRecorder) AddNeutralTarget() *gomock.Call {
+func (mr *MockEngineMockRecorder) AddNeutralTarget(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddNeutralTarget", reflect.TypeOf((*MockEngine)(nil).AddNeutralTarget))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddNeutralTarget", reflect.TypeOf((*MockEngine)(nil).AddNeutralTarget), arg0)
 }
 
 // AddShield mocks base method.
