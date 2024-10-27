@@ -33,7 +33,7 @@ func init() {
 	modifier.Register(poised, modifier.Config{})
 
 	modifier.Register(poisedCritDmg, modifier.Config{
-		Stacking: modifier.Replace,
+		Stacking: modifier.Unique,
 	})
 }
 
