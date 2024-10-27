@@ -7,8 +7,11 @@ import (
 )
 
 // TODO: AddTarget
-func (sim *Simulation) AddNeutralTarget() key.TargetID {
-	panic("not implemented") // TODO: Implement
+func (sim *Simulation) AddNeutralTarget(key key.NeutralTarget) key.TargetID {
+	id := sim.IDGen.New()
+	sim.Neutral.AddNeutral(id, key)
+	sim.neutrals = append(sim.neutrals, id)
+	return id
 }
 
 // TODO: AddTarget
