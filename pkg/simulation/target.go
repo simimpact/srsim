@@ -26,6 +26,7 @@ func (sim *Simulation) RemoveNeutralTarget(id key.TargetID) {
 		}
 	}
 	// TODO: Do something if they key was not present?
+	// Also TODO: Add method to kill neutrals automatically when owner/summon dies?
 }
 
 func (sim *Simulation) IsValid(target key.TargetID) bool {
