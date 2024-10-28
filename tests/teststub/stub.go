@@ -1,6 +1,7 @@
 package teststub
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"time"
@@ -45,6 +46,9 @@ type Stub struct {
 
 	// Assert wraps common assertion methods for convenience
 	Assert assertion
+
+	// Context to check if simulation run is completed
+	ctx context.Context
 }
 
 func (s *Stub) SetupTest() {
@@ -71,13 +75,24 @@ func (s *Stub) TearDownTest() {
 	fmt.Println("Test Finished")
 	logging.InitLoggers()
 	s.cfgEval = nil
-	select {
-	case <-s.eventPipe:
-		s.haltSignaller <- struct{}{}
-	default:
+	// hacky way to drain the sim and make sure it finishes first
+	for {
+		select {
+		case <-s.ctx.Done(): // wait for sim to finish
+			switch s.ctx.Err() {
+			case context.Canceled:
+				// finished ok; we can close down
+				close(s.haltSignaller)
+				return
+			default:
+				// sim did not end without error
+				panic(s.ctx.Err())
+			}
+		case <-s.eventPipe:
+		case s.haltSignaller <- struct{}{}:
+			fmt.Println("forcing continue at end of test")
+		}
 	}
-	close(s.eventPipe)
-	close(s.haltSignaller)
 }
 
 // StartSimulation handles the setup for starting the asynchronous sim run.
@@ -99,12 +114,15 @@ func (s *Stub) StartSimulation() {
 		s.simulator.Turn = s.Turn
 	}
 	s.Characters.attributes = s.simulator.Attr
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute*2)
+	s.ctx = ctx
 	go func() {
 		itres, err := s.simulator.Run()
+		defer cancel()
 		if err != nil {
 			s.FailNow("Simulation run error", err)
 		}
-		fmt.Println(itres)
+		fmt.Printf("test simulation run finished with damage %v\n", itres.TotalDamageDealt)
 	}()
 	// start sim logic, fast-forward sim to BattleStart state, so we can initialize the remaining helper stuff
 	s.Expect(battlestart.ExpectFor())
@@ -115,6 +133,27 @@ func (s *Stub) StartSimulation() {
 	if !s.autoContinue {
 		s.isExpecting = true
 		s.Continue()
+	}
+}
+
+func (s *Stub) WaitForSimulationFinished() error {
+	// this is hacky as hell but we need to spam continue to let sim finish
+	// and we do this by consuming all events and spamming continue
+	for {
+		select {
+		case <-s.ctx.Done():
+			// check if timed out
+			switch s.ctx.Err() {
+			case context.Canceled:
+				return nil
+			default:
+				return s.ctx.Err()
+			}
+		case e := <-s.eventPipe:
+			fmt.Printf("there are more events at end of test: %v\n", e)
+		case s.haltSignaller <- struct{}{}:
+			fmt.Println("forcing continue at end of test")
+		}
 	}
 }
 

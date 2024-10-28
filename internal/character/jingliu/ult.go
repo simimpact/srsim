@@ -27,7 +27,7 @@ func (c *char) NormalUlt(target key.TargetID, state info.ActionState) {
 	}
 
 	c.engine.Attack(info.Attack{
-		Key:          EnhancedSkillPrimary,
+		Key:          UltPrimary,
 		Source:       c.id,
 		Targets:      []key.TargetID{target},
 		DamageType:   model.DamageType_ICE,
@@ -37,7 +37,7 @@ func (c *char) NormalUlt(target key.TargetID, state info.ActionState) {
 		EnergyGain:   5,
 	})
 	c.engine.Attack(info.Attack{
-		Key:          EnhancedSkillPrimary,
+		Key:          UltAdjacent,
 		Source:       c.id,
 		Targets:      c.engine.AdjacentTo(target),
 		DamageType:   model.DamageType_ICE,
@@ -56,7 +56,7 @@ func (c *char) E1Ult(target key.TargetID, state info.ActionState) {
 	}
 
 	c.engine.Attack(info.Attack{
-		Key:          EnhancedSkillPrimary,
+		Key:          UltPrimary,
 		Source:       c.id,
 		Targets:      []key.TargetID{target},
 		DamageType:   model.DamageType_ICE,
@@ -66,7 +66,7 @@ func (c *char) E1Ult(target key.TargetID, state info.ActionState) {
 		EnergyGain:   5,
 	})
 	c.engine.Attack(info.Attack{
-		Key:        EnhancedSkillPrimary,
+		Key:        UltAdjacent,
 		Source:     c.id,
 		Targets:    []key.TargetID{target},
 		DamageType: model.DamageType_ICE,

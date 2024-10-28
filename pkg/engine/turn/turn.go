@@ -11,7 +11,7 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-const BaseGauge float64 = 10000.0
+const BaseGauge int64 = 10000
 
 type Manager interface {
 	TotalAV() float64
@@ -25,7 +25,7 @@ type Manager interface {
 
 type target struct {
 	id    key.TargetID
-	gauge float64
+	gauge int64
 }
 
 type turnOrderHandler struct {
@@ -34,7 +34,7 @@ type turnOrderHandler struct {
 }
 
 func (a *turnOrderHandler) av(i int) float64 {
-	return a.turnOrder[i].gauge / a.attr.Stats(a.turnOrder[i].id).SPD()
+	return float64(a.turnOrder[i].gauge) / a.attr.Stats(a.turnOrder[i].id).SPD()
 }
 
 func (a *turnOrderHandler) Len() int { return len(a.turnOrder) }
@@ -61,7 +61,7 @@ type manager struct {
 	event        *event.System
 	attr         attribute.Getter
 	orderHandler *turnOrderHandler
-	gaugeCost    float64
+	gaugeCost    int64
 	activeTurn   bool
 	activeTarget key.TargetID
 	totalAV      float64
@@ -125,7 +125,7 @@ func (mgr *manager) target(id key.TargetID) *target {
 // This call is "expensive", so avoid calling it multiple times in the same logic.
 // TODO: might want to change this into a util function that also takes in the speed?
 func (mgr *manager) av(id key.TargetID) float64 {
-	return mgr.target(id).gauge / mgr.attr.Stats(id).SPD()
+	return float64(mgr.target(id).gauge) / mgr.attr.Stats(id).SPD()
 }
 
 // AddTargets adds a target to the Manager's turnOrder.
@@ -179,7 +179,7 @@ func (mgr *manager) StartTurn() (key.TargetID, float64, []event.TurnStatus, erro
 	av := mgr.av(mgr.activeTarget)
 
 	for _, t := range mgr.orderHandler.turnOrder {
-		t.gauge -= av * mgr.attr.Stats(t.id).SPD()
+		t.gauge -= int64(av * mgr.attr.Stats(t.id).SPD())
 	}
 
 	mgr.totalAV += av
