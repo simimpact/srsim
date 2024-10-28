@@ -52,17 +52,19 @@ func init() {
 		MaxCount:          5,
 		CountAddWhenStack: 1,
 		Stacking:          modifier.Replace,
+		Listeners: modifier.Listeners{
+			OnAdd: onAdd,
+		},
 	})
 }
 
 func addAtkBuff(mod *modifier.Instance, e event.AttackEnd) {
-	// return early if on max stack
-	if mod.Count() == mod.MaxCount() {
-		return
-	}
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 		Name:   atkBuff,
 		Source: mod.Owner(),
-		Stats:  info.PropMap{prop.ATKPercent: 0.05},
 	})
+}
+
+func onAdd(mod *modifier.Instance) {
+	mod.AddProperty(prop.ATKPercent, 0.05*mod.Count())
 }
