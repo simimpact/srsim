@@ -1,6 +1,7 @@
 package xueyi
 
 import (
+	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
@@ -8,12 +9,19 @@ import (
 
 const (
 	A2 = "xueyi-a2"
+	A4 = "xueyi-a4"
 )
 
 func init() {
 	modifier.Register(A2, modifier.Config{
 		Listeners: modifier.Listeners{
 			OnPropertyChange: checkBreakEffect,
+		},
+	})
+
+	modifier.Register(A4, modifier.Config{
+		Listeners: modifier.Listeners{
+			OnBeforeHitAll: a4DamageBuff,
 		},
 	})
 }
@@ -39,4 +47,8 @@ func checkBreakEffect(mod *modifier.Instance) {
 		dmgbuff = 2.4
 	}
 	mod.SetProperty(prop.AllDamagePercent, dmgbuff)
+}
+
+func a4DamageBuff(mod *modifier.Instance, e event.HitStart) {
+	e.Hit.Attacker.AddProperty(A4, prop.AllDamagePercent, 0.1)
 }
