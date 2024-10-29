@@ -54,10 +54,13 @@ message SimResult {
 }
 
 message Statistics {
+  //simulation statistics
+  reserved 1,2,3,4,5; // for seeds
+  uint32 iterations = 6 [json_name="iterations"];
   //damage stats
-  optional DescriptiveStats total_damage_dealt = 1 [json_name="total_damage_dealt"];
-  optional DescriptiveStats total_damage_taken = 2 [json_name="total_damage_taken"];
-  optional OverviewStats total_damage_dealt_per_cycle = 3 [json_name="total_damage_dealt_per_cycle"];
+  optional DescriptiveStats total_damage_dealt = 7 [json_name="total_damage_dealt"];
+  optional DescriptiveStats total_damage_taken = 8 [json_name="total_damage_taken"];
+  optional OverviewStats total_damage_dealt_per_cycle = 9 [json_name="total_damage_dealt_per_cycle"];
 
   //turn stats
   optional DescriptiveStats total_av = 10 [json_name="total_av"];

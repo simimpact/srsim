@@ -5,6 +5,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/equip/relic"
 	"github.com/simimpact/srsim/pkg/engine/event"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 )
@@ -25,6 +26,8 @@ func init() {
 			},
 		},
 	})
+
+	modifier.Register(name, modifier.Config{})
 }
 
 func Create(engine engine.Engine, owner key.TargetID) {

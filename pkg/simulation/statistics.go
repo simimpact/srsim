@@ -35,7 +35,7 @@ func (sim *Simulation) initStatCollection() {
 			sim.res.TotalDamageDealt += event.TotalDamage
 		}
 		// split up total damage by cycle buckets
-		cycle := int(math.Ceil(sim.TotalAV/100)) - 1
+		cycle := int(math.Ceil(sim.Turn.TotalAV()/100)) - 1
 		if cycle < 0 {
 			cycle = 0
 		}
