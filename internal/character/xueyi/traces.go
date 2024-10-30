@@ -31,13 +31,15 @@ func (c *char) initTraces() {
 	if initialBuff > 2.4 {
 		initialBuff = 2.4
 	}
-	c.engine.AddModifier(c.id, info.Modifier{
-		Name:   A2,
-		Source: c.id,
-		Stats: info.PropMap{
-			prop.BreakEffect: initialBuff,
-		},
-	})
+	if c.info.Traces["101"] {
+		c.engine.AddModifier(c.id, info.Modifier{
+			Name:   A2,
+			Source: c.id,
+			Stats: info.PropMap{
+				prop.BreakEffect: initialBuff,
+			},
+		})
+	}
 }
 
 func checkBreakEffect(mod *modifier.Instance) {

@@ -40,7 +40,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		})
 	}
 
-	if c.engine.Stats(target).Stance() >= c.engine.MaxStance(target)*0.5 {
+	if c.info.Traces["102"] && c.engine.Stats(target).Stance() >= c.engine.MaxStance(target)*0.5 {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:   A4,
 			Source: c.id,
