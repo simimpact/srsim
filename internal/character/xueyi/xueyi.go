@@ -54,5 +54,8 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 		curStacks: 0,
 	}
 
+	c.initTalent()
+	c.initTraces()
+
 	return c
 }
