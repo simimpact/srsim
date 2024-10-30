@@ -73,10 +73,8 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 }
 
 func ultBuffCallback(mod *modifier.Instance, e event.HitStart) {
-	multiplier := 0.0
-	if e.Hit.StanceDamage <= 30 && e.Hit.StanceDamage > 0 {
-		multiplier = 1
-	} else {
+	multiplier := 1.0
+	if e.Hit.StanceDamage > 30 {
 		multiplier = e.Hit.StanceDamage / 30
 	}
 	stats, _ := mod.Engine().CharacterInfo(mod.Source())
