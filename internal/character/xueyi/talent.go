@@ -47,10 +47,8 @@ func (c *char) handleStanceChange(e event.StanceChange) {
 		return
 	}
 	diff := e.OldStance - e.NewStance
-	increment := 0
-	if diff > 0 && diff <= 30 {
-		increment = 1
-	} else {
+	increment := 1
+	if diff > 30 {
 		increment = int(diff / 30)
 	}
 	c.incrementTalentStacks(increment)
