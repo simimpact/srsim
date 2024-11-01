@@ -45,12 +45,12 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 }
 
 func applyCdmg(mod *modifier.Instance, e event.HitStart) {
-	// bypass if any check fails
+	// bypass if both checks fail
 	if !mod.Engine().HasBehaviorFlag(e.Defender, model.BehaviorFlag_STAT_SPEED_DOWN) {
-		return
+		if !mod.Engine().HasBehaviorFlag(e.Defender, model.BehaviorFlag_STAT_DEF_DOWN) {
+			return
+		}
 	}
-	if !mod.Engine().HasBehaviorFlag(e.Defender, model.BehaviorFlag_STAT_DEF_DOWN) {
-		return
-	}
+
 	e.Hit.Attacker.AddProperty(Check, prop.CritDMG, mod.State().(float64))
 }
