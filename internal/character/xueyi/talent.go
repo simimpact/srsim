@@ -37,9 +37,6 @@ func (c *char) handleStanceChange(e event.StanceChange) {
 	if e.Key == TalentFua {
 		return
 	}
-	if e.Key == TalentFua {
-		return
-	}
 	if e.Source != c.id {
 		if c.engine.IsCharacter(e.Source) {
 			c.incrementTalentStacks(1)
@@ -124,6 +121,7 @@ func (c *char) talentFua() {
 				model.DamageFormula_BY_ATK: talent[c.info.TalentLevelIndex()],
 			},
 			StanceDamage: toughness,
+			EnergyGain:   2,
 		})
 		if c.info.Eidolon >= 2 {
 			c.engine.ModifyStance(info.ModifyAttribute{
