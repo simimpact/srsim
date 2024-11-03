@@ -17,7 +17,7 @@ func init() {
 	modifier.Register(E1, modifier.Config{
 		Stacking: modifier.ReplaceBySource,
 		Listeners: modifier.Listeners{
-			OnBeforeHit: E2DamageBuff,
+			OnBeforeHit: E1DamageBuff,
 		},
 	})
 
@@ -28,7 +28,7 @@ func init() {
 	})
 }
 
-func E2DamageBuff(mod *modifier.Instance, e event.HitStart) {
+func E1DamageBuff(mod *modifier.Instance, e event.HitStart) {
 	if e.Hit.AttackType == model.AttackType_INSERT {
 		e.Hit.Attacker.AddProperty(E1, prop.AllDamagePercent, 0.4)
 	}
