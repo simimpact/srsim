@@ -50,7 +50,7 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 		info:   charInfo,
 	}
 
-	// c.engine.Events().ActionStart.Subscribe()
+	c.initEidolons()
 
 	return c
 }
