@@ -26,6 +26,7 @@ const (
 	Glamoth                Relic = "firmament_frontline_glamoth"
 	PenaconyLandOfDreams   Relic = "penacony_land_of_dreams"
 	IzumoGensei            Relic = "izumo_gensei_and_takama_divine_realm"
+	Lushaka                Relic = "lushaka_the_sunken_seas"
 )
 
 func (r Relic) String() string {
