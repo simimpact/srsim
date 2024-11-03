@@ -20,6 +20,8 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 		},
 		StanceDamage: 30,
 		EnergyGain:   20,
+		AttackType:   model.AttackType_MAZE_NORMAL,
+		DamageType:   model.DamageType_PHYSICAL,
 	})
 
 	state.EndAttack()

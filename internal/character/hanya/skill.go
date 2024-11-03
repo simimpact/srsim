@@ -10,9 +10,9 @@ import (
 )
 
 const (
-	Skill    key.Attack = "hanya-skill"
-	Burden              = "hanya-burden"
-	Sanction            = "hanya-sanction"
+	Skill    = "hanya-skill"
+	Burden   = "hanya-burden"
+	Sanction = "hanya-sanction"
 )
 
 type BurdenState struct {
@@ -58,7 +58,6 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 			},
 		})
 	}
-
 }
 
 func BurdenCallbackBuff(mod *modifier.Instance, e event.AttackStart) {
@@ -80,7 +79,6 @@ func BurdenCallbackBuff(mod *modifier.Instance, e event.AttackStart) {
 			},
 		})
 	}
-
 }
 
 func BurdenCallbackSP(mod *modifier.Instance, e event.AttackEnd) {

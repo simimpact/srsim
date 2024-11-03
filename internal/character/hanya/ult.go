@@ -42,5 +42,4 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			Duration: ultdur,
 		})
 	}
-
 }
