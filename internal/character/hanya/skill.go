@@ -26,6 +26,7 @@ func init() {
 			OnBeforeBeingAttacked: BurdenCallbackBuff,
 			OnAfterBeingAttacked:  BurdenCallbackSP,
 			OnBeforeDying:         BurdenAboutToDie,
+			OnAdd:                 RemoveFromOthers,
 		},
 	})
 
@@ -48,14 +49,28 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 		EnergyGain:   30,
 	})
 
+	// Prevents the same skill usage that applies Burden from counting towards trigger count
+	state.EndAttack()
+
 	if c.engine.HPRatio(target) > 0 {
 		c.engine.AddModifier(target, info.Modifier{
 			Name:   Burden,
 			Source: c.id,
-			State: BurdenState{
+			State: &BurdenState{
 				atkCount:          0,
 				triggersRemaining: 2,
 			},
+		})
+	}
+
+	if c.info.Eidolon >= 2 {
+		c.engine.AddModifier(c.id, info.Modifier{
+			Name: E2,
+			Stats: info.PropMap{
+				prop.SPDPercent: 0.2,
+			},
+			Source:   c.id,
+			Duration: 1,
 		})
 	}
 }
@@ -126,5 +141,13 @@ func BurdenAboutToDie(mod *modifier.Instance) {
 			Source: mod.Source(),
 			Amount: 1,
 		})
+	}
+}
+
+func RemoveFromOthers(mod *modifier.Instance) {
+	for _, enemy := range mod.Engine().Enemies() {
+		if enemy != mod.Owner() {
+			mod.Engine().RemoveModifier(enemy, Burden)
+		}
 	}
 }
