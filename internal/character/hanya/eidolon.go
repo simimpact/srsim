@@ -3,7 +3,6 @@ package hanya
 import (
 	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/engine/modifier"
-	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -29,23 +28,24 @@ func init() {
 	})
 
 	modifier.Register(E2, modifier.Config{
-		StatusType: model.StatusType_STATUS_BUFF,
-		Stacking:   modifier.ReplaceBySource,
-		Duration:   1,
+		StatusType:    model.StatusType_STATUS_BUFF,
+		Stacking:      modifier.ReplaceBySource,
+		Duration:      1,
+		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_UP},
+		// Listeners: modifier.Listeners{
+		// 	OnAfterAction: E2SpeedBuffCallback,
+		// },
 	})
 }
 
-func (c *char) initEidolons() {
-	if c.info.Eidolon >= 2 {
-		c.engine.AddModifier(c.id, info.Modifier{
-			Name:   E2,
-			Source: c.id,
-			Stats: info.PropMap{
-				prop.SPDConvert: 0.2,
-			},
-		})
-	}
-}
+// func (c *char) initEidolons() {
+// 	if c.info.Eidolon >= 2 {
+// 		c.engine.AddModifier(c.id, info.Modifier{
+// 			Name:   E2,
+// 			Source: c.id,
+// 		})
+// 	}
+// }
 
 func E1HanyaAdv(mod *modifier.Instance, target key.TargetID) {
 	if !mod.Engine().HasModifier(mod.Source(), E1Cooldown) {
@@ -53,7 +53,11 @@ func E1HanyaAdv(mod *modifier.Instance, target key.TargetID) {
 			Key:    E1,
 			Source: mod.Owner(),
 			Target: mod.Source(),
-			Amount: -1500,
+			Amount: -0.15,
+		})
+		mod.Engine().AddModifier(mod.Source(), info.Modifier{
+			Name:   E1Cooldown,
+			Source: mod.Source(),
 		})
 	}
 }
