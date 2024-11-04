@@ -128,7 +128,7 @@ func (c *char) talentFua() {
 				Key:    TalentFua,
 				Source: c.id,
 				Target: target,
-				Amount: 15.0,
+				Amount: -15.0,
 			})
 		}
 	}
