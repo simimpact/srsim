@@ -1,7 +1,7 @@
 package gallagher
 
 var (
-	Basic_ATK_0 = []float64{
+	basic = []float64{
 		0.5,
 		0.6,
 		0.7,
@@ -12,7 +12,8 @@ var (
 		1.2,
 		1.3,
 	}
-	Basic_ATK_1 = []float64{
+
+	enhanced_basic = []float64{
 		1.25,
 		1.5,
 		1.75,
@@ -23,7 +24,8 @@ var (
 		3,
 		3.25,
 	}
-	Basic_ATK_2 = []float64{
+
+	enhanced_basic_atk_reduction = []float64{
 		0.1,
 		0.11,
 		0.12,
@@ -34,18 +36,8 @@ var (
 		0.17,
 		0.18,
 	}
-	Basic_ATK_3 = []float64{
-		2,
-		2,
-		2,
-		2,
-		2,
-		2,
-		2,
-		2,
-		2,
-	}
-	Skill_0 = []float64{
+
+	skill = []float64{
 		200,
 		340,
 		480,
@@ -62,7 +54,7 @@ var (
 		1936,
 		2020,
 	}
-	Ultimate_0 = []float64{
+	ult = []float64{
 		0.75,
 		0.825,
 		0.9,
@@ -79,24 +71,8 @@ var (
 		1.8,
 		1.875,
 	}
-	Ultimate_1 = []float64{
-		2,
-		2,
-		2,
-		2,
-		2,
-		2,
-		2,
-		2,
-		2,
-		2,
-		2,
-		2,
-		2,
-		2,
-		2,
-	}
-	Talent_0 = []float64{
+
+	talent = []float64{
 		0.06,
 		0.066,
 		0.072,
@@ -113,7 +89,8 @@ var (
 		0.144,
 		0.15,
 	}
-	Talent_1 = []float64{
+
+	talent_heal = []float64{
 		80,
 		136,
 		192,
@@ -129,11 +106,5 @@ var (
 		740.8,
 		774.4,
 		808,
-	}
-	Technique_0 = []float64{
-		2,
-	}
-	Technique_1 = []float64{
-		0.5,
 	}
 )
