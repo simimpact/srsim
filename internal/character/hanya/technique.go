@@ -19,7 +19,7 @@ func (c *char) Technique(target key.TargetID, state info.ActionState) {
 		c.engine.AddModifier(victim, info.Modifier{
 			Name:   Burden,
 			Source: c.id,
-			State: BurdenState{
+			State: &BurdenState{
 				atkCount:          0,
 				triggersRemaining: 2,
 			},
