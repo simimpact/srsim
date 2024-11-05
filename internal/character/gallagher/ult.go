@@ -10,6 +10,7 @@ import (
 )
 
 const (
+	Ultimate key.Attack   = "gallagher-ult"
 	Besotted key.Modifier = "gallagher-besotted"
 )
 
@@ -44,6 +45,28 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 				breakVuln: talent[c.info.TalentLevelIndex()],
 				healAmt:   talent_heal[c.info.TalentLevelIndex()],
 			},
+		})
+	}
+
+	c.engine.Attack(info.Attack{
+		Key:          Ultimate,
+		Source:       c.id,
+		Targets:      c.engine.Enemies(),
+		AttackType:   model.AttackType_ULT,
+		DamageType:   model.DamageType_FIRE,
+		EnergyGain:   5,
+		StanceDamage: 60,
+		BaseDamage: info.DamageMap{
+			model.DamageFormula_BY_ATK: ult[c.info.UltLevelIndex()],
+		},
+	})
+	// a4
+	if c.info.Traces["102"] {
+		c.engine.ModifyGaugeNormalized(info.ModifyAttribute{
+			Target: c.id,
+			Source: c.id,
+			Key:    A4,
+			Amount: -1.0,
 		})
 	}
 }
