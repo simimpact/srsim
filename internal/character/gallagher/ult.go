@@ -45,6 +45,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 				breakVuln: talent[c.info.TalentLevelIndex()],
 				healAmt:   talent_heal[c.info.TalentLevelIndex()],
 			},
+			Duration: besottedDur,
 		})
 	}
 
@@ -60,6 +61,11 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 			model.DamageFormula_BY_ATK: ult[c.info.UltLevelIndex()],
 		},
 	})
+
+	state.EndAttack()
+
+	c.isEnhanced = true
+
 	// a4
 	if c.info.Traces["102"] {
 		c.engine.ModifyGaugeNormalized(info.ModifyAttribute{
@@ -87,7 +93,7 @@ func besottedHeal(mod *modifier.Instance, e event.AttackEnd) {
 	}
 	state := mod.State().(BesottedState)
 	healtargets := []key.TargetID{e.Attacker}
-	// Heal everyone if nectar blitz and gallagher a6 is activated, otherwise just heal attacker
+	// Heal everyone if attack is nectar blitz and gallagher a6 is activated, otherwise just heal attacker
 	if e.Key == NectarBlitz && state.a6Active {
 		healtargets = mod.Engine().Characters()
 	}
