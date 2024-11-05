@@ -13,7 +13,7 @@ var (
 		1.3,
 	}
 
-	enhanced_basic = []float64{
+	enhancedBasic = []float64{
 		1.25,
 		1.5,
 		1.75,
@@ -25,7 +25,7 @@ var (
 		3.25,
 	}
 
-	enhanced_basic_atk_reduction = []float64{
+	ebaAtkReduction = []float64{
 		0.1,
 		0.11,
 		0.12,
@@ -90,7 +90,7 @@ var (
 		0.15,
 	}
 
-	talent_heal = []float64{
+	talentHeal = []float64{
 		80,
 		136,
 		192,

@@ -39,11 +39,12 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 
 	for _, enemy := range c.engine.Enemies() {
 		c.engine.AddModifier(enemy, info.Modifier{
-			Name: Besotted,
+			Name:   Besotted,
+			Source: c.id,
 			State: &BesottedState{
 				a6Active:  c.info.Traces["103"],
 				breakVuln: talent[c.info.TalentLevelIndex()],
-				healAmt:   talent_heal[c.info.TalentLevelIndex()],
+				healAmt:   talentHeal[c.info.TalentLevelIndex()],
 			},
 			Duration: besottedDur,
 		})
@@ -98,9 +99,12 @@ func besottedHeal(mod *modifier.Instance, e event.AttackEnd) {
 		healtargets = mod.Engine().Characters()
 	}
 	mod.Engine().Heal(info.Heal{
-		Key:       key.Heal(Besotted),
-		Source:    mod.Source(),
-		Targets:   healtargets,
+		Key:     key.Heal(Besotted),
+		Source:  mod.Source(),
+		Targets: healtargets,
+		BaseHeal: info.HealMap{
+			model.HealFormula_BY_HEALER_ATK: 0,
+		},
 		HealValue: state.healAmt,
 	})
 }

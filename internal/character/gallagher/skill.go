@@ -19,7 +19,8 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 			Count:  1,
 		})
 		c.engine.AddModifier(target, info.Modifier{
-			Name: E2,
+			Name:   E2,
+			Source: c.id,
 			Stats: info.PropMap{
 				prop.EffectRES: 0.3,
 			},

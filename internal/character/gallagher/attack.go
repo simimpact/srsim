@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	basic_hitsplit = []float64{0.5, 0.5}
-	eba_hitsplit   = []float64{0.25, 0.15, 0.6}
+	basicHitSplit = []float64{0.5, 0.5}
+	ebaHitSplit   = []float64{0.25, 0.15, 0.6}
 )
 
 const (
@@ -36,14 +36,17 @@ func (c *char) Attack(target key.TargetID, state info.ActionState) {
 }
 
 func (c *char) Basic(target key.TargetID, state info.ActionState) {
-	for index, ratio := range basic_hitsplit {
+	for index, ratio := range basicHitSplit {
 		c.engine.Attack(
 			info.Attack{
-				Source:       c.id,
-				Targets:      []key.TargetID{target},
-				Key:          Normal,
-				HitIndex:     index,
-				HitRatio:     ratio,
+				Source:   c.id,
+				Targets:  []key.TargetID{target},
+				Key:      Normal,
+				HitIndex: index,
+				HitRatio: ratio,
+				BaseDamage: info.DamageMap{
+					model.DamageFormula_BY_ATK: basic[c.info.AttackLevelIndex()],
+				},
 				AttackType:   model.AttackType_NORMAL,
 				DamageType:   model.DamageType_FIRE,
 				StanceDamage: 30,
@@ -56,14 +59,17 @@ func (c *char) Basic(target key.TargetID, state info.ActionState) {
 }
 
 func (c *char) EnhancedBasic(target key.TargetID, state info.ActionState) {
-	for index, ratio := range eba_hitsplit {
+	for index, ratio := range ebaHitSplit {
 		c.engine.Attack(
 			info.Attack{
-				Source:       c.id,
-				Targets:      []key.TargetID{target},
-				Key:          NectarBlitz,
-				HitIndex:     index,
-				HitRatio:     ratio,
+				Source:   c.id,
+				Targets:  []key.TargetID{target},
+				Key:      NectarBlitz,
+				HitIndex: index,
+				HitRatio: ratio,
+				BaseDamage: info.DamageMap{
+					model.DamageFormula_BY_ATK: enhancedBasic[c.info.AttackLevelIndex()],
+				},
 				AttackType:   model.AttackType_NORMAL,
 				DamageType:   model.DamageType_FIRE,
 				StanceDamage: 90,
@@ -78,7 +84,7 @@ func (c *char) EnhancedBasic(target key.TargetID, state info.ActionState) {
 		Source:   c.id,
 		Duration: 2,
 		Stats: info.PropMap{
-			prop.ATKPercent: enhanced_basic_atk_reduction[c.info.AttackLevelIndex()],
+			prop.ATKPercent: ebaAtkReduction[c.info.AttackLevelIndex()],
 		},
 	})
 

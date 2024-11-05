@@ -25,7 +25,6 @@ func (c *char) initTraces() {
 	if c.info.Traces["101"] {
 		c.engine.Events().BattleStart.Subscribe(c.A2Init)
 	}
-
 }
 
 func AdjustA2Buff(mod *modifier.Instance) {
