@@ -78,7 +78,9 @@ func (c *char) EnhancedBasic(target key.TargetID, state info.ActionState) {
 		Source:   c.id,
 		Duration: 2,
 		Stats: info.PropMap{
-			prop.ATKPercent: -0.15,
+			prop.ATKPercent: enhanced_basic_atk_reduction[c.info.AttackLevelIndex()],
 		},
 	})
+
+	c.isEnhanced = false
 }
