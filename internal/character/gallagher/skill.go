@@ -28,9 +28,13 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	}
 
 	c.engine.Heal(info.Heal{
-		Key:       Skill,
-		Source:    c.id,
-		Targets:   []key.TargetID{target},
+		Key:     Skill,
+		Source:  c.id,
+		Targets: []key.TargetID{target},
+		// Gallagher is always a flat heal
+		BaseHeal: info.HealMap{
+			model.HealFormula_BY_HEALER_ATK: 0,
+		},
 		HealValue: skill[c.info.SkillLevelIndex()],
 	})
 }
