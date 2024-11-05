@@ -49,4 +49,11 @@ func (c *char) E1Buffs(e event.BattleStart) {
 			prop.EffectRES: 0.5,
 		},
 	})
+
+	c.engine.ModifyEnergy(info.ModifyAttribute{
+		Target: c.id,
+		Source: c.id,
+		Key:    E1,
+		Amount: 20,
+	})
 }
