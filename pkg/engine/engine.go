@@ -211,6 +211,9 @@ type Info interface {
 	// Check if the character can use the skill (enough Skill Points and not blocked by Skill.CanUse,
 	// see implementation of each character)
 	CanUseSkill(target key.TargetID) (bool, error)
+
+	// Check if the character can use the Ult (Energy is equal to max energy of char OR fulfills Ult.canUse)
+	CanUseUlt(target key.TargetID) (bool, error)
 }
 
 type Target interface {
