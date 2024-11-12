@@ -50,6 +50,7 @@ type SkillInfo struct {
 }
 
 type SkillValidateFunc func(engine engine.Engine, char info.CharInstance) bool
+type UltValidateFunc func(engine engine.Engine, char info.CharInstance) bool
 
 type Attack struct {
 	SPAdd      int
@@ -64,6 +65,7 @@ type Skill struct {
 
 type Ult struct {
 	TargetType model.TargetType
+	CanUse     UltValidateFunc `exhaustruct:"optional"`
 }
 
 type Technique struct {
