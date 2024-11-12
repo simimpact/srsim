@@ -30,3 +30,21 @@ func (sim *Simulation) CanUseSkill(id key.TargetID) (bool, error) {
 	check := skillInfo.Skill.CanUse
 	return sim.SP() >= skillInfo.Skill.SPNeed && (check == nil || check(sim, char)), nil
 }
+
+func (sim *Simulation) CanUseUlt(id key.TargetID) (bool, error) {
+	skillInfo, err := sim.Char.SkillInfo(id)
+	if err != nil {
+		return false, err
+	}
+	char, err := sim.Char.Get(id)
+	if err != nil {
+		return false, err
+	}
+
+	check := skillInfo.Ult.CanUse
+	if check == nil {
+		return sim.EnergyRatio(id) == 1, nil
+	} else {
+		return check(sim, char), nil
+	}
+}
