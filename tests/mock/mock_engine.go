@@ -120,6 +120,21 @@ func (mr *MockEngineMockRecorder) CanUseSkill(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CanUseSkill", reflect.TypeOf((*MockEngine)(nil).CanUseSkill), arg0)
 }
 
+// CanUseUlt mocks base method.
+func (m *MockEngine) CanUseUlt(arg0 key.TargetID) (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CanUseUlt", arg0)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CanUseUlt indicates an expected call of CanUseUlt.
+func (mr *MockEngineMockRecorder) CanUseUlt(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CanUseUlt", reflect.TypeOf((*MockEngine)(nil).CanUseUlt), arg0)
+}
+
 // CharacterInfo mocks base method.
 func (m *MockEngine) CharacterInfo(arg0 key.TargetID) (info.Character, error) {
 	m.ctrl.T.Helper()
