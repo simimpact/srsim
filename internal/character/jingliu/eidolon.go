@@ -27,6 +27,9 @@ func init() {
 }
 
 func (c *char) E1Listener(e event.ActionStart) {
+	if c.info.Eidolon < 1 {
+		return
+	}
 	if (c.isEnhanced && e.AttackType == model.AttackType_SKILL) || e.AttackType == model.AttackType_ULT {
 		c.engine.AddModifier(c.id, info.Modifier{
 			Name:   E1,
@@ -37,6 +40,9 @@ func (c *char) E1Listener(e event.ActionStart) {
 }
 
 func (c *char) E2Listener(e event.HitStart) {
+	if c.info.Eidolon < 2 {
+		return
+	}
 	if c.isEnhanced && c.afterUlt && e.Hit.AttackType == model.AttackType_SKILL {
 		e.Hit.Attacker.AddProperty(E2, prop.AllDamagePercent, 0.8)
 	}

@@ -77,7 +77,7 @@ func onBeforeAttack(mod *modifier.Instance, e event.AttackStart) {
 }
 
 func onAdd(mod *modifier.Instance) {
-	atkBuff := mod.State().(state).atkBuff
+	atkBuff := mod.State().(float64)
 	mod.AddProperty(prop.ATKPercent, atkBuff*mod.Count())
 }
 

@@ -74,11 +74,11 @@ type Hit struct {
 
 	// The stats of the attacker of this hit. These stats are a snapshot of the target's state and
 	// can be modified
-	Attacker *Stats `json:"attacker"`
+	Attacker *Stats `json:"attacker" tstype:"StatsEncoded"`
 
 	// The stats of the defender of this hit. These stats are a snapshot of the target's state and
 	// can be modified
-	Defender *Stats `json:"defender"`
+	Defender *Stats `json:"defender" tstype:"StatsEncoded"`
 
 	// The type of attack (IE: dot, ult, insert, etc)
 	AttackType model.AttackType `json:"attack_type"`
