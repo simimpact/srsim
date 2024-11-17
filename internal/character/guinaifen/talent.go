@@ -80,7 +80,6 @@ func (c *char) initTalent() {
 			}
 		}
 	})
-
 }
 
 func checkFirekiss(mod *modifier.Instance, e event.HitStart) {
