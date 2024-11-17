@@ -48,6 +48,7 @@ const (
 	WeWillMeetAgain                 LightCone = "we_will_meet_again"
 	Void                            LightCone = "void"
 	PatienceIsAllYouNeed            LightCone = "patience_is_all_you_need"
+	AlongthePassingShore            LightCone = "along_the_passing_shore"
 )
 
 // Erudition
@@ -63,6 +64,7 @@ const (
 	MaketheWorldClamor        LightCone = "make_the_world_clamor"
 	Sagacity                  LightCone = "sagacity"
 	AnInstantBeforeAGaze      LightCone = "an_instant_before_a_gaze"
+	AftertheCharmonyFall      LightCone = "after_the_charmony_fall"
 	TheDayTheCosmosFell       LightCone = "the_day_the_cosmos_fell"
 )
 
