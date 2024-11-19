@@ -16,8 +16,9 @@ const (
 
 func init() {
 	modifier.Register(Besotted, modifier.Config{
-		Stacking: modifier.ReplaceBySource,
-		Duration: 2,
+		Stacking:   modifier.ReplaceBySource,
+		Duration:   2,
+		StatusType: model.StatusType_STATUS_DEBUFF,
 		Listeners: modifier.Listeners{
 			OnBeforeBeingHitAll:  besottedBreakVuln,
 			OnAfterBeingAttacked: besottedHeal,
@@ -41,7 +42,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 		c.engine.AddModifier(enemy, info.Modifier{
 			Name:   Besotted,
 			Source: c.id,
-			State: &BesottedState{
+			State: BesottedState{
 				a6Active:  c.info.Traces["103"],
 				breakVuln: talent[c.info.TalentLevelIndex()],
 				healAmt:   talentHeal[c.info.TalentLevelIndex()],
@@ -107,4 +108,12 @@ func besottedHeal(mod *modifier.Instance, e event.AttackEnd) {
 		},
 		HealValue: state.healAmt,
 	})
+}
+
+func (c *char) wipeBesotted(e event.TargetDeath) {
+	if c.id == e.Target {
+		for _, enemy := range c.engine.Enemies() {
+			c.engine.RemoveModifier(enemy, Besotted)
+		}
+	}
 }
