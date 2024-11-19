@@ -55,5 +55,7 @@ func NewInstance(engine engine.Engine, id key.TargetID, charInfo info.Character)
 	c.initEidolons()
 	c.initTraces()
 
+	c.engine.Events().TargetDeath.Subscribe(c.wipeBesotted)
+
 	return c
 }
