@@ -7,13 +7,26 @@ import (
 )
 
 // TODO: AddTarget
-func (sim *Simulation) AddNeutralTarget() key.TargetID {
-	panic("not implemented") // TODO: Implement
+func (sim *Simulation) AddNeutralTarget(key key.NeutralTarget) key.TargetID {
+	id := sim.IDGen.New()
+	sim.Neutral.AddNeutral(id, key)
+	sim.neutrals = append(sim.neutrals, id)
+	sim.Targets[id] = info.ClassNeutral
+	return id
 }
 
 // TODO: AddTarget
 func (sim *Simulation) RemoveNeutralTarget(id key.TargetID) {
-	panic("not implemented") // TODO: Implement
+	for i, neutral := range sim.neutrals {
+		if neutral == id {
+			sim.neutrals = append(sim.neutrals[:i], sim.neutrals[i+1:]...)
+			sim.Turn.RemoveTarget(id)
+			delete(sim.Targets, id)
+			break
+		}
+	}
+	// TODO: Do something if they key was not present?
+	// Also TODO: Add method to kill neutrals automatically when owner/summon dies?
 }
 
 func (sim *Simulation) IsValid(target key.TargetID) bool {

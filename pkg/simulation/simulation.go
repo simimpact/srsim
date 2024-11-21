@@ -15,6 +15,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/shield"
 	"github.com/simimpact/srsim/pkg/engine/target/character"
 	"github.com/simimpact/srsim/pkg/engine/target/enemy"
+	neutraltarget "github.com/simimpact/srsim/pkg/engine/target/neutral-target"
 	"github.com/simimpact/srsim/pkg/engine/turn"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/logic"
@@ -42,6 +43,7 @@ type Simulation struct {
 	Modifier *modifier.Manager
 	Attr     attribute.Manager
 	Char     *character.Manager
+	Neutral  *neutraltarget.Manager
 	Enemy    *enemy.Manager
 	Turn     turn.Manager
 	Combat   *combat.Manager
