@@ -174,6 +174,15 @@ func phase1(sim *Simulation) (stateFn, error) {
 		return phase2, nil
 	}
 
+	// skip the action if this target has the BREAK_EXTEND flag
+	if sim.HasBehaviorFlag(sim.Active, model.BehaviorFlag_BREAK_EXTEND) {
+		sim.Event.BreakExtend.Emit(event.BreakExtend{
+			Key:    "break-extend",
+			Target: sim.Active,
+		})
+		return phase2, nil
+	}
+
 	// reset the stance if this is start of enemy turn and their stance is 0
 	if sim.IsEnemy(sim.Active) && sim.Attr.Stance(sim.Active) <= 0 {
 		if err := sim.Attr.SetStance(info.ModifyAttribute{
