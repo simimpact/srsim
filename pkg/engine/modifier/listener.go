@@ -64,6 +64,11 @@ type Listeners struct {
 	// Called when the attached target break status ends (stance resets to max).
 	OnEndBreak func(mod *Instance)
 
+	// ------------ break events
+
+	// Called when break state is extended because of a BREAK_EXTEND flag.
+	OnBreakExtend func(mod *Instance)
+
 	// ------------ shield events
 
 	// Called when a shield has been added to the attached target.
@@ -150,6 +155,9 @@ func (mgr *Manager) subscribe() {
 	events.StanceChange.Subscribe(mgr.stanceChange)
 	events.StanceBreak.Subscribe(mgr.stanceBreak)
 	events.StanceReset.Subscribe(mgr.stanceBreakEnd)
+
+	// break events
+	events.BreakExtend.Subscribe(mgr.breakExtend)
 
 	// shield events
 	events.ShieldAdded.Subscribe(mgr.shieldAdded)
@@ -460,6 +468,15 @@ func (mgr *Manager) stanceBreak(e event.StanceBreak) {
 }
 
 func (mgr *Manager) stanceBreakEnd(e event.StanceReset) {
+	for _, mod := range mgr.itr(e.Target) {
+		f := mod.listeners.OnEndBreak
+		if f != nil {
+			f(mod)
+		}
+	}
+}
+
+func (mgr *Manager) breakExtend(e event.BreakExtend) {
 	for _, mod := range mgr.itr(e.Target) {
 		f := mod.listeners.OnEndBreak
 		if f != nil {
