@@ -174,8 +174,8 @@ func phase1(sim *Simulation) (stateFn, error) {
 		return phase2, nil
 	}
 
-	// skip the action if this target has the BREAK_EXTEND flag
-	if sim.HasBehaviorFlag(sim.Active, model.BehaviorFlag_BREAK_EXTEND) {
+	// skip the action if this target is an anemy and has the BREAK_EXTEND flag
+	if sim.IsEnemy(sim.Active) && sim.HasBehaviorFlag(sim.Active, model.BehaviorFlag_BREAK_EXTEND) {
 		sim.Event.BreakExtend.Emit(event.BreakExtend{
 			Key:    "break-extend",
 			Target: sim.Active,
