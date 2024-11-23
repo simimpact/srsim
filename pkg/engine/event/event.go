@@ -48,6 +48,8 @@ type System struct {
 	StanceReset   StanceResetEventHandler
 	SPChange      SPChangeEventHandler
 
+	BreakExtend BreakExtendEventHandler
+
 	TurnTargetsAdded       TurnTargetsAddedEventHandler
 	TurnReset              TurnResetEventHandler
 	GaugeChange            GaugeChangeEventHandler
