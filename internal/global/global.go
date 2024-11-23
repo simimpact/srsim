@@ -38,7 +38,7 @@ func DamageAndDebuffOnWeaknessBreak(engine engine.Engine) error {
 	return nil
 }
 
-// When a target dies, remove all mods on all targets that have the RemoveWhenSourceDead flag
+// When a target dies, remove all mods that have the RemoveWhenSourceDead flag from all targets
 func RemoveModsWithRemoveWhenSourceDeadFlag(engine engine.Engine) error {
 	engine.Events().TargetDeath.Subscribe(func(event event.TargetDeath) {
 		allTargets := append(append(engine.Characters(), engine.Enemies()...), engine.Neutrals()...)
