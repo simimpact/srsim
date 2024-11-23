@@ -33,6 +33,7 @@ type System struct {
 	ModifierAdded            ModifierAddedEventHandler
 	ModifierResisted         ModifierResistedEventHandler
 	ModifierRemoved          ModifierRemovedEventHandler
+	ModifierDispelled        ModifierDispelledEventHandler
 	ModifierExtendedDuration ModifierExtendedDurationEventHandler
 	ModifierExtendedCount    ModifierExtendedCountEventHandler
 

@@ -16,6 +16,9 @@ type Listeners struct {
 	// Called when a modifier instance is removed, either forceably or due to the instance expiring.
 	OnRemove func(mod *Instance)
 
+	// Called when a modifier instance is dispelled.
+	OnDispel func(mod *Instance)
+
 	// Called when the duration for all modifiers instances of this shape are extended.
 	OnExtendDuration func(mod *Instance)
 
@@ -207,6 +210,20 @@ func (mgr *Manager) emitRemove(target key.TargetID, mods []*Instance) {
 			Target:   target,
 			Modifier: mod.ToModel(),
 		})
+	}
+}
+
+func (mgr *Manager) emitDispel(target key.TargetID, mods []*Instance) {
+	for _, mod := range mods {
+		f := mod.listeners.OnDispel
+		if f != nil {
+			f(mod)
+		}
+		mgr.engine.Events().ModifierDispelled.Emit(event.ModifierDispelled{
+			Target:   target,
+			Modifier: mod.ToModel(),
+		})
+		mgr.emitRemove(target, []*Instance{mod})
 	}
 }
 
