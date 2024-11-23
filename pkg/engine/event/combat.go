@@ -35,6 +35,7 @@ type HitStart struct {
 type HitEndEventHandler = handler.EventHandler[HitEnd]
 type HitEnd struct {
 	Key                 key.Attack       `json:"key"`
+	Hit                 *info.Hit        `json:"hit"`
 	HitIndex            int              `json:"hit_index"`
 	Attacker            key.TargetID     `json:"attacker"`
 	Defender            key.TargetID     `json:"defender"`

@@ -1,0 +1,23 @@
+{
+    "name": "srsim",
+    "packageManager": "pnpm@9.7.0",
+    "private": true,
+    "scripts": {
+        "start": "pnpm --filter @srsim/web dev",
+        "storybook": "pnpm --filter @srsim/storybook storybook",
+        "build": "turbo build",
+        "dev": "turbo dev",
+        "lint": "turbo lint",
+        "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    },
+    "engines": {
+        "node": ">=18"
+    },
+    "devDependencies": {
+        "@srsim/eslint-config": "workspace:*",
+        "@srsim/typescript-config": "workspace:*",
+        "prettier": "^3.3.2",
+        "next": "14.2.5",
+        "turbo": "^2.0.12"
+    }
+}

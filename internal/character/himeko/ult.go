@@ -8,8 +8,9 @@ import (
 )
 
 const (
-	ultimate  = "himeko-ult"
-	ultEnergy = "himeko-ult-energy"
+	ultimate   = "himeko-ult"
+	ultEnergy  = "himeko-ult-energy"
+	ultimateE6 = "himeko-ult-e6"
 )
 
 func init() {
@@ -42,13 +43,21 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 	// E6
 	if c.info.Eidolon >= 6 {
 		for i := 0; i < 2; i++ {
-			c.engine.Retarget(info.Retarget{
-				Targets: c.engine.Enemies(),
-				Filter: func(target key.TargetID) bool {
-					return true
-				},
+			trg := c.engine.Retarget(info.Retarget{
+				Targets:      c.engine.Enemies(),
 				Max:          1,
 				IncludeLimbo: false,
+			})
+
+			c.engine.Attack(info.Attack{
+				Key:        ultimateE6,
+				Targets:    trg,
+				Source:     c.id,
+				AttackType: model.AttackType_ULT,
+				DamageType: model.DamageType_FIRE,
+				BaseDamage: info.DamageMap{
+					model.DamageFormula_BY_ATK: 0.4 * ult[c.info.UltLevelIndex()],
+				},
 			})
 		}
 	}

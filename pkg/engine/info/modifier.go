@@ -30,7 +30,7 @@ type Modifier struct {
 	// that this modifier will never expire
 	Duration int `exhaustruct:"optional" json:"duration"`
 
-	// When duration is > 0, the turn a modifier is added on will not count torwards the duration.
+	// When duration is > 0, the turn a modifier is added on will not count towards the duration.
 	// If this field is set to true, this will override that behavior and count the application turn
 	// against the duration (if application happens before the check).
 	TickImmediately bool `exhaustruct:"optional" json:"tick_immediately"`

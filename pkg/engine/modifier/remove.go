@@ -52,7 +52,7 @@ func (mgr *Manager) RemoveSelf(target key.TargetID, instance *Instance) {
 
 func (mgr *Manager) DispelStatus(target key.TargetID, dispel info.Dispel) {
 	idx := 0
-	idsToRemove := mgr.dispelIds(target, dispel)
+	idsToRemove := mgr.dispelIDs(target, dispel)
 	removedMods := make([]*Instance, 0, len(idsToRemove))
 
 	for i, mod := range mgr.targets[target] {
@@ -68,7 +68,7 @@ func (mgr *Manager) DispelStatus(target key.TargetID, dispel info.Dispel) {
 	mgr.emitRemove(target, removedMods)
 }
 
-func (mgr *Manager) dispelIds(target key.TargetID, dispel info.Dispel) map[int]struct{} {
+func (mgr *Manager) dispelIDs(target key.TargetID, dispel info.Dispel) map[int]struct{} {
 	if dispel.Count <= 0 {
 		dispel.Count = len(mgr.targets[target])
 	}
