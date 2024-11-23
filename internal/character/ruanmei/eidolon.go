@@ -32,7 +32,7 @@ func init() {
 	modifier.Register(E4, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_BUFF,
-		// CanDispel: true,
+		CanDispel:  true,
 	})
 	// Causes known bug (?) of the breaking hit not benefitting from E4 as this should apply with OnBeforeBeingBreak
 	modifier.Register(E4Listener, modifier.Config{

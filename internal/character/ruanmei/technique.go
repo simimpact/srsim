@@ -5,6 +5,4 @@ import (
 	"github.com/simimpact/srsim/pkg/key"
 )
 
-func (c *char) Technique(target key.TargetID, state info.ActionState) {
-	
-}
+func (c *char) Technique(target key.TargetID, state info.ActionState) {}

@@ -38,13 +38,14 @@ func init() {
 		StatusType: model.StatusType_STATUS_BUFF,
 	})
 	modifier.Register(UltDebuff, modifier.Config{
+		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_BREAK_EXTEND},
+		CanDispel:     true,
 		Listeners: modifier.Listeners{
 			// OnAllowAction: removeReset, (unknown mechanic, will be ignored)
-			OnHPChange: removeCDAndSelf,
-			OnEndBreak: doUltImprintWithRemove,
-			// OnDispel: removeCD, (Missing OnDispel listener)
-			// OnBreakExtendAnim: doUltImprint, (Missing OnBreakExtend listener)
-			// Missing BreakExtend flag implementation
+			OnHPChange:    removeCDAndSelf,
+			OnEndBreak:    doUltImprintWithRemove,
+			OnDispel:      removeCD,
+			OnBreakExtend: doUltImprint,
 		},
 	})
 	modifier.Register(UltDebuffCD, modifier.Config{
@@ -101,10 +102,7 @@ func (c *char) initUlt() {
 			if c.engine.HasModifierFromSource(trg, c.id, UltDebuff) {
 				// Get UltDebuff's dynamic value
 				mod := c.engine.GetModifiers(trg, UltDebuff)[0]
-				removeThisTurn, ok := mod.State.(*bool)
-				if !ok {
-					panic("expected *bool for State")
-				}
+				removeThisTurn := mod.State.(*bool)
 				if *removeThisTurn {
 					*removeThisTurn = false
 					c.engine.RemoveModifier(trg, UltDebuff)
@@ -173,9 +171,13 @@ func removeUltMods(mod *modifier.Instance) {
 
 func removeCDAndSelf(mod *modifier.Instance, e event.HPChange) {
 	if mod.Engine().HPRatio(mod.Owner()) == 0 {
-		mod.Engine().RemoveModifier(mod.Owner(), UltDebuffCD)
+		removeCD(mod)
 		mod.RemoveSelf()
 	}
+}
+
+func removeCD(mod *modifier.Instance) {
+	mod.Engine().RemoveModifier(mod.Owner(), UltDebuffCD)
 }
 
 func doUltImprintWithRemove(mod *modifier.Instance) {
@@ -185,13 +187,10 @@ func doUltImprintWithRemove(mod *modifier.Instance) {
 }
 
 func doUltImprint(mod *modifier.Instance) {
-	removeThisTurn, ok := mod.State().(*bool)
-	if !ok {
-		panic("expected *bool for mod.State()")
-	}
+	removeThisTurn := mod.State().(*bool)
 	*removeThisTurn = true
 
-	// "Custom event"
+	// Assumed to happen before insert
 	rm, _ := mod.Engine().CharacterInfo(mod.Source())
 	delayAmt := mod.Engine().Stats(mod.Source()).BreakEffect()*0.2 + 0.1
 	mult := ultBreakDamage[rm.UltLevelIndex()]
@@ -215,8 +214,9 @@ func doUltImprint(mod *modifier.Instance) {
 				AsPureDamage: true,
 			})
 		},
-		Source:   mod.Source(),
-		Priority: info.CharInsertAttackSelf,
+		Source:     mod.Source(),
+		AbortFlags: nil,
+		Priority:   info.CharInsertAttackSelf,
 	})
 
 	mod.Engine().ModifyGaugeNormalized(info.ModifyAttribute{
@@ -225,8 +225,4 @@ func doUltImprint(mod *modifier.Instance) {
 		Source: mod.Source(),
 		Amount: delayAmt,
 	})
-}
-
-func removeCD(mod *modifier.Instance) {
-	mod.Engine().RemoveModifier(mod.Owner(), UltDebuffCD)
 }
