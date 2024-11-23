@@ -9,7 +9,7 @@ export interface Executor {
     cfg: string,
     iterations: number,
     //TODO: consider including iters in part of stats proto
-    updateResult: (result: SimResult, iters: number, hash: string) => void //hash is currently unused; we add iters because currently not in PB
+    updateResult: (result: SimResult, hash: string) => void //hash is currently unused
   ): Promise<boolean | void>;
   cancel(): void;
   buildInfo(): { hash: string; date: string };

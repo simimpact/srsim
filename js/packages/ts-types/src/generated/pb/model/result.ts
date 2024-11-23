@@ -25,6 +25,9 @@ export interface SimResult {
 }
 
 export interface Statistics {
+  iterations?:
+    | number
+    | undefined;
   /** damage stats */
   total_damage_dealt?: DescriptiveStats | undefined;
   total_damage_taken?: DescriptiveStats | undefined;
@@ -311,6 +314,7 @@ export const SimResult: MessageFns<SimResult> = {
 
 function createBaseStatistics(): Statistics {
   return {
+    iterations: 0,
     total_damage_dealt: undefined,
     total_damage_taken: undefined,
     total_damage_dealt_per_cycle: undefined,
@@ -322,14 +326,17 @@ function createBaseStatistics(): Statistics {
 
 export const Statistics: MessageFns<Statistics> = {
   encode(message: Statistics, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.iterations !== undefined && message.iterations !== 0) {
+      writer.uint32(48).uint32(message.iterations);
+    }
     if (message.total_damage_dealt !== undefined) {
-      DescriptiveStats.encode(message.total_damage_dealt, writer.uint32(10).fork()).join();
+      DescriptiveStats.encode(message.total_damage_dealt, writer.uint32(58).fork()).join();
     }
     if (message.total_damage_taken !== undefined) {
-      DescriptiveStats.encode(message.total_damage_taken, writer.uint32(18).fork()).join();
+      DescriptiveStats.encode(message.total_damage_taken, writer.uint32(66).fork()).join();
     }
     if (message.total_damage_dealt_per_cycle !== undefined) {
-      OverviewStats.encode(message.total_damage_dealt_per_cycle, writer.uint32(26).fork()).join();
+      OverviewStats.encode(message.total_damage_dealt_per_cycle, writer.uint32(74).fork()).join();
     }
     if (message.total_av !== undefined) {
       DescriptiveStats.encode(message.total_av, writer.uint32(82).fork()).join();
@@ -354,24 +361,32 @@ export const Statistics: MessageFns<Statistics> = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.iterations = reader.uint32();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
             break;
           }
 
           message.total_damage_dealt = DescriptiveStats.decode(reader, reader.uint32());
           continue;
         }
-        case 2: {
-          if (tag !== 18) {
+        case 8: {
+          if (tag !== 66) {
             break;
           }
 
           message.total_damage_taken = DescriptiveStats.decode(reader, reader.uint32());
           continue;
         }
-        case 3: {
-          if (tag !== 26) {
+        case 9: {
+          if (tag !== 74) {
             break;
           }
 
@@ -419,6 +434,7 @@ export const Statistics: MessageFns<Statistics> = {
 
   fromJSON(object: any): Statistics {
     return {
+      iterations: isSet(object.iterations) ? globalThis.Number(object.iterations) : 0,
       total_damage_dealt: isSet(object.total_damage_dealt)
         ? DescriptiveStats.fromJSON(object.total_damage_dealt)
         : undefined,
@@ -440,6 +456,9 @@ export const Statistics: MessageFns<Statistics> = {
 
   toJSON(message: Statistics): unknown {
     const obj: any = {};
+    if (message.iterations !== undefined && message.iterations !== 0) {
+      obj.iterations = Math.round(message.iterations);
+    }
     if (message.total_damage_dealt !== undefined) {
       obj.total_damage_dealt = DescriptiveStats.toJSON(message.total_damage_dealt);
     }
@@ -466,6 +485,7 @@ export const Statistics: MessageFns<Statistics> = {
   },
   fromPartial<I extends Exact<DeepPartial<Statistics>, I>>(object: I): Statistics {
     const message = createBaseStatistics();
+    message.iterations = object.iterations ?? 0;
     message.total_damage_dealt = (object.total_damage_dealt !== undefined && object.total_damage_dealt !== null)
       ? DescriptiveStats.fromPartial(object.total_damage_dealt)
       : undefined;

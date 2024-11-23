@@ -4,6 +4,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine"
 	"github.com/simimpact/srsim/pkg/engine/combat"
 	"github.com/simimpact/srsim/pkg/engine/info"
+	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/key"
 	"github.com/simimpact/srsim/pkg/model"
 )
@@ -16,6 +17,7 @@ const (
 	WeaknessBreakThunder   = "weakness-break-thunder"
 	WeaknessBreakImaginary = "weakness-break-imaginary"
 	WeaknessBreakQuantum   = "weakness-break-quantum"
+	WeaknessBreakFlag      = "weakness-break-flag"
 )
 
 type breakInfo struct {
@@ -26,6 +28,17 @@ type breakInfo struct {
 	enemyRank           model.EnemyRank
 	damageType          model.DamageType
 	maxStanceMultiplier float64
+}
+
+func init() {
+	modifier.Register(WeaknessBreakFlag, modifier.Config{
+		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_BREAK},
+		Listeners: modifier.Listeners{
+			OnEndBreak: func(mod *modifier.Instance) {
+				mod.RemoveSelf()
+			},
+		},
+	})
 }
 
 func dealWeaknessBreakDamage(breakInfoData *breakInfo, attackKey key.Attack, damageMultiplier float64) {
@@ -214,4 +227,9 @@ func ApplyWeaknessBreakEffects(engine engine.Engine, charID, enemyID key.TargetI
 	case model.DamageType_IMAGINARY:
 		applyWeaknessBreakImaginary(breakInfoData)
 	}
+
+	engine.AddModifier(breakInfoData.enemyID, info.Modifier{
+		Name:   WeaknessBreakFlag,
+		Source: charID,
+	})
 }
