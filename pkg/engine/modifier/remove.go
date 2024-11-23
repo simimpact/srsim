@@ -65,7 +65,7 @@ func (mgr *Manager) DispelStatus(target key.TargetID, dispel info.Dispel) {
 	}
 
 	mgr.targets[target] = mgr.targets[target][:idx]
-	mgr.emitRemove(target, removedMods)
+	mgr.emitDispel(target, removedMods)
 }
 
 func (mgr *Manager) dispelIDs(target key.TargetID, dispel info.Dispel) map[int]struct{} {
