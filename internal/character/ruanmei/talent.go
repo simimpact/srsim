@@ -54,7 +54,7 @@ func (c *char) initTalent() {
 				c.engine.AddModifier(trg, info.Modifier{
 					Name:   TalentSpdBuff,
 					Source: c.id,
-					Stats:  info.PropMap{prop.SPDPercent: 0.1},
+					Stats:  info.PropMap{prop.SPDPercent: talentSpd[c.info.TalentLevelIndex()]},
 				})
 				if c.info.Traces["101"] {
 					c.engine.AddModifier(trg, info.Modifier{
