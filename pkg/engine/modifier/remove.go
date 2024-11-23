@@ -84,7 +84,7 @@ func (mgr *Manager) dispelIDs(target key.TargetID, dispel info.Dispel) map[int]s
 			}
 		}
 	case model.DispelOrder_LAST_ADDED:
-		for i := len(mgr.targets[target]) - 1; i > 0 && len(out) < dispel.Count; i-- {
+		for i := len(mgr.targets[target]) - 1; i >= 0 && len(out) < dispel.Count; i-- {
 			if mgr.targets[target][i].statusType == dispel.Status && mgr.targets[target][i].canDispel {
 				out[i] = struct{}{}
 			}
