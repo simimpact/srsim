@@ -32,8 +32,8 @@ func init() {
 	modifier.Register(E2Shield, modifier.Config{
 		Stacking:   modifier.Replace,
 		StatusType: model.StatusType_STATUS_BUFF,
-		// CanDispel: true,
-		Duration: 2,
+		CanDispel:  true,
+		Duration:   2,
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.Instance) {
 				mod.Engine().AddShield(E2Shield, info.Shield{
@@ -58,8 +58,8 @@ func init() {
 	modifier.Register(E6, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_DEBUFF,
-		// CanDispel: true,
-		Duration: 2,
+		CanDispel:  true,
+		Duration:   2,
 	})
 }
 
