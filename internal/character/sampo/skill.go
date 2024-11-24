@@ -27,7 +27,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 
 func (c *char) OnProjectileHit(target key.TargetID, stanceDamage float64, i int) {
 	if c.info.Eidolon >= 4 && c.engine.HasBehaviorFlag(target, model.BehaviorFlag_STAT_DOT_POISON) {
-		for _, dot := range c.engine.GetModifersByBehaviorFlag(target, model.BehaviorFlag_STAT_DOT_POISON) {
+		for _, dot := range c.engine.GetModifiersByBehaviorFlag(target, model.BehaviorFlag_STAT_DOT_POISON) {
 			dot.State.(common.TriggerableDot).TriggerDot(dot, 0.06, c.engine, target)
 		}
 	}

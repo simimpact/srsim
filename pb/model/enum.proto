@@ -111,7 +111,8 @@ enum BehaviorFlag {
   DISABLE_ACTION = 1;
   BREAK = 2;
   BREAK_EXTEND = 3;
-  reserved 4 to 99;
+  REMOVE_WHEN_SOURCE_DEAD = 4;
+  reserved 5 to 99;
 
   // STATS_ are the behavior flags primarily used for DebuffRES
   STAT_CTRL = 100;
