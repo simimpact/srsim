@@ -26,6 +26,7 @@ func init() {
 
 	modifier.Register(Arrows, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
 	})
 }
 

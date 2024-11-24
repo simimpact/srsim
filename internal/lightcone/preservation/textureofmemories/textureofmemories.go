@@ -44,11 +44,13 @@ func init() {
 	})
 
 	modifier.Register(modshieldbuff, modifier.Config{
+		StatusType: model.StatusType_STATUS_BUFF,
+		Stacking:   modifier.Replace,
+		CanDispel:  true,
 		Listeners: modifier.Listeners{
 			OnAdd:    shieldBuffOnAdd,
 			OnRemove: shieldBuffOnRemove,
 		},
-		StatusType: model.StatusType_STATUS_BUFF,
 	})
 
 	modifier.Register(modcd, modifier.Config{})

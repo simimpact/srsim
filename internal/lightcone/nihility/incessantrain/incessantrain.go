@@ -46,6 +46,7 @@ func init() {
 	modifier.Register(code, modifier.Config{
 		StatusType: model.StatusType_STATUS_DEBUFF,
 		Stacking:   modifier.Replace,
+		CanDispel:  true,
 	})
 }
 

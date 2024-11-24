@@ -29,6 +29,7 @@ func init() {
 	modifier.Register(charmonyFallSpd, modifier.Config{
 		Stacking:      modifier.ReplaceBySource,
 		StatusType:    model.StatusType_STATUS_BUFF,
+		CanDispel:     true,
 		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_UP},
 		Listeners: modifier.Listeners{
 			OnAfterAction: addSpdBuff,

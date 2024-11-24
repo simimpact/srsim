@@ -21,6 +21,7 @@ func init() {
 			Stacking:          modifier.ReplaceBySource,
 			StatusType:        model.StatusType_STATUS_BUFF,
 			CanModifySnapshot: true,
+			CanDispel:         true,
 			Listeners: modifier.Listeners{
 				OnPhase1: natHot,
 			},

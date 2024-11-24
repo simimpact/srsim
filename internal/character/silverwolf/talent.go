@@ -21,6 +21,7 @@ func init() {
 	modifier.Register(BugATK, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_DEBUFF,
+		CanDispel:  true,
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.Instance) {
 				char, _ := mod.Engine().CharacterInfo(mod.Source())
@@ -33,6 +34,7 @@ func init() {
 		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_DEF_DOWN},
 		Stacking:      modifier.ReplaceBySource,
 		StatusType:    model.StatusType_STATUS_DEBUFF,
+		CanDispel:     true,
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.Instance) {
 				char, _ := mod.Engine().CharacterInfo(mod.Source())
@@ -45,6 +47,7 @@ func init() {
 		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_DOWN},
 		Stacking:      modifier.ReplaceBySource,
 		StatusType:    model.StatusType_STATUS_DEBUFF,
+		CanDispel:     true,
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.Instance) {
 				char, _ := mod.Engine().CharacterInfo(mod.Source())

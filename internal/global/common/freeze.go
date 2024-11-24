@@ -21,6 +21,7 @@ func init() {
 	modifier.Register(Freeze, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_DEBUFF,
+		CanDispel:  true,
 		BehaviorFlags: []model.BehaviorFlag{
 			model.BehaviorFlag_DISABLE_ACTION,
 			model.BehaviorFlag_STAT_CTRL,
@@ -34,6 +35,7 @@ func init() {
 	modifier.Register(BreakFreeze, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_DEBUFF,
+		CanDispel:  true,
 		BehaviorFlags: []model.BehaviorFlag{
 			model.BehaviorFlag_DISABLE_ACTION,
 			model.BehaviorFlag_STAT_CTRL,

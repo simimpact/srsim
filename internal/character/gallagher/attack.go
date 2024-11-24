@@ -23,6 +23,7 @@ func init() {
 	modifier.Register(AtkReduction, modifier.Config{
 		StatusType: model.StatusType_STATUS_DEBUFF,
 		Stacking:   modifier.ReplaceBySource,
+		CanDispel:  true,
 		Duration:   2,
 	})
 }

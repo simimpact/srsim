@@ -15,9 +15,10 @@ const (
 
 func init() {
 	modifier.Register(UltBuff, modifier.Config{
-		Stacking:   modifier.Replace,
+		Stacking:   modifier.ReplaceBySource,
 		Duration:   2,
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
 	})
 }
 

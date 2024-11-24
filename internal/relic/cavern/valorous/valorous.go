@@ -51,6 +51,7 @@ func init() {
 	modifier.Register(buffUltDmg, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: doBuffUlt,
 		},

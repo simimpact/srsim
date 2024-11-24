@@ -25,6 +25,7 @@ func init() {
 		StatusType: model.StatusType_STATUS_BUFF,
 		Duration:   3,
 		Stacking:   modifier.Replace,
+		CanDispel:  true,
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.Instance) {
 				mod.Engine().AddShield(Skill, info.Shield{

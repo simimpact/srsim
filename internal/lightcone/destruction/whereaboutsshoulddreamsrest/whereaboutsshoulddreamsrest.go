@@ -30,6 +30,7 @@ func init() {
 	modifier.Register(routed, modifier.Config{
 		Stacking:   modifier.Replace,
 		StatusType: model.StatusType_STATUS_DEBUFF,
+		CanDispel:  true,
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: onBeforeHitAll,
 		},

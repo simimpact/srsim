@@ -23,6 +23,7 @@ func (c *char) initSkill() {
 	modifier.Register(SkillEffect, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
 		Stacking:   modifier.ReplaceBySource,
+		CanDispel:  true,
 		MaxCount:   4,
 		Listeners: modifier.Listeners{
 			OnAdd: SkillOnAdd,

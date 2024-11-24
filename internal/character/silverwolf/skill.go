@@ -31,12 +31,14 @@ func init() {
 		TickMoment: modifier.ModifierPhase1End,
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_DEBUFF,
+		CanDispel:  true,
 	})
 
 	modifier.Register(SkillWeakType, modifier.Config{
 		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_ATTACH_WEAKNESS},
 		Stacking:      modifier.Replace,
 		StatusType:    model.StatusType_STATUS_DEBUFF,
+		CanDispel:     true,
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.Instance) {
 				dmgType, ok := chooseWeaknessType(mod.Engine(), mod.Owner())

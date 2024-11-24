@@ -38,6 +38,7 @@ func init() {
 			OnAfterAttack: removeBuff,
 		},
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
 	})
 }
 

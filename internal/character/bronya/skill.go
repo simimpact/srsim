@@ -15,6 +15,8 @@ const (
 func init() {
 	modifier.Register(Skill, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
+		Stacking:   modifier.ReplaceBySource,
+		CanDispel:  true,
 	})
 }
 

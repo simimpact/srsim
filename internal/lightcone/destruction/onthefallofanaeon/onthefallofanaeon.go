@@ -43,6 +43,7 @@ func init() {
 	modifier.Register(BuffAtk, modifier.Config{
 		StatusType:        model.StatusType_STATUS_BUFF,
 		Stacking:          modifier.ReplaceBySource,
+		CanDispel:         true,
 		MaxCount:          4,
 		CountAddWhenStack: 1,
 		Listeners: modifier.Listeners{
@@ -53,6 +54,7 @@ func init() {
 	modifier.Register(BuffDmgBonus, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
 		Stacking:   modifier.ReplaceBySource,
+		CanDispel:  true,
 		Duration:   2,
 	})
 }

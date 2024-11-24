@@ -22,6 +22,7 @@ type talentState struct {
 func init() {
 	modifier.Register(Talent, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: talentBeforeHitAll,
 			OnAfterAction:  talentAfterAction,
