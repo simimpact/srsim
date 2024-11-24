@@ -13,6 +13,7 @@ const (
 
 func init() {
 	modifier.Register(E4Listener, modifier.Config{
+		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_REMOVE_WHEN_SOURCE_DEAD},
 		Listeners: modifier.Listeners{
 			OnAfterBeingHitAll: checkE4,
 		},

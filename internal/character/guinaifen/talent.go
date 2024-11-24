@@ -26,7 +26,8 @@ func init() {
 	})
 
 	modifier.Register(FirekissListener, modifier.Config{
-		Stacking: modifier.ReplaceBySource,
+		Stacking:      modifier.ReplaceBySource,
+		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_REMOVE_WHEN_SOURCE_DEAD},
 		Listeners: modifier.Listeners{
 			OnBeforeBeingHitAll: checkFirekiss,
 		},
@@ -68,18 +69,6 @@ func (c *char) initTalent() {
 			}
 		})
 	}
-
-	// remove listeners when source dies
-	c.engine.Events().TargetDeath.Subscribe(func(e event.TargetDeath) {
-		if e.Target == c.id {
-			for _, trg := range c.engine.Enemies() {
-				c.engine.RemoveModifierFromSource(trg, c.id, FirekissListener)
-				if c.info.Eidolon >= 4 {
-					c.engine.RemoveModifierFromSource(trg, c.id, E4Listener)
-				}
-			}
-		}
-	})
 }
 
 func checkFirekiss(mod *modifier.Instance, e event.HitStart) {
