@@ -58,6 +58,9 @@ type Listeners struct {
 	// Called when the attached target stance changes
 	OnStanceChange func(mod *Instance, e event.StanceChange)
 
+	// Called before the attached target goes into a break state (stance reached 0).
+	OnBeforeBeingBreak func(mod *Instance)
+
 	// Called when the attached target causes another target to go into a break state (0 stance).
 	OnTriggerBreak func(mod *Instance, target key.TargetID)
 
@@ -470,6 +473,12 @@ func (mgr *Manager) stanceChange(e event.StanceChange) {
 }
 
 func (mgr *Manager) stanceBreak(e event.StanceBreak) {
+	for _, mod := range mgr.itr(e.Target) {
+		f := mod.listeners.OnBeforeBeingBreak
+		if f != nil {
+			f(mod)
+		}
+	}
 	for _, mod := range mgr.itr(e.Source) {
 		f := mod.listeners.OnTriggerBreak
 		if f != nil {
@@ -495,7 +504,7 @@ func (mgr *Manager) stanceBreakEnd(e event.StanceReset) {
 
 func (mgr *Manager) breakExtend(e event.BreakExtend) {
 	for _, mod := range mgr.itr(e.Target) {
-		f := mod.listeners.OnEndBreak
+		f := mod.listeners.OnBreakExtend
 		if f != nil {
 			f(mod)
 		}
