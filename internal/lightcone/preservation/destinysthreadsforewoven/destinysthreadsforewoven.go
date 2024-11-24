@@ -44,6 +44,7 @@ func init() {
 	modifier.Register(buff, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
 		Stacking:   modifier.ReplaceBySource,
+		CanDispel:  true,
 	})
 }
 
