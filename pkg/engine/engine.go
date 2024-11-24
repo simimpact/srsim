@@ -80,7 +80,7 @@ type Modifier interface {
 
 	// Returns a list of read-only modifiers currently attached to the given target that also have the
 	// given BehaviorFlag
-	GetModifersByBehaviorFlag(target key.TargetID, flag model.BehaviorFlag) []info.Modifier
+	GetModifiersByBehaviorFlag(target key.TargetID, flag model.BehaviorFlag) []info.Modifier
 }
 
 type Attribute interface {

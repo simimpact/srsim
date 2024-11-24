@@ -15,7 +15,7 @@ const (
 	A6         key.Reason   = "huohuo-a6"
 )
 
-func (c *char) TalentInit() {
+func init() {
 	modifier.Register(TalentBuff, modifier.Config{
 		Stacking:   modifier.Replace,
 		StatusType: model.StatusType_STATUS_BUFF,
@@ -29,6 +29,9 @@ func (c *char) TalentInit() {
 			OnLimboWaitHeal: E2OnKill,
 		},
 	})
+}
+
+func (c *char) TalentInit() {
 	if c.info.Traces["101"] {
 		c.DispelCount = 6
 		c.TalentRound = 1
