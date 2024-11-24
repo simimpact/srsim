@@ -46,6 +46,7 @@ func init() {
 	modifier.Register(Disputation, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
 		Stacking:   modifier.ReplaceBySource,
+		CanDispel:  true,
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: applyDefignore,
 		},
