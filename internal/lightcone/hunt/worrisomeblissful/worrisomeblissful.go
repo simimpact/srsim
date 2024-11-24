@@ -44,6 +44,7 @@ func init() {
 	modifier.Register(Tame, modifier.Config{
 		StatusType:        model.StatusType_STATUS_DEBUFF,
 		Stacking:          modifier.ReplaceBySource,
+		CanDispel:         true,
 		MaxCount:          2,
 		CountAddWhenStack: 1,
 		Listeners: modifier.Listeners{
