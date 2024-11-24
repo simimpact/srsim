@@ -63,12 +63,12 @@ func (c *char) enhancedBasic(target key.TargetID, state info.ActionState) {
 
 	c.risingUppercut(target)
 
-	for _, dot := range c.engine.GetModifersByBehaviorFlag(target, model.BehaviorFlag_STAT_DOT_BLEED) {
+	for _, dot := range c.engine.GetModifiersByBehaviorFlag(target, model.BehaviorFlag_STAT_DOT_BLEED) {
 		dot.State.(common.TriggerableDot).TriggerDot(dot, talentRatio[c.info.TalentLevelIndex()], c.engine, target)
 	}
 
 	if c.info.Eidolon >= 6 {
-		for _, dot := range c.engine.GetModifersByBehaviorFlag(target, model.BehaviorFlag_STAT_DOT_BLEED) {
+		for _, dot := range c.engine.GetModifiersByBehaviorFlag(target, model.BehaviorFlag_STAT_DOT_BLEED) {
 			for k := 0; k < (punchCount + extraPunchCount); k++ {
 				dot.State.(common.TriggerableDot).TriggerDot(dot, 0.08, c.engine, target)
 			}

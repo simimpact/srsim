@@ -8,8 +8,8 @@ import (
 
 const (
 	NormalSkill           key.Attack = "jingliu-skill-normal"
-	EnhancedSkillPrimary  key.Attack = "jingliu-skill-ehnance-primary"
-	EnhancedSkillAdjacent key.Attack = "jingliu-skill-ehnance-adjacent"
+	EnhancedSkillPrimary  key.Attack = "jingliu-skill-enhance-primary"
+	EnhancedSkillAdjacent key.Attack = "jingliu-skill-enhance-adjacent"
 	A4                    key.Reason = "jingliu-a4"
 	Skill                 key.Reason = "jingliu-skill"
 )
@@ -77,7 +77,7 @@ func (c *char) EnhancedSkill(target key.TargetID, state info.ActionState) {
 			HitRatio:     hitRatio,
 		})
 		c.engine.Attack(info.Attack{
-			Key:          EnhancedSkillPrimary,
+			Key:          EnhancedSkillAdjacent,
 			HitIndex:     i,
 			Source:       c.id,
 			Targets:      c.engine.AdjacentTo(target),
@@ -109,7 +109,7 @@ func (c *char) EnhancedSkillE1(target key.TargetID, state info.ActionState) {
 			HitRatio:     hitRatio,
 		})
 		c.engine.Attack(info.Attack{
-			Key:        EnhancedSkillPrimary,
+			Key:        EnhancedSkillAdjacent,
 			HitIndex:   i,
 			Source:     c.id,
 			Targets:    []key.TargetID{target},
