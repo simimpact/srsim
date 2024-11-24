@@ -42,6 +42,7 @@ func init() {
 	modifier.Register(OwnSword, modifier.Config{})
 
 	modifier.Register(EclipseAllyMonitor, modifier.Config{
+		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_REMOVE_WHEN_SOURCE_DEAD},
 		Listeners: modifier.Listeners{
 			OnHPChange:           allyOnHPChange,
 			OnAfterBeingAttacked: onAfterBeingAttacked,
@@ -51,6 +52,7 @@ func init() {
 	modifier.Register(Eclipse, modifier.Config{
 		StatusType:        model.StatusType_STATUS_BUFF,
 		Stacking:          modifier.ReplaceBySource,
+		CanDispel:         true,
 		MaxCount:          3,
 		CountAddWhenStack: 1,
 		CanModifySnapshot: true,
@@ -73,19 +75,30 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 		Stats:  info.PropMap{prop.CritDMG: cdmgBuff},
 	})
 
-	// apply modifier to all other allies
-	engine.Events().BattleStart.Subscribe(func(event event.BattleStart) {
-		for char := range event.CharInfo {
+	applyAllyMod := func(char key.TargetID) {
+		engine.AddModifier(char, info.Modifier{
+			Name:   EclipseAllyMonitor,
+			Source: owner,
+			State: &state{
+				dmgBonus:  dmgBonus,
+				defIgnore: defIgnore,
+				flag:      false,
+			},
+		})
+	}
+
+	// Apply modifier to all other existing allies
+	for _, char := range engine.Characters() {
+		if char != owner {
+			applyAllyMod(char)
+		}
+	}
+
+	// Apply modifier to all newly created allies
+	engine.Events().CharactersAdded.Subscribe(func(event event.CharactersAdded) {
+		for _, char := range engine.Characters() {
 			if char != owner {
-				engine.AddModifier(char, info.Modifier{
-					Name:   EclipseAllyMonitor,
-					Source: owner,
-					State: &state{
-						dmgBonus:  dmgBonus,
-						defIgnore: defIgnore,
-						flag:      false,
-					},
-				})
+				applyAllyMod(char)
 			}
 		}
 	})
@@ -101,8 +114,8 @@ func onAfterBeingAttacked(mod *modifier.Instance, e event.AttackEnd) {
 	addStack(mod)
 }
 
-// helper function to handle stacks: adds a new Eclipse modifier,
-// handing over values from the Monitor mod to the Eclipse mod
+// Helper function to handle stacks: adds a new Eclipse modifier,
+// Handing over values from the Monitor mod to the Eclipse mod
 func addStack(mod *modifier.Instance) {
 	st := mod.State().(*state)
 	mod.Engine().AddModifier(mod.Source(), info.Modifier{
@@ -116,13 +129,13 @@ func addStack(mod *modifier.Instance) {
 	})
 }
 
-// set flag that makes sure to only apply Eclipse on an attack
+// Set flag that makes sure to only apply Eclipse on an attack
 func setFlag(mod *modifier.Instance, e event.AttackStart) {
 	st := mod.State().(*state)
 	st.flag = true
 }
 
-// if flag, apply Eclipse buff(s)
+// If flag, apply Eclipse buff(s)
 func applyEclipse(mod *modifier.Instance, e event.HitStart) {
 	st := mod.State().(*state)
 	if st.flag {
@@ -133,7 +146,7 @@ func applyEclipse(mod *modifier.Instance, e event.HitStart) {
 	}
 }
 
-// remove mod after attack
+// Remove mod after attack
 func removeEclipse(mod *modifier.Instance, e event.AttackEnd) {
 	mod.RemoveSelf()
 }
