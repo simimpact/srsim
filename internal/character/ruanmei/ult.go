@@ -49,6 +49,7 @@ func init() {
 		},
 	})
 	modifier.Register(UltDebuffCD, modifier.Config{
+		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_REMOVE_WHEN_SOURCE_DEAD},
 		Listeners: modifier.Listeners{
 			OnLimboWaitHeal: func(mod *modifier.Instance) bool {
 				mod.RemoveSelf()
@@ -107,14 +108,6 @@ func (c *char) initUlt() {
 					*removeThisTurn = false
 					c.engine.RemoveModifier(trg, UltDebuff)
 				}
-			}
-		}
-	})
-	// Remove UltDebuff when RM dies
-	c.engine.Events().TargetDeath.Subscribe(func(event event.TargetDeath) {
-		if event.Target == c.id {
-			for _, trg := range c.engine.Enemies() {
-				c.engine.RemoveModifierFromSource(trg, c.id, UltDebuff)
 			}
 		}
 	})

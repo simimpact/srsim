@@ -30,7 +30,8 @@ func init() {
 		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_UP},
 	})
 	modifier.Register(TalentBreakListener, modifier.Config{
-		Stacking: modifier.ReplaceBySource,
+		Stacking:      modifier.ReplaceBySource,
+		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_REMOVE_WHEN_SOURCE_DEAD},
 		Listeners: modifier.Listeners{
 			OnBeingBreak: doTalentBreakDamage,
 		},
@@ -90,15 +91,6 @@ func (c *char) initTalent() {
 			}
 		},
 	)
-
-	// Remove TalentBreakListener from all enemies when Ruan Mei dies
-	c.engine.Events().TargetDeath.Subscribe(func(event event.TargetDeath) {
-		if event.Target == c.id {
-			for _, trg := range c.engine.Enemies() {
-				c.engine.RemoveModifierFromSource(trg, c.id, TalentBreakListener)
-			}
-		}
-	})
 
 	// Add mods on BattleStart
 	c.engine.Events().BattleStart.Subscribe(func(event event.BattleStart) {
