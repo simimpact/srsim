@@ -54,14 +54,18 @@ message SimResult {
 }
 
 message Statistics {
+  //simulation statistics
+  reserved 1,2,3,4,5; // for seeds
+  uint32 iterations = 6 [json_name="iterations"];
   //damage stats
-  optional DescriptiveStats total_damage_dealt = 1;
-  optional DescriptiveStats total_damage_taken = 2;
-  optional OverviewStats total_damage_dealt_per_cycle = 3;
+  optional DescriptiveStats total_damage_dealt = 7 [json_name="total_damage_dealt"];
+  optional DescriptiveStats total_damage_taken = 8 [json_name="total_damage_taken"];
+  optional OverviewStats total_damage_dealt_per_cycle = 9 [json_name="total_damage_dealt_per_cycle"];
 
   //turn stats
-  optional DescriptiveStats total_av = 10;
-
+  optional DescriptiveStats total_av = 10 [json_name="total_av"];
+  repeated OverviewStats damage_dealt_by_cycle = 11 [json_name="damage_dealt_by_cycle"];
+  repeated OverviewStats damage_taken_by_cycle = 12  [json_name="damage_taken_by_cycle"];
 }
 
 message IterationResult {
@@ -69,6 +73,8 @@ message IterationResult {
   double total_damage_taken = 2;
 
   double total_av = 10;
+  repeated double cumulative_damage_dealt_by_cycle = 11;
+  repeated double cumulative_damage_taken_by_cycle = 12;
 }
 
 message OverviewStats {

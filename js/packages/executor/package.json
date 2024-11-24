@@ -1,0 +1,17 @@
+{
+  "name": "@srsim/executor",
+  "private": "true",
+  "version": "0.0.0",
+  "main": "src/index.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@srsim/ts-types": "workspace:*",
+    "@srsim/typescript-config": "workspace:*"
+  },
+  "dependencies": {
+    "axios": "^1.6.7",
+    "lodash-es": "^4.17.21"
+  }
+}

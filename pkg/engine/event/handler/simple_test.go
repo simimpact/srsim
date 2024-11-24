@@ -3,16 +3,16 @@ package handler_test
 import (
 	"testing"
 
-	. "github.com/simimpact/srsim/pkg/engine/event/handler"
+	"github.com/simimpact/srsim/pkg/engine/event/handler"
 )
 
 func TestEmitNoSubscription(t *testing.T) {
-	var handler EventHandler[int]
+	var handler handler.EventHandler[int]
 	handler.Emit(10)
 }
 
 func TestSimpleListener(t *testing.T) {
-	var handler EventHandler[int]
+	var handler handler.EventHandler[int]
 
 	value := 0
 	handler.Subscribe(func(event int) {
@@ -26,7 +26,7 @@ func TestSimpleListener(t *testing.T) {
 }
 
 func TestMultipleListeners(t *testing.T) {
-	var handler EventHandler[int]
+	var handler handler.EventHandler[int]
 
 	value := 0
 	handler.Subscribe(func(event int) {

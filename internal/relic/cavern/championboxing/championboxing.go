@@ -25,11 +25,13 @@ func init() {
 	relic.Register(key.ChampionOfStreetwiseBoxing, relic.Config{
 		Effects: []relic.SetEffect{
 			{
-				MinCount: 2,
-				Stats:    info.PropMap{prop.PhysicalDamagePercent: 0.1},
+				MinCount:     2,
+				Stats:        info.PropMap{prop.PhysicalDamagePercent: 0.1},
+				CreateEffect: nil,
 			},
 			{
 				MinCount: 4,
+				Stats:    nil,
 				CreateEffect: func(engine engine.Engine, owner key.TargetID) {
 					engine.AddModifier(owner, info.Modifier{
 						Name:   boxing,
@@ -50,17 +52,19 @@ func init() {
 		MaxCount:          5,
 		CountAddWhenStack: 1,
 		Stacking:          modifier.Replace,
+		Listeners: modifier.Listeners{
+			OnAdd: onAdd,
+		},
 	})
 }
 
 func addAtkBuff(mod *modifier.Instance, e event.AttackEnd) {
-	// return early if on max stack
-	if mod.Count() == mod.MaxCount() {
-		return
-	}
 	mod.Engine().AddModifier(mod.Owner(), info.Modifier{
 		Name:   atkBuff,
 		Source: mod.Owner(),
-		Stats:  info.PropMap{prop.ATKPercent: 0.05},
 	})
+}
+
+func onAdd(mod *modifier.Instance) {
+	mod.AddProperty(prop.ATKPercent, 0.05*mod.Count())
 }

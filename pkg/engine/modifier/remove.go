@@ -52,7 +52,7 @@ func (mgr *Manager) RemoveSelf(target key.TargetID, instance *Instance) {
 
 func (mgr *Manager) DispelStatus(target key.TargetID, dispel info.Dispel) {
 	idx := 0
-	idsToRemove := mgr.dispelIds(target, dispel)
+	idsToRemove := mgr.dispelIDs(target, dispel)
 	removedMods := make([]*Instance, 0, len(idsToRemove))
 
 	for i, mod := range mgr.targets[target] {
@@ -65,10 +65,10 @@ func (mgr *Manager) DispelStatus(target key.TargetID, dispel info.Dispel) {
 	}
 
 	mgr.targets[target] = mgr.targets[target][:idx]
-	mgr.emitRemove(target, removedMods)
+	mgr.emitDispel(target, removedMods)
 }
 
-func (mgr *Manager) dispelIds(target key.TargetID, dispel info.Dispel) map[int]struct{} {
+func (mgr *Manager) dispelIDs(target key.TargetID, dispel info.Dispel) map[int]struct{} {
 	if dispel.Count <= 0 {
 		dispel.Count = len(mgr.targets[target])
 	}
@@ -79,20 +79,20 @@ func (mgr *Manager) dispelIds(target key.TargetID, dispel info.Dispel) map[int]s
 	switch dispel.Order {
 	case model.DispelOrder_FIRST_ADDED:
 		for i := 0; i < l && len(out) < dispel.Count; i++ {
-			if mgr.targets[target][i].statusType == dispel.Status {
+			if mgr.targets[target][i].statusType == dispel.Status && mgr.targets[target][i].canDispel {
 				out[i] = struct{}{}
 			}
 		}
 	case model.DispelOrder_LAST_ADDED:
-		for i := len(mgr.targets[target]) - 1; i > 0 && len(out) < dispel.Count; i-- {
-			if mgr.targets[target][i].statusType == dispel.Status {
+		for i := len(mgr.targets[target]) - 1; i >= 0 && len(out) < dispel.Count; i-- {
+			if mgr.targets[target][i].statusType == dispel.Status && mgr.targets[target][i].canDispel {
 				out[i] = struct{}{}
 			}
 		}
 	case model.DispelOrder_RANDOM:
 		var options []int
 		for i, mod := range mgr.targets[target] {
-			if mod.statusType == dispel.Status {
+			if mod.statusType == dispel.Status && mod.canDispel {
 				options = append(options, i)
 			}
 		}

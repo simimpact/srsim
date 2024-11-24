@@ -49,11 +49,13 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 
 // after giving energy, remove this modifier so it cannot do it again
 func onAfterAction(mod *modifier.Instance, e event.ActionEnd) {
-	mod.Engine().ModifyEnergy(info.ModifyAttribute{
-		Key:    Passkey,
-		Target: mod.Owner(),
-		Source: mod.Owner(),
-		Amount: mod.State().(float64),
-	})
-	mod.RemoveSelf()
+	if e.AttackType == model.AttackType_SKILL {
+		mod.Engine().ModifyEnergy(info.ModifyAttribute{
+			Key:    Passkey,
+			Target: mod.Owner(),
+			Source: mod.Owner(),
+			Amount: mod.State().(float64),
+		})
+		mod.RemoveSelf()
+	}
 }
