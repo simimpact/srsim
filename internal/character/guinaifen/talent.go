@@ -26,6 +26,8 @@ func init() {
 	})
 
 	modifier.Register(FirekissListener, modifier.Config{
+		Stacking:      modifier.ReplaceBySource,
+		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_REMOVE_WHEN_SOURCE_DEAD},
 		Listeners: modifier.Listeners{
 			OnBeforeBeingHitAll: checkFirekiss,
 		},
@@ -47,25 +49,25 @@ func (c *char) initTalent() {
 	})
 
 	// apply Firekiss listener to all enemies at start
-	for _, trg := range c.engine.Enemies() {
-		c.engine.Events().CharactersAdded.Subscribe(func(e event.CharactersAdded) {
+	c.engine.Events().EnemiesAdded.Subscribe(func(e event.EnemiesAdded) {
+		for _, trg := range c.engine.Enemies() {
 			c.engine.AddModifier(trg, info.Modifier{
 				Name:   FirekissListener,
 				Source: c.id,
 			})
-		})
-	}
+		}
+	})
 
-	// apply E4 listener to all enemies at the start
+	// apply E4 listener to all enemies at start
 	if c.info.Eidolon >= 4 {
-		for _, trg := range c.engine.Enemies() {
-			c.engine.Events().CharactersAdded.Subscribe(func(e event.CharactersAdded) {
+		c.engine.Events().EnemiesAdded.Subscribe(func(e event.EnemiesAdded) {
+			for _, trg := range c.engine.Enemies() {
 				c.engine.AddModifier(trg, info.Modifier{
 					Name:   E4Listener,
 					Source: c.id,
 				})
-			})
-		}
+			}
+		})
 	}
 }
 
