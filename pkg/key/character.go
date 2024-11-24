@@ -12,6 +12,7 @@ const (
 	DanHengImbibitorLunae Character = "danhengimbibitorlunae"
 	Gepard                Character = "gepard"
 	Jingliu               Character = "jingliu"
+	Gallagher             Character = "gallagher"
 	Guinaifen             Character = "guinaifen"
 	Herta                 Character = "herta"
 	Himeko                Character = "himeko"
