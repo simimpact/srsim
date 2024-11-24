@@ -27,6 +27,7 @@ type skillState struct {
 func init() {
 	modifier.Register(AtkBuff, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
 		Listeners: modifier.Listeners{
 			OnRemove: removeBenedictionSelf,
 		},
