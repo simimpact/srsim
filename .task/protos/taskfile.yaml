@@ -1,0 +1,38 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+tasks:
+  default:
+    desc: run all protos generation
+    cmds:
+      - task: go
+      - task: ts-types
+      - task: tygo
+  go:
+    desc: generate go code
+    cmds:
+      - |
+        protoc \
+              --experimental_allow_proto3_optional \
+              --go_out=module=github.com/simimpact/srsim:. \
+              --go-grpc_out=module=github.com/simimpact/srsim:. \
+              pb/**/*.proto
+  ts-types:
+    desc: generate ts types
+    cmds:
+      - |
+        protoc \
+              --experimental_allow_proto3_optional \
+              --plugin=./js/packages/ts-types/node_modules/.bin/protoc-gen-ts_proto \
+              --ts_proto_opt=useOptionals=all \
+              --ts_proto_opt=snakeToCamel=json \
+              --ts_proto_out=./js/packages/ts-types/src/generated \
+              --ts_proto_opt=esModuleInterop=true \
+              --ts_proto_opt=useJsonName=true \
+              --ts_proto_opt=outputIndex=true \
+              pb/**/*.proto
+  tygo:
+    desc: run tygo
+    dir: js/packages/ts-types
+    cmd: go run github.com/gzuidhof/tygo@latest generate

@@ -1,0 +1,48 @@
+{
+  "name": "@srsim/storybook",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "dependencies": {
+    "eslint": "^9.5.0",
+    "next": "14.2.5",
+    "react": "^18",
+    "react-dom": "^18",
+    "ui": "workspace:*"
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "^1.6.1",
+    "@next/eslint-plugin-next": "^14.2.4",
+    "@srsim/eslint-config": "workspace:*",
+    "@srsim/ts-types": "workspace:*",
+    "@srsim/typescript-config": "workspace:*",
+    "@storybook/addon-essentials": "^8.2.8",
+    "@storybook/addon-interactions": "^8.2.8",
+    "@storybook/addon-links": "^8.2.8",
+    "@storybook/addon-onboarding": "^8.2.8",
+    "@storybook/addon-viewport": "^8.3.6",
+    "@storybook/blocks": "^8.2.8",
+    "@storybook/nextjs": "^8.2.8",
+    "@storybook/react": "^8.2.8",
+    "@storybook/test": "^8.2.8",
+    "@storybook/theming": "^8.2.8",
+    "@types/eslint": "^8.56.10",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10.4.19",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.5",
+    "eslint-plugin-storybook": "^0.8.0",
+    "postcss": "^8",
+    "storybook": "^8.2.8",
+    "storybook-dark-mode": "^4.0.2",
+    "storybook-tailwind-dark-mode": "^1.0.22",
+    "tailwindcss": "^3.4.1",
+    "tsconfig-paths-webpack-plugin": "^4.1.0",
+    "typescript": "^5"
+  }
+}

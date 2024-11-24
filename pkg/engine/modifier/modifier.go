@@ -28,6 +28,7 @@ type Instance struct {
 	statusType               model.StatusType
 	flags                    []model.BehaviorFlag
 	modifySnapshot           bool
+	canDispel                bool
 }
 
 func (mgr *Manager) newInstance(owner key.TargetID, mod info.Modifier, renew int) *Instance {
@@ -52,6 +53,7 @@ func (mgr *Manager) newInstance(owner key.TargetID, mod info.Modifier, renew int
 		modifySnapshot:           config.CanModifySnapshot,
 		canTickImmediatelyPhase2: false,
 		renewTurn:                renew,
+		canDispel:                config.CanDispel,
 	}
 
 	if mi.stats == nil {
@@ -235,5 +237,6 @@ func (mi *Instance) ToModel() info.Modifier {
 		CountAddWhenStack: mi.countAddWhenStack,
 		Stats:             props,
 		DebuffRES:         res,
+		CanDispel:         mi.canDispel,
 	}
 }

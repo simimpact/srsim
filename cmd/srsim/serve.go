@@ -19,6 +19,7 @@ type ServeOpts struct {
 }
 
 func serve(opts *ServeOpts) {
+	//nolint:exhaustruct // options unused ok left not initialized
 	server := &http.Server{Addr: address}
 	done := make(chan bool)
 	idleConnections := make(chan struct{})

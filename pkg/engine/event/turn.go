@@ -14,7 +14,7 @@ type TurnTargetsAdded struct {
 type TurnResetEventHandler = handler.EventHandler[TurnReset]
 type TurnReset struct {
 	ResetTarget key.TargetID `json:"reset_target"`
-	GaugeCost   float64      `json:"gauge_cost"`
+	GaugeCost   int64        `json:"gauge_cost"`
 	TurnOrder   []TurnStatus `json:"turn_order"`
 }
 
@@ -23,8 +23,8 @@ type GaugeChange struct {
 	Key       key.Reason   `json:"key"`
 	Target    key.TargetID `json:"target"`
 	Source    key.TargetID `json:"source"`
-	OldGauge  float64      `json:"old_gauge"`
-	NewGauge  float64      `json:"new_gauge"`
+	OldGauge  int64        `json:"old_gauge"`
+	NewGauge  int64        `json:"new_gauge"`
 	TurnOrder []TurnStatus `json:"turn_order"`
 }
 
@@ -32,12 +32,12 @@ type CurrentGaugeCostChangeEventHandler = handler.EventHandler[CurrentGaugeCostC
 type CurrentGaugeCostChange struct {
 	Key     key.Reason   `json:"key"`
 	Source  key.TargetID `json:"source"`
-	OldCost float64      `json:"old_cost"`
-	NewCost float64      `json:"new_cost"`
+	OldCost int64        `json:"old_cost"`
+	NewCost int64        `json:"new_cost"`
 }
 
 type TurnStatus struct {
 	ID    key.TargetID `json:"id"`
-	Gauge float64      `json:"gauge"`
+	Gauge int64        `json:"gauge"`
 	AV    float64      `json:"av"`
 }
