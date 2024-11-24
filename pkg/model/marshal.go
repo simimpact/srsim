@@ -5,15 +5,17 @@ import (
 )
 
 func marshalOptions() protojson.MarshalOptions {
+	//nolint:exhaustruct // unused options ok left uninitialized
 	return protojson.MarshalOptions{
 		AllowPartial:    true,
 		UseEnumNumbers:  false,
 		EmitUnpopulated: false,
-		UseProtoNames:   true,
+		UseProtoNames:   false,
 	}
 }
 
 func unmarshalOptions() protojson.UnmarshalOptions {
+	//nolint:exhaustruct // unused options ok left uninitialized
 	return protojson.UnmarshalOptions{
 		AllowPartial:   true,
 		DiscardUnknown: true,

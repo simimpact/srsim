@@ -51,7 +51,7 @@ func defMult(h *info.Hit) float64 {
 }
 
 func res(h *info.Hit) float64 {
-	res := h.Defender.DamageRES(h.DamageType) - h.Attacker.GetProperty(prop.DamagePEN(h.DamageType))
+	res := h.Defender.DamageRES(h.DamageType) - (h.Attacker.GetProperty(prop.DamagePEN(h.DamageType)) + h.Attacker.GetProperty(prop.AllDamagePEN))
 
 	if res < -1 {
 		res = -1

@@ -10,6 +10,7 @@ import (
 
 type mockTurnManager struct {
 	t            *testing.T
+	totalAV      float64
 	turnSequence []key.TargetID
 }
 
@@ -22,6 +23,7 @@ func newMockManager(t *testing.T) *mockTurnManager {
 	return &mockTurnManager{
 		t:            t,
 		turnSequence: nil,
+		totalAV:      0,
 	}
 }
 
@@ -30,7 +32,7 @@ func (m *mockTurnManager) queue(ids ...key.TargetID) {
 }
 
 func (m *mockTurnManager) TotalAV() float64 {
-	return 0
+	return m.totalAV
 }
 
 func (m *mockTurnManager) AddTargets(ids ...key.TargetID) {
@@ -45,9 +47,11 @@ func (m *mockTurnManager) RemoveTarget(id key.TargetID) error {
 // after test ends, causing improper logging panics
 func (m *mockTurnManager) StartTurn() (key.TargetID, float64, []event.TurnStatus, error) {
 	if len(m.turnSequence) == 0 {
+		m.totalAV += 100000
 		return 1, 100000, nil, nil
 	}
 	if m.turnSequence[0] == -1 {
+		m.totalAV += 100000
 		return 1, 100000, nil, nil
 	}
 	tgt := m.turnSequence[0]

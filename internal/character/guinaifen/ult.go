@@ -25,7 +25,7 @@ func (c *char) Ult(target key.TargetID, state info.ActionState) {
 
 	// triggers all Burns on all enemies
 	for _, trg := range c.engine.Enemies() {
-		for _, dot := range c.engine.GetModifersByBehaviorFlag(trg, model.BehaviorFlag_STAT_DOT_BURN) {
+		for _, dot := range c.engine.GetModifiersByBehaviorFlag(trg, model.BehaviorFlag_STAT_DOT_BURN) {
 			dot.State.(common.TriggerableDot).TriggerDot(dot, ultDetonateBurn[c.info.UltLevelIndex()], c.engine, trg)
 		}
 	}
