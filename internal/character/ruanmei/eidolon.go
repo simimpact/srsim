@@ -36,6 +36,8 @@ func init() {
 	})
 	// Causes known bug (?) of the breaking hit not benefitting from E4 as this should apply with OnBeforeBeingBreak
 	modifier.Register(E4Listener, modifier.Config{
+		Stacking:      modifier.ReplaceBySource,
+		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_REMOVE_WHEN_SOURCE_DEAD},
 		Listeners: modifier.Listeners{
 			OnBeforeBeingBreak: addE4,
 		},
