@@ -45,13 +45,13 @@ func init() {
 	modifier.Register(ShieldCdmg, modifier.Config{
 		Stacking:   modifier.Replace,
 		StatusType: model.StatusType_STATUS_BUFF,
-		// CanDispel: true,
+		CanDispel:  true,
 	})
 
 	modifier.Register(AllIn, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_DEBUFF,
-		// CanDispel: true,
+		CanDispel:  true,
 		Listeners: modifier.Listeners{
 			OnBeforeBeingHitAll: func(mod *modifier.Instance, e event.HitStart) {
 				e.Hit.Defender.AddProperty(AllIn, prop.AllDamageTaken, mod.State().(state).vuln)
