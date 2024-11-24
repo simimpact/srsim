@@ -22,18 +22,14 @@ func init() {
 	relic.Register(key.CelestialDifferentiator, relic.Config{
 		Effects: []relic.SetEffect{
 			{
-				MinCount: 2,
-				Stats:    info.PropMap{prop.CritDMG: 0.16},
+				MinCount:     2,
+				Stats:        info.PropMap{prop.CritDMG: 0.16},
+				CreateEffect: nil,
 			},
 			{
-				MinCount: 2,
-				CreateEffect: func(engine engine.Engine, owner key.TargetID) {
-					engine.AddModifier(owner, info.Modifier{
-						Name:   celestial,
-						Source: owner,
-						Stats:  info.PropMap{prop.CritChance: 0.6},
-					})
-				},
+				MinCount:     2,
+				Stats:        nil,
+				CreateEffect: Create,
 			},
 		},
 	})
@@ -41,6 +37,20 @@ func init() {
 		Listeners: modifier.Listeners{
 			OnAfterAttack: removeSelf,
 		},
+	})
+}
+
+func Create(engine engine.Engine, owner key.TargetID) {
+	engine.Events().BattleStart.Subscribe(func(e event.BattleStart) {
+		for _, char := range e.CharStats {
+			if char.ID() == owner && char.CritDamage() >= 1.2 {
+				engine.AddModifier(owner, info.Modifier{
+					Name:   celestial,
+					Source: owner,
+					Stats:  info.PropMap{prop.CritChance: 0.6},
+				})
+			}
+		}
 	})
 }
 

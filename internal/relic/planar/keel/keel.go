@@ -8,6 +8,7 @@ import (
 	"github.com/simimpact/srsim/pkg/engine/modifier"
 	"github.com/simimpact/srsim/pkg/engine/prop"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/model"
 )
 
 // 2pc: Increases the wearer's Effect RES by 10%.
@@ -27,11 +28,13 @@ func init() {
 	relic.Register(key.BrokenKeel, relic.Config{
 		Effects: []relic.SetEffect{
 			{
-				MinCount: 2,
-				Stats:    info.PropMap{prop.EffectRES: 0.1},
+				MinCount:     2,
+				Stats:        info.PropMap{prop.EffectRES: 0.1},
+				CreateEffect: nil,
 			},
 			{
 				MinCount:     2,
+				Stats:        nil,
 				CreateEffect: Create,
 			},
 		},
@@ -43,7 +46,8 @@ func init() {
 		},
 	})
 	modifier.Register(keelcdmg, modifier.Config{
-		Stacking: modifier.ReplaceBySource,
+		Stacking:      modifier.ReplaceBySource,
+		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_REMOVE_WHEN_SOURCE_DEAD},
 	})
 }
 

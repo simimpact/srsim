@@ -25,11 +25,13 @@ func init() {
 	relic.Register(key.WastelanderOfBanditryDesert, relic.Config{
 		Effects: []relic.SetEffect{
 			{
-				MinCount: 2,
-				Stats:    info.PropMap{prop.ImaginaryDamagePercent: 0.1},
+				MinCount:     2,
+				Stats:        info.PropMap{prop.ImaginaryDamagePercent: 0.1},
+				CreateEffect: nil,
 			},
 			{
 				MinCount: 4,
+				Stats:    nil,
 				CreateEffect: func(engine engine.Engine, owner key.TargetID) {
 					engine.AddModifier(owner, info.Modifier{
 						Name:   wastelander,

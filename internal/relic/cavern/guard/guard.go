@@ -24,11 +24,13 @@ func init() {
 	relic.Register(key.GuardOfWutheringSnow, relic.Config{
 		Effects: []relic.SetEffect{
 			{
-				MinCount: 2,
-				Stats:    info.PropMap{prop.AllDamageReduce: 0.08},
+				MinCount:     2,
+				Stats:        info.PropMap{prop.AllDamageReduce: 0.08},
+				CreateEffect: nil,
 			},
 			{
 				MinCount: 4,
+				Stats:    nil,
 				CreateEffect: func(engine engine.Engine, owner key.TargetID) {
 					engine.AddModifier(owner, info.Modifier{
 						Name:   guard,
@@ -46,7 +48,7 @@ func init() {
 }
 
 func onPhase1(mod *modifier.Instance) {
-	// if above 50% HP, bypass
+	// If above 50% HP, bypass
 	if mod.Engine().HPRatio(mod.Owner()) > 0.5 {
 		return
 	}

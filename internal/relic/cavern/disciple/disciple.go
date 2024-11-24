@@ -26,11 +26,13 @@ func init() {
 	relic.Register(key.LongevousDisciple, relic.Config{
 		Effects: []relic.SetEffect{
 			{
-				MinCount: 2,
-				Stats:    info.PropMap{prop.HPPercent: 0.12},
+				MinCount:     2,
+				Stats:        info.PropMap{prop.HPPercent: 0.12},
+				CreateEffect: nil,
 			},
 			{
 				MinCount: 4,
+				Stats:    nil,
 				CreateEffect: func(engine engine.Engine, owner key.TargetID) {
 					engine.AddModifier(owner, info.Modifier{
 						Name:   check,
@@ -49,6 +51,7 @@ func init() {
 	modifier.Register(crbuff, modifier.Config{
 		Stacking:          modifier.ReplaceBySource,
 		StatusType:        model.StatusType_STATUS_BUFF,
+		CanDispel:         true,
 		MaxCount:          2,
 		CountAddWhenStack: 1,
 		Duration:          2,

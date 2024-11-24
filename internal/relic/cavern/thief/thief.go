@@ -19,8 +19,9 @@ func init() {
 	relic.Register(key.ThiefOfShootingMeteor, relic.Config{
 		Effects: []relic.SetEffect{
 			{
-				MinCount: 2,
-				Stats:    info.PropMap{prop.BreakEffect: 0.16},
+				MinCount:     2,
+				Stats:        info.PropMap{prop.BreakEffect: 0.16},
+				CreateEffect: nil,
 			},
 			{
 				MinCount: 4,

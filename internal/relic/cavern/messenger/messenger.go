@@ -24,11 +24,13 @@ func init() {
 	relic.Register(key.MessengerTraversingHackerspace, relic.Config{
 		Effects: []relic.SetEffect{
 			{
-				MinCount: 2,
-				Stats:    info.PropMap{prop.SPDPercent: 0.06},
+				MinCount:     2,
+				Stats:        info.PropMap{prop.SPDPercent: 0.06},
+				CreateEffect: nil,
 			},
 			{
 				MinCount: 4,
+				Stats:    nil,
 				CreateEffect: func(engine engine.Engine, owner key.TargetID) {
 					engine.AddModifier(owner, info.Modifier{
 						Name:   check,
@@ -45,14 +47,16 @@ func init() {
 		},
 	})
 	modifier.Register(buff, modifier.Config{
-		Stacking:   modifier.Replace,
-		StatusType: model.StatusType_STATUS_BUFF,
-		Duration:   1,
+		Stacking:      modifier.Replace,
+		StatusType:    model.StatusType_STATUS_BUFF,
+		CanDispel:     true,
+		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_UP},
+		Duration:      1,
 	})
 }
 
-// workaround for missing "eligible" target list in ActionStart:
-// apply buff to owner when OnBeforeAction is triggered
+// Workaround for missing "eligible" target list in ActionStart:
+// Apply buff to owner when OnBeforeAction is triggered
 // KNOWN BUG: this will also buff owners equipping this 4p set even if they do not target allies with an Ult
 func BuffSelf(mod *modifier.Instance, e event.ActionStart) {
 	if e.AttackType == model.AttackType_ULT {
@@ -64,7 +68,7 @@ func BuffSelf(mod *modifier.Instance, e event.ActionStart) {
 	}
 }
 
-// apply buff to other allies when OnAfterAction is triggered
+// Apply buff to other allies when OnAfterAction is triggered
 // INACCURACY: this should apply instead when OnBeforeAction is triggered
 func BuffAllies(mod *modifier.Instance, e event.ActionEnd) {
 	if e.AttackType == model.AttackType_ULT {
