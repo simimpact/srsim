@@ -40,6 +40,7 @@ var GameToProp = map[string]Property{
 	"ImaginaryResistanceDelta":  ImaginaryDamageRES,
 	"WindResistanceDelta":       WindDamageRES,
 	"AllDamageTypeResistance":   AllDamageRES,
+	"AllDamageTypePenetrate":    AllDamagePEN,
 	"PhysicalPenetrate":         PhysicalPEN,
 	"FirePenetrate":             FirePEN,
 	"IcePenetrate":              IcePEN,

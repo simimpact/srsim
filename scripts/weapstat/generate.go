@@ -91,6 +91,7 @@ func GetName(textMap map[string]string, hash int) string {
 }
 
 func ProcessLightCone(name string, cone EquipmentConfig, promotions PromotionConfig) {
+	//nolint:exhaustruct // values initialized below
 	data := dataTmpl{}
 	data.Key = keyRegex.ReplaceAllString(name, "")
 	data.KeyLower = strings.ToLower(data.Key)

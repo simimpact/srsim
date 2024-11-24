@@ -16,6 +16,9 @@ type Listeners struct {
 	// Called when a modifier instance is removed, either forceably or due to the instance expiring.
 	OnRemove func(mod *Instance)
 
+	// Called when a modifier instance is dispelled.
+	OnDispel func(mod *Instance)
+
 	// Called when the duration for all modifiers instances of this shape are extended.
 	OnExtendDuration func(mod *Instance)
 
@@ -55,6 +58,9 @@ type Listeners struct {
 	// Called when the attached target stance changes
 	OnStanceChange func(mod *Instance, e event.StanceChange)
 
+	// Called before the attached target goes into a break state (stance reached 0).
+	OnBeforeBeingBreak func(mod *Instance)
+
 	// Called when the attached target causes another target to go into a break state (0 stance).
 	OnTriggerBreak func(mod *Instance, target key.TargetID)
 
@@ -63,6 +69,11 @@ type Listeners struct {
 
 	// Called when the attached target break status ends (stance resets to max).
 	OnEndBreak func(mod *Instance)
+
+	// ------------ break events
+
+	// Called when break state is extended because of a BREAK_EXTEND flag.
+	OnBreakExtend func(mod *Instance)
 
 	// ------------ shield events
 
@@ -151,6 +162,9 @@ func (mgr *Manager) subscribe() {
 	events.StanceBreak.Subscribe(mgr.stanceBreak)
 	events.StanceReset.Subscribe(mgr.stanceBreakEnd)
 
+	// break events
+	events.BreakExtend.Subscribe(mgr.breakExtend)
+
 	// shield events
 	events.ShieldAdded.Subscribe(mgr.shieldAdded)
 	events.ShieldRemoved.Subscribe(mgr.shieldRemoved)
@@ -199,6 +213,20 @@ func (mgr *Manager) emitRemove(target key.TargetID, mods []*Instance) {
 			Target:   target,
 			Modifier: mod.ToModel(),
 		})
+	}
+}
+
+func (mgr *Manager) emitDispel(target key.TargetID, mods []*Instance) {
+	for _, mod := range mods {
+		f := mod.listeners.OnDispel
+		if f != nil {
+			f(mod)
+		}
+		mgr.engine.Events().ModifierDispelled.Emit(event.ModifierDispelled{
+			Target:   target,
+			Modifier: mod.ToModel(),
+		})
+		mgr.emitRemove(target, []*Instance{mod})
 	}
 }
 
@@ -445,6 +473,12 @@ func (mgr *Manager) stanceChange(e event.StanceChange) {
 }
 
 func (mgr *Manager) stanceBreak(e event.StanceBreak) {
+	for _, mod := range mgr.itr(e.Target) {
+		f := mod.listeners.OnBeforeBeingBreak
+		if f != nil {
+			f(mod)
+		}
+	}
 	for _, mod := range mgr.itr(e.Source) {
 		f := mod.listeners.OnTriggerBreak
 		if f != nil {
@@ -462,6 +496,15 @@ func (mgr *Manager) stanceBreak(e event.StanceBreak) {
 func (mgr *Manager) stanceBreakEnd(e event.StanceReset) {
 	for _, mod := range mgr.itr(e.Target) {
 		f := mod.listeners.OnEndBreak
+		if f != nil {
+			f(mod)
+		}
+	}
+}
+
+func (mgr *Manager) breakExtend(e event.BreakExtend) {
+	for _, mod := range mgr.itr(e.Target) {
+		f := mod.listeners.OnBreakExtend
 		if f != nil {
 			f(mod)
 		}
