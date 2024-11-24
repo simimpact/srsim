@@ -33,6 +33,7 @@ type System struct {
 	ModifierAdded            ModifierAddedEventHandler
 	ModifierResisted         ModifierResistedEventHandler
 	ModifierRemoved          ModifierRemovedEventHandler
+	ModifierDispelled        ModifierDispelledEventHandler
 	ModifierExtendedDuration ModifierExtendedDurationEventHandler
 	ModifierExtendedCount    ModifierExtendedCountEventHandler
 
@@ -47,6 +48,8 @@ type System struct {
 	StanceBreak   StanceBreakEventHandler
 	StanceReset   StanceResetEventHandler
 	SPChange      SPChangeEventHandler
+
+	BreakExtend BreakExtendEventHandler
 
 	TurnTargetsAdded       TurnTargetsAddedEventHandler
 	TurnReset              TurnResetEventHandler

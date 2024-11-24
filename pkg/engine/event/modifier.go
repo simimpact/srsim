@@ -31,6 +31,12 @@ type ModifierRemoved struct {
 	Modifier info.Modifier `json:"modifier"`
 }
 
+type ModifierDispelledEventHandler = handler.EventHandler[ModifierDispelled]
+type ModifierDispelled struct {
+	Target   key.TargetID  `json:"target"`
+	Modifier info.Modifier `json:"modifier"`
+}
+
 type ModifierExtendedDurationEventHandler = handler.EventHandler[ModifierExtendedDuration]
 type ModifierExtendedDuration struct {
 	Target   key.TargetID  `json:"target"`
