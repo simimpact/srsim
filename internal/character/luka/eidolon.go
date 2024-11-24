@@ -19,6 +19,7 @@ func init() {
 		Stacking:   modifier.ReplaceBySource,
 		Count:      1,
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
 	})
 
 	modifier.Register(e4, modifier.Config{

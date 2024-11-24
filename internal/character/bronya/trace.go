@@ -30,6 +30,8 @@ func init() {
 	// A4 Register
 	modifier.Register(A4, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
+		Stacking:   modifier.ReplaceBySource,
+		CanDispel:  true,
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.Instance) {
 				mod.SetProperty(prop.DEFPercent, 0.2)

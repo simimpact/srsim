@@ -41,6 +41,7 @@ func init() {
 			model.BehaviorFlag_STAT_DEF_DOWN,
 		},
 		StatusType: model.StatusType_STATUS_DEBUFF,
+		CanDispel:  true,
 	})
 }
 

@@ -15,6 +15,7 @@ const (
 func init() {
 	modifier.Register(Technique, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.Instance) {
 				mod.SetProperty(prop.ATKPercent, 0.15)

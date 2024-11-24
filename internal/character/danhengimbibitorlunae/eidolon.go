@@ -27,6 +27,7 @@ func init() {
 		CountAddWhenStack: 1,
 		CanModifySnapshot: true,
 		Stacking:          modifier.ReplaceBySource,
+		CanDispel:         true,
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: E6OnHit,
 		},

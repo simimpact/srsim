@@ -15,8 +15,11 @@ const (
 
 func init() {
 	modifier.Register(e1, modifier.Config{
-		Duration:   2,
-		StatusType: model.StatusType_STATUS_BUFF,
+		StatusType:    model.StatusType_STATUS_BUFF,
+		Stacking:      modifier.ReplaceBySource,
+		CanDispel:     true,
+		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_UP},
+		Duration:      2,
 	})
 
 	modifier.Register(e2, modifier.Config{

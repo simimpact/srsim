@@ -41,6 +41,7 @@ func init() {
 
 	modifier.Register(SomnusCorpus, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
 		Listeners: modifier.Listeners{
 			OnBeforeHit:   onBeforeHitSomnus,
 			OnAfterAttack: onAfterAttack,

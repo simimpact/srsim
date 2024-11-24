@@ -46,6 +46,7 @@ func init() {
 		},
 		Stacking:          modifier.ReplaceBySource,
 		StatusType:        model.StatusType_STATUS_BUFF,
+		CanDispel:         true,
 		MaxCount:          3,
 		CountAddWhenStack: 1,
 		Listeners: modifier.Listeners{
@@ -63,6 +64,7 @@ func init() {
 		Stacking:          modifier.ReplaceBySource,
 		TickMoment:        modifier.ModifierPhase1End,
 		StatusType:        model.StatusType_STATUS_DEBUFF,
+		CanDispel:         true,
 		MaxCount:          1,
 		CountAddWhenStack: 1,
 	})

@@ -19,6 +19,7 @@ func init() {
 	modifier.Register(SkillSpeedDown, modifier.Config{
 		Stacking:      modifier.ReplaceBySource,
 		StatusType:    model.StatusType_STATUS_DEBUFF,
+		CanDispel:     true,
 		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_DOWN},
 	})
 

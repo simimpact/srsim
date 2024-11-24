@@ -29,6 +29,7 @@ func init() {
 	modifier.Register(cosmosCritDmg, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
 		Listeners: modifier.Listeners{
 			OnAfterAttack: weaknessCheck,
 		},

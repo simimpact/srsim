@@ -15,6 +15,7 @@ const (
 func init() {
 	modifier.Register(Technique, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
 		Duration:   2,
 	})
 }

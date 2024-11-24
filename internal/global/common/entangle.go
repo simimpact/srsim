@@ -33,6 +33,7 @@ func init() {
 		Duration:   1,
 		Count:      1,
 		StatusType: model.StatusType_STATUS_DEBUFF,
+		CanDispel:  true,
 		BehaviorFlags: []model.BehaviorFlag{
 			model.BehaviorFlag_DISABLE_ACTION,
 			model.BehaviorFlag_STAT_ENTANGLE,
@@ -52,6 +53,7 @@ func init() {
 		Duration:   1,
 		Count:      1,
 		StatusType: model.StatusType_STATUS_DEBUFF,
+		CanDispel:  true,
 		BehaviorFlags: []model.BehaviorFlag{
 			model.BehaviorFlag_DISABLE_ACTION,
 			model.BehaviorFlag_STAT_ENTANGLE,

@@ -17,6 +17,7 @@ func init() {
 	modifier.Register(UltDefDown, modifier.Config{
 		Stacking:      modifier.ReplaceBySource,
 		StatusType:    model.StatusType_STATUS_DEBUFF,
+		CanDispel:     true,
 		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_DEF_DOWN},
 	})
 }
