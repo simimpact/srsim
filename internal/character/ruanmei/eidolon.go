@@ -37,14 +37,7 @@ func init() {
 	// Causes known bug (?) of the breaking hit not benefitting from E4 as this should apply with OnBeforeBeingBreak
 	modifier.Register(E4Listener, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeingBreak: func(mod *modifier.Instance) {
-				mod.Engine().AddModifier(mod.Source(), info.Modifier{
-					Name:     E4,
-					Source:   mod.Source(),
-					Stats:    info.PropMap{prop.BreakEffect: 1},
-					Duration: 3,
-				})
-			},
+			OnBeforeBeingBreak: addE4,
 		},
 	})
 }
@@ -54,8 +47,16 @@ func applyE1(mod *modifier.Instance, e event.HitStart) {
 }
 
 func applyE2(mod *modifier.Instance, e event.HitStart) {
-	// Needs to check for Break flag (uses workaround for now)
-	if mod.Engine().Stance(mod.Owner()) == 0 {
+	if mod.Engine().HasBehaviorFlag(e.Defender, model.BehaviorFlag_BREAK) {
 		e.Hit.Attacker.AddProperty(E2, prop.ATKPercent, 0.4)
 	}
+}
+
+func addE4(mod *modifier.Instance) {
+	mod.Engine().AddModifier(mod.Source(), info.Modifier{
+		Name:     E4,
+		Source:   mod.Source(),
+		Stats:    info.PropMap{prop.BreakEffect: 1},
+		Duration: 3,
+	})
 }
