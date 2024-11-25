@@ -38,6 +38,7 @@ func init() {
 	modifier.Register(Buff, modifier.Config{
 		StatusType:        model.StatusType_STATUS_BUFF,
 		Stacking:          modifier.ReplaceBySource,
+		CanDispel:         true,
 		MaxCount:          5,
 		CountAddWhenStack: 1,
 		Listeners: modifier.Listeners{

@@ -16,6 +16,7 @@ func init() {
 	modifier.Register(Ult, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
 	})
 }
 

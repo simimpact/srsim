@@ -31,9 +31,6 @@ func init() {
 
 	// For every debuff the target enemy has, the DMG dealt by Silver Wolf increases by 20%, up to a limit of 100%.
 	modifier.Register(E6, modifier.Config{
-		TickMoment: modifier.ModifierPhase1End,
-		Stacking:   modifier.ReplaceBySource,
-		StatusType: model.StatusType_STATUS_DEBUFF,
 		Listeners: modifier.Listeners{
 			OnBeforeHitAll: func(mod *modifier.Instance, e event.HitStart) {
 				debuffCount := mod.Engine().ModifierStatusCount(e.Defender, model.StatusType_STATUS_DEBUFF)
@@ -43,7 +40,6 @@ func init() {
 				e.Hit.Attacker.AddProperty(E6, prop.AllDamagePercent, 0.2*float64(debuffCount))
 			},
 		},
-		CanModifySnapshot: true,
 	})
 }
 

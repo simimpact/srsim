@@ -18,6 +18,7 @@ func init() {
 	modifier.Register(SampoDOTTaken, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_DEBUFF,
+		CanDispel:  true,
 		Listeners: modifier.Listeners{
 			OnBeforeBeingHitAll: onBeforeBeingHitAll,
 		},

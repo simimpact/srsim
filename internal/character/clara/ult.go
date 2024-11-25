@@ -18,6 +18,7 @@ func init() {
 		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_BURST},
 		Stacking:      modifier.Refresh,
 		StatusType:    model.StatusType_STATUS_BUFF,
+		CanDispel:     true,
 		Duration:      2,
 	})
 

@@ -47,6 +47,7 @@ func init() {
 		},
 		TickMoment: modifier.ModifierPhase1End,
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
 	})
 
 	// Register E4

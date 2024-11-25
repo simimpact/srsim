@@ -16,6 +16,7 @@ func init() {
 	modifier.Register(TechDebuff, modifier.Config{
 		Stacking:   modifier.Replace,
 		StatusType: model.StatusType_STATUS_DEBUFF,
+		CanDispel:  true,
 	})
 }
 

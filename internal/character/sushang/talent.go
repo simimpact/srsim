@@ -17,6 +17,7 @@ func init() {
 	modifier.Register(TalentBuff, modifier.Config{
 		Stacking:      modifier.ReplaceBySource,
 		StatusType:    model.StatusType_STATUS_BUFF,
+		CanDispel:     true,
 		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_UP},
 		Listeners: modifier.Listeners{
 			OnAdd: talentOnAdd,

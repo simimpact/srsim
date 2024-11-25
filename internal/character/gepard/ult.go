@@ -20,6 +20,8 @@ func init() {
 	modifier.Register(Ult, modifier.Config{
 		Duration:   3,
 		StatusType: model.StatusType_STATUS_BUFF,
+		Stacking:   modifier.Replace,
+		CanDispel:  true,
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.Instance) {
 				mod.Engine().AddShield(Ult, info.Shield{

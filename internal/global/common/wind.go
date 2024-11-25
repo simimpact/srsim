@@ -28,6 +28,7 @@ func init() {
 		MaxCount:          5,
 		CountAddWhenStack: 1,
 		StatusType:        model.StatusType_STATUS_DEBUFF,
+		CanDispel:         true,
 		BehaviorFlags: []model.BehaviorFlag{
 			model.BehaviorFlag_STAT_DOT,
 			model.BehaviorFlag_STAT_DOT_POISON,
@@ -44,6 +45,7 @@ func init() {
 		MaxCount:          5,
 		CountAddWhenStack: 1,
 		StatusType:        model.StatusType_STATUS_DEBUFF,
+		CanDispel:         true,
 		BehaviorFlags: []model.BehaviorFlag{
 			model.BehaviorFlag_STAT_DOT,
 			model.BehaviorFlag_STAT_DOT_POISON,

@@ -40,6 +40,7 @@ func init() {
 	// A2 aggro down buff
 	modifier.Register(A2Buff, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
+		Stacking:   modifier.ReplaceBySource,
 	})
 
 	// applies a4 buff

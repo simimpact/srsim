@@ -52,6 +52,7 @@ func init() {
 		MaxCount:          5,
 		CountAddWhenStack: 1,
 		Stacking:          modifier.Replace,
+		CanDispel:         true,
 		Listeners: modifier.Listeners{
 			OnAdd: onAdd,
 		},

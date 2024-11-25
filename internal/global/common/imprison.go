@@ -23,6 +23,7 @@ func init() {
 		Stacking:   modifier.ReplaceBySource,
 		TickMoment: modifier.ModifierPhase1End,
 		StatusType: model.StatusType_STATUS_DEBUFF,
+		CanDispel:  true,
 		BehaviorFlags: []model.BehaviorFlag{
 			model.BehaviorFlag_DISABLE_ACTION,
 			model.BehaviorFlag_STAT_CTRL,
@@ -39,6 +40,7 @@ func init() {
 		Stacking:   modifier.ReplaceBySource,
 		TickMoment: modifier.ModifierPhase1End,
 		StatusType: model.StatusType_STATUS_DEBUFF,
+		CanDispel:  true,
 		BehaviorFlags: []model.BehaviorFlag{
 			model.BehaviorFlag_DISABLE_ACTION,
 			model.BehaviorFlag_STAT_CTRL,

@@ -42,6 +42,7 @@ func init() {
 		CountAddWhenStack: 1,
 		Stacking:          modifier.ReplaceBySource,
 		StatusType:        model.StatusType_STATUS_BUFF,
+		CanDispel:         true,
 		Listeners: modifier.Listeners{
 			OnAdd: buffOnAdd,
 		},

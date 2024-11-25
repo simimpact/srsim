@@ -19,6 +19,7 @@ func (c *char) initTalent() {
 	modifier.Register(Talent, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
 		Stacking:   modifier.ReplaceBySource,
+		CanDispel:  true,
 		MaxCount:   6,
 		Listeners: modifier.Listeners{
 			OnAdd: talentOnAdd,
