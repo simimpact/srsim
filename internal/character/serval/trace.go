@@ -36,16 +36,16 @@ func init() {
 }
 
 func (c *char) initTraces() {
-	c.engine.Events().BattleStart.Subscribe(func(event event.BattleStart) {
-		if c.info.Traces["102"] {
+	if c.info.Traces["102"] {
+		c.engine.Events().BattleStart.Subscribe(func(event event.BattleStart) {
 			c.engine.ModifyEnergy(info.ModifyAttribute{
 				Key:    A4,
 				Target: c.id,
 				Source: c.id,
 				Amount: 15.0,
 			})
-		}
-	})
+		})
+	}
 
 	if c.info.Traces["103"] {
 		c.engine.AddModifier(c.id, info.Modifier{
