@@ -16,9 +16,7 @@ const (
 )
 
 func (c *char) initTraces() {
-	modifier.Register(A4, modifier.Config{
-		StatusType: model.StatusType_STATUS_BUFF,
-	})
+	modifier.Register(A4, modifier.Config{})
 	modifier.Register(A6, modifier.Config{
 		StatusType: model.StatusType_UNKNOWN_STATUS,
 		Listeners: modifier.Listeners{

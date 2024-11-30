@@ -30,10 +30,8 @@ func init() {
 			OnAfterAction:  removeHealBuff,
 		},
 	})
-	// The actual buff modifier goes here
-	modifier.Register(CornucopiaBuff, modifier.Config{
-		StatusType: model.StatusType_STATUS_BUFF,
-	})
+	// The actual modifier goes here
+	modifier.Register(CornucopiaBuff, modifier.Config{})
 }
 
 // When the wearer uses their Skill or Ultimate, their Outgoing Healing increases by 12%(S1)

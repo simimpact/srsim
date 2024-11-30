@@ -20,6 +20,7 @@ func init() {
 		Stacking:      modifier.Replace,
 		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_DOWN},
 		StatusType:    model.StatusType_STATUS_DEBUFF,
+		CanDispel:     true,
 		Duration:      1,
 	})
 

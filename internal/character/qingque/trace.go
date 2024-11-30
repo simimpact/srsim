@@ -30,6 +30,7 @@ func init() {
 	modifier.Register(A6, modifier.Config{
 		StatusType:    model.StatusType_STATUS_BUFF,
 		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_UP},
+		CanDispel:     true,
 	})
 }
 

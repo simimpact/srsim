@@ -41,6 +41,7 @@ func init() {
 	modifier.Register(MirageFizzle, modifier.Config{
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_DEBUFF,
+		CanDispel:  true,
 	})
 
 	modifier.Register(Cooldown, modifier.Config{})

@@ -21,6 +21,7 @@ func init() {
 		Stacking:          modifier.ReplaceBySource,
 		StatusType:        model.StatusType_STATUS_BUFF,
 		BehaviorFlags:     []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_UP},
+		CanDispel:         true,
 		CountAddWhenStack: 1,
 	})
 }

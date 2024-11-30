@@ -19,11 +19,13 @@ func init() {
 	modifier.Register(E2, modifier.Config{
 		Stacking:   modifier.Refresh,
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
 	})
 
 	modifier.Register(E4Buff, modifier.Config{
 		TickMoment: modifier.ModifierPhase1End,
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
 	})
 
 	modifier.Register(E4, modifier.Config{

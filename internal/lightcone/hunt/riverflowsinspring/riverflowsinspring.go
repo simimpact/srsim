@@ -42,6 +42,7 @@ func init() {
 	modifier.Register(RiverFlowsinSpringBuff, modifier.Config{
 		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_UP},
 		StatusType:    model.StatusType_STATUS_BUFF,
+		CanDispel:     true,
 	})
 }
 

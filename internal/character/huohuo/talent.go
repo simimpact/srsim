@@ -19,6 +19,7 @@ func init() {
 	modifier.Register(TalentBuff, modifier.Config{
 		Stacking:   modifier.Replace,
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
 		Listeners: modifier.Listeners{
 			OnPhase1: RunTalent,
 			OnBeforeAction: func(mod *modifier.Instance, e event.ActionStart) {

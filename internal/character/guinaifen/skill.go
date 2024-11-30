@@ -16,6 +16,7 @@ const (
 func init() {
 	modifier.Register(E1, modifier.Config{
 		StatusType: model.StatusType_STATUS_DEBUFF,
+		CanDispel:  true,
 	})
 }
 

@@ -16,6 +16,7 @@ const (
 func init() {
 	modifier.Register(Talent, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
+		Stacking:   modifier.ReplaceBySource,
 	})
 }
 

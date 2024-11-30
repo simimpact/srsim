@@ -20,6 +20,7 @@ func init() {
 	modifier.Register(Skill, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
 		Stacking:   modifier.ReplaceBySource,
+		CanDispel:  true,
 		MaxCount:   4,
 		Listeners: modifier.Listeners{
 			OnAdd:    skillOnAdd,

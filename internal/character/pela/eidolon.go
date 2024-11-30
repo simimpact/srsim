@@ -21,6 +21,7 @@ func init() {
 	modifier.Register(E2, modifier.Config{
 		Stacking:      modifier.ReplaceBySource,
 		StatusType:    model.StatusType_STATUS_BUFF,
+		CanDispel:     true,
 		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_UP},
 	})
 
@@ -29,6 +30,7 @@ func init() {
 		TickMoment: modifier.ModifierPhase1End,
 		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_DEBUFF,
+		CanDispel:  true,
 	})
 
 	// When Pela attacks a debuffed enemy, she deals Additional Ice DMG equal to 40% of Pela's ATK to the enemy.

@@ -16,9 +16,10 @@ const (
 func init() {
 	modifier.Register(Technique, modifier.Config{
 		StatusType:    model.StatusType_STATUS_DEBUFF,
-		Duration:      1,
-		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_FATIGUE},
 		Stacking:      modifier.ReplaceBySource,
+		CanDispel:     true,
+		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_FATIGUE},
+		Duration:      1,
 	})
 }
 
