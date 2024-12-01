@@ -32,8 +32,11 @@ func init() {
 	})
 
 	modifier.Register(E2Buff, modifier.Config{
-		StatusType: model.StatusType_STATUS_BUFF,
-		Duration:   1,
+		StatusType:    model.StatusType_STATUS_BUFF,
+		Stacking:      modifier.ReplaceBySource,
+		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_UP},
+		CanDispel:     true,
+		Duration:      1,
 	})
 
 	modifier.Register(E4Cooldown, modifier.Config{

@@ -50,14 +50,17 @@ func init() {
 	modifier.Register(carveAtk, modifier.Config{
 		Stacking:   modifier.Replace,
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
 	})
 	modifier.Register(carveCDmg, modifier.Config{
 		Stacking:   modifier.Replace,
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
 	})
 	modifier.Register(carveERR, modifier.Config{
 		Stacking:   modifier.Replace,
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
 	})
 }
 

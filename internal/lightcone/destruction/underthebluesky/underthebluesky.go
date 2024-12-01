@@ -32,6 +32,7 @@ func init() {
 	modifier.Register(Buff, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
 		Stacking:   modifier.Replace,
+		CanDispel:  true,
 		Duration:   3,
 	})
 }

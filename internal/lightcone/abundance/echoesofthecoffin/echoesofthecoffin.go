@@ -42,6 +42,7 @@ func init() {
 	modifier.Register(spdBuff, modifier.Config{
 		Stacking:      modifier.ReplaceBySource,
 		StatusType:    model.StatusType_STATUS_BUFF,
+		CanDispel:     true,
 		BehaviorFlags: []model.BehaviorFlag{model.BehaviorFlag_STAT_SPEED_UP},
 	})
 }

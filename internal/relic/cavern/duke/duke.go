@@ -67,6 +67,7 @@ func init() {
 		CountAddWhenStack: 1,
 		Duration:          3,
 		StatusType:        model.StatusType_STATUS_BUFF,
+		CanDispel:         true,
 		Listeners: modifier.Listeners{
 			OnAdd: onAddStack,
 		},

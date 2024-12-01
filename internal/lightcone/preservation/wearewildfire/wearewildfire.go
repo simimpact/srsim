@@ -32,6 +32,7 @@ func init() {
 		Stacking:   modifier.ReplaceBySource,
 		TickMoment: modifier.ModifierPhase1End,
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
 	})
 }
 

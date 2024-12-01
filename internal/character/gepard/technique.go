@@ -16,6 +16,7 @@ func init() {
 	modifier.Register(Technique, modifier.Config{
 		Duration:   2,
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
 		Listeners: modifier.Listeners{
 			OnAdd: func(mod *modifier.Instance) {
 				mod.Engine().AddShield(TechniqueShield, info.Shield{

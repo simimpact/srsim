@@ -27,11 +27,11 @@ func init() {
 	modifier.Register(dmgBuff, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
 		Stacking:   modifier.ReplaceBySource,
+		CanDispel:  true,
 	})
 	// Since the atkBuff method just calculates the entire atk bonus each time I don't think this needs the maxCount
 	modifier.Register(NightontheMilkyWay, modifier.Config{
-		StatusType: model.StatusType_STATUS_BUFF,
-		Stacking:   modifier.ReplaceBySource,
+		Stacking: modifier.ReplaceBySource,
 	})
 }
 

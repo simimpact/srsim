@@ -17,13 +17,15 @@ const (
 func init() {
 	modifier.Register(E1, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnBeforeHitAll: E1Listener,
+			OnBeforeBeingHitAll: E1Listener,
 		},
 		StatusType: model.StatusType_STATUS_DEBUFF,
+		CanDispel:  true,
 	})
 
 	modifier.Register(E2, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
 	})
 
 	modifier.Register(E4, modifier.Config{
@@ -47,7 +49,7 @@ func (c *char) initEidolons() {
 
 func E1Listener(mod *modifier.Instance, e event.HitStart) {
 	if e.Hit.AttackType == model.AttackType_DOT {
-		e.Hit.Attacker.AddProperty(E1, prop.AllDamageTaken, 0.30)
+		e.Hit.Defender.AddProperty(E1, prop.AllDamageTaken, 0.30)
 	}
 }
 

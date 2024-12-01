@@ -4,7 +4,9 @@ import (
 	"testing"
 
 	"github.com/simimpact/srsim/pkg/engine/event"
+	"github.com/simimpact/srsim/pkg/engine/info"
 	"github.com/simimpact/srsim/pkg/key"
+	"github.com/simimpact/srsim/pkg/model"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -193,5 +195,56 @@ func TestRemoveModifierSelf(t *testing.T) {
 
 	mod.RemoveSelf()
 	assert.Empty(t, manager.targets[target])
+	assert.Equal(t, 1, called)
+}
+
+func TestDispelStatus(t *testing.T) {
+	manager, mockCtrl := NewTestManagerWithEvents(t)
+	defer mockCtrl.Finish()
+
+	target := key.TargetID(1)
+	statusToDispel := model.StatusType_STATUS_BUFF // Example status type to dispel
+
+	mod1 := &Instance{
+		name:       key.Modifier("Mod1"),
+		source:     target,
+		statusType: statusToDispel,
+		canDispel:  true,
+	}
+	mod2 := &Instance{
+		name:       key.Modifier("Mod2"),
+		source:     target,
+		statusType: statusToDispel,
+		canDispel:  false, // Not dispellable
+	}
+	mod3 := &Instance{
+		name:       key.Modifier("Mod3"),
+		source:     target,
+		statusType: model.StatusType_STATUS_DEBUFF, // Different status type
+		canDispel:  true,
+	}
+
+	manager.targets[target] = append(manager.targets[target], mod1, mod2, mod3)
+
+	dispel := info.Dispel{
+		Status: statusToDispel,
+		Count:  1, // Dispel only one
+		Order:  model.DispelOrder_LAST_ADDED,
+	}
+
+	called := 0
+	manager.engine.Events().ModifierDispelled.Subscribe(func(event event.ModifierDispelled) {
+		assert.Equal(t, key.Modifier("Mod1"), event.Modifier.Name) // Expect Mod1
+		called++
+	})
+
+	manager.DispelStatus(target, dispel)
+
+	// Verify that only mod1 was removed (last dispellable of the specified type)
+	assert.Len(t, manager.targets[target], 2)
+	assert.NotContains(t, manager.targets[target], mod1)
+	assert.Contains(t, manager.targets[target], mod2)
+	assert.Contains(t, manager.targets[target], mod3)
+
 	assert.Equal(t, 1, called)
 }

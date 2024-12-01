@@ -19,6 +19,7 @@ func init() {
 			Stacking:   modifier.ReplaceBySource,
 			Duration:   3,
 			StatusType: model.StatusType_STATUS_DEBUFF,
+			CanDispel:  true,
 		},
 	)
 }
