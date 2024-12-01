@@ -44,7 +44,6 @@ func (sim *Simulation) CanUseUlt(id key.TargetID) (bool, error) {
 	check := skillInfo.Ult.CanUse
 	if check == nil {
 		return sim.EnergyRatio(id) == 1, nil
-	} else {
-		return check(sim, char), nil
 	}
+	return check(sim, char), nil
 }
