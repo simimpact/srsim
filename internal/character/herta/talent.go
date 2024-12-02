@@ -35,8 +35,8 @@ func (c *char) talentListener(e event.HPChange) {
 	onCD, ok := passiveCooldowns[e.Target]
 
 	if e.NewHPRatio <= 0.5 {
-		// Check if enemy, is either not in the map (never seen before) or is in there and
-		if c.engine.IsEnemy(e.Target) && (!ok || !onCD) && !c.engine.HasBehaviorFlag(c.id, model.BehaviorFlag_STAT_CTRL) {
+		// Check if enemy, is either not in the map (never seen before) or is in there, the source is an ally and Herta is not under a status control effect
+		if c.engine.IsEnemy(e.Target) && (!ok || !onCD) && c.engine.IsCharacter(e.Source) && !c.engine.HasBehaviorFlag(c.id, model.BehaviorFlag_STAT_CTRL) {
 			if len(c.engine.Enemies()) > 0 {
 				c.engine.Events().AttackEnd.Subscribe(c.talentAfterAttackListener)
 				hertaCount += 1

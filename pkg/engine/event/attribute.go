@@ -9,6 +9,7 @@ type HPChangeEventHandler = handler.EventHandler[HPChange]
 type HPChange struct {
 	Key                key.Reason   `json:"key"`
 	Target             key.TargetID `json:"target"`
+	Source             key.TargetID `json:"source"`
 	OldHPRatio         float64      `json:"old_hp_ratio"`
 	NewHPRatio         float64      `json:"new_hp_ratio"`
 	OldHP              float64      `json:"old_hp"`
