@@ -76,6 +76,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/harmony/planetaryrendezvous"
 	_ "github.com/simimpact/srsim/internal/lightcone/hunt/adversarial"
 	_ "github.com/simimpact/srsim/internal/lightcone/hunt/arrows"
+	_ "github.com/simimpact/srsim/internal/lightcone/hunt/baptismofpurethought"
 	_ "github.com/simimpact/srsim/internal/lightcone/hunt/cruisinginthestellarsea"
 	_ "github.com/simimpact/srsim/internal/lightcone/hunt/dartingarrow"
 	_ "github.com/simimpact/srsim/internal/lightcone/hunt/inthenight"
