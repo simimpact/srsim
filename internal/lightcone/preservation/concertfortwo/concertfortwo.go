@@ -62,6 +62,13 @@ func Create(engine engine.Engine, owner key.TargetID, lc info.LightCone) {
 func listenShield(mod *modifier.Instance) {
 	st := mod.State().(*state)
 
+	// Makes sure initial shield count is correct
+	for _, trg := range mod.Engine().Characters() {
+		if mod.Engine().IsShielded(trg) {
+			st.shieldCount++
+		}
+	}
+
 	mod.Engine().Events().ShieldAdded.Subscribe(func(event event.ShieldAdded) {
 		if !mod.Engine().IsCharacter(event.Info.Target) {
 			return
