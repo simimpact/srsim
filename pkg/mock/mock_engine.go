@@ -298,20 +298,6 @@ func (mr *MockEngineMockRecorder) ExtendModifierDuration(arg0, arg1, arg2 interf
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExtendModifierDuration", reflect.TypeOf((*MockEngine)(nil).ExtendModifierDuration), arg0, arg1, arg2)
 }
 
-// GetModifersByBehaviorFlag mocks base method.
-func (m *MockEngine) GetModifersByBehaviorFlag(arg0 key.TargetID, arg1 model.BehaviorFlag) []info.Modifier {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetModifersByBehaviorFlag", arg0, arg1)
-	ret0, _ := ret[0].([]info.Modifier)
-	return ret0
-}
-
-// GetModifersByBehaviorFlag indicates an expected call of GetModifersByBehaviorFlag.
-func (mr *MockEngineMockRecorder) GetModifersByBehaviorFlag(arg0, arg1 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetModifersByBehaviorFlag", reflect.TypeOf((*MockEngine)(nil).GetModifersByBehaviorFlag), arg0, arg1)
-}
-
 // GetModifiers mocks base method.
 func (m *MockEngine) GetModifiers(arg0 key.TargetID, arg1 key.Modifier) []info.Modifier {
 	m.ctrl.T.Helper()
@@ -324,6 +310,20 @@ func (m *MockEngine) GetModifiers(arg0 key.TargetID, arg1 key.Modifier) []info.M
 func (mr *MockEngineMockRecorder) GetModifiers(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetModifiers", reflect.TypeOf((*MockEngine)(nil).GetModifiers), arg0, arg1)
+}
+
+// GetModifiersByBehaviorFlag mocks base method.
+func (m *MockEngine) GetModifiersByBehaviorFlag(arg0 key.TargetID, arg1 model.BehaviorFlag) []info.Modifier {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetModifiersByBehaviorFlag", arg0, arg1)
+	ret0, _ := ret[0].([]info.Modifier)
+	return ret0
+}
+
+// GetModifiersByBehaviorFlag indicates an expected call of GetModifiersByBehaviorFlag.
+func (mr *MockEngineMockRecorder) GetModifiersByBehaviorFlag(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetModifiersByBehaviorFlag", reflect.TypeOf((*MockEngine)(nil).GetModifiersByBehaviorFlag), arg0, arg1)
 }
 
 // HPRatio mocks base method.
