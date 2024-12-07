@@ -89,6 +89,7 @@ const (
 	Pioneering                LightCone = "pioneering"
 	WeAreWildfire             LightCone = "we_are_wildfire"
 	LandausChoice             LightCone = "landaus_choice"
+	ConcertforTwo             LightCone = "concert_for_two"
 )
 
 // Abundance
