@@ -43,6 +43,8 @@ func init() {
 
 	modifier.Register(Buff, modifier.Config{
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
+		Duration:   1,
 	})
 }
 
@@ -73,18 +75,18 @@ func conditions(mod *modifier.Instance) {
 	dmgBonus := mod.State().(state).DmgBonus
 
 	if !mod.Engine().HasModifier(mod.Owner(), Buff) {
-		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
-			Name:     Buff,
-			Source:   mod.Owner(),
-			Duration: 1,
-			Stats:    info.PropMap{prop.AllDamagePercent: dmgBonus},
-		})
-
 		mod.Engine().Heal(info.Heal{
 			Key:      Check,
 			Targets:  []key.TargetID{mod.Owner()},
 			Source:   mod.Owner(),
 			BaseHeal: info.HealMap{model.HealFormula_BY_HEALER_ATK: heal},
+		})
+
+		mod.Engine().AddModifier(mod.Owner(), info.Modifier{
+			Name:     Buff,
+			Source:   mod.Owner(),
+			Duration: 1,
+			Stats:    info.PropMap{prop.AllDamagePercent: dmgBonus},
 		})
 	}
 }
