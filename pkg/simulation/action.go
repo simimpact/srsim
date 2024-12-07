@@ -65,7 +65,11 @@ func (sim *Simulation) ultCheck() error {
 		return err
 	}
 	for _, act := range ults {
-		if sim.Attr.FullEnergy(act.Target) {
+		canuse, err := sim.CanUseUlt(act.Target)
+		if err != nil {
+			return err
+		}
+		if canuse {
 			sim.InsertUlt(act)
 			sim.Attr.SetEnergy(info.ModifyAttribute{
 				Key:    "ult",
