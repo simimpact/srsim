@@ -62,6 +62,9 @@ type Modifier struct {
 	// Any additional weaknesses that are applied to the target by this modifier.
 	Weakness WeaknessMap `exhaustruct:"optional" json:"weakness"`
 
+	// The type of status this modifier is (BUFF, DEBUFF, or OTHER). If unspecified, will default to OTHER
+	StatusType model.StatusType `exhaustruct:"optional" json:"status_type"`
+
 	// CanDispel indicates whether the modifier can be removed through dispel effects.
 	// If true, the modifier can be targeted and removed by dispel abilities; if false (default),
 	// it is immune to dispel.
