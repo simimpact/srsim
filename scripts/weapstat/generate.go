@@ -37,8 +37,8 @@ func main() {
 		return
 	}
 
-	var cones map[string]EquipmentConfig
-	var promotions map[string]PromotionConfig
+	var cones []EquipmentConfig
+	var promotions []PromotionDataConfig
 	var textMap map[string]string
 
 	err := OpenConfig(&cones, dmPath, "ExcelOutput", "EquipmentConfig.json")
@@ -57,12 +57,18 @@ func main() {
 		return
 	}
 
-	for key, value := range cones {
+	promotionMap := make(map[string][]PromotionDataConfig)
+	for _, promo := range promotions {
+		key := strconv.Itoa(promo.EquipmentID)
+		promotionMap[key] = append(promotionMap[key], promo)
+	}
+
+	for _, value := range cones {
 		coneName := GetName(textMap, value.EquipmentName.Hash)
 		if coneName == "" {
 			continue
 		}
-		ProcessLightCone(coneName, value, promotions[key])
+		ProcessLightCone(coneName, value, promotionMap[strconv.Itoa(value.EquipmentID)])
 	}
 }
 
@@ -90,7 +96,7 @@ func GetName(textMap map[string]string, hash int) string {
 	return textMap[strconv.Itoa(hash)]
 }
 
-func ProcessLightCone(name string, cone EquipmentConfig, promotions PromotionConfig) {
+func ProcessLightCone(name string, cone EquipmentConfig, promotions []PromotionDataConfig) {
 	//nolint:exhaustruct // values initialized below
 	data := dataTmpl{}
 	data.Key = keyRegex.ReplaceAllString(name, "")
@@ -99,19 +105,15 @@ func ProcessLightCone(name string, cone EquipmentConfig, promotions PromotionCon
 	data.Path = cone.GetPath()
 
 	data.PromotionData = make([]lightcone.PromotionData, len(promotions))
-	for i := 0; i < len(promotions); i++ {
-		val, ok := promotions[strconv.Itoa(i)]
-		if !ok {
-			break
-		}
+	for i, promo := range promotions {
 		data.PromotionData[i] = lightcone.PromotionData{
-			MaxLevel: val.MaxLevel,
-			ATKBase:  val.BaseAttack.Value,
-			ATKAdd:   val.BaseAttackAdd.Value,
-			DEFBase:  val.BaseDefence.Value,
-			DEFAdd:   val.BaseDefenceAdd.Value,
-			HPBase:   val.BaseHP.Value,
-			HPAdd:    val.BaseHPAdd.Value,
+			MaxLevel: promo.MaxLevel,
+			ATKBase:  promo.BaseAttack.Value,
+			ATKAdd:   promo.BaseAttackAdd.Value,
+			DEFBase:  promo.BaseDefence.Value,
+			DEFAdd:   promo.BaseDefenceAdd.Value,
+			HPBase:   promo.BaseHP.Value,
+			HPAdd:    promo.BaseHPAdd.Value,
 		}
 	}
 

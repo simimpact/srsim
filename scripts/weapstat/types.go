@@ -14,6 +14,7 @@ type ValueInfo struct {
 
 //nolint:tagliatelle // need to match datamine
 type EquipmentConfig struct {
+	EquipmentID    int      `json:"EquipmentID"`
 	EquipmentName  HashInfo `json:"EquipmentName"`
 	Rarity         string   `json:"Rarity"`
 	AvatarBaseType string   `json:"AvatarBaseType"`
