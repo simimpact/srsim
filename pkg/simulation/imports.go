@@ -19,6 +19,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/character/jingliu"
 	_ "github.com/simimpact/srsim/internal/character/kafka"
 	_ "github.com/simimpact/srsim/internal/character/luka"
+	_ "github.com/simimpact/srsim/internal/character/luocha"
 	_ "github.com/simimpact/srsim/internal/character/march7th"
 	_ "github.com/simimpact/srsim/internal/character/natasha"
 	_ "github.com/simimpact/srsim/internal/character/pela"
