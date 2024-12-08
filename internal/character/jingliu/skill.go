@@ -10,20 +10,16 @@ const (
 	NormalSkill           key.Attack = "jingliu-skill-normal"
 	EnhancedSkillPrimary  key.Attack = "jingliu-skill-enhance-primary"
 	EnhancedSkillAdjacent key.Attack = "jingliu-skill-enhance-adjacent"
+	EnhancedSkillE1       key.Attack = "jingliu-skill-enhance-e1"
 	A4                    key.Reason = "jingliu-a4"
 	Skill                 key.Reason = "jingliu-skill"
 )
 
-var EnhancedSkillRatio = []float64{0.1, 0.1, 0.1, 0.2, 0.5}
+var enhancedSkillRatio = []float64{0.1, 0.1, 0.1, 0.2, 0.5}
 
 func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	if !c.isEnhanced {
 		c.NormalSkill(target, state)
-		return
-	}
-	if len(c.engine.AdjacentTo(target)) == 0 && c.info.Eidolon >= 1 {
-		c.EnhancedSkillE1(target, state)
-		c.afterUlt = false
 		return
 	}
 	c.EnhancedSkill(target, state)
@@ -63,7 +59,7 @@ func (c *char) EnhancedSkill(target key.TargetID, state info.ActionState) {
 	c.addTalentBuff()
 	c.Syzygy -= 1
 
-	for i, hitRatio := range attackRatio {
+	for i, hitRatio := range enhancedSkillRatio {
 		c.engine.Attack(info.Attack{
 			Key:          EnhancedSkillPrimary,
 			HitIndex:     i,
@@ -87,37 +83,18 @@ func (c *char) EnhancedSkill(target key.TargetID, state info.ActionState) {
 			StanceDamage: 30,
 			HitRatio:     hitRatio,
 		})
-	}
-	state.EndAttack()
-}
-
-func (c *char) EnhancedSkillE1(target key.TargetID, state info.ActionState) {
-	c.addTalentBuff()
-	c.Syzygy -= 1
-
-	for i, hitRatio := range attackRatio {
-		c.engine.Attack(info.Attack{
-			Key:          EnhancedSkillPrimary,
-			HitIndex:     i,
-			Source:       c.id,
-			Targets:      []key.TargetID{target},
-			DamageType:   model.DamageType_ICE,
-			AttackType:   model.AttackType_SKILL,
-			BaseDamage:   info.DamageMap{model.DamageFormula_BY_ATK: enhancedSkill[c.info.SkillLevelIndex()]},
-			StanceDamage: 60,
-			EnergyGain:   30,
-			HitRatio:     hitRatio,
-		})
-		c.engine.Attack(info.Attack{
-			Key:        EnhancedSkillAdjacent,
-			HitIndex:   i,
-			Source:     c.id,
-			Targets:    []key.TargetID{target},
-			DamageType: model.DamageType_ICE,
-			AttackType: model.AttackType_SKILL,
-			BaseDamage: info.DamageMap{model.DamageFormula_BY_ATK: 1},
-			HitRatio:   hitRatio,
-		})
+		if len(c.engine.AdjacentTo(target)) == 0 && c.info.Eidolon >= 1 {
+			c.engine.Attack(info.Attack{
+				Key:        EnhancedSkillE1,
+				HitIndex:   i,
+				Source:     c.id,
+				Targets:    []key.TargetID{target},
+				DamageType: model.DamageType_ICE,
+				AttackType: model.AttackType_SKILL,
+				BaseDamage: info.DamageMap{model.DamageFormula_BY_ATK: 1},
+				HitRatio:   hitRatio,
+			})
+		}
 	}
 	state.EndAttack()
 }
