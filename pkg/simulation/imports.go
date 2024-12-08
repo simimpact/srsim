@@ -101,6 +101,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/amber"
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/dayoneofmynewlife"
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/defense"
+	_ "github.com/simimpact/srsim/internal/lightcone/preservation/inherentlyunjustdestiny"
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/landauschoice"
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/momentofvictory"
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/pioneering"
