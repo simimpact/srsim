@@ -12,6 +12,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/character/gallagher"
 	_ "github.com/simimpact/srsim/internal/character/gepard"
 	_ "github.com/simimpact/srsim/internal/character/guinaifen"
+	_ "github.com/simimpact/srsim/internal/character/hanya"
 	_ "github.com/simimpact/srsim/internal/character/herta"
 	_ "github.com/simimpact/srsim/internal/character/himeko"
 	_ "github.com/simimpact/srsim/internal/character/hook"
