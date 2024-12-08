@@ -89,6 +89,7 @@ const (
 	Pioneering                LightCone = "pioneering"
 	WeAreWildfire             LightCone = "we_are_wildfire"
 	LandausChoice             LightCone = "landaus_choice"
+	DestinysThreadsForewoven  LightCone = "destinys_threads_forewoven"
 )
 
 // Abundance
