@@ -17,6 +17,20 @@ func (sim *Simulation) EnemyInfo(id key.TargetID) (info.Enemy, error) {
 	return sim.Enemy.Info(id)
 }
 
+func (sim *Simulation) CanUseAttack(id key.TargetID) (bool, error) {
+	skillInfo, err := sim.Char.SkillInfo(id)
+	if err != nil {
+		return false, err
+	}
+	char, err := sim.Char.Get(id)
+	if err != nil {
+		return false, err
+	}
+
+	check := skillInfo.Attack.CanUse
+	return (check == nil || check(sim, char)), nil
+}
+
 func (sim *Simulation) CanUseSkill(id key.TargetID) (bool, error) {
 	skillInfo, err := sim.Char.SkillInfo(id)
 	if err != nil {

@@ -208,6 +208,9 @@ type Info interface {
 	// Metadata for the given enemy, such as their current level and weaknesses.
 	EnemyInfo(target key.TargetID) (info.Enemy, error)
 
+	// Check if the character can use attack (Either arbitrary logic defined by char implementer, or unrestricted by default)
+	CanUseAttack(target key.TargetID) (bool, error)
+
 	// Check if the character can use the skill (enough Skill Points and not blocked by Skill.CanUse,
 	// see implementation of each character)
 	CanUseSkill(target key.TargetID) (bool, error)
