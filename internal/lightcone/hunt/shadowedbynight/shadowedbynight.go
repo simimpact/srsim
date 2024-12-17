@@ -34,8 +34,8 @@ func init() {
 
 	modifier.Register(check, modifier.Config{
 		Listeners: modifier.Listeners{
-			OnPhase1:       resetFlag,
-			OnBeforeHitAll: applySpdBuff,
+			OnPhase1:      resetFlag,
+			OnAfterHitAll: applySpdBuff,
 		},
 	})
 
@@ -76,7 +76,7 @@ func resetFlag(mod *modifier.Instance) {
 	st.flag = false
 }
 
-func applySpdBuff(mod *modifier.Instance, e event.HitStart) {
+func applySpdBuff(mod *modifier.Instance, e event.HitEnd) {
 	if e.Hit.AttackType != model.AttackType_ELEMENT_DAMAGE {
 		return
 	}
