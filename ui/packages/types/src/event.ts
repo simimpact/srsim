@@ -58,6 +58,22 @@ export interface SPChange {
   old_sp: number /* int */;
   new_sp: number /* int */;
 }
+export type MaxSPChangeEventHandler = Handler<MaxSPChange>;
+export interface MaxSPChange {
+  key: string;
+  source: string;
+  old_max_sp: number /* int */;
+  new_max_sp: number /* int */;
+}
+
+//////////
+// source: break.go
+
+export type BreakExtendEventHandler = Handler<BreakExtend>;
+export interface BreakExtend {
+  key: string;
+  target: string;
+}
 
 //////////
 // source: combat.go
@@ -87,6 +103,7 @@ export interface HitStart {
 export type HitEndEventHandler = Handler<HitEnd>;
 export interface HitEnd {
   key: string;
+  hit?: info.Hit;
   hit_index: number /* int */;
   attacker: string;
   defender: string;
@@ -148,6 +165,11 @@ export interface ModifierResisted {
 }
 export type ModifierRemovedEventHandler = Handler<ModifierRemoved>;
 export interface ModifierRemoved {
+  target: string;
+  modifier: info.Modifier;
+}
+export type ModifierDispelledEventHandler = Handler<ModifierDispelled>;
+export interface ModifierDispelled {
   target: string;
   modifier: info.Modifier;
 }
@@ -298,7 +320,7 @@ export interface TurnTargetsAdded {
 export type TurnResetEventHandler = Handler<TurnReset>;
 export interface TurnReset {
   reset_target: string;
-  gauge_cost: number /* float64 */;
+  gauge_cost: number /* int64 */;
   turn_order: TurnStatus[];
 }
 export type GaugeChangeEventHandler = Handler<GaugeChange>;
@@ -306,19 +328,19 @@ export interface GaugeChange {
   key: string;
   target: string;
   source: string;
-  old_gauge: number /* float64 */;
-  new_gauge: number /* float64 */;
+  old_gauge: number /* int64 */;
+  new_gauge: number /* int64 */;
   turn_order: TurnStatus[];
 }
 export type CurrentGaugeCostChangeEventHandler = Handler<CurrentGaugeCostChange>;
 export interface CurrentGaugeCostChange {
   key: string;
   source: string;
-  old_cost: number /* float64 */;
-  new_cost: number /* float64 */;
+  old_cost: number /* int64 */;
+  new_cost: number /* int64 */;
 }
 export interface TurnStatus {
   id: string;
-  gauge: number /* float64 */;
+  gauge: number /* int64 */;
   av: number /* float64 */;
 }

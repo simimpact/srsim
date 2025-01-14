@@ -147,6 +147,20 @@ func (mr *MockAttributeMockRecorder) MaxEnergy(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MaxEnergy", reflect.TypeOf((*MockAttribute)(nil).MaxEnergy), arg0)
 }
 
+// MaxSP mocks base method.
+func (m *MockAttribute) MaxSP() int {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MaxSP")
+	ret0, _ := ret[0].(int)
+	return ret0
+}
+
+// MaxSP indicates an expected call of MaxSP.
+func (mr *MockAttributeMockRecorder) MaxSP() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MaxSP", reflect.TypeOf((*MockAttribute)(nil).MaxSP))
+}
+
 // MaxStance mocks base method.
 func (m *MockAttribute) MaxStance(arg0 key.TargetID) float64 {
 	m.ctrl.T.Helper()
@@ -215,6 +229,20 @@ func (m *MockAttribute) ModifyHPByRatio(arg0 info.ModifyHPByRatio, arg1 bool) er
 func (mr *MockAttributeMockRecorder) ModifyHPByRatio(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyHPByRatio", reflect.TypeOf((*MockAttribute)(nil).ModifyHPByRatio), arg0, arg1)
+}
+
+// ModifyMaxSP mocks base method.
+func (m *MockAttribute) ModifyMaxSP(arg0 info.ModifyMaxSP) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ModifyMaxSP", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ModifyMaxSP indicates an expected call of ModifyMaxSP.
+func (mr *MockAttributeMockRecorder) ModifyMaxSP(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyMaxSP", reflect.TypeOf((*MockAttribute)(nil).ModifyMaxSP), arg0)
 }
 
 // ModifySP mocks base method.
