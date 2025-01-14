@@ -201,8 +201,15 @@ func (s *Service) ModifySP(data info.ModifySP) error {
 	return s.emitSPChange(data.Key, data.Source, old, s.sp)
 }
 
-func (s *Service) ModifyMaxSP(data info.ModifyMaxSP) error {
+func (s *Service) ModifyMaxSP(data info.ModifySP) error {
 	old := s.sp
 	s.maxsp += data.Amount
+	if s.sp > s.maxsp {
+		s.ModifySP(info.ModifySP{
+			Key:    data.Key,
+			Source: data.Source,
+			Amount: s.maxsp - s.sp,
+		})
+	}
 	return s.emitMaxSPChange(data.Key, data.Source, old, s.maxsp)
 }

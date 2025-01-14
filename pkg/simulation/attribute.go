@@ -35,7 +35,7 @@ func (sim *Simulation) ModifySP(data info.ModifySP) error {
 	return sim.Attr.ModifySP(data)
 }
 
-func (sim *Simulation) ModifyMaxSP(data info.ModifyMaxSP) error {
+func (sim *Simulation) ModifyMaxSP(data info.ModifySP) error {
 	return sim.Attr.ModifyMaxSP(data)
 }
 

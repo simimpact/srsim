@@ -29,7 +29,7 @@ type Manager interface {
 	Getter
 
 	ModifySP(data info.ModifySP) error
-	ModifyMaxSP(data info.ModifyMaxSP) error
+	ModifyMaxSP(data info.ModifySP) error
 
 	AddTarget(target key.TargetID, base info.Attributes) error
 
