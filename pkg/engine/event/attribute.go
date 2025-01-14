@@ -65,3 +65,11 @@ type SPChange struct {
 	OldSP  int          `json:"old_sp"`
 	NewSP  int          `json:"new_sp"`
 }
+
+type MaxSPChangeEventHandler = handler.EventHandler[MaxSPChange]
+type MaxSPChange struct {
+	Key      key.Reason   `json:"key"`
+	Source   key.TargetID `json:"source"`
+	OldMaxSP int          `json:"old_max_sp"`
+	NewMaxSP int          `json:"new_max_sp"`
+}

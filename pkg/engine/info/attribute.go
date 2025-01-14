@@ -63,6 +63,17 @@ type ModifySP struct {
 	Amount int `json:"amount"`
 }
 
+type ModifyMaxSP struct {
+	// A unique identifier for this modification
+	Key key.Reason `json:"key"`
+
+	// The source of this modification
+	Source key.TargetID `json:"source"`
+
+	// The amount of maximum SP available
+	Amount int `json:"amount"`
+}
+
 type ModifyCurrentGaugeCost struct {
 	// A unique identifier for this modification
 	Key key.Reason `json:"key"`

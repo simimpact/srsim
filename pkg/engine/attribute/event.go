@@ -76,3 +76,15 @@ func (s *Service) emitSPChange(key key.Reason, source key.TargetID, prevSP, newS
 	}
 	return nil
 }
+
+func (s *Service) emitMaxSPChange(key key.Reason, source key.TargetID, prevMaxSP, newMaxSP int) error {
+	if prevMaxSP != newMaxSP {
+		s.event.MaxSPChange.Emit(event.MaxSPChange{
+			Key:      key,
+			Source:   source,
+			OldMaxSP: prevMaxSP,
+			NewMaxSP: newMaxSP,
+		})
+	}
+	return nil
+}

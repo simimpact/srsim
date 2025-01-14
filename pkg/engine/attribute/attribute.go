@@ -22,12 +22,14 @@ type Getter interface {
 	FullEnergy(target key.TargetID) bool
 	LastAttacker(target key.TargetID) key.TargetID
 	SP() int
+	MaxSP() int
 }
 
 type Manager interface {
 	Getter
 
 	ModifySP(data info.ModifySP) error
+	ModifyMaxSP(data info.ModifyMaxSP) error
 
 	AddTarget(target key.TargetID, base info.Attributes) error
 
@@ -48,6 +50,7 @@ type Service struct {
 	modEval modifier.Eval
 	targets map[key.TargetID]*attrTarget
 	sp      int
+	maxsp   int
 }
 
 func New(event *event.System, modEval modifier.Eval) Manager {
@@ -56,6 +59,7 @@ func New(event *event.System, modEval modifier.Eval) Manager {
 		modEval: modEval,
 		targets: make(map[key.TargetID]*attrTarget, 10),
 		sp:      3,
+		maxsp:   5,
 	}
 }
 
@@ -143,4 +147,8 @@ func (s *Service) LastAttacker(target key.TargetID) key.TargetID {
 
 func (s *Service) SP() int {
 	return s.sp
+}
+
+func (s *Service) MaxSP() int {
+	return s.maxsp
 }

@@ -35,8 +35,16 @@ func (sim *Simulation) ModifySP(data info.ModifySP) error {
 	return sim.Attr.ModifySP(data)
 }
 
+func (sim *Simulation) ModifyMaxSP(data info.ModifyMaxSP) error {
+	return sim.Attr.ModifyMaxSP(data)
+}
+
 func (sim *Simulation) SP() int {
 	return sim.Attr.SP()
+}
+
+func (sim *Simulation) MaxSP() int {
+	return sim.Attr.MaxSP()
 }
 
 func (sim *Simulation) Stats(target key.TargetID) *info.Stats {

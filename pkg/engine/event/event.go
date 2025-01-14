@@ -48,6 +48,7 @@ type System struct {
 	StanceBreak   StanceBreakEventHandler
 	StanceReset   StanceResetEventHandler
 	SPChange      SPChangeEventHandler
+	MaxSPChange   MaxSPChangeEventHandler
 
 	BreakExtend BreakExtendEventHandler
 
