@@ -72,21 +72,7 @@ export interface ModifySP {
    */
   source: string;
   /**
-   * The amount of SP to be added or removed
-   */
-  amount: number /* int */;
-}
-export interface ModifyMaxSP {
-  /**
-   * A unique identifier for this modification
-   */
-  key: string;
-  /**
-   * The source of this modification
-   */
-  source: string;
-  /**
-   * The amount of maximum SP available
+   * The amount of SP or maximum SP to be added or removed
    */
   amount: number /* int */;
 }

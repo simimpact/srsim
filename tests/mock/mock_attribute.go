@@ -232,7 +232,7 @@ func (mr *MockAttributeMockRecorder) ModifyHPByRatio(arg0, arg1 interface{}) *go
 }
 
 // ModifyMaxSP mocks base method.
-func (m *MockAttribute) ModifyMaxSP(arg0 info.ModifyMaxSP) error {
+func (m *MockAttribute) ModifyMaxSP(arg0 info.ModifySP) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ModifyMaxSP", arg0)
 	ret0, _ := ret[0].(error)
