@@ -49,12 +49,14 @@ type SkillInfo struct {
 	Technique Technique
 }
 
+type AttackValidateFunc func(engine engine.Engine, char info.CharInstance) bool
 type SkillValidateFunc func(engine engine.Engine, char info.CharInstance) bool
 type UltValidateFunc func(engine engine.Engine, char info.CharInstance) bool
 
 type Attack struct {
 	SPAdd      int
 	TargetType model.TargetType
+	CanUse     AttackValidateFunc `exhaustruct:"optional"`
 }
 
 type Skill struct {

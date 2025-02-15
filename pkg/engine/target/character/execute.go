@@ -83,6 +83,10 @@ func (mgr *Manager) ExecuteAction(id key.TargetID, isInsert bool) (target.Execut
 		return target.ExecutableAction{}, err
 	}
 
+	canUseAttack, err := mgr.engine.CanUseAttack(id)
+	if err != nil || !canUseAttack {
+		return target.ExecutableAction{}, err
+	}
 	return target.ExecutableAction{
 		Execute: func() {
 			char.Attack(primaryTarget, actionState{

@@ -105,6 +105,21 @@ func (mr *MockEngineMockRecorder) Attack(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Attack", reflect.TypeOf((*MockEngine)(nil).Attack), arg0)
 }
 
+// CanUseAttack mocks base method.
+func (m *MockEngine) CanUseAttack(arg0 key.TargetID) (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CanUseAttack", arg0)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CanUseAttack indicates an expected call of CanUseAttack.
+func (mr *MockEngineMockRecorder) CanUseAttack(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CanUseAttack", reflect.TypeOf((*MockEngine)(nil).CanUseAttack), arg0)
+}
+
 // CanUseSkill mocks base method.
 func (m *MockEngine) CanUseSkill(arg0 key.TargetID) (bool, error) {
 	m.ctrl.T.Helper()
