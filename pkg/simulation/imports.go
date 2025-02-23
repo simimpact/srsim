@@ -23,6 +23,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/character/natasha"
 	_ "github.com/simimpact/srsim/internal/character/pela"
 	_ "github.com/simimpact/srsim/internal/character/qingque"
+	_ "github.com/simimpact/srsim/internal/character/ruanmei"
 	_ "github.com/simimpact/srsim/internal/character/sampo"
 	_ "github.com/simimpact/srsim/internal/character/seele"
 	_ "github.com/simimpact/srsim/internal/character/serval"
