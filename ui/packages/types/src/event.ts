@@ -13,6 +13,7 @@ export type HPChangeEventHandler = Handler<HPChange>;
 export interface HPChange {
   key: string;
   target: string;
+  source: string;
   old_hp_ratio: number /* float64 */;
   new_hp_ratio: number /* float64 */;
   old_hp: number /* float64 */;

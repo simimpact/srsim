@@ -19,6 +19,7 @@ func (s *Service) emitHPChangeEvents(
 	s.event.HPChange.Emit(event.HPChange{
 		Key:                key,
 		Target:             target,
+		Source:             source,
 		OldHPRatio:         oldRatio,
 		NewHPRatio:         newRatio,
 		OldHP:              maxHP * oldRatio,
