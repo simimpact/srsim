@@ -9,14 +9,25 @@ import (
 )
 
 const (
-	Hellscape = "blade-hellscape"
+	Hellscape        = "blade-hellscape"
+	HellscapeDmgBuff = "blade-hellscape-dmg-buff"
 )
 
 func init() {
 	modifier.Register(Hellscape, modifier.Config{
-		Stacking:   modifier.Replace,
-		Duration:   3,
+		Stacking: modifier.ReplaceBySource,
+		Duration: 3,
+		Listeners: modifier.Listeners{
+			OnRemove: func(mod *modifier.Instance) {
+				mod.Engine().RemoveModifier(mod.Owner(), HellscapeDmgBuff)
+				mod.Engine().RemoveModifier(mod.Owner(), E2)
+			},
+		},
+	})
+	modifier.Register(HellscapeDmgBuff, modifier.Config{
+		Stacking:   modifier.ReplaceBySource,
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
 	})
 }
 
@@ -32,6 +43,11 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 
 	statsPropMap := info.PropMap{prop.AllDamagePercent: skill[c.info.SkillLevelIndex()]}
 
+	c.engine.AddModifier(c.id, info.Modifier{
+		Name:   Hellscape,
+		Source: c.id,
+	})
+
 	// E2
 	if c.info.Eidolon >= 2 {
 		c.engine.AddModifier(c.id, info.Modifier{
@@ -42,7 +58,7 @@ func (c *char) Skill(target key.TargetID, state info.ActionState) {
 	}
 
 	c.engine.AddModifier(c.id, info.Modifier{
-		Name:   Hellscape,
+		Name:   HellscapeDmgBuff,
 		Source: c.id,
 		Stats:  statsPropMap,
 	})

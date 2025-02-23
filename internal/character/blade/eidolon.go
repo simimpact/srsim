@@ -14,9 +14,10 @@ const (
 
 func init() {
 	modifier.Register(E2, modifier.Config{
-		Stacking:   modifier.Replace,
+		Stacking:   modifier.ReplaceBySource,
 		Duration:   3,
 		StatusType: model.StatusType_STATUS_BUFF,
+		CanDispel:  true,
 	})
 
 	modifier.Register(E4, modifier.Config{
