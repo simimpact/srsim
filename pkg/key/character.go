@@ -25,6 +25,7 @@ const (
 	DummyCharacter        Character = "dummy_character"
 	Sampo                 Character = "sampo"
 	Serval                Character = "serval"
+	Sparkle               Character = "sparkle"
 	Sushang               Character = "sushang"
 	Natasha               Character = "natasha"
 	March7th              Character = "march7th"
