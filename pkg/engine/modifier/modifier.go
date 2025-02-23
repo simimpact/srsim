@@ -237,6 +237,7 @@ func (mi *Instance) ToModel() info.Modifier {
 		CountAddWhenStack: mi.countAddWhenStack,
 		Stats:             props,
 		DebuffRES:         res,
+		StatusType:        mi.statusType,
 		CanDispel:         mi.canDispel,
 	}
 }
