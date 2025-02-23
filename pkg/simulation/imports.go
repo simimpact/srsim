@@ -99,6 +99,7 @@ import (
 	_ "github.com/simimpact/srsim/internal/lightcone/nihility/void"
 	_ "github.com/simimpact/srsim/internal/lightcone/nihility/wewillmeetagain"
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/amber"
+	_ "github.com/simimpact/srsim/internal/lightcone/preservation/concertfortwo"
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/dayoneofmynewlife"
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/defense"
 	_ "github.com/simimpact/srsim/internal/lightcone/preservation/landauschoice"
