@@ -38,6 +38,7 @@ type TargetInfo struct {
 
 //nolint:tagliatelle // need to match datamine
 type AvatarInfo struct {
+	AvatarID          int       `json:"AvatarID"`
 	AvatarName        HashInfo  `json:"AvatarName"`
 	Rarity            string    `json:"Rarity"`
 	UIAvatarModelPath string    `json:"UIAvatarModelPath"`
@@ -65,6 +66,7 @@ type AvatarSkillMetadata struct {
 
 //nolint:tagliatelle // need to match datamine
 type TraceConfig struct {
+	Level                int             `json:"Level"`
 	PointID              int             `json:"PointID"`
 	PointType            SkillConfigType `json:"PointType"`
 	AvatarID             int             `json:"AvatarID"`
@@ -76,6 +78,7 @@ type TraceConfig struct {
 
 //nolint:tagliatelle // need to match datamine
 type PromotionDataConfig struct {
+	Promotion      int       `json:"Promotion"`
 	AvatarID       int       `json:"AvatarID"`
 	MaxLevel       int       `json:"MaxLevel"`
 	AttackBase     ValueInfo `json:"AttackBase"`
@@ -93,6 +96,8 @@ type PromotionDataConfig struct {
 
 //nolint:tagliatelle // need to match datamine
 type AvatarSkillConfig struct {
+	Level           int       `json:"Level"`
+	SkillID         int       `json:"SkillID"`
 	BPNeed          ValueInfo `json:"BPNeed"`
 	BPAdd           ValueInfo `json:"BPAdd"`
 	SkillEffect     string    `json:"SkillEffect"`

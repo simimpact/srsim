@@ -41,44 +41,78 @@ func main() {
 		return
 	}
 
-	var avatars map[string]AvatarInfo
-	var skills map[string]SkillTreeConfig
-	var promotions map[string]PromotionConfig
+	var avatars []AvatarInfo
+	var skills map[string]SkillTreeConfig = make(map[string]SkillTreeConfig)
+	var skilllist []TraceConfig
+	var promotions map[string]PromotionConfig = make(map[string]PromotionConfig)
+	var promotionlist []PromotionDataConfig
 	var textMap map[string]string
-	var avatarSkills map[string]SkillConfig
+	var avatarSkills map[string]SkillConfig = make(map[string]SkillConfig)
+	var avatarSkillList []AvatarSkillConfig
 
 	err := OpenConfig(&avatars, dmPath, "ExcelOutput", "AvatarConfig.json")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	err = OpenConfig(&skills, dmPath, "ExcelOutput", "AvatarSkillTreeConfig.json")
+	err = OpenConfig(&skilllist, dmPath, "ExcelOutput", "AvatarSkillTreeConfig.json")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	err = OpenConfig(&promotions, dmPath, "ExcelOutput", "AvatarPromotionConfig.json")
+	// take every trace in trace list and convert it into old format kyle used
+	for _, skill := range skilllist {
+		strid := strconv.Itoa(skill.PointID)
+		val, ok := skills[strid]
+		if ok {
+			val[strconv.Itoa(skill.Level)] = skill
+		} else {
+			skills[strid] = make(SkillTreeConfig)
+			skills[strid][strconv.Itoa(skill.Level)] = skill
+		}
+	}
+
+	err = OpenConfig(&promotionlist, dmPath, "ExcelOutput", "AvatarPromotionConfig.json")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
+	for _, promotion := range promotionlist {
+		strid := strconv.Itoa(promotion.AvatarID)
+		val, ok := promotions[strid]
+		if ok {
+			val[strconv.Itoa(promotion.Promotion)] = promotion
+		} else {
+			promotions[strid] = make(PromotionConfig)
+			promotions[strid][strconv.Itoa(promotion.Promotion)] = promotion
+		}
+	}
+
 	err = OpenConfig(&textMap, dmPath, "TextMap", "TextMapEN.json")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	err = OpenConfig(&avatarSkills, dmPath, "ExcelOutput", "AvatarSkillConfig.json")
+	err = OpenConfig(&avatarSkillList, dmPath, "ExcelOutput", "AvatarSkillConfig.json")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	for key, value := range avatars {
-		id, err := strconv.Atoi(key)
-		if err != nil {
-			fmt.Println(err)
-			return
+	for _, skill := range avatarSkillList {
+		strid := strconv.Itoa(skill.SkillID)
+		val, ok := avatarSkills[strid]
+		if ok {
+			val[strconv.Itoa(skill.Level)] = skill
+		} else {
+			avatarSkills[strid] = make(SkillConfig)
+			avatarSkills[strid][strconv.Itoa(skill.Level)] = skill
 		}
+	}
+
+	for _, value := range avatars {
+		id := value.AvatarID
+
 		charName := GetCharacterName(textMap, value.AvatarName.Hash)
 		switch charName {
 		case "":
@@ -86,16 +120,14 @@ func main() {
 		case "{NICKNAME}":
 			charName = "Trailblazer" + value.DamageType
 		}
-
 		var avatarConfig AvatarConfig
 		err = OpenConfig(&avatarConfig, dmPath, value.JSONPath)
 		if err != nil {
 			fmt.Println(err)
 			continue
 		}
-
-		info := FindSkillInfo(avatarSkills, avatarConfig, key)
-		ProcessCharacter(charName, value, FindCharSkills(skills, id), info, promotions[key])
+		info := FindSkillInfo(avatarSkills, avatarConfig, strconv.Itoa(value.AvatarID))
+		ProcessCharacter(charName, value, FindCharSkills(skills, id), info, promotions[strconv.Itoa(value.AvatarID)])
 	}
 }
 
