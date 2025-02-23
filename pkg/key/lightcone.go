@@ -75,6 +75,7 @@ const (
 	MemoriesofthePast          LightCone = "memories_of_the_past"
 	DanceDanceDance            LightCone = "dance_dance_dance"
 	PlanetaryRendezvous        LightCone = "planetary_rendezvous"
+	PastSelfinMirror           LightCone = "past_self_in_mirror"
 )
 
 // Preservation
